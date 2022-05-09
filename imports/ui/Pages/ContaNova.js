@@ -14,7 +14,7 @@ export function ContaNova(){
         Password: <input type={"text"} id="pass"></input><p></p>
         Repetir Password: <input type={"text"} id="pass2"></input><p></p>
         <button onClick={()=>
-            Meteor.call("registerUser",[(document.getElementById("nome").value), (document.getElementById("email").value), (document.getElementById("pass").value)], (document.getElementById("pass2").value),(err,result) =>{
+            Meteor.call("registerUser",document.getElementById("nome").value, document.getElementById("email").value, document.getElementById("pass").value, document.getElementById("pass2").value,(err,result) =>{
                 navigate("/Profile")
             })}> Registar </button>
         <p></p>
