@@ -12,7 +12,7 @@ export function Autenticar(){
         Email: <input type={"text"} id="eemail"></input><p></p>
         Password: <input type={"text"} id="ppass"></input><p></p>
         <button onClick={()=> 
-            Meteor.call("authenticateUser",[document.getElementById("eemail").value, document.getElementById("ppass").value],(err,result) =>{
+            Meteor.call("authenticateUser",document.getElementById("eemail").value, document.getElementById("ppass").value,(err,result) =>{
                 if(err){
                     //Fazer aparecer mensagem de texto de credenciais erradas.
                 }

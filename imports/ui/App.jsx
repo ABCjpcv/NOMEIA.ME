@@ -1,13 +1,14 @@
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 
-import {Home} from './Pages/Home.js';
-import {About} from './Pages/About.js';
-import {ConsultaNomeacoes}  from './Pages/ConsultaNomeacoes.js';
-import {Indisponibilidades}  from './Pages/Indisponibilidades.js';
-import {Restricoes} from './Pages/Restricoes.js';
-import {ContaNova} from './Pages/ContaNova.js';
-import {Autenticar} from './Pages/Autenticar.js';
+import {Home} from './Pages/Home.jsx';
+import {About} from './Pages/About.jsx';
+import {ConsultaNomeacoes}  from './Pages/ConsultaNomeacoes.jsx';
+import {Indisponibilidades}  from './Pages/Indisponibilidades.jsx';
+import {Restricoes} from './Pages/Restricoes.jsx';
+import {ContaNova} from './Pages/ContaNova.jsx';
+import {Autenticar} from './Pages/Autenticar.jsx';
+import { Profile } from './Pages/Profile.jsx';
 
 
 export const App = () => (
@@ -27,6 +28,7 @@ export const App = () => (
           <Route path='/Restricoes' element={<Restricoes/>}></Route>
           <Route path='/ContaNova' element={<ContaNova/>}></Route>
           <Route path='/Autenticar' element={<Autenticar/>}></Route>
+          <Route path='/Profile' element={<Profile/>}></Route>
         </Routes>
       </Router>
     </div>

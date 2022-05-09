@@ -3,7 +3,8 @@ import FullCalendar, { formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from '../../../node_modules/event-utils';
+import { INITIAL_EVENTS, createEventId } from 'event-utils';
+import { Fragment } from "react/cjs/react.production.min";
 
 export const Indisponibilidades = () => {
 
@@ -42,8 +43,7 @@ export const Indisponibilidades = () => {
         </div>
       </div>
     )
-
-  function renderSidebar(){
+      function renderSidebar(){
     return (
       <div className='demo-app-sidebar'>
         <div className='demo-app-sidebar-section'>
@@ -66,9 +66,10 @@ export const Indisponibilidades = () => {
         </div>
       </div>
     )
+  }
   
 
-  function handleDateSelect (selectInfo) {
+  function handleDateSelect(selectInfo) {
     let title = "Indisponível" 
     let calendarApi = selectInfo.view.calendar
 
@@ -110,5 +111,5 @@ function renderSidebarEvent(event) {
     </li>
   )
 }
-}
+
 }
