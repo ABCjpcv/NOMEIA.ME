@@ -1,13 +1,36 @@
 import { Meteor } from 'meteor/meteor';
 import { LinksCollection } from '/imports/api/links';
-import { mergeEventStores } from "@fullcalendar/react";
+import { interactionSettingsStore, mergeEventStores } from "@fullcalendar/react";
 import {Accounts} from "meteor/accounts-base";
+import { parsePath } from 'react-router-dom';
+import {Papa} from "meteor/harrison:papa-parse";
+import SimpleSchema from "simpl-schema";
 
 function insertLink({ title, url }) {
   LinksCollection.insert({title, url, createdAt: new Date()});
 }
 
 const users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
+const jogos = new Mongo.Collection("jogos");
+
+//Schema Jogos importados de um dado csv.
+jogos.schema = new SimpleSchema({
+  id:{type: Number, optional: false},
+  dia: {type:Date, optional:false},
+  //hora:{type: },
+  //prova: {type: enum?},
+  Serie: {type: String, optional:false},
+  equipa_casa: {type: String,optional:false},
+  equipa_fora: {type: String, optional:false},
+  pavilhao:{type:String, optional:false},
+  arbitro_1 : {type:String,optional:false}, // Verificar se possivel colocar Objecto Arbitro.
+  arbitro_2 : {type:String,optional:true}, //Mesmo que acima.
+  juiz_linha_1 : {type:String, optional:true},
+  juiz_linha_2: {type:String, optional:true},
+  juiz_linha_3 : {type:String,optional:true},
+  juiz_linha_4 : {type:String,optional:true}
+
+});
 
 Meteor.startup(() => {
   // If the Links collection is empty, add some data.
@@ -56,5 +79,17 @@ Meteor.methods({
          throw new Meteor.Error("Passwords do not match."); 
       console.log("Passwords match. User registered.");
     return Accounts.createUser({username:user_name,email:user_email,password:user_password},null);
+  }
+
+,
+  
+  //To test:
+  "readCsv" : function readCsv(filename){
+    //Get the csvText:
+    var csvFile = Assets.getText(filename);
+
+    var rows = Papa.parse(csvFile).data;
+
+    console.log(rows[1]);
   }
 });

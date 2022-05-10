@@ -15,6 +15,7 @@ export function Autenticar(){
                 if(err){
                     //Fazer aparecer mensagem de texto de credenciais erradas.
                 }
+                Meteor.call("readCsv","Livro1.csv");
                 navigate("/Profile")
             })
             }> Autenticar </button>
