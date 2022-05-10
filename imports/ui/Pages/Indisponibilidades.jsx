@@ -4,7 +4,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from '../../../node_modules/event-utils'
-import ptLocale from '@fullcalendar/core/locales/pt';
 
 export class Indisponibilidades extends React.Component {
 
@@ -26,6 +25,9 @@ export class Indisponibilidades extends React.Component {
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
             locale='pt'
+            allDaySlot="false"
+            slotMinTime={"09:00:00"}
+            slotMaxTime={"23:00:00"}
             initialView='timeGridWeek'
             editable={true}
             selectable={true}
@@ -78,8 +80,7 @@ export class Indisponibilidades extends React.Component {
       calendarApi.addEvent({
         title,
         start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
+        end: selectInfo.endStr
       })
     }
   }
