@@ -14,8 +14,10 @@ export class Indisponibilidades extends React.Component {
 
   render() {
     return (
+      
       <div className='demo-app'>
         {this.renderSidebar()}
+        <div style={{width: '800px',float: 'right'}}>
         <div className='demo-app-main'>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -48,6 +50,7 @@ export class Indisponibilidades extends React.Component {
           />
         </div>
       </div>
+      </div>
     )
   }
 
@@ -56,7 +59,7 @@ export class Indisponibilidades extends React.Component {
       <div className='demo-app-sidebar'>
         <div className='demo-app-sidebar-section'>
           <h2>Marcação de Indisponibilidades</h2>
-          <ul>
+          <ul style={{textAlign: "left"}}>
             <li>Selecione quando se encontra indisponivel</li>
             <li>Arraste, e redimensione indisponibilidades e clique num horário para a apagar</li>
           </ul>
