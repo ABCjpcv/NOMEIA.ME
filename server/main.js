@@ -13,6 +13,21 @@ function insertLink({ title, url }) {
 const users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 const jogos = new Mongo.Collection("jogos");
 const clubes = new Mongo.Collection("clubes");
+const arbitros = new Mongo.Collection("arbitros");
+const nomeacoes = new Mongo.Collection("nomeacoes");
+
+//Schema nomeacoes:
+nomeacoes.schema = new SimpleSchema({
+  arbitro: {type:arbitros, optional: false},
+  jogo: {type:jogos, optional:false}
+});
+
+
+//Schema Arbitros:
+arbitros.schema = new SimpleSchema({
+  nome:{type:String,optional:false},
+  licenca:{type:Number,optional:false}
+});
 
 //Schema Jogos importados de um dado csv.
 jogos.schema = new SimpleSchema({
@@ -117,4 +132,22 @@ Meteor.methods({
       console.log("inserted" + rows[i]);
     }
   }
+  ,
+
+  "addNomeacao" : function addNomeacao(licenca_arbitro,id_jogo){
+    var arbitro = arbitros.find({licenca:licenca_arbitro});
+    var jogo = jogos.find({id:id_jogo});
+    var nomeacao = {arbitro,jogo};
+    console.log("Arbitro " + arbitro + " ficou com o jogo " + jogo);
+    nomeacoes.insert(nomeacao);
+  }
+  ,
+  
+  "getNomeacoes" : function getNomeacoes(licenca_arbitro){
+    var arbitro = arbitros.find({licenca:licenca_arbitro});
+    var result = nomeacoes.find({arbitro:arbitro});
+    console.log(result);
+    return result;
+  }
+
 });
