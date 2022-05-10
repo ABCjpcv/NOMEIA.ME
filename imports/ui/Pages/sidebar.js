@@ -10,22 +10,22 @@ export default props => {
     // Pass on our props
     <Menu {...props}>
       <a className="menu-item">
-          <p></p>
-        Consultar Nomeações 
+          <p onClick={() => navigate("/Profile")}>Consultar Nomeações </p>
+        
       </a>
 
       <a className="menu-item" >
-          <p></p>
-        Marcar Indisponibilidades
+          <p onClick={() => navigate("/Indisponibilidades")}>Marcar Indisponibilidades</p>
+        
       </a>
 
       <a className="menu-item" >
-          <p></p>
-        Indicar Restrições
+          <p onClick={() => navigate("/Restricoes")}>Indicar Restrições</p>
+        
       </a>
 
       <a className="menu-item" >
-          <p onClick={navigate("/")}>Sair</p>
+          <p onClick={() => navigate("/")}>Sair</p>
         
       </a>
     </Menu>

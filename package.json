@@ -14,6 +14,8 @@
     "@fullcalendar/interaction": "^5.11.0",
     "@fullcalendar/react": "^5.11.1",
     "@fullcalendar/timegrid": "^5.11.0",
+    "@headlessui/react": "^1.6.1",
+    "@heroicons/react": "^1.0.6",
     "event-utils": "^2.1.0",
     "meteor-node-stubs": "^1.2.1",
     "react": "^17.0.2",
