@@ -1,22 +1,22 @@
-import React from "react";
-import FullCalendar, { CalendarApi, formatDate } from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { INITIAL_EVENTS, createEventId } from 'event-utils';
-import { Calendar } from '@fullcalendar/core';
+import React from 'react'
+import FullCalendar, { formatDate } from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import { INITIAL_EVENTS, createEventId } from '../../../node_modules/event-utils'
+import ptLocale from '@fullcalendar/core/locales/pt';
 
-export const Indisponibilidades = () => {
+export class Indisponibilidades extends React.Component {
 
-  let state = {
+  state = {
     weekendsVisible: true,
     currentEvents: []
   }
+
+  render() {
     return (
-      
-    (
       <div className='demo-app'>
-        {renderSidebar()}
+        {this.renderSidebar()}
         <div className='demo-app-main'>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -25,17 +25,18 @@ export const Indisponibilidades = () => {
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
+            locale='pt'
             initialView='timeGridWeek'
             editable={true}
             selectable={true}
             selectMirror={true}
             dayMaxEvents={true}
-            weekends={state.weekendsVisible}
+            weekends={this.state.weekendsVisible}
             initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
-            select={handleDateSelect()}
+            select={this.handleDateSelect}
             eventContent={renderEventContent} // custom render function
-            eventClick={handleEventClick()}
-            eventsSet={handleEvents()} // called after events are initialized/added/changed/removed
+            eventClick={this.handleEventClick}
+            eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
             /* you can update a remote database when these fire:
             eventAdd={function(){}}
             eventChange={function(){}}
@@ -44,42 +45,37 @@ export const Indisponibilidades = () => {
           />
         </div>
       </div>
-    ))
-      function renderSidebar(){
+    )
+  }
+
+  renderSidebar() {
     return (
       <div className='demo-app-sidebar'>
         <div className='demo-app-sidebar-section'>
-          <h2>Instruções</h2>
+          <h2>Marcação de Indisponibilidades</h2>
           <ul>
-            <li>Seleciona os horários conforme se encontra indisponível: Select dates and you will be prompted to create a new event</li>
-            <li> Arraste e ajuste o tamanho das indisponibilidade</li>
-            <li> Clique numa indisponibilidade para apagar a mesma </li>
-            <button> Guardar indisponibilidades </button>
+            <li>Selecione quando se encontra indisponivel</li>
+            <li>Arraste, e redimensione indisponibilidades e clique num horário para a apagar</li>
           </ul>
         </div>
         <div className='demo-app-sidebar-section'>
-          
-        </div>
-        <div className='demo-app-sidebar-section'>
-          <h2>All Events ({state.currentEvents.length})</h2>
+          <h2>Indisponibilidades marcadas: ({this.state.currentEvents.length})</h2>
           <ul>
-            {state.currentEvents.map(renderSidebarEvent)}
+            {this.state.currentEvents.map(renderSidebarEvent)}
           </ul>
         </div>
       </div>
     )
   }
-  
 
   handleDateSelect = (selectInfo) => {
-    let title = "Indisponivel" 
+    let title = "Indisponível"
     let calendarApi = selectInfo.view.calendar
 
     calendarApi.unselect() // clear date selection
 
     if (title) {
       calendarApi.addEvent({
-        id: createEventId(),
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
@@ -89,9 +85,7 @@ export const Indisponibilidades = () => {
   }
 
   handleEventClick = (clickInfo) => {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove()
-    }
   }
 
   handleEvents = (events) => {
