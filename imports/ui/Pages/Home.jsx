@@ -5,7 +5,7 @@ export function Home(){
 
     let navigate = useNavigate();
     
-    return <div><h1>Bem-vindo</h1><div>
+    return <div style={{borderColor: "blueviolet"}}><h1>Bem-vindo</h1><div>
     <button onClick={()=> navigate("/ConsultaNomeacoes")}>Consulta de Nomeações</button><p></p>
     <button onClick={()=> navigate("/ContaNova")}>Criar Conta Nova</button><p></p>
     <button onClick={()=> navigate("/Autenticar")}>Autenticar</button>
