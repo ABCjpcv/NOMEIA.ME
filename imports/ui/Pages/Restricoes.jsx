@@ -15,7 +15,7 @@ export const Restricoes = () =>{
                     </label>
                     <br></br>
                     <br></br>
-                    <div style={{width: '320px', height:'80px', overflow:'auto'}}>
+                    <div style={{width: '600px', height:'320px', overflow:'auto', marginLeft:'auto', marginRight:'auto'}}>
          <table style={{cellspacing: '0', cellpadding: '1', border: '1', width: '300'}} >
                         <thead>
                         <tr>
@@ -435,6 +435,7 @@ export const Restricoes = () =>{
                         </tbody>
                     </table>
                     </div>
+                    <br></br>
                     <input type="submit" value="Submit" />
                     
                 </form>
