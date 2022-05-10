@@ -12,13 +12,14 @@ function insertLink({ title, url }) {
 
 const users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 const jogos = new Mongo.Collection("jogos");
+const clubes = new Mongo.Collection("clubes");
 
 //Schema Jogos importados de um dado csv.
 jogos.schema = new SimpleSchema({
-  id:{type: Number, optional: false},
+  id:{type: Number, optional: false}, //Retirar Unique no futuro
   dia: {type:Date, optional:false},
-  //hora:{type: },
-  //prova: {type: enum?},
+  hora:{type: String, optional:false },
+  prova: {type: String,optional:false},
   Serie: {type: String, optional:false},
   equipa_casa: {type: String,optional:false},
   equipa_fora: {type: String, optional:false},
@@ -30,6 +31,18 @@ jogos.schema = new SimpleSchema({
   juiz_linha_3 : {type:String,optional:true},
   juiz_linha_4 : {type:String,optional:true}
 
+});
+
+
+//Schema Clubes:
+clubes.schema = new SimpleSchema({
+  clube:{type:String, optional:false},
+  localizacao:{type:String,optional:false},
+  email:{type:String,optional:false},
+  email_2:{type:String,optional:true},
+  telemovel:{type:String,optional:true},
+  telemovel_2:{type:String,optional:true},
+  telefone:{type:String,optional:true}
 });
 
 Meteor.startup(() => {
@@ -54,6 +67,15 @@ Meteor.startup(() => {
       title: 'Discussions',
       url: 'https://forums.meteor.com'
     });
+  }
+
+
+  //Read the clubs:
+  var clubsCsv = Assets.getText("Clubes_AVL.csv");
+  var rows = Papa.parse(clubsCsv).data;
+  for(i in rows){
+    clubes.insert(rows[i]);
+    console.log("inserted" + rows[i]);
   }
 });
 
@@ -87,9 +109,12 @@ Meteor.methods({
   "readCsv" : function readCsv(filename){
     //Get the csvText:
     var csvFile = Assets.getText(filename);
-
     var rows = Papa.parse(csvFile).data;
 
-    console.log(rows[1]);
+    //Setup the database, by adding games.
+    for(i in rows){
+      jogos.insert(rows[i]);
+      console.log("inserted" + rows[i]);
+    }
   }
 });
