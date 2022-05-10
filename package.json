@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
+    "@fullcalendar/core": "^5.11.0",
     "@fullcalendar/daygrid": "^5.11.0",
     "@fullcalendar/interaction": "^5.11.0",
     "@fullcalendar/react": "^5.11.1",

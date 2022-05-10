@@ -1,4 +1,3 @@
-import { mergeEventStores } from "@fullcalendar/react";
 import {Meteor} from "meteor/meteor";
 import React from "react";
 import { useNavigate } from "react-router-dom";

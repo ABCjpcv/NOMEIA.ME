@@ -1,7 +1,11 @@
 import React from "react";
 import { slide as Menu } from "react-burger-menu";
+import { useNavigate } from "react-router-dom";
 
 export default props => {
+
+    let navigate = useNavigate();
+
   return (
     // Pass on our props
     <Menu {...props}>
@@ -21,8 +25,8 @@ export default props => {
       </a>
 
       <a className="menu-item" >
-          <p></p>
-        Sair
+          <p onClick={navigate("/")}>Sair</p>
+        
       </a>
     </Menu>
   );
