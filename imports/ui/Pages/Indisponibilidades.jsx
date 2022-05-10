@@ -20,12 +20,13 @@ export class Indisponibilidades extends React.Component {
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: 'anterior,seguinte hoje',
+              left: 'prev,next today',
               center: 'title',
               right: 'dayGridMonth,timeGridWeek,timeGridDay'
             }}
             locale='pt'
-            allDaySlot="false"
+            allDaySlot = {false}
+            height={"auto"}
             slotMinTime={"09:00:00"}
             slotMaxTime={"23:00:00"}
             initialView='timeGridWeek'
