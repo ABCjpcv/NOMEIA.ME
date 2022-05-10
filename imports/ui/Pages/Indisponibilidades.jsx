@@ -1,10 +1,10 @@
 import React from "react";
-import FullCalendar, { formatDate } from '@fullcalendar/react';
+import FullCalendar, { CalendarApi, formatDate } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { INITIAL_EVENTS, createEventId } from 'event-utils';
-import { Fragment } from "react/cjs/react.production.min";
+import { Calendar } from '@fullcalendar/core';
 
 export const Indisponibilidades = () => {
 
@@ -13,6 +13,8 @@ export const Indisponibilidades = () => {
     currentEvents: []
   }
     return (
+      
+    (
       <div className='demo-app'>
         {renderSidebar()}
         <div className='demo-app-main'>
@@ -42,7 +44,7 @@ export const Indisponibilidades = () => {
           />
         </div>
       </div>
-    )
+    ))
       function renderSidebar(){
     return (
       <div className='demo-app-sidebar'>
@@ -69,12 +71,13 @@ export const Indisponibilidades = () => {
   }
   
 
-  function handleDateSelect(selectInfo) {
-    let title = "Indisponível" 
+  handleDateSelect = (selectInfo) => {
+    let title = "Indisponivel" 
     let calendarApi = selectInfo.view.calendar
 
     calendarApi.unselect() // clear date selection
 
+    if (title) {
       calendarApi.addEvent({
         id: createEventId(),
         title,
@@ -82,17 +85,22 @@ export const Indisponibilidades = () => {
         end: selectInfo.endStr,
         allDay: selectInfo.allDay
       })
+    }
   }
 
   handleEventClick = (clickInfo) => {
-    
+    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove()
-    
+    }
   }
 
   handleEvents = (events) => {
-    state.currentEvents = events;
+    this.setState({
+      currentEvents: events
+    })
   }
+
+}
 
 function renderEventContent(eventInfo) {
   return (
@@ -110,6 +118,4 @@ function renderSidebarEvent(event) {
       <i>{event.title}</i>
     </li>
   )
-}
-
 }
