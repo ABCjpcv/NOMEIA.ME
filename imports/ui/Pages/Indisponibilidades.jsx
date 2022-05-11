@@ -21,8 +21,8 @@ export class Indisponibilidades extends React.Component {
         style={{ height: "10%", width: "915px", float: "right" }}
       >
         {this.renderSidebar()}
-        <div>
-          <div className="demo-app-main" style={{ overflow: "auto" }}>
+        <div >
+          <div className="demo-app-main" style={{ overflow: "auto"}}>
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               headerToolbar={{
@@ -32,7 +32,8 @@ export class Indisponibilidades extends React.Component {
               }}
               locale="pt"
               allDaySlot={false}
-              height={"auto"}
+              height={"350px"}
+              dayMinWidth={"8px"}
               slotMinTime={"09:00:00"}
               slotMaxTime={"23:00:00"}
               initialView="timeGridWeek"
@@ -53,6 +54,8 @@ export class Indisponibilidades extends React.Component {
             */
             />
           </div>
+          <br></br>
+          <input type="submit" value="Submeter" />
         </div>
       </div>
     );
