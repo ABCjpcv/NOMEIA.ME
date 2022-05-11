@@ -11,7 +11,7 @@ export function Autenticar() {
       <div>
         Email: <input type={"text"} id="eemail"></input>
         <p></p>
-        Password: <input type={"text"} id="ppass"></input>
+        Password: <input type={"password"} id="ppass"></input>
         <p></p>
         <button
           onClick={() =>
@@ -23,8 +23,11 @@ export function Autenticar() {
                 if (err) {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
                 }
+                else if(result){
                 Meteor.call("readCsv", "Livro1.csv");
                 navigate("/Profile");
+                Meteor.loggingIn();
+                }
               }
             )
           }
@@ -33,6 +36,7 @@ export function Autenticar() {
         </button>
         <p></p>
         Ainda não tem conta?
+        <br></br>
         <button onClick={() => navigate("/ContaNova")}>
           Criar Conta Nova
         </button>

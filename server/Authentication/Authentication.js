@@ -12,7 +12,6 @@ Meteor.methods(
     if(user == undefined){
         throw new Meteor.Error("Invalid credentials / user does not exist.");
     }
-    
     //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
     var result = Accounts._checkPassword(user,{digest:password,algorithm:"sha-256"});
     console.log("AUTH: " + result);
