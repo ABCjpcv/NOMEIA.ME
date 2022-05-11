@@ -3,27 +3,35 @@ import ReactDOM from "react-dom";
 
 import "./styles.css";
 import SideBar from "./sidebar";
+import { Fragment } from "react/cjs/react.production.min";
+import { Indisponibilidades } from "./Indisponibilidades";
+import { Restricoes } from "./Restricoes";
+import { ConsultaPrivada } from "./ConsultaPrivada";
 
 export const Profile = () => {
     return (
-    <div>
-        <div id="App">
-      <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
-        <h4> Bem vindo ao teu perfil. Clica na barra lateral para visualizar mais opções! </h4>
-      <div id="page-wrap">
-        <h1> As minhas nomeações 📅🏐 </h1>
-        <div>
-            <p></p>
-            <p></p>
-            <p></p>
-            AQUI VAI ESTAR A TABELA COM LISTA DE NOMEAÇÕES SEMANAIS
+        <Fragment>
+    <div id="profile">
+    <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
 
-
-
+        <div id="indisponibilidades" hidden>
+            <Indisponibilidades></Indisponibilidades>
         </div>
-      </div>
+
+        <div id="restricoes" hidden>
+            <Restricoes></Restricoes>
+        </div>
+
+        <div id="consultaPrivada">
+            <ConsultaPrivada></ConsultaPrivada>
+            
+                
+                <div id="page-wrap">
+                    
+                </div>
+        </div>
+      
     </div>
-  
-    </div>
+    </Fragment>
     )
 }

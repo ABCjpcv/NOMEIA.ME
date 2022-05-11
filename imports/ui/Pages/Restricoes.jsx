@@ -1,22 +1,29 @@
 import React from "react";
 
-export const Restricoes = () =>{
-    return <div>
-                <form>
-                    <label> Emito Recibos Verdes:
-                    <input type="checkbox" id="check_recibos_sim" value={"SIM"}/> Sim
-                    <input type="checkbox" id="check_recibos_nao" value={"NAO"}/> Não
-                    </label>
+export class Restricoes extends React.Component{
+    render(){
+    return (
+            <div className='demo-app' style={{height: "10%", width: '915px', float: 'right'}}>
+                {this.renderSidebar()}
+                <div>
+                    <div className='demo-app-main' style={{overflow: "auto"}}>
+                    <form>
+                    <div style={{paddingLeft: "40px", display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+                        <label style={{float: "left"}}> Emito Recibos Verdes:
+                            <input type="checkbox" id="check_recibos_sim" value={"SIM"}/> Sim
+                            <input type="checkbox" id="check_recibos_nao" value={"NAO"}/> Não
+                        </label>
+                        <br></br>
+                        <label> Tenho transporte próprio:
+                            <input type="checkbox" id="check_transporte_sim" value={"SIM"}/> Sim
+                            <input type="checkbox" id="check_transporte_nao" value={"NAO"}/> Não
+                        </label>
                     <br></br>
-                    <br></br>
-                    <label> Tenho transporte próprio:
-                    <input type="checkbox" id="check_transporte_sim" value={"SIM"}/> Sim
-                    <input type="checkbox" id="check_transporte_nao" value={"NAO"}/> Não
-                    </label>
-                    <br></br>
-                    <br></br>
-                    <div style={{width: '600px', height:'320px', overflow:'auto', marginLeft:'auto', marginRight:'auto'}}>
-         <table style={{cellspacing: '0', cellpadding: '1', border: '1', width: '300'}} >
+                        <label> Relações com clubes: </label>
+                    </div>
+                    <div style={{paddingLeft: "40px", display: "flex", flexDirection: "column", alignItems: "flex-start", width: '600px', height:'290px', overflow:'auto'}}>
+                    
+                    <table style={{cellspacing: '0', cellpadding: '1', border: '1', width: '800', alignItems: "flex-start"}} >
                         <thead>
                         <tr>
                             <th>Clube</th>
@@ -436,8 +443,27 @@ export const Restricoes = () =>{
                     </table>
                     </div>
                     <br></br>
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="Submeter" />
                     
                 </form>
-        </div>
+                    </div>
+                </div>
+            </div>
+)
+    
+}
+
+renderSidebar() {
+return (
+  <div className='demo-app-sidebar'>
+    <div className='demo-app-sidebar-section'>
+      <h2>Marcação de Restrições:</h2>
+      <ul style={{textAlign: "left"}}>
+        <li>Assinale as suas restrições com base na emissão de recibos e transporte</li>
+        <li>Indique também se possui alguma relação com um determinado clube e o tipo da mesma</li>
+      </ul>
+    </div>
+  </div>
+)
+}
 }
