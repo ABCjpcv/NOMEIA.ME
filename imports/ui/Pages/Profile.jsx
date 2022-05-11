@@ -9,29 +9,25 @@ import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
 
 export const Profile = () => {
-    return (
-        <Fragment>
-    <div id="profile">
-    <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
+  return (
+    <Fragment>
+      <div id="profile">
+        <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
 
         <div id="indisponibilidades" hidden>
-            <Indisponibilidades></Indisponibilidades>
+          <Indisponibilidades></Indisponibilidades>
         </div>
 
         <div id="restricoes" hidden>
-            <Restricoes></Restricoes>
+          <Restricoes></Restricoes>
         </div>
 
         <div id="consultaPrivada">
-            <ConsultaPrivada></ConsultaPrivada>
-            
-                
-                <div id="page-wrap">
-                    
-                </div>
+          <ConsultaPrivada></ConsultaPrivada>
+
+          <div id="page-wrap"></div>
         </div>
-      
-    </div>
+      </div>
     </Fragment>
-    )
-}
+  );
+};
