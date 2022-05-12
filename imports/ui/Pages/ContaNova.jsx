@@ -40,7 +40,10 @@ export function ContaNova() {
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
               (err, result) => {
-                navigate("/Profile");
+                if(!err)
+                  navigate("/Profile");
+                else
+                console.log(err);
               }
             )
           }

@@ -72,6 +72,10 @@ Meteor.startup(() => {
 
 Meteor.methods({
   "authenticateUser": function authenticateUser(user_email,password){
+    if(user_email.length == 0)
+      throw new Meteor.Error("Must insert an email.");
+    if(password.length == 0)
+      throw new Meteor.Error("Must insert a password.");
 
     var user = Accounts.findUserByEmail(user_email);
     if(user == undefined){
@@ -82,11 +86,14 @@ Meteor.methods({
     
     //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
     var result = Accounts._checkPassword(user,{digest:password,algorithm:"sha-256"});
+    console.log(result.error == null);
     return result;
 }
 
 ,
   "registerUser": function registerUser(user_name,user_email,user_password,password_repeat){
+    if(user_name.length == 0 || user_email.length == 0 || user_password.length == 0, password_repeat.length == 0)
+      return new Meteor.Error("Must insert all fields.");
       if(user_password != password_repeat)
          throw new Meteor.Error("Passwords do not match."); 
       console.log("Passwords match. User registered.");

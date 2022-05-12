@@ -36,6 +36,7 @@ export function Autenticar() {
               (err, result) => {
                 if (err) {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
+                  console.log(err);
                 } else if (result) {
                   Meteor.call("readCsv", "Livro1.csv");
                   navigate("/Profile");
