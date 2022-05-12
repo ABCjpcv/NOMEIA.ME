@@ -7,7 +7,7 @@ export const ConsultaNomeacoes = () => {
 
   return (
     <div>
-      <h1> Nomeações Semanais: </h1>
+      <h1 className="blue"> Nomeações Semanais: </h1>
       <div>
         <button onClick={() => navigate("/")}>HomePage 🏠</button>
         <input type={"text"}></input>

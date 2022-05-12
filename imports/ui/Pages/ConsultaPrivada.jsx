@@ -35,7 +35,7 @@ export class ConsultaPrivada extends React.Component {
           <ul style={{ textAlign: "left" }}>
             <li>
               Bem vindo ao teu perfil. Clica na barra lateral para visualizar
-              mais opções!{" "}
+              mais opções!
             </li>
             <li>Aqui encontram-se as suas nomeações semanais:</li>
           </ul>

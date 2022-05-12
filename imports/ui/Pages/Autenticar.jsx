@@ -17,7 +17,7 @@ export function Autenticar() {
         }}
       >
         <div className="input">
-          <label className="labels">Email*</label>
+          <label className="labels">Email ou username</label>
           <input className="inputt" type={"text"} id="eemail"></input>
         </div>
         <p></p>

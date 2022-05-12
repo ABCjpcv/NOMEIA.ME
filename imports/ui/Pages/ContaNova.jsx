@@ -18,7 +18,7 @@ export function ContaNova() {
         <br></br>
         <div className="input">
           <label className="labels">Email</label>
-          <input className="inputt" type={"text"} id="email"></input>
+          <input className="inputt" type={"email"} id="email"></input>
         </div>
         <br></br>
         <div className="input">
