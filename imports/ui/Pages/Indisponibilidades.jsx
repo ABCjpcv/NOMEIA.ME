@@ -55,7 +55,7 @@ export class Indisponibilidades extends React.Component {
             />
           </div>
           <br></br>
-          <input type="submit" value="Submeter" />
+          <input className="botao" type="submit" value="Submeter" />
         </div>
       </div>
     );

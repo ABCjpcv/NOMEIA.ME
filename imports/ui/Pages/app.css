@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap');
+
+.div_header {
+  background-color: #efc244;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  color: #363131;
+  white-space: nowrap;
+  font-size: 2em;
+  font-family: 'Roboto Flex', sans-serif;
+  letter-spacing: 0.1em;
+  color: #303380;
+  text-shadow: 1px 1px 0 rgb(45, 45, 45), 5px 13px 15px #303380;
+}
+
+.blue {
+    color: #303380;
+}
+
+.botao{
+    height: 40px;
+    display: flex;
+    width: 200px;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: solid 1px black;
+    cursor: pointer;
+    border-radius: 10px;
+    margin: auto;
+}
+
+.botao:hover {
+    background-color: #efc244;
+    transition: all 200ms ease-in;
+}
+
+.inputt{
+    height: 30px;
+    border: none !important;
+    border-radius: 5px;
+}
+
+.input{
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+}
+
+.labels{
+    display: flex;
+    justify-content: flex-start;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.criador{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.right p {
+    margin-left: 100px;
+    text-align: justify;
+}

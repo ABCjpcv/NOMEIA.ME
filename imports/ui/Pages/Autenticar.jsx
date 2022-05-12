@@ -7,13 +7,27 @@ export function Autenticar() {
 
   return (
     <div>
-      <h1>Autenticar: </h1>
-      <div>
-        Email: <input type={"text"} id="eemail"></input>
+      <h1 className="blue">Autenticar: </h1>
+      <div
+        style={{
+          margin: "auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <div className="input">
+          <label className="labels">Email*</label>
+          <input className="inputt" type={"text"} id="eemail"></input>
+        </div>
         <p></p>
-        Password: <input type={"password"} id="ppass"></input>
+        <div className="input">
+          <label className="labels">Password*</label>
+          <input className="inputt" type={"password"} id="ppass"></input>
+        </div>
         <p></p>
         <button
+          className="botao"
           onClick={() =>
             Meteor.call(
               "authenticateUser",
@@ -22,11 +36,10 @@ export function Autenticar() {
               (err, result) => {
                 if (err) {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
-                }
-                else if(result){
-                Meteor.call("readCsv", "Livro1.csv");
-                navigate("/Profile");
-                Meteor.loggingIn();
+                } else if (result) {
+                  Meteor.call("readCsv", "Livro1.csv");
+                  navigate("/Profile");
+                  Meteor.loggingIn();
                 }
               }
             )
@@ -35,11 +48,12 @@ export function Autenticar() {
           Autenticar
         </button>
         <p></p>
-        Ainda não tem conta?
-        <br></br>
-        <button onClick={() => navigate("/ContaNova")}>
-          Criar Conta Nova
-        </button>
+        <div className="input">
+          <label>Ainda não tem conta?</label>
+          <button className="botao" onClick={() => navigate("/ContaNova")}>
+            Criar Conta Nova
+          </button>
+        </div>
       </div>
     </div>
   );

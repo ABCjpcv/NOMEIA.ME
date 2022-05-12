@@ -5,16 +5,16 @@ export function Home() {
   let navigate = useNavigate();
 
   return (
-    <div style={{ borderColor: "blueviolet" }}>
-      <h1>Bem-vindo</h1>
+    <div >
+      <h1 className="blue">Bem-vindo</h1>
       <div>
-        <button onClick={() => navigate("/ConsultaNomeacoes")}>
-          Consulta de Nomeações
-        </button>
+        <div className="botao" onClick={() => navigate("/ConsultaNomeacoes")}>
+          <p>Consulta de Nomeações</p>
+        </div>
         <p></p>
-        <button onClick={() => navigate("/ContaNova")}>Criar Conta Nova</button>
+        <div className="botao" onClick={() => navigate("/ContaNova")}>Criar Conta Nova</div>
         <p></p>
-        <button onClick={() => navigate("/Autenticar")}>Autenticar</button>
+        <div className="botao" onClick={() => navigate("/Autenticar")}>Autenticar</div>
       </div>
     </div>
   );

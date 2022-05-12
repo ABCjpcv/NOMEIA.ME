@@ -8,18 +8,30 @@ export function ContaNova() {
 
   return (
     <div>
-      {" "}
-      <h1>Criar Conta Nova </h1>
-      <div>
-        Nome: <input type={"text"} id="nome"></input>
-        <p></p>
-        Email: <input type={"text"} id="email"></input>
-        <p></p>
-        Password: <input type={"text"} id="pass"></input>
-        <p></p>
-        Repetir Password: <input type={"text"} id="pass2"></input>
-        <p></p>
-        <button
+      <h1 className="blue">Criar Conta Nova </h1>
+
+      <div style={{margin: "auto", display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <div className="input">
+          <label className="labels">Nome</label>
+          <input className="inputt" type={"text"} id="nome"></input>
+        </div>
+        <br></br>
+        <div className="input">
+          <label className="labels">Email</label>
+          <input className="inputt" type={"text"} id="email"></input>
+        </div>
+        <br></br>
+        <div className="input">
+          <label className="labels">Password</label>
+          <input className="inputt" type={"password"} id="pass"></input>
+        </div>
+        <br></br>
+        <div className="input">
+          <label className="labels">Repetir Password</label>
+          <input className="inputt" type={"password"} id="pass2"></input>
+        </div>
+        <br></br>
+        <button className="botao"
           onClick={() =>
             Meteor.call(
               "registerUser",
@@ -33,12 +45,10 @@ export function ContaNova() {
             )
           }
         >
-          {" "}
-          Registar{" "}
+          Registar
         </button>
-        <p></p>
-        Já tem conta?{" "}
-        <button onClick={() => navigate("/Autenticar")}>Autenticar</button>
+        Já tem conta?
+        <button className="botao" onClick={() => navigate("/Autenticar")}>Autenticar</button>
       </div>
     </div>
   );
