@@ -1,14 +1,9 @@
 import { Meteor } from 'meteor/meteor';
-import { LinksCollection } from '/imports/api/links';
 import { interactionSettingsStore, mergeEventStores } from "@fullcalendar/react";
 import {Accounts} from "meteor/accounts-base";
 import { parsePath } from 'react-router-dom';
 import {Papa} from "meteor/harrison:papa-parse";
 import SimpleSchema from "simpl-schema";
-
-function insertLink({ title, url }) {
-  LinksCollection.insert({title, url, createdAt: new Date()});
-}
 
 const users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 const jogos = new Mongo.Collection("jogos");
@@ -62,27 +57,7 @@ clubes.schema = new SimpleSchema({
 
 Meteor.startup(() => {
   // If the Links collection is empty, add some data.
-  if (LinksCollection.find().count() === 0) {
-    insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://www.meteor.com/tutorials/react/creating-an-app'
-    });
-
-    insertLink({
-      title: 'Follow the Guide',
-      url: 'http://guide.meteor.com'
-    });
-
-    insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com'
-    });
-
-    insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com'
-    });
-  }
+  
 
 
   //Read the clubs:
