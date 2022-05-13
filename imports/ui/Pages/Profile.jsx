@@ -17,6 +17,8 @@ export const Profile = () => {
     let user = Meteor.users.findOne({ id: Meteor.userId()});
     console.log(user);
     let username = user.username;
+
+    
             
         return (
             <Fragment>
