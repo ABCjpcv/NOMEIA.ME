@@ -15,6 +15,8 @@ export function Home() {
         <div className="botao" onClick={() => navigate("/ContaNova")}>Criar Conta Nova</div>
         <p></p>
         <div className="botao" onClick={() => navigate("/Autenticar")}>Autenticar</div>
+        <p></p>
+        <div className="botao" onClick={() => navigate("/Sobre")}>Sobre</div>
       </div>
     </div>
   );
