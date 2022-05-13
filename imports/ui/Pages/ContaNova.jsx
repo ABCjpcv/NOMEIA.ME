@@ -10,7 +10,14 @@ export function ContaNova() {
     <div>
       <h1 className="blue">Criar Conta Nova </h1>
 
-      <div style={{margin: "auto", display: "flex", flexDirection: "column", alignItems: "center"}}>
+      <div
+        style={{
+          margin: "auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <div className="input">
           <label className="labels">Nome</label>
           <input className="inputt" type={"text"} id="nome"></input>
@@ -31,7 +38,8 @@ export function ContaNova() {
           <input className="inputt" type={"password"} id="pass2"></input>
         </div>
         <br></br>
-        <button className="botao"
+        <button
+          className="botao"
           onClick={() =>
             Meteor.call(
               "registerUser",
@@ -40,10 +48,8 @@ export function ContaNova() {
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
               (err, result) => {
-                if(!err)
-                  navigate("/Profile");
-                else
-                console.log(err);
+                if (!err) navigate("/Profile");
+                else console.log(err);
               }
             )
           }
@@ -51,7 +57,9 @@ export function ContaNova() {
           Registar
         </button>
         Já tem conta?
-        <button className="botao" onClick={() => navigate("/Autenticar")}>Autenticar</button>
+        <button className="botao" onClick={() => navigate("/Autenticar")}>
+          Autenticar
+        </button>
       </div>
     </div>
   );
