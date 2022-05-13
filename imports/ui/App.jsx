@@ -11,6 +11,8 @@ import { Autenticar } from "./Pages/Autenticar.jsx";
 import { Profile } from "./Pages/Profile.jsx";
 
 import "./Pages/app.css";
+import { ProfileCA } from "./Pages/ProfileCA.jsx";
+import { EscolhaArbitros } from "./Pages/EscolhaArbitros.jsx";
 
 export const App = () => (
   <div>
@@ -35,6 +37,8 @@ export const App = () => (
           <Route path="/ContaNova" element={<ContaNova />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
+          <Route path="/ProfileCA" element={<ProfileCA />}></Route>
+          <Route path="/EscolhaArbitros" element={<EscolhaArbitros />}></Route>
         </Routes>
       </Router>
     </div>
