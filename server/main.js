@@ -92,8 +92,12 @@ Meteor.methods({
 
 ,
   "registerUser": function registerUser(user_name,user_email,user_password,password_repeat){
-    if(user_name.length == 0 || user_email.length == 0 || user_password.length == 0, password_repeat.length == 0)
-      return new Meteor.Error("Must insert all fields.");
+    console.log("Here Register.");
+    console.log(user_name.length);
+    if(user_name.length == 0 || user_email.length == 0 || user_password.length == 0, password_repeat.length == 0){
+      console.log("Must insert fields");
+      throw new Meteor.Error("Fields Missing");
+    }
       if(user_password != password_repeat)
          throw new Meteor.Error("Passwords do not match."); 
       console.log("Passwords match. User registered.");
