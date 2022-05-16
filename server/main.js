@@ -135,5 +135,10 @@ Meteor.methods({
     console.log(result);
     return result;
   }
+  ,
+
+  "registerIndisponibilidades": function registerIndisponibilidades(events){
+    
+  }
 
 });

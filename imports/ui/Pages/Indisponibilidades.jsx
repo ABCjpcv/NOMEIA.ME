@@ -55,7 +55,11 @@ export class Indisponibilidades extends React.Component {
             />
           </div>
           <br></br>
-          <input className="botao" type="submit" value="Submeter" />
+          <input className="botao" type="submit" value="Submeter" onClick={
+            console.log(this.state.currentEvents)
+          }
+
+          />
         </div>
       </div>
     );
@@ -74,7 +78,7 @@ export class Indisponibilidades extends React.Component {
             </li>
           </ul>
         </div>
-        <div className="demo-app-sidebar-section" hidden>
+        <div className="demo-app-sidebar-section">
           <h2>
             Indisponibilidades marcadas: ({this.state.currentEvents.length})
           </h2>
