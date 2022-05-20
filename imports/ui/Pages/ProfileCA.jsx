@@ -5,6 +5,7 @@ import { Meteor } from "meteor/meteor";
 import "./styles.css";
 import { Fragment } from "react/cjs/react.production.min";
 import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
+import { FileInput } from "./FileInput";
 
 export const ProfileCA = () => {
   let user = Meteor.users.findOne({ id: Meteor.userId() });
@@ -24,7 +25,7 @@ export const ProfileCA = () => {
         >
           <p id="div_username"></p>
         </div>
-
+        <h1 className="blue"> Inserir tabela de jogos (.csv)</h1>
         <div id="fileinput">
           <FileInput></FileInput>
         </div>
