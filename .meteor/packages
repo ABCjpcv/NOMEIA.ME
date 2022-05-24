@@ -24,3 +24,4 @@ react-meteor-data       # React higher-order component for reactively tracking M
 accounts-base@2.2.3
 accounts-password@2.3.1
 harrison:papa-parse
+jquery

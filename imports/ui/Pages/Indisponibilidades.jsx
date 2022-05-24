@@ -34,6 +34,7 @@ export class Indisponibilidades extends React.Component {
               allDaySlot={false}
               height={"350px"}
               dayMinWidth={"8px"}
+              slotDuration={"00:60:00"}
               slotMinTime={"09:00:00"}
               slotMaxTime={"23:00:00"}
               initialView="timeGridWeek"
@@ -70,15 +71,8 @@ export class Indisponibilidades extends React.Component {
       <div className="demo-app-sidebar">
         <div className="demo-app-sidebar-section">
           <h2>Marcação de Indisponibilidades</h2>
-          <ul style={{ textAlign: "left" }}>
-            <li>Selecione quando se encontra indisponivel</li>
-            <li>
-              Arraste, e redimensione indisponibilidades e clique num horário
-              para a apagar
-            </li>
-          </ul>
         </div>
-        <div className="demo-app-sidebar-section">
+        <div className="demo-app-sidebar-section" hidden>
           <h2>
             Indisponibilidades marcadas: ({this.state.currentEvents.length})
           </h2>

@@ -545,16 +545,6 @@ export class Restricoes extends React.Component {
       <div className="demo-app-sidebar">
         <div className="demo-app-sidebar-section">
           <h2>Marcação de Restrições:</h2>
-          <ul style={{ textAlign: "left" }}>
-            <li>
-              Assinale as suas restrições com base na emissão de recibos e
-              transporte
-            </li>
-            <li>
-              Indique também se possui alguma relação com um determinado clube e
-              o tipo da mesma
-            </li>
-          </ul>
         </div>
       </div>
     );
