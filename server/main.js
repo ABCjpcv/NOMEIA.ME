@@ -5,11 +5,11 @@ import { parsePath } from 'react-router-dom';
 import {Papa} from "meteor/harrison:papa-parse";
 import SimpleSchema from "simpl-schema";
 
-const users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
-const jogos = new Mongo.Collection("jogos");
-const clubes = new Mongo.Collection("clubes");
-const arbitros = new Mongo.Collection("arbitros");
-const nomeacoes = new Mongo.Collection("nomeacoes");
+let users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
+let jogos = new Mongo.Collection("jogos");
+let clubes = new Mongo.Collection("clubes");
+let arbitros = new Mongo.Collection("arbitros");
+let nomeacoes = new Mongo.Collection("nomeacoes");
 
 //Schema nomeacoes:
 nomeacoes.schema = new SimpleSchema({
@@ -77,7 +77,13 @@ Meteor.methods({
     if(password.length == 0)
       throw new Meteor.Error("Must insert a password.");
 
-    var user = Accounts.findUserByEmail(user_email);
+      console.log(user_email)
+
+    var user = Accounts.findUserByUsername(user_email);
+
+    console.log(user);
+
+
     if(user == undefined){
         throw new Meteor.Error("Invalid credentials / user does not exist.");
     }

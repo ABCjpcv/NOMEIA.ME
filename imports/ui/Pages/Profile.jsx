@@ -10,7 +10,7 @@ import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
 
 export const Profile = () => {
-  let user = Meteor.users.findOne({ id: Meteor.userId() });
+  let user = Meteor.users.findOne(Meteor.userId());
   console.log(user);
   let username = user.username;
 

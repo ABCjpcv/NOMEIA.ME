@@ -3,7 +3,8 @@ import { $, jQuery } from "meteor/jquery";
 
 export class ConsultaPrivada extends React.Component {
 
-  username = Meteor.user().username;
+  username = Meteor.users.findOne(Meteor.userId()).username;
+
 
   
   
@@ -59,7 +60,7 @@ export class ConsultaPrivada extends React.Component {
       success: function (data) {
         var nomeacoes_data = data.split(/\r?\n|\r/);
         console.log(nomeacoes_data);
-        console.log(username);
+        console.log("USER" + username);
         var table_data =
           '<table className="table table-bordered table-striped">';
         for (var count = 0; count < nomeacoes_data.length; count++) {
