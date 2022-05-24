@@ -48,7 +48,24 @@ export function ContaNova() {
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
               (err, result) => {
-                if (!err) navigate("/Profile");
+                if (!err){
+                  Meteor.call(
+                    "authenticateUser",
+                    document.getElementById("email").value,
+                    document.getElementById("pass").value,
+                    (err, result) => {
+                      if (err) {
+                        //Fazer aparecer mensagem de texto de credenciais erradas.
+                        console.log(err);
+                      } else if (result) {
+                        Meteor.call("readCsv", "Livro1.csv");
+                        console.log("PORQUE CARALHO");
+                        navigate("/Profile");
+                        Meteor.loggingIn();
+                      }
+                    }
+                  )
+                } 
                 else console.log(err);
               }
             )

@@ -2,7 +2,11 @@ import React from "react";
 import { $, jQuery } from "meteor/jquery";
 
 export class ConsultaPrivada extends React.Component {
-  username = Meteor.users.findOne({ id: Meteor.userId() }).username;
+
+  username = Meteor.user().username;
+
+  
+  
 
   render() {
     return (
@@ -45,6 +49,9 @@ export class ConsultaPrivada extends React.Component {
   }
 
   loadData() {
+
+    var username = this.username;
+
     $.ajax({
       url: "Livro1.csv",
       dataType: "text",
@@ -52,11 +59,12 @@ export class ConsultaPrivada extends React.Component {
       success: function (data) {
         var nomeacoes_data = data.split(/\r?\n|\r/);
         console.log(nomeacoes_data);
+        console.log(username);
         var table_data =
           '<table className="table table-bordered table-striped">';
         for (var count = 0; count < nomeacoes_data.length; count++) {
           var cell_data = nomeacoes_data[count].split(",");
-          if (count != 0 && cell_data.contains(username)) {
+          
             table_data += "<tr>";
             for (
               var cell_count = 0;
@@ -65,7 +73,7 @@ export class ConsultaPrivada extends React.Component {
             ) {
               if (count === 0) {
                 table_data += "<th>" + cell_data[cell_count] + "</th>";
-              } else {
+              } else if(cell_data.includes(username)) {
                 table_data += "<td>" + cell_data[cell_count] + "</td>";
               }
             }
@@ -75,6 +83,6 @@ export class ConsultaPrivada extends React.Component {
           $("#nomeacoes_table").html(table_data);
         }
       },
-    });
+    );
   }
 }

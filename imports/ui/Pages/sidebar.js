@@ -45,7 +45,7 @@ export default (props) => {
       </a>
 
       <a className="menu-item">
-        <p onClick={() => navigate("/")}>Sair</p>
+        <p onClick={() => (navigate("/"), Meteor.loggingOut())}>Sair</p>
       </a>
     </Menu>
   );

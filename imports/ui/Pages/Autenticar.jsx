@@ -39,8 +39,13 @@ export function Autenticar() {
                   console.log(err);
                 } else if (result) {
                   Meteor.call("readCsv", "Livro1.csv");
+                  console.log("PORQUE CARALHO222");
+
+                  Meteor.loginWithPassword(
+                    document.getElementById("eemail").value,
+                    document.getElementById("ppass").value
+                  );
                   navigate("/Profile");
-                  Meteor.loggingIn();
                 }
               }
             )
