@@ -21,7 +21,9 @@ nomeacoes.schema = new SimpleSchema({
 //Schema Arbitros:
 arbitros.schema = new SimpleSchema({
   nome:{type:String,optional:false},
-  licenca:{type:Number,optional:false}
+  licenca:{type:Number,optional:false},
+  nivel:{type:Number,optional:false},
+  indisponibilidades:{type:Array,optional:false}
 });
 
 //Schema Jogos importados de um dado csv.
@@ -143,8 +145,11 @@ Meteor.methods({
   }
   ,
 
-  "registerIndisponibilidades": function registerIndisponibilidades(events){
-    
+  "registerIndisponibilidades": function registerIndisponibilidades(nome, events){
+    var arbitro = arbitros.find(nome);
+    var novo = {arbitro,events};
+    arbitro.update(novo);
+    return result;
   }
 
 });

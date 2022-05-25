@@ -1,5 +1,5 @@
 import React from "react";
-import FullCalendar, { formatDate } from "@fullcalendar/react";
+import FullCalendar, { CalendarApi, formatDate } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -18,19 +18,19 @@ export class Indisponibilidades extends React.Component {
     return (
       <div
         className="demo-app"
-        style={{ height: "10%", width: "915px", float: "right" }}
+        style={{ height: "10%", width: "auto", height: "auto" }}
       >
         {this.renderSidebar()}
         <div>
           <div className="demo-app-main" style={{ overflow: "auto" }}>
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              locale="pt"
               headerToolbar={{
                 left: "prev,next today",
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
               }}
-              locale="pt"
               allDaySlot={false}
               height={"350px"}
               dayMinWidth={"8px"}
@@ -56,10 +56,25 @@ export class Indisponibilidades extends React.Component {
             />
           </div>
           <br></br>
-          <input className="botao" type="submit" value="Submeter" onClick={
-            console.log(this.state.currentEvents)
-          }
-
+          <input
+            className="botao"
+            type="submit"
+            value="Submeter"
+            onClick={() =>
+              Meteor.call(
+                "registerIndisponibilidades",
+                this.state.currentEvents,
+                (err, result) => {
+                  if (err) {
+                    //Fazer aparecer mensagem de texto de credenciais erradas.
+                    console.log(err);
+                  } else if (result) {
+                    // yey
+                  }
+                }
+              )
+              
+              }
           />
         </div>
       </div>
@@ -88,12 +103,21 @@ export class Indisponibilidades extends React.Component {
 
     calendarApi.unselect(); // clear date selection
 
+    let hoje = new Date();
+    let ano = (selectInfo.startStr + "").substring(0, 4);
+    let mes = (selectInfo.startStr + "").substring(5, 7);
+    let dia = (selectInfo.startStr + "").substring(8, 10);
+    let horaInicio = (selectInfo.startStr + "").substring(11, 13);
+    let diaIndisponivel = new Date(ano, mes - 1, dia, horaInicio, 0, 0, 0);
+
     if (title) {
-      calendarApi.addEvent({
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-      });
+      if (diaIndisponivel > hoje) {
+        calendarApi.addEvent({
+          title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+        });
+      }
     }
   };
 
