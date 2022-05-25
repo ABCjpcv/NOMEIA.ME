@@ -61,20 +61,11 @@ export class Indisponibilidades extends React.Component {
             className="botao"
             type="submit"
             value="Submeter"
-            onClick={() =>
-              Meteor.call(
-                "registerIndisponibilidades",
-                this.state.currentEvents,
-                (err, result) => {
-                  if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas.
-                    console.log(err);
-                  } else if (result) {
-                    // yey
-                  }
-                }
-              )
-              
+            onClick={(console.log("clicou"))
+              //() =>
+              //Meteor.call(                "registerIndisponibilidades",                this.state.currentEvents,                (err, result) => {if (err) {
+                    //Fazer aparecer mensagem de texto de credenciais erradas. console.log(err);} else if (result) {
+                    // yey}                }              )              
               }
           />
         </div>

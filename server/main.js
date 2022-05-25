@@ -23,7 +23,7 @@ arbitros.schema = new SimpleSchema({
   nome:{type:String,optional:false},
   licenca:{type:Number,optional:false},
   nivel:{type:Number,optional:false},
-  indisponibilidades:{type:Array,optional:false}
+  //indisponibilidades:{type:Array,optional:false}
 });
 
 //Schema Jogos importados de um dado csv.
