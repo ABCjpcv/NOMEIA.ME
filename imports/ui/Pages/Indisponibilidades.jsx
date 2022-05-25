@@ -21,6 +21,7 @@ export class Indisponibilidades extends React.Component {
         style={{ height: "10%", width: "auto", height: "auto" }}
       >
         {this.renderSidebar()}
+        {this.loadData()}
         <div>
           <div className="demo-app-main" style={{ overflow: "auto" }}>
             <FullCalendar
@@ -95,6 +96,11 @@ export class Indisponibilidades extends React.Component {
         </div>
       </div>
     );
+  }
+
+  loadData() {
+    // Verifica se o utilizador loggado tem indisponibilidades guardadas na bd
+    // Se sim, fazer ciclo para adicionar ao Calendário de novo programaticamante as indisponibilidades já submetidas
   }
 
   handleDateSelect = (selectInfo) => {
