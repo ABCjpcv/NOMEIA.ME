@@ -1,28 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import { $, jQuery } from "meteor/jquery";
 
-export class ConsultaTotal extends React.Component {
-  render() {
-    return (
-      <div
-        className="demo-app"
-        style={{ height: "10%", width: "auto", alignSelf: "center" }}
-      >
-        {this.loadData()}
-        <div>
-          <div className="demo-app-main" style={{ overflow: "auto" }}>
-            <p></p>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-            <link
-              rel="stylesheet"
-              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-            />
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+let nomeacoesData;
+let setQuery;
 
-            <div className="container">
-              <div className="table-responsive">
-                <br />
-                <div id="nomeacoes_table"></div>
+export class ConsultaTotal extends React.Component {
+
+    
+
+  render() {
+    {
+      this.loadData();
+    }
+
+    return (
+      <div>
+        <div>
+          <input
+            type={"text"}
+            defaultValue={"Pesquisar 🔎"}
+            onChange={((event) => {
+              console.log(event.target.value)
+            })}
+          ></input>
+        </div>
+        <div
+          className="demo-app"
+          style={{ height: "10%", width: "auto", alignSelf: "center" }}
+        >
+          <div>
+            <div className="demo-app-main" style={{ overflow: "auto" }}>
+              <p></p>
+              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+              <link
+                rel="stylesheet"
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+              />
+              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+              <div className="container">   
+                <div className="table-responsive">
+                  <br />
+                  <div id="nomeacoes_table"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -38,6 +58,7 @@ export class ConsultaTotal extends React.Component {
 
       success: function (data) {
         var nomeacoes_data = data.split(/\r?\n|\r/);
+        nomeacoesData = nomeacoes_data;
         var table_data =
           '<table className="table table-bordered table-striped">';
         for (var count = 0; count < nomeacoes_data.length; count++) {

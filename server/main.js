@@ -71,7 +71,6 @@ Meteor.startup(() => {
   }
 });
 
-
 Meteor.methods({
   "authenticateUser": function authenticateUser(user_email,password){
     if(user_email.length == 0)
@@ -96,9 +95,7 @@ Meteor.methods({
     var result = Accounts._checkPassword(user,{digest:password,algorithm:"sha-256"});
     console.log(result.error == null);
     return result;
-}
-
-,
+},
   "registerUser": function registerUser(user_name,user_email,user_password,password_repeat){
     console.log("Here Register.");
     console.log(user_name.length);

@@ -4,6 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 export function Autenticar() {
   let navigate = useNavigate();
+  const admins = ["Daniel Fernandes", "Sérgio Pereira", "Mafalda Bento"];
+
+  function isAdmin(user){
+    console.log(user.username);
+    return admins.includes(user.username);
+  }
 
   return (
     <div>
@@ -17,7 +23,7 @@ export function Autenticar() {
         }}
       >
         <div className="input">
-          <label className="labels">Email ou username</label>
+          <label className="labels">Primeiro e último nome</label>
           <input className="inputt" type={"text"} id="eemail"></input>
         </div>
         <p></p>
@@ -44,7 +50,13 @@ export function Autenticar() {
                     document.getElementById("eemail").value,
                     document.getElementById("ppass").value
                   );
-                  navigate("/Profile");
+
+                  if(isAdmin(Meteor.users.findOne(Meteor.userId()))){
+                    navigate("/ProfileCA");
+                  }else{
+                    navigate("/Profile");
+                  }
+                  
                 }
               }
             )

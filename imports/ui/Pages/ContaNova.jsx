@@ -19,7 +19,7 @@ export function ContaNova() {
         }}
       >
         <div className="input">
-          <label className="labels">Nome</label>
+          <label className="labels">Primeiro e último nome</label>
           <input className="inputt" type={"text"} id="nome"></input>
         </div>
         <br></br>
@@ -49,25 +49,14 @@ export function ContaNova() {
               document.getElementById("pass2").value,
               (err, result) => {
                 if (!err){
-                  Meteor.call(
-                    "authenticateUser",
-                    document.getElementById("email").value,
-                    document.getElementById("pass").value,
-                    (err, result) => {
-                      if (err) {
-                        //Fazer aparecer mensagem de texto de credenciais erradas.
-                        console.log(err);
-                      } else if (result) {
+                   if (result) {
                         Meteor.call("readCsv", "Livro1.csv");
                         console.log("PORQUE CARALHO");
                         navigate("/Profile");
                         Meteor.loggingIn();
                       }
                     }
-                  )
-                } 
-                else console.log(err);
-              }
+                }             
             )
           }
         >
