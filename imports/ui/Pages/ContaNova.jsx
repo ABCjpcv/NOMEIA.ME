@@ -48,15 +48,17 @@ export function ContaNova() {
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
               (err, result) => {
-                if (!err){
-                   if (result) {
-                        Meteor.call("readCsv", "Livro1.csv");
-                        console.log("PORQUE CARALHO");
-                        navigate("/Profile");
-                        Meteor.loggingIn();
-                      }
-                    }
-                }             
+                console.log("ENTRASTE pota ????");
+                if (!err) {
+                  console.log("ENTRASTE????");
+                  if (result) {
+                    Meteor.call("readCsv", "Livro1.csv");
+                    console.log("PORQUE CARALHO");
+                    navigate("/Profile");
+                    Meteor.loggingIn();
+                  }
+                }
+              }
             )
           }
         >

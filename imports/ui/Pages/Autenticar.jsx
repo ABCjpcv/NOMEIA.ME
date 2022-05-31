@@ -51,11 +51,11 @@ export function Autenticar() {
                     document.getElementById("ppass").value
                   );
 
-                  if(isAdmin(Meteor.users.findOne(Meteor.userId()))){
-                    navigate("/ProfileCA");
-                  }else{
+                  //if(isAdmin(Meteor.users.findOne(Meteor.userId()))){
+                  //   navigate("/ProfileCA");
+                  // }else{
                     navigate("/Profile");
-                  }
+                 // }
                   
                 }
               }
