@@ -1,85 +1,50 @@
 import React, { useState } from "react";
-import { $, jQuery } from "meteor/jquery";
+import { Table, Input } from "antd";
+import axios from "axios";
+import { userColumns } from "./userColumns";
+import { useTableSearch } from "./useTableSearch";
+import "antd/dist/antd.css";
 
-let nomeacoesData;
-let setQuery;
+const { Search } = Input;
 
-export class ConsultaTotal extends React.Component {
+const fetchUsers = async () => {
+  const { data } = await axios.get("Livro.json")
 
-    
+  console.log(data);
 
-  render() {
-    {
-      this.loadData();
-    }
+  return { data };
+};
 
-    return (
-      <div>
-        <div>
-          <input
-            type={"text"}
-            defaultValue={"Pesquisar 🔎"}
-            onChange={((event) => {
-              console.log(event.target.value)
-            })}
-          ></input>
-        </div>
-        <div
-          className="demo-app"
-          style={{ height: "10%", width: "auto", alignSelf: "center" }}
-        >
-          <div>
-            <div className="demo-app-main" style={{ overflow: "auto" }}>
-              <p></p>
-              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-              <link
-                rel="stylesheet"
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-              />
-              <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+export function ConsultaTotal() {
+  const [searchVal, setSearchVal] = useState(null);
 
-              <div className="container">   
-                <div className="table-responsive">
-                  <br />
-                  <div id="nomeacoes_table"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const { filteredData, loading } = useTableSearch({
+    searchVal,
+    retrieve: fetchUsers
+  });
 
-  loadData() {
-    $.ajax({
-      url: "Livro1.csv",
-      dataType: "text",
-
-      success: function (data) {
-        var nomeacoes_data = data.split(/\r?\n|\r/);
-        nomeacoesData = nomeacoes_data;
-        var table_data =
-          '<table className="table table-bordered table-striped">';
-        for (var count = 0; count < nomeacoes_data.length; count++) {
-          var cell_data = nomeacoes_data[count].split(",");
-          table_data += "<tr>";
-          for (
-            var cell_count = 0;
-            cell_count < cell_data.length;
-            cell_count++
-          ) {
-            if (count === 0) {
-              table_data += "<th>" + cell_data[cell_count] + "</th>";
-            } else {
-              table_data += "<td>" + cell_data[cell_count] + "</td>";
-            }
-          }
-          table_data += "</tr>";
-        }
-        table_data += "</table>";
-        $("#nomeacoes_table").html(table_data);
-      },
-    });
-  }
+  return (
+    <>
+      <Search
+        onChange={(e) => setSearchVal(e.target.value)}
+        placeholder="Search"
+        enterButton
+        style={{
+          position: "sticky",
+          top: "0",
+          left: "0",
+          width: "200px",
+          marginTop: "2vh"
+        }}
+      />
+      <br /> <br />
+      <Table
+        rowKey="name"
+        dataSource={filteredData}
+        columns={userColumns}
+        loading={loading}
+        pagination={false}
+      />
+    </>
+  );
 }
