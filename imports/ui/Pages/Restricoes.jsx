@@ -22,9 +22,7 @@ export function Restricoes() {
 
   return (
     <div
-      className="demo-app"
-      style={{ height: "10%", width: "915px", float: "right" }}
-    >
+      className="demo-app"    >
       <div className="demo-app-sidebar">
         <div className="demo-app-sidebar-section">
           <h2>Marcação de Restrições:</h2>
@@ -34,14 +32,8 @@ export function Restricoes() {
         <div className="demo-app-main" style={{ overflow: "auto" }}>
           <form>
             <div
-              style={{
-                paddingLeft: "40px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-              }}
-            >
-              <label style={{ float: "left" }}>
+                          >
+              <label>
                 Emito Recibos Verdes:
                 <input type="checkbox" id="check_recibos_sim" value={"SIM"} />
                 Sim
@@ -61,11 +53,12 @@ export function Restricoes() {
                   type="checkbox"
                   id="check_transporte_nao"
                   value={"NAO"}
-                />{" "}
+                />
                 Não
               </label>
               <br></br>
-              <label> Relações com clubes: </label>
+              <label> Relações com clubes: 
+                <br></br>
               <Search
                 onChange={(e) => setSearchVal(e.target.value)}
                 placeholder="Search"
@@ -78,6 +71,7 @@ export function Restricoes() {
                   marginTop: "2vh",
                 }}
               />
+              </label>
               <br /> <br />
               <Table
                 rowKey="name"
