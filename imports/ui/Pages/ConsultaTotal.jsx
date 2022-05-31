@@ -9,9 +9,6 @@ const { Search } = Input;
 
 const fetchUsers = async () => {
   const { data } = await axios.get("Livro.json")
-
-  console.log(data);
-
   return { data };
 };
 
@@ -26,6 +23,7 @@ export function ConsultaTotal() {
   return (
     <>
       <Search
+      
         onChange={(e) => setSearchVal(e.target.value)}
         placeholder="Search"
         enterButton
