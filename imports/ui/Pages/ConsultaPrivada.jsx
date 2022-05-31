@@ -6,9 +6,6 @@ export class ConsultaPrivada extends React.Component {
   username = Meteor.users.findOne(Meteor.userId()).username;
 
 
-  
-  
-
   render() {
     return (
       <div
