@@ -76,9 +76,6 @@ export class Indisponibilidades extends React.Component {
   renderSidebar() {
     return (
       <div className="demo-app-sidebar">
-        <div className="demo-app-sidebar-section">
-          <h2>Marcação de Indisponibilidades</h2>
-        </div>
         <div className="demo-app-sidebar-section" hidden>
           <h2>
             Indisponibilidades marcadas: ({this.state.currentEvents.length})

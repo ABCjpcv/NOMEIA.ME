@@ -11,6 +11,13 @@ export function Autenticar() {
     return admins.includes(user.username);
   }
 
+  function mostraPerfil(){
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = false;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("RestricoesPrivadas").hidden = true;
+  }
+
   return (
     <div>
       <h1 className="blue">Autenticar: </h1>
@@ -55,6 +62,7 @@ export function Autenticar() {
                   //   navigate("/ProfileCA");
                   // }else{
                     navigate("/Profile");
+                    mostraPerfil();
                  // }
                   
                 }

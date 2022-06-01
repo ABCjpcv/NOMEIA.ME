@@ -14,19 +14,25 @@ import "./Pages/app.css";
 import { ProfileCA } from "./Pages/ProfileCA.jsx";
 import { EscolhaArbitros } from "./Pages/EscolhaArbitros.jsx";
 
+import {Header} from "./Header";
+
 export const App = () => (
   <div>
-    <div className="div_header">
-      <img src="logo.png" style={{ width: "102px" }} />
-      Plataforma Online de Nomeações de Árbitros de Voleibol
-    </div>
+    <Router>
+    <Header></Header>
     <div style={{ textAlign: "center" }}>
-      <Router>
+      
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/sobre" element={<Sobre />}></Route>
-          <Route path="/ConsultaNomeacoes" element={<ConsultaNomeacoes />}></Route>
-          <Route path="/Indisponibilidades" element={<Indisponibilidades />}></Route>
+          <Route
+            path="/ConsultaNomeacoes"
+            element={<ConsultaNomeacoes />}
+          ></Route>
+          <Route
+            path="/Indisponibilidades"
+            element={<Indisponibilidades />}
+          ></Route>
           <Route path="/Restricoes" element={<Restricoes />}></Route>
           <Route path="/ContaNova" element={<ContaNova />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
@@ -34,7 +40,8 @@ export const App = () => (
           <Route path="/ProfileCA" element={<ProfileCA />}></Route>
           <Route path="/EscolhaArbitros" element={<EscolhaArbitros />}></Route>
         </Routes>
-      </Router>
+      
     </div>
+    </Router>
   </div>
 );

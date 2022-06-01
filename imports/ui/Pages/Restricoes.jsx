@@ -24,9 +24,6 @@ export function Restricoes() {
     <div
       className="demo-app"    >
       <div className="demo-app-sidebar">
-        <div className="demo-app-sidebar-section">
-          <h2>Marcação de Restrições:</h2>
-        </div>
       </div>
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>

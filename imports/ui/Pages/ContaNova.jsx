@@ -6,6 +6,13 @@ import { Meteor } from "meteor/meteor";
 export function ContaNova() {
   let navigate = useNavigate();
 
+  function mostraPerfil(){
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = false;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("RestricoesPrivadas").hidden = true;
+  }
+
   return (
     <div>
       <h1 className="blue">Criar Conta Nova </h1>
@@ -54,6 +61,7 @@ export function ContaNova() {
                   if (result) {
                     Meteor.call("readCsv", "Livro1.csv");
                     console.log("PORQUE CARALHO");
+                    mostraPerfil()
                     navigate("/Profile");
                     Meteor.loggingIn();
                   }
