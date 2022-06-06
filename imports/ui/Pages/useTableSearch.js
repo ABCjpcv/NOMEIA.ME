@@ -22,7 +22,7 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
       setFilteredData(users);
       const searchInd = users.map(user => {
         const allValues = crawl(user);
-        return { allValues: allValues.toString() };
+        return { allValues: removeAcentos(allValues.toString()) };
       });
       setSearchIndex(searchInd);
       if (users) setLoading(false);
@@ -33,7 +33,7 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
   useEffect(() => {
     if (searchVal) {
       const reqData = searchIndex.map((user, index) => {
-        if (user.allValues.toLowerCase().indexOf(searchVal.toLowerCase()) >= 0)
+        if (removeAcentos(user.allValues).indexOf(removeAcentos(searchVal)) >= 0)
           return origData[index];
         return null;
       });
@@ -45,6 +45,12 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
       );
     } else setFilteredData(origData);
   }, [searchVal, origData, searchIndex]);
+
+  function removeAcentos(acentuada){
+    x = acentuada.toLowerCase().replace(/[àáâãäå]/g, "a").replace(/[èéêë]/g, "e").replace(/[ìíîï]/g, "i").replace(/[òóôõö]/g, "o").replace(/[ùúûü]/g, "u").replace("ç","c");
+    //console.log(x);
+    return   x;
+  } 
 
   return { filteredData, loading };
 };

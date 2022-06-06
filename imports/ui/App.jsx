@@ -17,7 +17,7 @@ import { EscolhaArbitros } from "./Pages/EscolhaArbitros.jsx";
 import {Header} from "./Header";
 
 export const App = () => (
-  <div>
+
     <Router>
     <Header></Header>
     <div style={{ textAlign: "center" }}>
@@ -43,5 +43,5 @@ export const App = () => (
       
     </div>
     </Router>
-  </div>
+
 );

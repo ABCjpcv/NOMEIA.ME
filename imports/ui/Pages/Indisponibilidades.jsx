@@ -49,24 +49,35 @@ export class Indisponibilidades extends React.Component {
               eventContent={renderEventContent} // custom render function
               eventClick={this.handleEventClick}
               eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-              /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
+              eventAdd={function () {}}
+              eventChange={function () {}}
+              eventRemove={function () {}}
             />
           </div>
           <br></br>
           <input
             className="botao"
-            type="submit"
+            type={"button"}
             value="Submeter"
-            onClick={(console.log("clicou"))
-              //() =>
-              //Meteor.call(                "registerIndisponibilidades",                this.state.currentEvents,                (err, result) => {if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas. console.log(err);} else if (result) {
-                    // yey}                }              )              
-              }
+            onClick={() => {
+              console.log("clicou"),
+                Meteor.call(
+                  "registerIndisponibilidades",
+                  Meteor.users.findOne(Meteor.userId()).username,
+                  this.state.currentEvents.toString(),
+                  (err, result) => {
+                    if (err) {
+                      //Fazer aparecer mensagem de texto de credenciais erradas.
+                      console.log(err);
+                    } else if (result) {
+                      prompt(
+                        "Indisponibilidades registadas" +
+                          Meteor.users.findOne(Meteor.userId()).username
+                      );
+                    }
+                  }
+                );
+            }}
           />
         </div>
       </div>

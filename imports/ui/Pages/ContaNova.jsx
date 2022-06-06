@@ -6,8 +6,9 @@ import { Meteor } from "meteor/meteor";
 export function ContaNova() {
   let navigate = useNavigate();
 
-  function mostraPerfil(){
+  function mostraPerfil() {
     document.getElementById("titulo").hidden = true;
+    document.getElementById("menuPrivado").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("RestricoesPrivadas").hidden = true;
@@ -60,8 +61,15 @@ export function ContaNova() {
                   console.log("ENTRASTE????");
                   if (result) {
                     Meteor.call("readCsv", "Livro1.csv");
-                    console.log("PORQUE CARALHO");
-                    mostraPerfil()
+
+                    Meteor.call("readCsv", "Livro1.csv");
+
+                    Meteor.loginWithPassword(
+                      document.getElementById("nome").value,
+                      document.getElementById("pass").value
+                    );
+                    mostraPerfil();
+
                     navigate("/Profile");
                     Meteor.loggingIn();
                   }

@@ -2,44 +2,45 @@ import React from "react";
 import SideBar from "./sidebar";
 import { Fragment } from "react/cjs/react.production.min";
 
-export class Header extends React.Component{
-
-    render(){
-    return( 
-        <div className="div_header">
-    <Fragment>
-      
-      <div id="titulo" hidden={false}>
-        <img src="logo.png" style={{ width: "102px" }} />
-        Plataforma Online de Nomeações de Árbitros de Voleibol
-      </div>
-      <div id="menuPrivado" hidden={true}>
-      <SideBar pageWrapId={"page-wrap"} outerContainerId={"App"} />
+export class Header extends React.Component {
+  render() {
+    return (
       <div
-        style={{
-          position: "fixed",
-          width: "80px",
-          height: "50px",
-          right: "120px",
-          top: "36px",
-        }}
+        className="div_header"
+        style={{ justifyContent: "space-between", width: "100%" }}
       >
-        <div id="div_username"></div>
+        <div id="divEsquerdo" style={{ float: "left", width: "auto", backgroundColor: "black" }}>
+          <img id="imgLogo" src="logo.png" style={{ width: "100px" }} />
+        </div>
+
+        <div id="divCentral" style={{ margin:"0 auto", width: "auto", backgroundColor: "blue"}}>
+          <p id="titulo" style={{ margin: "0" }}>
+            Plataforma Online de Nomeações de Árbitros de Voleibol
+          </p>
+          <p id="nomeacoesPrivadas" hidden={true}>
+            As minhas nomeações 📅🏐
+          </p>
+          <p id="indisponibilidadePrivadas" hidden={true}>
+            Marcação de Indisponibilidades:
+          </p>
+          <p id="RestricoesPrivadas" hidden={true}>
+            Marcação de Restrições:
+          </p>
+        </div>
+
+        <div id="divDireito" style={{float:"right", width:"auto", backgroundColor: "red"}}>
+          <Fragment>
+            <div id="menuPrivado" hidden={true}>
+              <SideBar
+                pageWrapId={"page-wrap"}
+                outerContainerId={"menuPrivado"}
+              />
+              <div id="page-wrap"></div>
+            </div>
+            <p hidden={true}> username </p>
+          </Fragment>
+        </div>
       </div>
-      <div id="nomeacoesPrivadas" hidden={true}>
-        <img src="logo.png" style={{ width: "102px" }} />
-        <h1 className="blue"> Nomeações Semanais: </h1>
-      </div>
-      <div id="indisponibilidadePrivadas" hidden={true}>
-        <img src="logo.png" style={{ width: "102px" }} />
-        <h1 className="blue"> Marcação de Indisponibilidades: </h1>
-      </div>
-      <div id="RestricoesPrivadas" hidden={true}>
-        <img src="logo.png" style={{ width: "102px" }} />
-        <h1 className="blue"> Marcação de Restrições: </h1>
-      </div>
-      </div>
-      </Fragment>
-    </div>
-    )}
+    );
+  }
 }

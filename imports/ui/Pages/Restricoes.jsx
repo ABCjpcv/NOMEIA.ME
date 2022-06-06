@@ -12,8 +12,11 @@ const fetchUsers = async () => {
   return { data };
 };
 
+
+
 export function Restricoes() {
   const [searchVal, setSearchVal] = useState(null);
+  const [rowSelection, setRowSelection] = useState({});
 
   const { filteredData, loading } = useTableSearch({
     searchVal,
@@ -76,6 +79,7 @@ export function Restricoes() {
                 columns={listaClubesColumns}
                 loading={loading}
                 pagination={false}
+                rowSelection
               />
             </div>
 

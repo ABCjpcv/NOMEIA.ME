@@ -13,6 +13,7 @@ export function Autenticar() {
 
   function mostraPerfil(){
     document.getElementById("titulo").hidden = true;
+    document.getElementById("menuPrivado").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("RestricoesPrivadas").hidden = true;

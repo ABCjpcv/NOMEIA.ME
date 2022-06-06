@@ -27,9 +27,7 @@ export function ConsultaPrivada() {
       style={{ height: "10%", width: "auto", alignSelf: "center" }}
     >
       <div className="demo-app-sidebar">
-        <div className="demo-app-sidebar-section">
-          <h2> As minhas nomeações 📅🏐</h2>
-        </div>
+        
       </div>
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>
