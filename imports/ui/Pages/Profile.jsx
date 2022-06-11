@@ -8,12 +8,18 @@ import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
 
 export const Profile = () => {
-  //let user = Meteor.users.findOne(Meteor.userId());
- // console.log(user);
-  //let username = user.username;
+  let user = Meteor.users.findOne(Meteor.userId());
+  //console.log(user);
+  let username = user.username;
+
+  function changeUsernameStatus(username){
+    document.getElementById("usernameStatus").innerHTML = username;
+  }
 
   return (
+    
 <div>
+  {changeUsernameStatus(username)}
       <div id="profile">
         
 

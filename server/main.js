@@ -29,7 +29,7 @@ nomeacoes.schema = new SimpleSchema({
 
 //Schema Arbitros:
 arbitros.schema = new SimpleSchema({
-  nome: { type: String, optional: false },
+  user: { type: users, optional: false },
   licenca: { type: Number, optional: false },
   nivel: { type: Number, optional: false },
 });
@@ -64,7 +64,6 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
-  // If the Links collection is empty, add some data.
 
   //Read the clubs:
   var clubsCsv = Assets.getText("Clubes_AVL.csv");
@@ -152,10 +151,10 @@ Meteor.methods({
     return result;
   },
   registerIndisponibilidades: function registerIndisponibilidades(
-    nome,
+    user,
     events
   ) {
-    var arbitro = arbitros.find(nome);
+    var arbitro = arbitros.find(user);
     var novo = { arbitro, events };
     indisponibilidades.update(novo);
   },

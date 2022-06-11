@@ -1,5 +1,5 @@
 import React from "react";
-import FullCalendar, { CalendarApi, formatDate } from "@fullcalendar/react";
+import FullCalendar, { CalendarApi, eventTupleToStore, formatDate } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -35,6 +35,7 @@ export class Indisponibilidades extends React.Component {
               allDaySlot={false}
               height={"350px"}
               dayMinWidth={"8px"}
+              firstDay={1}
               slotDuration={"00:60:00"}
               slotMinTime={"09:00:00"}
               slotMaxTime={"23:00:00"}
@@ -61,9 +62,10 @@ export class Indisponibilidades extends React.Component {
             value="Submeter"
             onClick={() => {
               console.log("clicou"),
+              console.log( this.state.currentEvents.toString());
                 Meteor.call(
                   "registerIndisponibilidades",
-                  Meteor.users.findOne(Meteor.userId()).username,
+                  Meteor.user,
                   this.state.currentEvents.toString(),
                   (err, result) => {
                     if (err) {
@@ -100,6 +102,18 @@ export class Indisponibilidades extends React.Component {
   loadData() {
     // Verifica se o utilizador loggado tem indisponibilidades guardadas na bd
     // Se sim, fazer ciclo para adicionar ao Calendário de novo programaticamante as indisponibilidades já submetidas
+
+    // insere domingo como indisponivel:
+
+    // let title = "DIA DO SENHOR";
+    
+    // let calendarApi = selectInfo.view.calendar;
+
+    // calendarApi.addEvent({
+    //   title,
+    //   start: selectInfo.startStr,
+    //   end: selectInfo.endStr,
+    // });
   }
 
   handleDateSelect = (selectInfo) => {
@@ -122,6 +136,8 @@ export class Indisponibilidades extends React.Component {
           start: selectInfo.startStr,
           end: selectInfo.endStr,
         });
+        console.log(selectInfo.starStr);
+        console.log(selectInfo.endStr);
       }
     }
   };
@@ -131,6 +147,7 @@ export class Indisponibilidades extends React.Component {
   };
 
   handleEvents = (events) => {
+    console.log(events);
     this.setState({
       currentEvents: events,
     });

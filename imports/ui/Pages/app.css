@@ -15,6 +15,10 @@
   text-shadow: 1px 1px 0 rgb(45, 45, 45), 5px 13px 15px #303380;
 }
 
+body{
+    background-color: #b9b7b7
+}
+
 .blue {
     color: #303380;
 }

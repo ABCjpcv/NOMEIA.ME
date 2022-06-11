@@ -21,7 +21,7 @@ export function Autenticar() {
 
   return (
     <div>
-      <h1 className="blue">Autenticar: </h1>
+      <h1 className="blue"> Autenticar: </h1>
       <div
         style={{
           margin: "auto",
@@ -54,10 +54,20 @@ export function Autenticar() {
                 } else if (result) {
                   Meteor.call("readCsv", "Livro1.csv");
 
+                  Meteor.logoutOtherClients();
+                  Meteor.logout();
+
+                  Meteor.loggingIn();
+
                   Meteor.loginWithPassword(
                     document.getElementById("eemail").value,
                     document.getElementById("ppass").value
+                  
                   );
+
+                  console.log("current user: " + (Meteor.user()).username);
+
+                  console.log("user trying to login: " + document.getElementById("eemail").value);
 
                   //if(isAdmin(Meteor.users.findOne(Meteor.userId()))){
                   //   navigate("/ProfileCA");

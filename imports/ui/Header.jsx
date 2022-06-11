@@ -1,46 +1,60 @@
 import React from "react";
 import SideBar from "./sidebar";
 import { Fragment } from "react/cjs/react.production.min";
+import { useNavigate } from "react-router-dom";
+import { LogoHeader } from "./Pages/LogoHeader";
+
+
+
 
 export class Header extends React.Component {
+
   render() {
     return (
       <div
         className="div_header"
-        style={{ justifyContent: "space-between", width: "100%" }}
+        style={{ }}
       >
-        <div id="divEsquerdo" style={{ float: "left", width: "auto", backgroundColor: "black" }}>
-          <img id="imgLogo" src="logo.png" style={{ width: "100px" }} />
+        <div id="divEsquerdo" style={{ float: "left", width: "15%"}}>
+          <LogoHeader></LogoHeader>
         </div>
 
-        <div id="divCentral" style={{ margin:"0 auto", width: "auto", backgroundColor: "blue"}}>
-          <p id="titulo" style={{ margin: "0" }}>
+        <div id="divCentral" style={{ margin:"0 auto", width: "40%"}}>
+          <p id="titulo" style={{ margin: "0", marginLeft:"-120px" }}>
             Plataforma Online de Nomeações de Árbitros de Voleibol
           </p>
-          <p id="nomeacoesPrivadas" hidden={true}>
+          <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
             As minhas nomeações 📅🏐
           </p>
-          <p id="indisponibilidadePrivadas" hidden={true}>
+          <p id="indisponibilidadePrivadas" style={{ margin: "0" }} hidden={true}>
             Marcação de Indisponibilidades:
           </p>
-          <p id="RestricoesPrivadas" hidden={true}>
+          <p id="RestricoesPrivadas" style={{ margin: "0" }} hidden={true}>
             Marcação de Restrições:
           </p>
         </div>
 
-        <div id="divDireito" style={{float:"right", width:"auto", backgroundColor: "red"}}>
+        <div id="divDireito" style={{float:"right", width:"15%"}}>
           <Fragment>
             <div id="menuPrivado" hidden={true}>
+              <p id="usernameStatus" style={{ margin: "0", marginLeft: "-110px", fontSize: "18px" }} hidden={false}> username </p>
               <SideBar
                 pageWrapId={"page-wrap"}
                 outerContainerId={"menuPrivado"}
               />
               <div id="page-wrap"></div>
             </div>
-            <p hidden={true}> username </p>
+            
           </Fragment>
         </div>
       </div>
     );
+
+    function navigate(a){
+      let n = useNavigate();
+      return n(a);
+    }
+
   }
+  
 }

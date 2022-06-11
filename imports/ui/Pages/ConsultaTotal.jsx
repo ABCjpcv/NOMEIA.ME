@@ -22,6 +22,9 @@ export function ConsultaTotal() {
 
   return (
     <>
+    <div>
+      <h1 className="blue">Nomeações Semanais</h1>
+
       <Search
       
         onChange={(e) => setSearchVal(e.target.value)}
@@ -43,6 +46,8 @@ export function ConsultaTotal() {
         loading={loading}
         pagination={false}
       />
+    
+    </div>
     </>
   );
 }

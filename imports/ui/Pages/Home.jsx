@@ -18,7 +18,7 @@ export function Home() {
       <h1 className="blue">Bem-vindo</h1>
       <div>
         <div className="botao" onClick={() => {mostraTitulo(), navigate("/ConsultaNomeacoes")}}>
-          <p>Consulta de Nomeações</p>
+          Consulta de Nomeações
         </div>
         <p></p>
         <div className="botao" onClick={() => {mostraTitulo(), navigate("/ContaNova")}}>

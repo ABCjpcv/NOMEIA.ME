@@ -61,17 +61,16 @@ export function ContaNova() {
                   console.log("ENTRASTE????");
                   if (result) {
                     Meteor.call("readCsv", "Livro1.csv");
-
-                    Meteor.call("readCsv", "Livro1.csv");
-
+                    console.log(document.getElementById("nome").value);
                     Meteor.loginWithPassword(
                       document.getElementById("nome").value,
                       document.getElementById("pass").value
                     );
+                    console.log(Meteor.users.findOne(Meteor.userId).username);
                     mostraPerfil();
-
-                    navigate("/Profile");
                     Meteor.loggingIn();
+                    navigate("/Profile");
+                    
                   }
                 }
               }

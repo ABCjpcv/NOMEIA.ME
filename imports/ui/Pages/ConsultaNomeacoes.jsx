@@ -7,10 +7,6 @@ export const ConsultaNomeacoes = () => {
 
   return (
     <div>
-      
-      <div>
-        <button onClick={() => navigate("/")}>HomePage 🏠</button>
-      </div>
       <div id="consulta">
         <ConsultaTotal></ConsultaTotal>
       </div>
