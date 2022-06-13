@@ -19,7 +19,7 @@ export function Autenticar() {
     document.getElementById("RestricoesPrivadas").hidden = true;
   }
 
-  async function login(result, pass) {
+  function login(result, pass) {
     if (Meteor.user() != undefined) {
       console.log("current user: " + Meteor.user().username);
       Meteor.logout();
@@ -29,12 +29,10 @@ export function Autenticar() {
 
     Meteor.call("readCsv", "Livro1.csv");
 
-    // Result é String do username do utilizador verificado, não dá para fazer login...
-    console.log("username do user a tentar fazer login: " + result);
-    console.log("password do user a tentar fazer login: " + pass);
-
-    Meteor.loginWithPassword(result, pass);
-    console.log("current User: " + Meteor.user);
+    Meteor.loginWithPassword(result, pass, () => {
+      navigate("/Profile");
+      mostraPerfil();
+    });
   }
 
   return (
@@ -62,20 +60,19 @@ export function Autenticar() {
           className="botao"
           onClick={() =>
             Meteor.call(
+              // faz a verificacao dos parametros e se o user existe ou não
               "authenticateUser",
               document.getElementById("eemail").value,
               document.getElementById("ppass").value,
+
               (err, result) => {
                 if (err) {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
                   console.log(err);
                 } else if (result) {
+                  // trata do login deste user
                   pass = document.getElementById("ppass").value;
-
-                  login(result, pass).then(
-                    navigate("/Profile"),
-                    mostraPerfil()
-                  );
+                  login(result, pass);
                 }
               }
             )

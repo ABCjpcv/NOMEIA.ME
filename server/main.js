@@ -1,25 +1,13 @@
 import { Meteor } from "meteor/meteor";
-import {
-  interactionSettingsStore,
-  mergeEventStores,
-} from "@fullcalendar/react";
 import { Accounts } from "meteor/accounts-base";
-import { parsePath } from "react-router-dom";
 import { Papa } from "meteor/harrison:papa-parse";
 import SimpleSchema from "simpl-schema";
 
-let users = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
+let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 let jogos = new Mongo.Collection("jogos");
 let clubes = new Mongo.Collection("clubes");
 let arbitros = new Mongo.Collection("arbitros");
 let nomeacoes = new Mongo.Collection("nomeacoes");
-let indisponibilidades = new Mongo.Collection("indisponibilidades");
-
-//Schema inidposnibilidades:
-indisponibilidades.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  disponibilidades: { type: String, optional: true },
-});
 
 //Schema nomeacoes:
 nomeacoes.schema = new SimpleSchema({
@@ -29,9 +17,11 @@ nomeacoes.schema = new SimpleSchema({
 
 //Schema Arbitros:
 arbitros.schema = new SimpleSchema({
-  user: { type: users, optional: false },
+  nome: { type: String, optional: false },
   licenca: { type: Number, optional: false },
   nivel: { type: Number, optional: false },
+  disponibilidades: { type: String, optional: false },
+  restricoes: { type: String, optional: false },
 });
 
 //Schema Jogos importados de um dado csv.
@@ -64,13 +54,51 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
+  clubes.rawCollection().drop();
+
   //Read the clubs:
   var clubsCsv = Assets.getText("Clubes_AVL.csv");
   var rows = Papa.parse(clubsCsv).data;
+
+  console.log(
+    "*****************************************************************************"
+  );
+  console.log(
+    "***********************   DATABASE FOR CLUBES AVL       *********************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
   for (i in rows) {
     clubes.insert(rows[i]);
-    console.log("inserted" + rows[i]);
+    console.log("inserted: " + rows[i]);
   }
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR ARBITROS   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  var utilizadores = Meteor.users.find();
+
+  arbitros.rawCollection().drop();
+
+  utilizadores.forEach((user) => {
+    arbitros.insert({
+      nome: user.username,
+      licenca: 0,
+      nivel: 0,
+      disponibilidades: "",
+      restricoes: "",
+    });
+    console.log("inserted: " + user.username);
+  });
 });
 
 Meteor.methods({
@@ -151,12 +179,9 @@ Meteor.methods({
     console.log(result);
     return result;
   },
-  registerIndisponibilidades: function registerIndisponibilidades(
-    user,
-    events
-  ) {
-    var arbitro = arbitros.find(user);
-    var novo = { arbitro, events };
-    indisponibilidades.update(novo);
+  addIndisponibilidade: function addIndisponibilidade(username, events) {
+    console.log("indisponibilidades recebidas: " + events);
+    result = arbitros.update({ nome: username }, { $set: { disponibilidades: events } });
+    return result;
   },
 });

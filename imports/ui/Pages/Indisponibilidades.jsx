@@ -13,8 +13,20 @@ export class Indisponibilidades extends React.Component {
     weekendsVisible: true,
     currentEvents: [],
   };
+  
 
   render() {
+
+    function leitura(indis) {
+      let aLer = indis;
+      let lido = "";
+      for (let index = 0; index < aLer.length; index++) {
+        lido = lido + aLer[index].start + " " + aLer[index].end + " ";
+        console.log(lido);
+      }
+      return lido;
+    }
+
     return (
       <div
         className="demo-app"
@@ -62,19 +74,20 @@ export class Indisponibilidades extends React.Component {
             value="Submeter"
             onClick={() => {
               console.log("clicou"),
-              console.log( this.state.currentEvents.toString());
                 Meteor.call(
-                  "registerIndisponibilidades",
-                  Meteor.user,
-                  this.state.currentEvents.toString(),
+                  "addIndisponibilidade",
+                  Meteor.user().username,
+                  leitura(this.state.currentEvents),
                   (err, result) => {
+
+
                     if (err) {
                       //Fazer aparecer mensagem de texto de credenciais erradas.
                       console.log(err);
                     } else if (result) {
-                      prompt(
-                        "Indisponibilidades registadas" +
-                          Meteor.users.findOne(Meteor.userId()).username
+                      alert(
+                        "Indisponibilidades registadas " +
+                          Meteor.user().username
                       );
                     }
                   }
@@ -136,8 +149,6 @@ export class Indisponibilidades extends React.Component {
           start: selectInfo.startStr,
           end: selectInfo.endStr,
         });
-        console.log(selectInfo.starStr);
-        console.log(selectInfo.endStr);
       }
     }
   };
@@ -147,7 +158,6 @@ export class Indisponibilidades extends React.Component {
   };
 
   handleEvents = (events) => {
-    console.log(events);
     this.setState({
       currentEvents: events,
     });

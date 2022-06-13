@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import "./styles.css";
 
 import { Indisponibilidades } from "./Indisponibilidades";
@@ -9,18 +8,16 @@ import { ConsultaPrivada } from "./ConsultaPrivada";
 import { useState } from "react/cjs/react.production.min";
 
 export const Profile = () => {
-
-  async function changeUsernameStatus(){
-    document.getElementById("usernameStatus").innerHTML = Meteor.user().username;
+  function changeUsernameStatus() {
+    document.getElementById("usernameStatus").innerHTML =
+      Meteor.user().username;
   }
 
-  return (
-    
-<div>
-  {changeUsernameStatus()}
-      <div id="profile">
-        
+  changeUsernameStatus();
 
+  return (
+    <div>
+      <div id="profile">
         <div id="indisponibilidades" hidden>
           <Indisponibilidades></Indisponibilidades>
         </div>

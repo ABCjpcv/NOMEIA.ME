@@ -15,9 +15,15 @@ export const LogoHeader = () => {
     
   }
 
+  function logout(){
+    if(Meteor.user() != undefined){
+      Meteor.logout();
+    }
+  }
+
   return (
     <Fragment>
-       <img id="imgLogo" src="logo.png" style={{ marginLeft: "50px", width: "100px", cursor: "pointer" }} onClick={()=>{mostraTitulo(), navigate("/"), Meteor.loggingOut()}} />      
+       <img id="imgLogo" src="logo.png" style={{ marginLeft: "50px", width: "100px", cursor: "pointer" }} onClick={()=>{mostraTitulo(), navigate("/"), logout()}} />      
     </Fragment>
   );
 };
