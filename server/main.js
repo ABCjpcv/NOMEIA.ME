@@ -64,7 +64,6 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
-
   //Read the clubs:
   var clubsCsv = Assets.getText("Clubes_AVL.csv");
   var rows = Papa.parse(clubsCsv).data;
@@ -81,7 +80,7 @@ Meteor.methods({
 
     console.log(user_email);
 
-    var user = Accounts.findUserByUsername(user_email);
+    var user = Accounts.findUserByEmail(user_email);
 
     console.log(user);
 
@@ -97,8 +96,10 @@ Meteor.methods({
       algorithm: "sha-256",
     });
     console.log(result.error == null);
-    return result;
+    if (result) return user.username;
+    if (!result) return result;
   },
+
   registerUser: function registerUser(
     user_name,
     user_email,
