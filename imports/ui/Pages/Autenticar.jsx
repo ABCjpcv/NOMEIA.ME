@@ -6,17 +6,35 @@ export function Autenticar() {
   let navigate = useNavigate();
   const admins = ["Daniel Fernandes", "Sérgio Pereira", "Mafalda Bento"];
 
-  function isAdmin(user){
+  function isAdmin(user) {
     console.log(user.username);
     return admins.includes(user.username);
   }
 
-  function mostraPerfil(){
+  function mostraPerfil() {
     document.getElementById("titulo").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("RestricoesPrivadas").hidden = true;
+  }
+
+  async function login(result, pass) {
+    if (Meteor.user() != undefined) {
+      console.log("current user: " + Meteor.user().username);
+      Meteor.logout();
+    } else {
+      console.log("Não há user");
+    }
+
+    Meteor.call("readCsv", "Livro1.csv");
+
+    // Result é String do username do utilizador verificado, não dá para fazer login...
+    console.log("username do user a tentar fazer login: " + result);
+    console.log("password do user a tentar fazer login: " + pass);
+
+    Meteor.loginWithPassword(result, pass);
+    console.log("current User: " + Meteor.user);
   }
 
   return (
@@ -31,8 +49,8 @@ export function Autenticar() {
         }}
       >
         <div className="input">
-          <label className="labels">Primeiro e último nome</label>
-          <input className="inputt" type={"text"} id="eemail"></input>
+          <label className="labels">Email</label>
+          <input className="inputt" type={"email"} id="eemail"></input>
         </div>
         <p></p>
         <div className="input">
@@ -52,30 +70,12 @@ export function Autenticar() {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
                   console.log(err);
                 } else if (result) {
-                  Meteor.call("readCsv", "Livro1.csv");
+                  pass = document.getElementById("ppass").value;
 
-                  Meteor.logoutOtherClients();
-                  Meteor.logout();
-
-                  Meteor.loggingIn();
-
-                  Meteor.loginWithPassword(
-                    document.getElementById("eemail").value,
-                    document.getElementById("ppass").value
-                  
+                  login(result, pass).then(
+                    navigate("/Profile"),
+                    mostraPerfil()
                   );
-
-                  console.log("current user: " + (Meteor.user()).username);
-
-                  console.log("user trying to login: " + document.getElementById("eemail").value);
-
-                  //if(isAdmin(Meteor.users.findOne(Meteor.userId()))){
-                  //   navigate("/ProfileCA");
-                  // }else{
-                    navigate("/Profile");
-                    mostraPerfil();
-                 // }
-                  
                 }
               }
             )

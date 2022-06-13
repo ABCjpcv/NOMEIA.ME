@@ -6,20 +6,18 @@ import "./styles.css";
 import { Indisponibilidades } from "./Indisponibilidades";
 import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
+import { useState } from "react/cjs/react.production.min";
 
 export const Profile = () => {
-  let user = Meteor.users.findOne(Meteor.userId());
-  //console.log(user);
-  let username = user.username;
 
-  function changeUsernameStatus(username){
-    document.getElementById("usernameStatus").innerHTML = username;
+  async function changeUsernameStatus(){
+    document.getElementById("usernameStatus").innerHTML = Meteor.user().username;
   }
 
   return (
     
 <div>
-  {changeUsernameStatus(username)}
+  {changeUsernameStatus()}
       <div id="profile">
         
 

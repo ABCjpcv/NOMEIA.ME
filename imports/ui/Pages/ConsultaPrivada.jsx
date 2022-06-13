@@ -13,7 +13,7 @@ const fetchUsers = async () => {
 
 export function ConsultaPrivada() {
   let [searchVal] = useState(
-    Meteor.user().username
+    (Meteor.user() == undefined) ? "" : Meteor.user().username
   );
 
   const { filteredData, loading } = useTableSearch({
