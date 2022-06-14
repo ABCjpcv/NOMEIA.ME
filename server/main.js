@@ -8,6 +8,29 @@ let jogos = new Mongo.Collection("jogos");
 let clubes = new Mongo.Collection("clubes");
 let arbitros = new Mongo.Collection("arbitros");
 let nomeacoes = new Mongo.Collection("nomeacoes");
+let indisponibilidades = new Mongo.Collection("indisponibilidades");
+let restricoes = new Mongo.Collection("restricoes");
+
+
+
+/************************************************************************************************
+ *********************************** SCHEMA TABLE ***********************************************
+ ************************************************************************************************
+ */
+
+ //Schema restricoes
+restricoes.schema = new SimpleSchema({
+  arbitro: { type: arbitros, optional: false },
+  recibo: { type:Boolean, optional: false},
+  carro: { type:Boolean, optional: false},
+  clubeRelacionado:{type: clubes, optional:true}
+})
+
+//Schema indisponibilidades
+indisponibilidades.schema = new SimpleSchema({
+  arbitro: { type:arbitros, optional: false},
+  disponibilidades: { type:String, optional: false}
+})
 
 //Schema nomeacoes:
 nomeacoes.schema = new SimpleSchema({
@@ -20,8 +43,6 @@ arbitros.schema = new SimpleSchema({
   nome: { type: String, optional: false },
   licenca: { type: Number, optional: false },
   nivel: { type: Number, optional: false },
-  disponibilidades: { type: String, optional: false },
-  restricoes: { type: String, optional: false },
 });
 
 //Schema Jogos importados de um dado csv.
@@ -52,6 +73,16 @@ clubes.schema = new SimpleSchema({
   telemovel_2: { type: String, optional: true },
   telefone: { type: String, optional: true },
 });
+
+
+
+
+
+
+
+
+
+
 
 Meteor.startup(() => {
   clubes.rawCollection().drop();
@@ -93,29 +124,36 @@ Meteor.startup(() => {
     arbitros.insert({
       nome: user.username,
       licenca: 0,
-      nivel: 0,
-      disponibilidades: "",
-      restricoes: "",
+      nivel: 0
     });
     console.log("inserted: " + user.username);
+  });
+
+  var arb = arbitros.find();
+
+  indisponibilidades.rawCollection().drop();
+
+  arb.forEach((arbitro)=> {
+    indisponibilidades.insert({
+      arbitro: arbitro,
+      disponibilidades: ""
+    });
   });
 });
 
 Meteor.methods({
+
+  /*************************************************************
+  ************************** METODOS DO UTILIZADOR *************
+  ***************************************************************
+   */
   authenticateUser: function authenticateUser(user_email, password) {
     if (user_email.length == 0) throw new Meteor.Error("Must insert an email.");
     if (password.length == 0) throw new Meteor.Error("Must insert a password.");
-
-    console.log(user_email);
-
     var user = Accounts.findUserByEmail(user_email);
-
-    console.log(user);
-
     if (user == undefined) {
       throw new Meteor.Error("Invalid credentials / user does not exist.");
     }
-
     console.log("User found by email.");
 
     //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
@@ -134,8 +172,6 @@ Meteor.methods({
     user_password,
     password_repeat
   ) {
-    console.log("Here Register.");
-    console.log(user_name.length);
     if (
       (user_name.length == 0 ||
         user_email.length == 0 ||
@@ -179,9 +215,26 @@ Meteor.methods({
     console.log(result);
     return result;
   },
+
+  /*****************************************************************
+   **************** METODOS DAS INDISPONIBILIDADES *************
+   *****************************************************************
+   */
   addIndisponibilidade: function addIndisponibilidade(username, events) {
     console.log("indisponibilidades recebidas: " + events);
-    result = arbitros.update({ nome: username }, { $set: { disponibilidades: events } });
-    return result;
+    try {
+      const a = arbitros.findOne({nome: username});
+      indisponibilidades.update({ arbitro: a }, { $set: { disponibilidades: events } })
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+  carregaHorario: function carregaHorario(username){
+    
+
+    const a = arbitros.findOne({nome: username});
+
+    return indisponibilidades.findOne({arbitro: a});
   },
 });
