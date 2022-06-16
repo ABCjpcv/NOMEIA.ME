@@ -21,12 +21,13 @@ export function Autenticar() {
 
   function login(result, pass) {
     if (Meteor.user() != undefined) {
-      console.log("current user: " + Meteor.user().username);
+      //console.log("current user: " + Meteor.user().username);
       Meteor.logout();
     } else {
-      console.log("Não há user");
+     // console.log("Não há user");
     }
 
+    // PASSAR OS FICHEIROS DIRETAMENTE PARA A BASE DE DADOS EM VEZ DE FAZER A SUA LEITURA APÓS LOGIN
     Meteor.call("readCsv", "Livro1.csv");
 
     Meteor.loginWithPassword(result, pass, () => {

@@ -2,32 +2,48 @@ import React from "react";
 import { Meteor } from "meteor/meteor";
 import FullCalendar, {
   CalendarApi,
+  EventSourceApi,
   eventTupleToStore,
   formatDate,
 } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import {
-  INITIAL_EVENTS,
-  createEventId,
-} from "../../../node_modules/event-utils";
 
 export class Indisponibilidades extends React.Component {
-  state = {
-    weekendsVisible: true,
-    currentEvents: [],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      weekendsVisible: true,
+      currentEvents: [],
+      loaded: false,
+      resultado: []
+    };
+  }
 
-  calendarApi;
+  componentDidMount() {
+    this.loadData();
+    console.log(this.state.resultado);
+   
+  }
 
   render() {
+    // const pixa = loadData();
+
+    // console.log("pixa:");
+    // console.log(pixa);
+
+    // console.log("PIXOTA");
+    // console.log([{title: "CARALHO", start: "2022-06-18T10:00:00+01:00", end: "2022-06-18T14:00:00+01:00"},
+    //              {title: "CARALHO DA TARDE", start: "2022-06-18T16:00:00+01:00", end: "2022-06-18T18:00:00+01:00"},
+    //              {title: "CARALHO DA NOITE", start: "2022-06-18T18:00:00+01:00", end: "2022-06-18T20:00:00+01:00"}
+    //             ]);
+
     function leitura(indis) {
       let aLer = indis;
       let lido = "";
       for (let index = 0; index < aLer.length; index++) {
-        lido = lido + aLer[index].start + " " + aLer[index].end + " ";
-        console.log(lido);
+        lido = lido + aLer[index].startStr + " " + aLer[index].endStr + " ";
       }
       return lido;
     }
@@ -37,10 +53,16 @@ export class Indisponibilidades extends React.Component {
         className="demo-app"
         style={{ height: "10%", width: "auto", height: "auto" }}
       >
-        {this.renderSidebar()}
-        {this.loadData()}
+        <div className="demo-app-sidebar">
+          <div className="demo-app-sidebar-section" hidden>
+            <h2>
+              Indisponibilidades marcadas: ({this.state.currentEvents.length})
+            </h2>
+            <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
+          </div>
+        </div>
         <div>
-          <div className="demo-app-main" style={{ overflow: "auto" }}>
+          <div className="demo-app-main" style={{}}>
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               locale="pt"
@@ -62,14 +84,24 @@ export class Indisponibilidades extends React.Component {
               selectMirror={true}
               dayMaxEvents={true}
               weekends={this.state.weekendsVisible}
-              initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+              initialEvents={ 
+                
+                this.state.resultado}
+
+                // [{title: "EXEMPLO 1 ", start: "2022-06-18T10:00:00+01:00", end: "2022-06-18T14:00:00+01:00"},
+                //  {title: "EXEMPLO 2 MAIS À TARDE DA TARDE", start: "2022-06-18T16:00:00+01:00", end: "2022-06-18T18:00:00+01:00"},
+                //  {title: "EXEMPLO 3 -  DA NOITE", start: "2022-06-18T18:00:00+01:00", end: "2022-06-18T20:00:00+01:00"}
+               //  ]}
+                
+                
+                //this.state.resultado}
+              //
+
+              //this.INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
               select={this.handleDateSelect}
               eventContent={renderEventContent} // custom render function
               eventClick={this.handleEventClick}
               eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-              eventAdd={function () {}}
-              eventChange={function () {}}
-              eventRemove={function () {}}
             />
           </div>
           <br></br>
@@ -87,7 +119,6 @@ export class Indisponibilidades extends React.Component {
                     //Fazer aparecer mensagem de texto de credenciais erradas.
                     console.log(err);
                   } else if (result) {
-                    this.loadData();
                     window.alert(
                       "Indisponibilidades registadas " + Meteor.user().username
                     );
@@ -101,100 +132,50 @@ export class Indisponibilidades extends React.Component {
     );
   }
 
-  renderSidebar() {
-    return (
-      <div className="demo-app-sidebar">
-        <div className="demo-app-sidebar-section" hidden>
-          <h2>
-            Indisponibilidades marcadas: ({this.state.currentEvents.length})
-          </h2>
-          <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
-        </div>
-      </div>
-    );
-  }
-
   loadData() {
-    let disponibilidades = "";
 
     // Verifica se o utilizador loggado tem indisponibilidades guardadas na bd
     Meteor.call("carregaHorario", Meteor.user().username, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO");
       } else if (result) {
-        console.log("ENTRAS CARALHO????");
+        const novoResultado = this.state.resultado;
         let r = result.disponibilidades;
-        console.log("r: " + r);
+
+        // r EH UMA STRING ASSIM:
+        // 2022-06-17T18:00:00+01:00 2022-06-17T19:00:00+01:00
+
         if (r.toString().length > 1) {
-          //MUDA MESES
-          r = r
-            .replaceAll("Jan", "01")
-            .replaceAll("Fev", "02")
-            .replaceAll("Mar", "03")
-            .replaceAll("Abr", "04")
-            .replaceAll("Mai", "05")
-            .replaceAll("Jun", "06")
-            .replaceAll("Jul", "07")
-            .replaceAll("Ago", "08")
-            .replaceAll("Sep", "09")
-            .replaceAll("Out", "10")
-            .replaceAll("Nov", "11")
-            .replaceAll("Des", "12");
+          //REMOVO O ULTIMO ESPACO DA STRING
+          r = r.substring(0, r.toString().length - 1);
 
-          //MUDA DIAS
-          r = r
-            .replaceAll("Mon", "")
-            .replaceAll("Tue", "")
-            .replaceAll("Wed", "")
-            .replaceAll("Thu", "")
-            .replaceAll("Fri", "")
-            .replaceAll("Sat", "")
-            .replaceAll("Sun", "");
+          let v = r.split(" ");
 
-          //MUDA UMA CENA
-          r = r
-            .replaceAll("\\(Hora de verão da Europa Ocidental\\)", "")
-            .replaceAll("GMT", "");
+          let inicio = "";
+          let fim = "";
+          
+          let evento = { title: "Indisponível", start: "", end: "" }
 
-          r = r.substring(1);
-          var v = r.split(" ");
+          for (let index = 0; index < v.length; index += 2) {
+            inicio = v[index];
+            fim = v[index + 1];
 
-          var inicio = "";
-          var fim = "";
-
-          for (let index = 0; index < v.length; index += 14) {
-            inicio =
-              v[index + 2] +
-              "-" +
-              v[index] +
-              "-" +
-              v[index + 1] +
-              "T" +
-              v[index + 3] +
-              "+01:00";
-            fim =
-              v[index + 9] +
-              "-" +
-              v[index + 7] +
-              "-" +
-              v[index + 8] +
-              "T" +
-              v[index + 10] +
-              "+01:00";
-
-            this.calendarApi.addEvent({
-              title: "Indisponível",
-              start: inicio,
-              end: fim,
-            });
+            evento.start = inicio;
+            evento.end = fim;
+            novoResultado.push(evento);
           }
+
+          console.log("ANTES DO SET STATE");
+          console.log(this.state.resultado);
+
+          this.setState({ resultado: novoResultado });
+
+          console.log("RESULTADO  DEPOIS DO SET STATE!!!!");
+
+          console.log(this.state.resultado);
         }
       }
     });
-
-    // Se sim, fazer ciclo para adicionar ao Calendário de novo programaticamante as indisponibilidades já submetidas
-
-    console.log(disponibilidades);
   }
 
   handleDateSelect = (selectInfo) => {
@@ -210,16 +191,14 @@ export class Indisponibilidades extends React.Component {
     let horaInicio = (selectInfo.startStr + "").substring(11, 13);
     let diaIndisponivel = new Date(ano, mes - 1, dia, horaInicio, 0, 0, 0);
 
-    if (title) {
-      //if (diaIndisponivel > hoje) {
-        this.calendarApi.addEvent({
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-        });
-     //   console.log(selectInfo.startStr);
-      //  console.log(selectInfo.endStr);
-      //}
+    if (diaIndisponivel > hoje) {
+      this.calendarApi.addEvent({
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+      });
+      // console.log(selectInfo.startStr);
+      // console.log(selectInfo.endStr);
     }
   };
 
