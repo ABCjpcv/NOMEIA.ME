@@ -147,6 +147,16 @@ Meteor.startup(() => {
       disponibilidades: ""
     });
   });
+
+  //Get the csvText:
+  var csvFile = Assets.getText("Livro1.csv");
+  var rows = Papa.parse(csvFile).data;
+
+  //Setup the database, by adding games.
+  for (i in rows) {
+    jogos.insert(rows[i]);
+    console.log("inserted" + rows[i]);
+  }
 });
 
 Meteor.methods({
@@ -197,19 +207,6 @@ Meteor.methods({
       null
     );
   },
-
-  //To test:
-  readCsv: function readCsv(filename) {
-    //Get the csvText:
-    var csvFile = Assets.getText(filename);
-    var rows = Papa.parse(csvFile).data;
-
-    //Setup the database, by adding games.
-    for (i in rows) {
-      jogos.insert(rows[i]);
-      console.log("inserted" + rows[i]);
-    }
-  },
   addNomeacao: function addNomeacao(licenca_arbitro, id_jogo) {
     var arbitro = arbitros.find({ licenca: licenca_arbitro });
     var jogo = jogos.find({ id: id_jogo });
@@ -230,8 +227,7 @@ Meteor.methods({
    */
   addIndisponibilidade: function addIndisponibilidade(username, events) {
 
-    console.log("indisponibilidades recebidas: ")
-    console.log(events);
+    
 
     events.forEach(element => {
       element.title = " Indisponível "
@@ -251,11 +247,4 @@ Meteor.methods({
   },
 });
 
-function leitura(indis) {
-      let aLer = indis;
-      let lido = "";
-      for (let index = 0; index < aLer.length; index++) {
-        lido = lido + aLer[index].startStr + " " + aLer[index].endStr + " ";
-      }
-      return lido;
-    }
+

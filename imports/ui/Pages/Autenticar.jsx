@@ -27,9 +27,6 @@ export function Autenticar() {
      // console.log("Não há user");
     }
 
-    // PASSAR OS FICHEIROS DIRETAMENTE PARA A BASE DE DADOS EM VEZ DE FAZER A SUA LEITURA APÓS LOGIN
-    Meteor.call("readCsv", "Livro1.csv");
-
     Meteor.loginWithPassword(result, pass, () => {
       navigate("/Profile");
       mostraPerfil();

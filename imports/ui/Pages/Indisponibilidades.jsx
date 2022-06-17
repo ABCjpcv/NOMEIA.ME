@@ -56,7 +56,7 @@ export class Indisponibilidades extends React.Component {
               headerToolbar={{
                 left: "prev,next today",
                 center: "title",
-                right: "dayGridMonth,timeGridWeek,timeGridDay",
+                right: "timeGridWeek,timeGridDay",
               }}
               allDaySlot={false}
               height={"350px"}
@@ -151,6 +151,7 @@ export class Indisponibilidades extends React.Component {
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
+        color: "#eb3434"
       });
     }
   };

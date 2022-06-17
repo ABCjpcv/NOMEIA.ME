@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Input } from "antd";
+import { Table, Input, Checkbox } from "antd";
 import axios from "axios";
 import { listaClubesColumns } from "./listaClubesColumns";
 import { useTableSearch } from "./useTableSearch";
@@ -7,11 +7,10 @@ import "antd/dist/antd.css";
 
 const { Search } = Input;
 
-const fetchUsers = async () => {
+const fetchData = async () => {
   const { data } = await axios.get("ClubesAVLnomes.json");
   return { data };
 };
-
 
 
 export function Restricoes() {
@@ -20,7 +19,7 @@ export function Restricoes() {
 
   const { filteredData, loading } = useTableSearch({
     searchVal,
-    retrieve: fetchUsers,
+    retrieve: fetchData,
   });
 
   return (
@@ -79,7 +78,7 @@ export function Restricoes() {
                 columns={listaClubesColumns}
                 loading={loading}
                 pagination={false}
-                rowSelection
+                rowSelection={Checkbox}
               />
             </div>
 
