@@ -26,10 +26,18 @@ restricoes.schema = new SimpleSchema({
   clubeRelacionado:{type: clubes, optional:true}
 })
 
+const eventSchema = new SimpleSchema({
+  
+    id: {type: Number, optional: false},
+    start: {type: String, optional: false},
+    end: {type: String, optional: false},
+  
+})
+
 //Schema indisponibilidades
 indisponibilidades.schema = new SimpleSchema({
   arbitro: { type:arbitros, optional: false},
-  disponibilidades: { type:String, optional: false}
+  disponibilidades: [eventSchema]
 })
 
 //Schema nomeacoes:
@@ -221,7 +229,14 @@ Meteor.methods({
    *****************************************************************
    */
   addIndisponibilidade: function addIndisponibilidade(username, events) {
-    console.log("indisponibilidades recebidas: " + events);
+
+    console.log("indisponibilidades recebidas: ")
+    console.log(events);
+
+    events.forEach(element => {
+      element.title = " Indisponível "
+    });
+
     try {
       const a = arbitros.findOne({nome: username});
       indisponibilidades.update({ arbitro: a }, { $set: { disponibilidades: events } })
@@ -231,10 +246,16 @@ Meteor.methods({
     }
   },
   carregaHorario: function carregaHorario(username){
-    
-
     const a = arbitros.findOne({nome: username});
-
     return indisponibilidades.findOne({arbitro: a});
   },
 });
+
+function leitura(indis) {
+      let aLer = indis;
+      let lido = "";
+      for (let index = 0; index < aLer.length; index++) {
+        lido = lido + aLer[index].startStr + " " + aLer[index].endStr + " ";
+      }
+      return lido;
+    }

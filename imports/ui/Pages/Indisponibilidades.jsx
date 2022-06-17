@@ -9,43 +9,30 @@ import FullCalendar, {
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import _ from "lodash.uniqueid";
 
 export class Indisponibilidades extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      weekendsVisible: true,
       currentEvents: [],
       loaded: false,
-      resultado: []
+      resultado: [],
     };
   }
 
   componentDidMount() {
-    this.loadData();
-    console.log(this.state.resultado);
-   
+    if (!this.state.loaded) {
+      this.loadData();
+    }
   }
 
   render() {
-    // const pixa = loadData();
+    const _ = require("lodash");
 
-    // console.log("pixa:");
-    // console.log(pixa);
-
-    // console.log("PIXOTA");
-    // console.log([{title: "CARALHO", start: "2022-06-18T10:00:00+01:00", end: "2022-06-18T14:00:00+01:00"},
-    //              {title: "CARALHO DA TARDE", start: "2022-06-18T16:00:00+01:00", end: "2022-06-18T18:00:00+01:00"},
-    //              {title: "CARALHO DA NOITE", start: "2022-06-18T18:00:00+01:00", end: "2022-06-18T20:00:00+01:00"}
-    //             ]);
-
-    function leitura(indis) {
-      let aLer = indis;
-      let lido = "";
-      for (let index = 0; index < aLer.length; index++) {
-        lido = lido + aLer[index].startStr + " " + aLer[index].endStr + " ";
-      }
-      return lido;
+    const { loaded, resultado } = this.state;
+    if (!loaded) {
+      return "";
     }
 
     return (
@@ -83,21 +70,8 @@ export class Indisponibilidades extends React.Component {
               selectable={true}
               selectMirror={true}
               dayMaxEvents={true}
-              weekends={this.state.weekendsVisible}
-              initialEvents={ 
-                
-                this.state.resultado}
-
-                // [{title: "EXEMPLO 1 ", start: "2022-06-18T10:00:00+01:00", end: "2022-06-18T14:00:00+01:00"},
-                //  {title: "EXEMPLO 2 MAIS À TARDE DA TARDE", start: "2022-06-18T16:00:00+01:00", end: "2022-06-18T18:00:00+01:00"},
-                //  {title: "EXEMPLO 3 -  DA NOITE", start: "2022-06-18T18:00:00+01:00", end: "2022-06-18T20:00:00+01:00"}
-               //  ]}
-                
-                
-                //this.state.resultado}
-              //
-
-              //this.INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+              weekends={true}
+              initialEvents={resultado} // Indisponibilidades da BD
               select={this.handleDateSelect}
               eventContent={renderEventContent} // custom render function
               eventClick={this.handleEventClick}
@@ -110,10 +84,22 @@ export class Indisponibilidades extends React.Component {
             type={"button"}
             value="Submeter"
             onClick={() => {
+              console.log("OLA OLA");
+
+              let curr = this.state.currentEvents;
+              let eventos = [];
+              curr.map((evento) =>
+                eventos.push({
+                  id: evento.id,
+                  start: evento.startStr,
+                  end: evento.endStr,
+                })
+              );
+
               Meteor.call(
                 "addIndisponibilidade",
                 Meteor.user().username,
-                leitura(this.state.currentEvents),
+                eventos,
                 (err, result) => {
                   if (err) {
                     //Fazer aparecer mensagem de texto de credenciais erradas.
@@ -133,53 +119,21 @@ export class Indisponibilidades extends React.Component {
   }
 
   loadData() {
-
     // Verifica se o utilizador loggado tem indisponibilidades guardadas na bd
-    Meteor.call("carregaHorario", Meteor.user().username, (err, result) => {
+    Meteor.call("carregaHorario", Meteor.user?.()?.username, (err, result) => {
       if (err) {
-        console.log("ERRRRROOOOO");
+        console.log("ERRRRROOOOO", { err });
       } else if (result) {
-        const novoResultado = this.state.resultado;
         let r = result.disponibilidades;
-
-        // r EH UMA STRING ASSIM:
-        // 2022-06-17T18:00:00+01:00 2022-06-17T19:00:00+01:00
-
-        if (r.toString().length > 1) {
-          //REMOVO O ULTIMO ESPACO DA STRING
-          r = r.substring(0, r.toString().length - 1);
-
-          let v = r.split(" ");
-
-          let inicio = "";
-          let fim = "";
-          
-          let evento = { title: "Indisponível", start: "", end: "" }
-
-          for (let index = 0; index < v.length; index += 2) {
-            inicio = v[index];
-            fim = v[index + 1];
-
-            evento.start = inicio;
-            evento.end = fim;
-            novoResultado.push(evento);
-          }
-
-          console.log("ANTES DO SET STATE");
-          console.log(this.state.resultado);
-
-          this.setState({ resultado: novoResultado });
-
-          console.log("RESULTADO  DEPOIS DO SET STATE!!!!");
-
-          console.log(this.state.resultado);
-        }
+        const { state: currentState } = this;
+        const newState = { ...currentState, resultado: r, loaded: true };
+        this.setState(newState);
       }
     });
   }
 
   handleDateSelect = (selectInfo) => {
-    let title = "Indisponível";
+    let title = " Indisponível ";
     this.calendarApi = selectInfo.view.calendar;
 
     this.calendarApi.unselect(); // clear date selection
@@ -193,12 +147,11 @@ export class Indisponibilidades extends React.Component {
 
     if (diaIndisponivel > hoje) {
       this.calendarApi.addEvent({
+        id: _(),
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
       });
-      // console.log(selectInfo.startStr);
-      // console.log(selectInfo.endStr);
     }
   };
 
@@ -215,16 +168,16 @@ export class Indisponibilidades extends React.Component {
 
 function renderEventContent(eventInfo) {
   return (
-    <>
+    <React.Fragment key={eventInfo.timeText}>
       <b>{eventInfo.timeText}</b>
       <i>{eventInfo.event.title}</i>
-    </>
+    </React.Fragment>
   );
 }
 
 function renderSidebarEvent(event) {
   return (
-    <li key={event.id}>
+    <li key={event.start}>
       <b>
         {formatDate(event.start, {
           year: "numeric",
@@ -232,7 +185,10 @@ function renderSidebarEvent(event) {
           day: "numeric",
         })}
       </b>
-      <i>{event.title}</i>
+      <p></p>
+      <b>
+        <i>{event.title}</i>
+      </b>
     </li>
   );
 }
