@@ -1,11 +1,10 @@
 import React from "react";
 
-import "./styles.css";
+import "./app.css";
 
 import { Indisponibilidades } from "./Indisponibilidades";
 import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
-import { useState } from "react/cjs/react.production.min";
 
 export const Profile = () => {
   function changeUsernameStatus() {
@@ -23,7 +22,7 @@ export const Profile = () => {
         </div>
 
         <div id="restricoes" hidden>
-          <Restricoes></Restricoes>
+        <Restricoes></Restricoes>
         </div>
 
         <div id="consultaPrivada">

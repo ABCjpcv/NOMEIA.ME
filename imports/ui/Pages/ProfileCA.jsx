@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Meteor } from "meteor/meteor";
 
-import "./styles.css";
+import "./app.css";
 import { Fragment } from "react/cjs/react.production.min";
 import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
 import { FileInput } from "./FileInput";

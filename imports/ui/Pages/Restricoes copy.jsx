@@ -1,44 +1,38 @@
+/**
+ * 
+ * UNUSED
+ * 
+ * 
+ */
+
+
+
+
 import React from "react";
+import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
+import "./index.css";
 import { Table, Input, Dropdown, Select } from "antd";
 
-import { useTableSearch } from "./useTableSearch";
 import { listaClubesColumns } from "./listaClubesColumns";
 
 const { Search } = Input;
 
-export class Restricoes extends React.Component {
+const fetchData = async () => {
+  const { data } = await axios.get("ClubesAVLnomes.json");
+  return { data };
+};
+
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchVal: "",
-      loading: false,
-      loaded: false,
-      currentData: [],
+      searchData: null,
+      loading: false
     };
   }
-
-  componentDidMount() {
-    if (!this.state.loaded) {
-      this.loadData();
-    }
-  }
- 
 
   render() {
-    const searchValue = this.state.searchVal;
-
-    const usefetchData = async () => {
-      const { data } = await axios.get("ClubesAVLnomes.json");
-      return { data };
-    };
-
-    
-    const { filteredData, loading } = useTableSearch({
-      searchValue,
-      retrieve: usefetchData,
-    });
-
     return (
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>
@@ -46,10 +40,9 @@ export class Restricoes extends React.Component {
             <div>
               <label>
                 Relações com clubes:
+                <br></br>
                 <Search
-                  onChange={(e) =>
-                    this.setState({ searchData: e.target.value })
-                  }
+                  onChange={(e) => this.setState({ searchVal: e.target.value })}
                   placeholder="Search"
                   enterButton
                   style={{
@@ -57,20 +50,19 @@ export class Restricoes extends React.Component {
                     top: "0",
                     left: "0",
                     width: "200px",
-                    marginTop: "2vh",
+                    marginTop: "2vh"
                   }}
                 />
               </label>
               <br /> <br />
               <Table
                 columns={listaClubesColumns}
-                dataSource={filteredData}
-                loading={loading}
+                dataSource={fetchData}
                 onRow={(record) => ({
                   onClick: () => {
                     // TRATA DE ALTERACAO DE DADOS QUANDO ACONTECE CLICK NA TABELA
                     // this.selectRow(record);
-                  },
+                  }
                 })}
               />
             </div>
@@ -80,14 +72,6 @@ export class Restricoes extends React.Component {
       </div>
     );
   }
-
-  loadData() {
-    const  data = null;
-    async () => {
-      data = await axios.get("ClubesAVLnomes.json");
-    };
-    const { state: currentState } = this;
-      const newState = { ...currentState, currentData: data, loaded: true };
-      this.setState(newState);
-  }
 }
+
+ReactDOM.render(<App />, document.getElementById("container"));
