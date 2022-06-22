@@ -27,10 +27,10 @@ export class Header extends React.Component {
             As minhas nomeações 📅🏐
           </p>
           <p id="indisponibilidadePrivadas" style={{ margin: "0" }} hidden={true}>
-            Marcação de Indisponibilidades:
+            Marcação de Indisponibilidades
           </p>
           <p id="RestricoesPrivadas" style={{ margin: "0" }} hidden={true}>
-            Marcação de Restrições:
+          Relações com clubes
           </p>
         </div>
 

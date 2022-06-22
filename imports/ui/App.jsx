@@ -21,7 +21,7 @@ export const App = () => (
 
     <Router>
     <Header></Header>
-    <div style={{ textAlign: "center" }}>
+    <div style={{ textAlign: "center", backgroundColor: "#b9b7b7" }}>
       
         <Routes>
           <Route path="/" element={<Home />}></Route>

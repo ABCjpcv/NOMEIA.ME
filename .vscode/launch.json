@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        
+
+        {
+            "type": "pwa-msedge",
+            "name": "nomeia_me",
+            "request": "launch",
+            "url": "localhost:3000"
+        }
+    ]
+}

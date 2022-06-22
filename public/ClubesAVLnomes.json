@@ -2,223 +2,223 @@
   {
     "key": " 1",
     "Clube": "Academia De Voleibol Colégio Atlântico",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 2",
     "Clube": "Academia Mateus Nogueira",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 3",
     "Clube": "Academia Voleibol Praia",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 4",
     "Clube": "Ape Lobato",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 5",
     "Clube": "Associação De Voleibol Da Escola B. Sec. Gama Barros",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 6",
     "Clube": "Associação Desportiva Marista",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 7",
     "Clube": "Cascais Volley4all",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 8",
     "Clube": "Cd Alverca Volei",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 9",
     "Clube": "Centro De Voleibol De Lisboa",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 10",
     "Clube": "Cf Belenenses",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 11",
     "Clube": "Clube Col Guadalupe",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 12",
     "Clube": "Clube Desportivo Colégio Minerva",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 13",
     "Clube": "Clube Desportivo Marista De Carcavelos",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 14",
     "Clube": "Clube Juvenil De Voleibol Filipa De Lencastre",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 15",
     "Clube": "Clube Nacional De Ginástica",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 16",
     "Clube": "Clube Recreativo Piedense",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 17",
     "Clube": "Clube Voleibol De Oeiras",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 18",
     "Clube": "Colégio Pedro Arrupe",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 19",
     "Clube": "Colégio Salesianos De Lisboa – Oficina S. José",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 20",
     "Clube": "Colégio São João De Brito",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 21",
     "Clube": "Famões Clube Atlético",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 22",
     "Clube": "Gd Sesimbra",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 23",
     "Clube": "Ginásio Clube Português",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 24",
     "Clube": "Grupo Dramático E Sportivo De Cascais",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 25",
     "Clube": "Grupo Rec. Cultural Do Bom Retiro",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 26",
     "Clube": "Grupo União Recreativo E Desportivo \"Mtba",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 27",
     "Clube": "Lobatos Volley",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 28",
     "Clube": "Lusófona Vc",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 29",
     "Clube": "Madeira Torres",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 30",
     "Clube": "Odivelas Sports Club",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 31",
     "Clube": "Odivelas Voleibol Clube",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 32",
     "Clube": "Salesianos Do Estoril",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 33",
     "Clube": "Sintra Volei",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 34",
     "Clube": "Sport Lisboa E Benfica",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 35",
     "Clube": "Sporting Clube De Torres",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 36",
     "Clube": "Sporting Cp",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   },
   {
     "key": " 37",
     "Clube": "Volei Clube De Setúbal 1990",
-    "Restrição": "",
-    "Descrição": ""
+    "Restricao": { "Atleta":false, "Dirigente":false, "Treinador":false, "Outra":false},
+    "Descricao": ""
   }
 ]
