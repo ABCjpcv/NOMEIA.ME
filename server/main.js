@@ -19,12 +19,23 @@ let restricoes = new Mongo.Collection("restricoes");
  */
 
  //Schema restricoes
+
+ const relacoesSchema = new SimpleSchema({
+  key: {type: Number,optional: false},
+  clube: {type: String,optional: false},
+  restricao: { type: Array, optional: true },
+  'restricao.$': { type: Boolean },
+  descricao: { type:  String, optional: true}
+ })
+
 restricoes.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
-  recibo: { type:Boolean, optional: false},
-  carro: { type:Boolean, optional: false},
-  clubeRelacionado:{type: clubes, optional:true}
+  recibo: { type:Boolean, optional: true},
+  carro: { type:Boolean, optional: true},
+  relacoes: [relacoesSchema],
 })
+
+//Schema indisponibilidades
 
 const eventSchema = new SimpleSchema({
   
@@ -34,7 +45,6 @@ const eventSchema = new SimpleSchema({
   
 })
 
-//Schema indisponibilidades
 indisponibilidades.schema = new SimpleSchema({
   arbitro: { type:arbitros, optional: false},
   disponibilidades: [eventSchema]
@@ -137,6 +147,16 @@ Meteor.startup(() => {
     console.log("inserted: " + user.username);
   });
 
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR INDISPONIBILIDADES   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
   var arb = arbitros.find();
 
   indisponibilidades.rawCollection().drop();
@@ -146,7 +166,41 @@ Meteor.startup(() => {
       arbitro: arbitro,
       disponibilidades: ""
     });
+    console.log("inserted: INDISPONIBILIDADE");
   });
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR RESTRICOES   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  restricoes.rawCollection().drop();
+
+
+arb.forEach((arbitro)=> {
+    restricoes.insert({
+      arbitro: arbitro,
+      recibo: "",
+      carro: "",
+      relacoes: "",
+    })
+    console.log("inserted: RESTRICAO ");
+  });
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR JOGOS   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
 
   //Get the csvText:
   var csvFile = Assets.getText("Livro1.csv");
@@ -244,6 +298,50 @@ Meteor.methods({
   carregaHorario: function carregaHorario(username){
     const a = arbitros.findOne({nome: username});
     return indisponibilidades.findOne({arbitro: a});
+  },
+
+  /*****************************************************************
+   **************** METODOS DAS RESTRICOES_PRIVADAS *************
+   *****************************************************************
+   */
+
+
+  //  const relacoesSchema = new RelacoesSchema({
+  //   key: {type: Number,optional: false},
+  //   clube: {type: String,optional: false},
+  //   restricao: { type: [Boolean],optional: false},
+  //   descricao: { type:  String, optional: true}
+  //  })
+  
+  // restricoes.schema = new SimpleSchema({
+  //   arbitro: { type: arbitros, optional: false },
+  //   recibo: { type:Boolean, optional: true},
+  //   carro: { type:Boolean, optional: true},
+  //   relacoes: {type: [relacoesSchema], optional: true},
+  // })
+
+   addRestricao: function addRestricao(username, restrictions) {
+
+    console.log("PICHA");
+  
+
+    // restrictions.forEach(element => {
+    //   element.title = " Indisponível "
+    // });
+
+    try {
+      const a = arbitros.findOne({nome: username});
+      restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } })
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  carregaRestricoes: function carregaRestricoes(username){
+    console.log("CONA");
+    const a = arbitros.findOne({nome: username});
+    return restricoes.findOne({arbitro: a});
   },
 });
 

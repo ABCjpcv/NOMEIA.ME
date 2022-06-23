@@ -9,7 +9,7 @@ import { ConsultaPrivada } from "./ConsultaPrivada";
 export const Profile = () => {
   function changeUsernameStatus() {
     document.getElementById("usernameStatus").innerHTML =
-      Meteor.user().username;
+    Meteor.user?.()?.username;
   }
 
   changeUsernameStatus();
