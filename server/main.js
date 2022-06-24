@@ -22,6 +22,7 @@ let restricoes = new Mongo.Collection("restricoes");
 
  const relacoesSchema = new SimpleSchema({
   key: {type: Number,optional: false},
+  // key = linha da Tabela 
   clube: {type: String,optional: false},
   restricao: { type: Array, optional: true },
   'restricao.$': { type: Boolean },
@@ -322,7 +323,7 @@ Meteor.methods({
 
    addRestricao: function addRestricao(username, restrictions) {
 
-    console.log("PICHA");
+    
   
 
     // restrictions.forEach(element => {

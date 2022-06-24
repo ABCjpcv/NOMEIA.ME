@@ -20,54 +20,59 @@ let sleep = (milliseconds) => {
 import { Checkbox } from "antd";
 
 let currChange = "";
-
-const onChange = function (checkedValues) {
+const onChangeCheckbox = function (checkedValues) {
   currChange = checkedValues;
   return checkedValues;
 };
 
-export const listaClubesColumns = [
-  {
-    title: "Clube",
-    dataIndex: "Clube",
-    key: "Clube",
-  },
-  {
-    title: "Restrição",
-    dataIndex: "Restrição",
-    key: "Restrição",
-    render: (record) => (
-      <div style={{ width: "auto" }}>
-        <>
-          <Checkbox.Group onChange={onChange}>
-            <Checkbox value="Atleta">Atleta</Checkbox>
-            <Checkbox value="Dirigente">Dirigente</Checkbox>
-            <Checkbox value="Treinador">Treinador</Checkbox>
-            <Checkbox value="Outra">Outra</Checkbox>
-          </Checkbox.Group>
-        </>
-      </div>
+let currChangeText = "";
+const onChangeText = function (e) {
+  currChangeText = e.target.value;
+  return currChangeText;
+};
 
-      // <select name="restricao" defaultValue={"Nenhuma"}>
-      //   <option value="Nenhuma"> </option>
-      //   <option value="Treinador">Treinador</option>
-      //   <option value="Atleta">Atleta</option>
-      //   <option value="Dirigente">Dirigente</option>
-      //   <option value="Outro">Outro</option>
-      // </select>
-    ),
-  },
-  {
-    title: "Descrição",
-    dataIndex: "Descrição",
-    key: "Descrição",
-    render: () => (
-      <div style={{ width: "auto" }}>
-        <input type="text" name="descricao"></input>
-      </div>
-    ),
-  },
-];
+export const listaClubesColumns =  [
+    {
+      title: "Clube",
+      dataIndex: "Clube",
+      key: "Clube",
+    },
+    {
+      title: "Restrição",
+      dataIndex: "Restrição",
+      key: "Restrição",
+      render: (_, record) => (
+        <div style={{ width: "auto" }}>
+          <>
+            <Checkbox.Group onChange={onChangeCheckbox}>
+              <Checkbox value="Atleta" checked={record.Atleta}>
+                Atleta
+              </Checkbox>
+              <Checkbox value="Dirigente" checked={record.Dirigente}>
+                Dirigente
+              </Checkbox>
+              <Checkbox value="Treinador" checked={record.Treinador}>
+                Treinador
+              </Checkbox>
+              <Checkbox value="Outra" checked={record.Outra}>
+                Outra
+              </Checkbox>
+            </Checkbox.Group>
+          </>
+        </div>
+      ),
+    },
+    {
+      title: "Descrição",
+      dataIndex: "Descrição",
+      key: "Descrição",
+      render: () => (
+        <div style={{ width: "auto" }}>
+          <input type="text" name="descricao" onChange={onChangeText}></input>
+        </div>
+      ),
+    },
+  ];
 
 export function Restricoes() {
   const [searchVal, setSearchVal] = useState(null);
@@ -81,60 +86,58 @@ export function Restricoes() {
 
   let [loaded, setLoaded] = useState(false);
 
-console.log(loaded);
-    console.log("ANTES DO IF");
-    if(!loaded) {
-      console.log("DENTRO DO IF");
-      loadData();
-      ()=>setLoaded(true);
-    }
-
-    console.log("DEPOIS DO IF");
-  
-
-
-  
-
-  function loadData() {
-    // Verifica se o utilizador loggado tem indisponibilidades guardadas na bd
-    Meteor.call("carregaRestricoes", Meteor.user?.()?.username, (err, result) => {
-      if (err) {
-        console.log("ERRRRROOOOO", { err });
-      } else if (result) {
-
-        console.log(" *** BANANA NA N BANANA NA ***");
-
-
-        // TODO YET 
-
-        console.log("RESULTS:::");
-
-        let j = JSON.parse(JSON.stringify(result));
-
-        console.log(result);
-
-
-        let dataFromDB = j.relacoes.data;
-
-
-        console.log("data from CHANGES guardadas");
-
-        console.log(dataFromDB);
-
-     //   key: {type: Number,optional: false},
-  //   clube: {type: String,optional: false},
-  //   restricao: { type: [Boolean],optional: false},
-  //   descricao: { type:  String, optional: true}
-
-
-        data = dataFromDB};
-      
-    });
+  if (!loaded) {
+    loadData();
+    () => setLoaded(true);
   }
 
-  
+  function loadData() {
+    // Verifica se o utilizador loggado tem restricoes guardadas na bd
+    Meteor.call(
+      "carregaRestricoes",
+      Meteor.user?.()?.username,
+      (err, result) => {
+        if (err) {
+          console.log("ERRRRROOOOO", { err });
+        } else if (result) {
+          // TODO YET
 
-  // const [state, useState] = useState({});
+          console.log("RESULT:::::::::::::::");
+          console.log(result);
+
+          let j = JSON.parse(JSON.stringify(result));
+
+          console.log("J");
+          console.log(j);
+
+          let dataFromDB = j.relacoes.data;
+
+          console.log("dataFROMDB");
+          console.log(dataFromDB);
+
+          //   key: {type: Number,optional: false},
+          //   clube: {type: String,optional: false},
+          //   restricao: { type: [Boolean],optional: false},
+          //   descricao: { type:  String, optional: true}
+
+          console.log("DATA antes de dar update com a info da BD");
+          console.log(data);
+
+          setData(dataFromDB);
+
+          console.log("DATA depois do update com a info da BD");
+          console.log(data);
+        }
+      }
+    );
+  }
+
+  // vou testar aqui o que é o filteredData:
+
+  console.log("********************************************************");
+  console.log(filteredData);
+
+  // 
 
   return (
     <div>
@@ -159,26 +162,18 @@ console.log(loaded);
             <Table
               className="tableRestricoes"
               columns={listaClubesColumns}
-              dataSource={filteredData}
+              dataSource={filteredData.relacoes}
               loading={loading}
-              // onChange={(e) => {
-              //   setData(e.target.value);
-              //   console.log(e);
-              // }}
               onRow={(record) => {
                 let k = 1;
                 let boolAr = [false, false, false, false];
-                let r;
+
                 return {
                   onClick: (event) => {
                     // save row data to state
 
-                    sleep(1000).then((r) => {
+                    sleep(2500).then((r) => {
                       const curr = new Set(currChange);
-
-                      console.log("CURR");
-                      console.log(curr);
-                      
 
                       if (Array.from(curr).includes("Atleta")) boolAr[0] = true;
                       if (Array.from(curr).includes("Dirigente"))
@@ -187,53 +182,31 @@ console.log(loaded);
                         boolAr[2] = true;
                       if (Array.from(curr).includes("Outra")) boolAr[3] = true;
 
-                      console.log("boolAr AFTER CHANGES");
-                      console.log(boolAr);
-
                       k = record.key;
 
-                      console.log("VALOR DE K");
-                      console.log(k);
+                      const currText = currChangeText;
 
-                      let resultadoFinal;
+                      const analyzer = Promise.resolve(data);
 
-                      data.then(resultado => 
-                        {
-
-                        let obj = resultado.data[k-1];
-                        console.log("OBJ OBJ OBJ OBJ OBJ");
-                        console.log(obj);
+                      analyzer.then((resultado) => {
+                        let obj = resultado.data[k - 1];
 
                         let j = JSON.parse(JSON.stringify(obj));
-                      
+
                         j.Restricao = {
                           Atleta: boolAr[0],
                           Dirigente: boolAr[1],
                           Treinador: boolAr[2],
-                          Outra: boolAr[3]
-                        }
+                          Outra: boolAr[3],
+                        };
 
-                        resultado.data[k-1] = j;
+                        j.Descricao = currText;
+                        resultado.data[k - 1] = j;
 
-                        data = resultado;
-  
-                        
-console.log("11111111111111111111111111111");
-                        console.log(resultado);
-                        
-setData(resultado)
-console.log("22222222222222222222222222");
-                        console.log(data)
-
-                        }
-                        )
+                        setData(resultado);
+                      });
                     });
-
-
-                    
-
-                    
-                  }, // click row
+                  },
                 };
               }}
             />
@@ -242,24 +215,18 @@ console.log("22222222222222222222222222");
             type="button"
             value="Submeter"
             onClick={() => {
-              console.log("ADEUS ADEUS");
-
-              console.log("FARMACIA *********************");
-              
-console.log(data);
-
               Meteor.call(
                 "addRestricao",
                 Meteor.user().username,
                 data,
                 (err, result) => {
-                  console.log("CHEGASTE ATE AQUI?????");
                   if (err) {
                     //Fazer aparecer mensagem de texto de credenciais erradas.
                     console.log(err);
                   } else if (result) {
-                    window.alert("Relações com clubes guardadas " + Meteor.user().username);
-
+                    window.alert(
+                      "Relações com clubes guardadas " + Meteor.user().username
+                    );
                   }
                 }
               );
@@ -269,39 +236,4 @@ console.log(data);
       </div>
     </div>
   );
-}
-
-
-function updateJson(obj, keyString, newValue){
-  // //let json = new JSONObject();
-  // // get the keys of json object
-  // let iterator = obj.keys();
-  // let key = "";
-  // while (iterator.hasNext()) {
-  //     key = iterator.next();
-  //     // if the key is a string, then update the value
-  //     if ((obj.optJSONArray(key) == null) && (obj.optJSONObject(key) == null)) {
-  //         if ((key.equals(keyString))) {
-  //             // put new value
-  console.log("OBJECTO OBJECTO");
-  console.log(obj)
-              obj.keyString = newValue;
-              return obj;
-  //         }
-  //     }
-
-  //     // if it's jsonobject
-  //     if (obj.optJSONObject(key) != null) {
-  //         updateJson(obj.getJSONObject(key), keyString, newValue);
-  //     }
-
-  //     // if it's jsonarray
-  //     if (obj.optJSONArray(key) != null) {
-  //          jArray = obj.getJSONArray(key);
-  //         for (let i = 0; i < jArray.length(); i++) {
-  //             updateJson(jArray.getJSONObject(i), keyString, newValue);
-  //         }
-  //     }
-  // }
-  // return obj;
 }
