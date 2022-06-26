@@ -236,7 +236,8 @@ Meteor.methods({
     });
     console.log(result.error == null);
     if (result) return user.username;
-    if (!result) return result;
+    else throw new Meteor.Error("Passwords do not match")
+    
   },
 
   registerUser: function registerUser(

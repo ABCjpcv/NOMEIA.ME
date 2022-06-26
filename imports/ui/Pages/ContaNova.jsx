@@ -60,7 +60,7 @@ export function ContaNova() {
                 if (!err) {
                   console.log("ENTRASTE????");
                   if (result) {
-                    Meteor.call("readCsv", "Livro1.csv");
+                    //Meteor.call("readCsv", "Livro1.csv");
                     console.log(document.getElementById("nome").value);
                     // Meteor.loginWithPassword(
                     //   document.getElementById("nome").value,

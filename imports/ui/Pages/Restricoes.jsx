@@ -17,79 +17,95 @@ let sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 };
 
-import { Checkbox } from "antd";
-
 let currChange = "";
-const onChangeCheckbox = function (checkedValues) {
-  currChange = checkedValues;
-  return checkedValues;
+const onChangeCheckbox = function (e) {
+  currChange = e.target.value;
+  return currChange;
 };
 
-let currChangeText = "";
+let currText = "";
 const onChangeText = function (e) {
-  currChangeText = e.target.value;
-  return currChangeText;
+  currText = e.target.value;
+  return currText;
 };
 
-export const listaClubesColumns =  [
-    {
-      title: "Clube",
-      dataIndex: "Clube",
-      key: "Clube",
-    },
-    {
-      title: "Restrição",
-      dataIndex: "Restrição",
-      key: "Restrição",
-      render: (_, record) => (
-        <div style={{ width: "auto" }}>
-          <>
-            <Checkbox.Group onChange={onChangeCheckbox}>
-              <Checkbox value="Atleta" checked={record.Atleta}>
-                Atleta
-              </Checkbox>
-              <Checkbox value="Dirigente" checked={record.Dirigente}>
-                Dirigente
-              </Checkbox>
-              <Checkbox value="Treinador" checked={record.Treinador}>
-                Treinador
-              </Checkbox>
-              <Checkbox value="Outra" checked={record.Outra}>
-                Outra
-              </Checkbox>
-            </Checkbox.Group>
-          </>
-        </div>
-      ),
-    },
-    {
-      title: "Descrição",
-      dataIndex: "Descrição",
-      key: "Descrição",
-      render: () => (
-        <div style={{ width: "auto" }}>
-          <input type="text" name="descricao" onChange={onChangeText}></input>
-        </div>
-      ),
-    },
-  ];
+export const listaClubesColumns = [
+  {
+    title: "Clube",
+    dataIndex: "Clube",
+    key: "Clube",
+  },
+  {
+    title: "Restrição",
+    dataIndex: "Restrição",
+    key: "Restrição",
+    render: (_, { Restricao }) => (
+      <div style={{ width: "auto" }}>
+        <input
+          type="checkbox"
+          value="Atleta"
+          onChange={onChangeCheckbox}
+          defaultChecked={Restricao[0]}
+        />{" "}
+        Atleta
+        <input
+          type="checkbox"
+          value="Dirigente"
+          onChange={onChangeCheckbox}
+          defaultChecked={Restricao[1]}
+        />{" "}
+        Dirigente
+        <input
+          type="checkbox"
+          value="Treinador"
+          onChange={onChangeCheckbox}
+          defaultChecked={Restricao[2]}
+        />
+        Treinador
+        <input
+          type="checkbox"
+          value="Outra"
+          onChange={onChangeCheckbox}
+          defaultChecked={Restricao[3]}
+        />{" "}
+        Outra
+      </div>
+    ),
+  },
+  {
+    title: "Descrição",
+    dataIndex: "Descrição",
+    key: "Descrição",
+    render: (_, Descricao) => (
+      <input
+        type="text"
+        name="descricao"
+        style={{ width: "auto" }}
+        onChange={onChangeText}
+        defaultValue={Descricao.value}
+      ></input>
+    ),
+  },
+];
 
 export function Restricoes() {
   const [searchVal, setSearchVal] = useState(null);
 
+  let [loaded, setLoaded] = useState(false);
+  
   let [data, setData] = useState(fetchData);
+
+  if (!loaded) {
+    setLoaded(true);
+    loadData();
+  }
 
   const { filteredData, loading } = useTableSearch({
     searchVal,
     retrieve: fetchData,
   });
 
-  let [loaded, setLoaded] = useState(false);
-
-  if (!loaded) {
-    loadData();
-    () => setLoaded(true);
-  }
+  
 
   function loadData() {
     // Verifica se o utilizador loggado tem restricoes guardadas na bd
@@ -100,8 +116,8 @@ export function Restricoes() {
         if (err) {
           console.log("ERRRRROOOOO", { err });
         } else if (result) {
-          // TODO YET
 
+         
           console.log("RESULT:::::::::::::::");
           console.log(result);
 
@@ -110,34 +126,29 @@ export function Restricoes() {
           console.log("J");
           console.log(j);
 
-          let dataFromDB = j.relacoes.data;
+          if (j.relacoes.length <= 0) {
+            return;
+          }
+
+          let dataFromDB = j.relacoes;
 
           console.log("dataFROMDB");
           console.log(dataFromDB);
 
-          //   key: {type: Number,optional: false},
-          //   clube: {type: String,optional: false},
-          //   restricao: { type: [Boolean],optional: false},
-          //   descricao: { type:  String, optional: true}
-
-          console.log("DATA antes de dar update com a info da BD");
-          console.log(data);
-
-          setData(dataFromDB);
-
-          console.log("DATA depois do update com a info da BD");
-          console.log(data);
+          setData(Promise.resolve(dataFromDB));
+        
         }
       }
     );
   }
 
-  // vou testar aqui o que é o filteredData:
-
-  console.log("********************************************************");
-  console.log(filteredData);
-
-  // 
+  useEffect(() => {
+    console.log(
+      "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    );
+    console.log("DATA");
+    console.log(data);
+  }, [data]);
 
   return (
     <div>
@@ -162,7 +173,7 @@ export function Restricoes() {
             <Table
               className="tableRestricoes"
               columns={listaClubesColumns}
-              dataSource={filteredData.relacoes}
+              dataSource={filteredData}
               loading={loading}
               onRow={(record) => {
                 let k = 1;
@@ -172,8 +183,15 @@ export function Restricoes() {
                   onClick: (event) => {
                     // save row data to state
 
-                    sleep(2500).then((r) => {
-                      const curr = new Set(currChange);
+                    sleep(1500).then((r) => {
+                      const curr = $("input[type=checkbox]:checked")
+                        .map(function (_, el) {
+                          return $(el).val();
+                        })
+                        .get();
+
+                      console.log("curr");
+                      console.log(curr);
 
                       if (Array.from(curr).includes("Atleta")) boolAr[0] = true;
                       if (Array.from(curr).includes("Dirigente"))
@@ -184,26 +202,27 @@ export function Restricoes() {
 
                       k = record.key;
 
-                      const currText = currChangeText;
-
                       const analyzer = Promise.resolve(data);
-
                       analyzer.then((resultado) => {
+                        console.log("RESULTADO");
+                        console.log(resultado);
+
                         let obj = resultado.data[k - 1];
 
                         let j = JSON.parse(JSON.stringify(obj));
 
-                        j.Restricao = {
-                          Atleta: boolAr[0],
-                          Dirigente: boolAr[1],
-                          Treinador: boolAr[2],
-                          Outra: boolAr[3],
-                        };
+                        console.log(j);
 
+                        j.Restricao = boolAr;
                         j.Descricao = currText;
+
+                        console.log(j);
+
                         resultado.data[k - 1] = j;
 
-                        setData(resultado);
+                        setData(Promise.resolve(resultado));
+
+                        currText = "";
                       });
                     });
                   },
@@ -215,21 +234,25 @@ export function Restricoes() {
             type="button"
             value="Submeter"
             onClick={() => {
-              Meteor.call(
-                "addRestricao",
-                Meteor.user().username,
-                data,
-                (err, result) => {
-                  if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas.
-                    console.log(err);
-                  } else if (result) {
-                    window.alert(
-                      "Relações com clubes guardadas " + Meteor.user().username
-                    );
+              let dataParaBD = Promise.resolve(data);
+              dataParaBD.then((resultado) => {
+                Meteor.call(
+                  "addRestricao",
+                  Meteor.user().username,
+                  resultado.data,
+                  (err, result) => {
+                    if (err) {
+                      //Fazer aparecer mensagem de texto de credenciais erradas.
+                      console.log(err);
+                    } else if (result) {
+                      window.alert(
+                        "Relações com clubes guardadas " +
+                          Meteor.user().username
+                      );
+                    }
                   }
-                }
-              );
+                );
+              });
             }}
           />
         </form>
