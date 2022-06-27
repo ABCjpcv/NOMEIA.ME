@@ -17,6 +17,7 @@ export const useTableSearch = ({ searchVal, retrieve }) => {
       return allValues;
     };
     const fetchData = async () => {
+      console.log(await retrieve())
       const { data: users } = await retrieve();
       setOrigData(users);
       setFilteredData(users);
