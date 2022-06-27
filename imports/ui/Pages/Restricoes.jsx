@@ -82,76 +82,72 @@ export const listaClubesColumns = [
         name="descricao"
         style={{ width: "auto" }}
         onChange={onChangeText}
-        defaultValue={Descricao.value}
+        defaultValue={Descricao.value }
       ></input>
     ),
   },
 ];
-
-export function Restricoes() {
-  const [searchVal, setSearchVal] = useState(null);
-
-  let [loaded, setLoaded] = useState(false);
-  
-  let [data, setData] = useState(fetchData);
-
-  if (!loaded) {
-    setLoaded(true);
-    loadData();
-  }
-
-  const { filteredData, loading } = useTableSearch({
-    searchVal,
-    retrieve: fetchData,
-  });
-
-  
-
-  function loadData() {
-    // Verifica se o utilizador loggado tem restricoes guardadas na bd
+function loadData() {
+  // Verifica se o utilizador loggado tem restricoes guardadas na bd
+  return new Promise((resolve, reject) => {
     Meteor.call(
       "carregaRestricoes",
       Meteor.user?.()?.username,
       (err, result) => {
         if (err) {
           console.log("ERRRRROOOOO", { err });
+          reject(err)
         } else if (result) {
 
-         
-          console.log("RESULT:::::::::::::::");
-          console.log(result);
-
+          
+          // console.log("RESULT:::::::::::::::");
+          // console.log(result);
+          
           let j = JSON.parse(JSON.stringify(result));
-
-          console.log("J");
-          console.log(j);
-
-          if (j.relacoes.length <= 0) {
-            return;
-          }
-
+          
+          // console.log("J");
+          // console.log(j);
+          
+          // if (j.relacoes.length <= 0) {
+          //   return;
+          // }
+          
           let dataFromDB = j.relacoes;
-
+          
           console.log("dataFROMDB");
           console.log(dataFromDB);
+          if(dataFromDB == ''){
+            resolve(fetchData())
+          }
+          else{
 
-          setData(Promise.resolve(dataFromDB));
-        
+            resolve({data: dataFromDB});
+          }
+          
         }
       }
     );
-  }
+  })
+}
 
-  useEffect(() => {
-    console.log(
-      "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-    );
-    console.log("DATA");
-    console.log(data);
-  }, [data]);
+export function Restricoes() {
+  const [searchVal, setSearchVal] = useState(null);
 
-  return (
-    <div>
+  
+  let [data, setData] = useState(fetchData);
+
+  
+  const { filteredData, loading } = useTableSearch({
+    searchVal,
+    retrieve: loadData 
+  });
+  
+    useEffect(() => {
+
+      }, [data]);
+      
+      return (
+        <div>
       <div className="demo-app-main" style={{ overflow: "auto" }}>
         <form>
           <div>
@@ -183,7 +179,7 @@ export function Restricoes() {
                   onClick: (event) => {
                     // save row data to state
 
-                    sleep(1500).then((r) => {
+                    sleep(5500).then((r) => {
                       const curr = $("input[type=checkbox]:checked")
                         .map(function (_, el) {
                           return $(el).val();
