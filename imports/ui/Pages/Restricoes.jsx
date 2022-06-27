@@ -76,13 +76,13 @@ export const listaClubesColumns = [
     title: "Descrição",
     dataIndex: "Descrição",
     key: "Descrição",
-    render: (_, Descricao) => (
+    render: (_, {Descricao}) => (
       <input
         type="text"
         name="descricao"
         style={{ width: "auto" }}
         onChange={onChangeText}
-        defaultValue={Descricao.value }
+        defaultValue={Descricao }
       ></input>
     ),
   },
@@ -97,25 +97,11 @@ function loadData() {
         if (err) {
           console.log("ERRRRROOOOO", { err });
           reject(err)
-        } else if (result) {
-
-          
-          // console.log("RESULT:::::::::::::::");
-          // console.log(result);
-          
+        } else if (result) {          
           let j = JSON.parse(JSON.stringify(result));
           
-          // console.log("J");
-          // console.log(j);
-          
-          // if (j.relacoes.length <= 0) {
-          //   return;
-          // }
-          
           let dataFromDB = j.relacoes;
-          
-          console.log("dataFROMDB");
-          console.log(dataFromDB);
+
           if(dataFromDB == ''){
             resolve(fetchData())
           }

@@ -36,20 +36,10 @@ export class Indisponibilidades extends React.Component {
     }
 
     return (
-      <div
-        className="demo-app"
-        style={{ height: "10%", width: "auto", height: "auto" }}
-      >
-        <div className="demo-app-sidebar">
-          <div className="demo-app-sidebar-section" hidden>
-            <h2>
-              Indisponibilidades marcadas: ({this.state.currentEvents.length})
-            </h2>
-            <ul>{this.state.currentEvents.map(renderSidebarEvent)}</ul>
-          </div>
-        </div>
         <div>
-          <div className="demo-app-main" style={{}}>
+          <div className="demo-app-main" style={{overflow: "auto"}}>
+          <form>
+          <div>
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
               locale="pt"
@@ -78,7 +68,6 @@ export class Indisponibilidades extends React.Component {
               eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
             />
           </div>
-          <br></br>
           <input
             className="botao"
             type={"button"}
@@ -113,6 +102,7 @@ export class Indisponibilidades extends React.Component {
               );
             }}
           />
+          </form>
         </div>
       </div>
     );
