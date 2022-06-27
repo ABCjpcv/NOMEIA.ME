@@ -156,7 +156,7 @@ export class Indisponibilidades extends React.Component {
       });
     } else {
       window.alert(
-         Meteor.user().username + "já possui indisponibilidades marcadas nesse intervalo."
+         Meteor.user().username + ", já possui indisponibilidades marcadas nesse intervalo."
       );
     }
   };
