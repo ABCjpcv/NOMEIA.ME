@@ -8,9 +8,6 @@ import { Indisponibilidades } from "./Indisponibilidades";
 import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
 
-let sleep = (milliseconds) => {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-};
 
 export function Profile (){
 

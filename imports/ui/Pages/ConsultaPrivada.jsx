@@ -11,7 +11,29 @@ const fetchUsers = async () => {
   return { data };
 };
 
+
+
 export function ConsultaPrivada() {
+
+  // STATES
+  const {selectedRowKeys, setSelectedRowKeys} = useState([]);
+
+  let selectRow = (record) => {
+    const selectedRowKeys = [...this.state.selectedRowKeys];
+    if (selectedRowKeys.indexOf(record.key) >= 0) {
+      selectedRowKeys.splice(selectedRowKeys.indexOf(record.key), 1);
+    } else {
+      selectedRowKeys.push(record.key);
+    }
+    setSelectedRowKeys({ selectedRowKeys });
+  };
+  let onSelectedRowKeysChange = (selectedRowKeys) => {
+    setSelectedRowKeys({ selectedRowKeys });
+  };
+
+
+
+
   let [searchVal] = useState(
     (Meteor.user() == undefined) ? "" : Meteor.user().username
   );
@@ -20,6 +42,11 @@ export function ConsultaPrivada() {
     searchVal,
     retrieve: fetchUsers,
   });
+
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: onSelectedRowKeysChange
+    };
 
   return (
     <div
@@ -37,9 +64,15 @@ export function ConsultaPrivada() {
               <Table
                 rowKey="name"
                 dataSource={filteredData}
+                rowSelection={rowSelection}
                 columns={userColumns}
                 loading={loading}
                 pagination={false}
+                onRow={(record) => ({
+                  onClick: () => {
+                    selectRow(record);
+                  }
+                })}
               />
             </div>
           </div>

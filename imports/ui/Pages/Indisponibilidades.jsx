@@ -5,6 +5,7 @@ import FullCalendar, {
   EventSourceApi,
   eventTupleToStore,
   formatDate,
+  isValidDate,
 } from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -36,72 +37,71 @@ export class Indisponibilidades extends React.Component {
     }
 
     return (
-        <div>
-          <div className="demo-app-main" style={{overflow: "auto"}}>
+      <div>
+        <div className="demo-app-main" style={{ overflow: "auto" }}>
           <form>
-          <div>
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-              locale="pt"
-              headerToolbar={{
-                left: "prev,next today",
-                center: "title",
-                right: "timeGridWeek,timeGridDay",
-              }}
-              allDaySlot={false}
-              height={"350px"}
-              dayMinWidth={"8px"}
-              firstDay={1}
-              slotDuration={"00:60:00"}
-              slotMinTime={"09:00:00"}
-              slotMaxTime={"23:00:00"}
-              initialView="timeGridWeek"
-              editable={true}
-              selectable={true}
-              selectMirror={true}
-              dayMaxEvents={true}
-              weekends={true}
-              initialEvents={resultado} // Indisponibilidades da BD
-              select={this.handleDateSelect}
-              eventContent={renderEventContent} // custom render function
-              eventClick={this.handleEventClick}
-              eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-            />
-          </div>
-          <input
-            className="botao"
-            type={"button"}
-            value="Submeter"
-            onClick={() => {
-              console.log("OLA OLA");
+            <div>
+              <FullCalendar
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                locale="pt"
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "timeGridWeek,timeGridDay",
+                }}
+                allDaySlot={false}
+                height={"350px"}
+                dayMinWidth={"8px"}
+                firstDay={1}
+                slotDuration={"00:60:00"}
+                slotMinTime={"09:00:00"}
+                slotMaxTime={"23:00:00"}
+                initialView="timeGridWeek"
+                editable={true}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                weekends={true}
+                initialEvents={resultado} // Indisponibilidades da BD
+                select={this.handleDateSelect}
+                eventContent={renderEventContent} // custom render function
+                eventClick={this.handleEventClick}
+                eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+              />
+            </div>
+            <input
+              className="botao"
+              type={"button"}
+              value="Submeter"
+              onClick={() => {
+                let curr = this.state.currentEvents;
+                let eventos = [];
+                curr.map((evento) =>
+                  eventos.push({
+                    id: evento.id,
+                    start: evento.startStr,
+                    end: evento.endStr,
+                  })
+                );
 
-              let curr = this.state.currentEvents;
-              let eventos = [];
-              curr.map((evento) =>
-                eventos.push({
-                  id: evento.id,
-                  start: evento.startStr,
-                  end: evento.endStr,
-                })
-              );
-
-              Meteor.call(
-                "addIndisponibilidade",
-                Meteor.user().username,
-                eventos,
-                (err, result) => {
-                  if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas.
-                    console.log(err);
-                  } else if (result) {
-                    window.alert(
-                      "Indisponibilidades registadas " + Meteor.user().username
-                    );
+                Meteor.call(
+                  "addIndisponibilidade",
+                  Meteor.user().username,
+                  eventos,
+                  (err, result) => {
+                    if (err) {
+                      //Fazer aparecer mensagem de texto de credenciais erradas.
+                      console.log(err);
+                    } else if (result) {
+                      window.alert(
+                        "Indisponibilidades registadas " +
+                          Meteor.user().username
+                      );
+                    }
                   }
-                }
-              );
-            }}
-          />
+                );
+              }}
+            />
           </form>
         </div>
       </div>
@@ -129,22 +129,99 @@ export class Indisponibilidades extends React.Component {
     this.calendarApi.unselect(); // clear date selection
 
     let hoje = new Date();
-    let ano = (selectInfo.startStr + "").substring(0, 4);
-    let mes = (selectInfo.startStr + "").substring(5, 7);
-    let dia = (selectInfo.startStr + "").substring(8, 10);
-    let horaInicio = (selectInfo.startStr + "").substring(11, 13);
-    let diaIndisponivel = new Date(ano, mes - 1, dia, horaInicio, 0, 0, 0);
+    // let anoInicial = (selectInfo.startStr + "").substring(0, 4);
+    // let mesInicial = (selectInfo.startStr + "").substring(5, 7);
+    // let diaInicial = (selectInfo.startStr + "").substring(8, 10);
+    // let horaInicio = (selectInfo.startStr + "").substring(11, 13);
+    let newStart = new Date(selectInfo.start);
 
-    if (diaIndisponivel > hoje) {
+    // let anoFinal = (selectInfo.endStr + "").substring(0, 4);
+    // let mesFinal = (selectInfo.endStr + "").substring(5, 7);
+    // let diaFinal = (selectInfo.endStr + "").substring(8, 10);
+    // let horaFim = (selectInfo.endStr + "").substring(11, 13);
+    let newEnd = new Date(selectInfo.end);
+
+    let r = this.validDate(this.state.currentEvents, newStart, newEnd, hoje);
+
+    console.log("EH VALIDA????????");
+    console.log(r);
+
+    if (r) {
       this.calendarApi.addEvent({
         id: _(),
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
-        color: "#eb3434"
+        color: "#eb3434",
       });
+    } else {
+      window.alert(
+        "NÃO DÁ PARA ADICIONAR! JÁ HÁ INDISPONIBILIDADE MARCADA NESSE INTERVALO"
+      );
     }
   };
+
+  validDate(eventsArray, newStart, newEnd, hoje) {
+    console.log("ESTOU A VERIFICAR SE A DATA É VALIDA NESTE INTERVALO:");
+
+    let resultado = true;
+    for(var element of eventsArray) {
+    // eventsArray.forEach((element) => {
+      console.log("É MAIOR QUE O DIA DE HOJE?");
+      console.log(newStart > hoje);
+
+      if (newStart < hoje) return false;
+
+      // console.log("COMEÇA ANTES? ");
+      // console.log(newStart < element.start);
+      // if (newStart < element.start) {
+      //   console.log("ACABA ANTES?");
+      //   console.log((newEnd < element.start));
+      //   if ((newEnd < element.start)) {
+      //     resultado = true;
+      //   }
+      //   else{
+      //     resultado = false;
+      //   }
+      // }
+
+      // else if (newStart > element.end) {
+      //   resultado = true;
+      // } else {
+      //   resultado = false;
+      // }
+      // console.log("COMEÇA DEPOIS?");
+      // console.log(newStart > element.end);
+
+      if (newStart < element.start){
+        console.log("newStart < element.start")
+        if (newEnd < element.start){
+          console.log("newEnd < element.start")
+          resultado = true;
+        }
+        else{
+          console.log("!(newEnd < element.start)")
+          resultado=false;
+          break
+        }
+      } else if (newStart > element.end){
+        console.log("newStart > element.end")
+        resultado = true;
+      } else {
+        console.log(!"(newStart > element.end)")
+        resultado = false;
+        break
+      }
+
+      // if (
+      //   (newStart < element.start || newStart > element.end) &&
+      //   (newEnd < element.start || newEnd > element.end) &&
+      //   !(element.start > newStart && element.end < newEnd)
+      // )
+      //   return false;
+    };
+    return resultado;
+  }
 
   handleEventClick = (clickInfo) => {
     clickInfo.event.remove();
@@ -163,23 +240,5 @@ function renderEventContent(eventInfo) {
       <b>{eventInfo.timeText}</b>
       <i>{eventInfo.event.title}</i>
     </React.Fragment>
-  );
-}
-
-function renderSidebarEvent(event) {
-  return (
-    <li key={event.start}>
-      <b>
-        {formatDate(event.start, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })}
-      </b>
-      <p></p>
-      <b>
-        <i>{event.title}</i>
-      </b>
-    </li>
   );
 }

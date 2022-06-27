@@ -246,8 +246,8 @@ Meteor.methods({
     user_password,
     password_repeat
   ) {
-    if (
-      (user_name.length == 0 ||
+    console.log("ENTRIU");
+    if ((user_name.length == 0 ||
         user_email.length == 0 ||
         user_password.length == 0,
       password_repeat.length == 0)
