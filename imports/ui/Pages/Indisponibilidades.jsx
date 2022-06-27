@@ -156,70 +156,29 @@ export class Indisponibilidades extends React.Component {
       });
     } else {
       window.alert(
-        "NÃO DÁ PARA ADICIONAR! JÁ HÁ INDISPONIBILIDADE MARCADA NESSE INTERVALO"
+         Meteor.user().username + "já possui indisponibilidades marcadas nesse intervalo."
       );
     }
   };
 
   validDate(eventsArray, newStart, newEnd, hoje) {
-    console.log("ESTOU A VERIFICAR SE A DATA É VALIDA NESTE INTERVALO:");
-
     let resultado = true;
-    for(var element of eventsArray) {
-    // eventsArray.forEach((element) => {
-      console.log("É MAIOR QUE O DIA DE HOJE?");
-      console.log(newStart > hoje);
-
+    for (var element of eventsArray) {
       if (newStart < hoje) return false;
-
-      // console.log("COMEÇA ANTES? ");
-      // console.log(newStart < element.start);
-      // if (newStart < element.start) {
-      //   console.log("ACABA ANTES?");
-      //   console.log((newEnd < element.start));
-      //   if ((newEnd < element.start)) {
-      //     resultado = true;
-      //   }
-      //   else{
-      //     resultado = false;
-      //   }
-      // }
-
-      // else if (newStart > element.end) {
-      //   resultado = true;
-      // } else {
-      //   resultado = false;
-      // }
-      // console.log("COMEÇA DEPOIS?");
-      // console.log(newStart > element.end);
-
-      if (newStart < element.start){
-        console.log("newStart < element.start")
-        if (newEnd < element.start){
-          console.log("newEnd < element.start")
+      if (newStart < element.start) {
+        if (newEnd < element.start) {
           resultado = true;
+        } else {
+          resultado = false;
+          break;
         }
-        else{
-          console.log("!(newEnd < element.start)")
-          resultado=false;
-          break
-        }
-      } else if (newStart > element.end){
-        console.log("newStart > element.end")
+      } else if (newStart > element.end) {
         resultado = true;
       } else {
-        console.log(!"(newStart > element.end)")
         resultado = false;
-        break
+        break;
       }
-
-      // if (
-      //   (newStart < element.start || newStart > element.end) &&
-      //   (newEnd < element.start || newEnd > element.end) &&
-      //   !(element.start > newStart && element.end < newEnd)
-      // )
-      //   return false;
-    };
+    }
     return resultado;
   }
 
