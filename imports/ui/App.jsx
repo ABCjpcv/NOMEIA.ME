@@ -11,7 +11,6 @@ import { Restricoes } from "./Pages/Restricoes.jsx";
 import { ContaNova } from "./Pages/ContaNova.jsx";
 import { Autenticar } from "./Pages/Autenticar.jsx";
 import { Profile } from "./Pages/Profile.jsx";
-import { ProfileCA } from "./Pages/ProfileCA.jsx";
 import { EscolhaArbitros } from "./Pages/EscolhaArbitros.jsx";
 import { NotFoundPage } from "./Pages/NotFoundPage.jsx";
 
@@ -38,7 +37,6 @@ export const App = () => (
           <Route path="/ContaNova" element={<ContaNova />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
-          <Route path="/ProfileCA" element={<ProfileCA />}></Route>
           <Route path="/EscolhaArbitros" element={<EscolhaArbitros />}></Route>
           {/* <Route path="*" element={<NotFoundPage />}></Route> */}
         </Routes>

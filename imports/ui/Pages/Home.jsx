@@ -8,7 +8,7 @@ export function Home() {
     document.getElementById("titulo").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
     
   }

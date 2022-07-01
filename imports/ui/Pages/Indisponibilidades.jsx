@@ -129,22 +129,12 @@ export class Indisponibilidades extends React.Component {
     this.calendarApi.unselect(); // clear date selection
 
     let hoje = new Date();
-    // let anoInicial = (selectInfo.startStr + "").substring(0, 4);
-    // let mesInicial = (selectInfo.startStr + "").substring(5, 7);
-    // let diaInicial = (selectInfo.startStr + "").substring(8, 10);
-    // let horaInicio = (selectInfo.startStr + "").substring(11, 13);
+
     let newStart = new Date(selectInfo.start);
 
-    // let anoFinal = (selectInfo.endStr + "").substring(0, 4);
-    // let mesFinal = (selectInfo.endStr + "").substring(5, 7);
-    // let diaFinal = (selectInfo.endStr + "").substring(8, 10);
-    // let horaFim = (selectInfo.endStr + "").substring(11, 13);
     let newEnd = new Date(selectInfo.end);
 
     let r = this.validDate(this.state.currentEvents, newStart, newEnd, hoje);
-
-    console.log("EH VALIDA????????");
-    console.log(r);
 
     if (r) {
       this.calendarApi.addEvent({

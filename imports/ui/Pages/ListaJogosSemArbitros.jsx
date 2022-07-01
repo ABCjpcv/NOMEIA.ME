@@ -1,6 +1,5 @@
 import React from "react";
 import {FileInput} from "./FileInput"
-import { EscolhaArbitros } from "./EscolhaArbitros";
 
 export class ListaJogosSemArbitros extends React.Component {
 
@@ -17,7 +16,7 @@ export class ListaJogosSemArbitros extends React.Component {
           <div className="demo-app-main" style={{ overflow: "auto"}}>
                        
             
-              <div className="botao" onClick={() => navigate("/EscolhaArbitros")} value="Escolher Árbitros"> Escolher Árbitro</div>
+              <div className="botao"> Escolher Árbitro</div>
         </div>
       </div>
       </div>

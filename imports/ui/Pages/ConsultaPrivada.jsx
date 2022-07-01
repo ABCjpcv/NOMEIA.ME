@@ -23,16 +23,6 @@ export function ConsultaPrivada() {
   });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [loadingz, setLoading] = useState(false);
-
-  const start = () => {
-    setLoading(true); // ajax request after empty completing
-
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
-  };
 
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", selectedRowKeys);

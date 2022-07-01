@@ -6,17 +6,40 @@ export function Autenticar() {
   let navigate = useNavigate();
   const admins = ["Daniel Fernandes", "Sérgio Pereira", "Mafalda Bento"];
 
-  function isAdmin(user) {
-    console.log(user.username);
-    return admins.includes(user.username);
-  }
-
-  function mostraPerfil() {
+   function mostraPerfil() {
     document.getElementById("titulo").hidden = true;
-    document.getElementById("menuPrivado").hidden = false;
+    document.getElementById("carregarJogos").hidden = true;
+    document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
+    document.getElementById("menuPrivado").hidden = false;
+    document.getElementById("carregarFicheiroJogos").hidden = true;
+    document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    document.getElementById("indisponibilidadesCA").hidden = true;
+    document.getElementById("restricoesCA").hidden = true;
+    document.getElementById("consultaPrivadaCA").hidden = true;
+    // document.getElementById("indisponibilidades").hidden = true;
+    // document.getElementById("restricoes").hidden = true;
+    // document.getElementById("consultaPrivada").hidden = false;
+  }
+
+  function mostraPerfilCA() {
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = false;
+    document.getElementById("atribuirArbitros").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = true;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
+    document.getElementById("menuPrivado").hidden = false;
+    document.getElementById("carregarFicheiroJogos").hidden = false;
+    document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    document.getElementById("indisponibilidadesCA").hidden = true;
+    document.getElementById("restricoesCA").hidden = true;
+    document.getElementById("consultaPrivadaCA").hidden = true;
+   // document.getElementById("indisponibilidades").hidden = true;
+    // document.getElementById("restricoes").hidden = true;
+   // document.getElementById("consultaPrivada").hidden = true;
   }
 
   function login(result, pass) {
@@ -29,7 +52,22 @@ export function Autenticar() {
 
     Meteor.loginWithPassword(result, pass, () => {
       navigate("/Profile");
-      mostraPerfil();
+      Meteor.call("isAdmin", Meteor.user(), (err, result) => {
+
+        console.log(result);
+
+        if (err) {
+          console.log("ERRRRROOOOO", { err });
+          
+        } else if (result) {
+            console.log("vou mostrar Perfil do CA");
+            mostraPerfilCA()
+          }
+          else if(!result){
+            console.log("vou mostrar Perfil do Arbitro");
+            mostraPerfil()
+        }
+      })
     });
   }
 

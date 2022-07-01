@@ -7,49 +7,46 @@ let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a si
 let jogos = new Mongo.Collection("jogos");
 let clubes = new Mongo.Collection("clubes");
 let arbitros = new Mongo.Collection("arbitros");
+let conselhoDeArbitragem = new Mongo.Collection("conselhoDeArbitragem");
 let nomeacoes = new Mongo.Collection("nomeacoes");
 let indisponibilidades = new Mongo.Collection("indisponibilidades");
 let restricoes = new Mongo.Collection("restricoes");
-
-
 
 /************************************************************************************************
  *********************************** SCHEMA TABLE ***********************************************
  ************************************************************************************************
  */
 
- //Schema restricoes
+//Schema restricoes
 
- const relacoesSchema = new SimpleSchema({
-  key: {type: Number,optional: false},
-  // key = linha da Tabela 
-  clube: {type: String,optional: false},
+const relacoesSchema = new SimpleSchema({
+  key: { type: Number, optional: false },
+  // key = linha da Tabela
+  clube: { type: String, optional: false },
   restricao: { type: Array, optional: true },
-  'restricao.$': { type: Boolean },
-  descricao: { type:  String, optional: true}
- })
+  "restricao.$": { type: Boolean },
+  descricao: { type: String, optional: true },
+});
 
 restricoes.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
-  recibo: { type:Boolean, optional: true},
-  carro: { type:Boolean, optional: true},
+  recibo: { type: Boolean, optional: true },
+  carro: { type: Boolean, optional: true },
   relacoes: [relacoesSchema],
-})
+});
 
 //Schema indisponibilidades
 
 const eventSchema = new SimpleSchema({
-  
-    id: {type: Number, optional: false},
-    start: {type: String, optional: false},
-    end: {type: String, optional: false},
-  
-})
+  id: { type: Number, optional: false },
+  start: { type: String, optional: false },
+  end: { type: String, optional: false },
+});
 
 indisponibilidades.schema = new SimpleSchema({
-  arbitro: { type:arbitros, optional: false},
-  disponibilidades: [eventSchema]
-})
+  arbitro: { type: arbitros, optional: false },
+  disponibilidades: [eventSchema],
+});
 
 //Schema nomeacoes:
 nomeacoes.schema = new SimpleSchema({
@@ -60,8 +57,16 @@ nomeacoes.schema = new SimpleSchema({
 //Schema Arbitros:
 arbitros.schema = new SimpleSchema({
   nome: { type: String, optional: false },
+  email: { type: String, optional: false },
   licenca: { type: Number, optional: false },
   nivel: { type: Number, optional: false },
+  isAdmin: { type: Boolean, optional: false },
+});
+
+//Schema ConselhoDeArbitragem
+
+conselhoDeArbitragem.schema = new SimpleSchema({
+  arbitrosCA: { type: arbitros, optional: false },
 });
 
 //Schema Jogos importados de um dado csv.
@@ -92,16 +97,6 @@ clubes.schema = new SimpleSchema({
   telemovel_2: { type: String, optional: true },
   telefone: { type: String, optional: true },
 });
-
-
-
-
-
-
-
-
-
-
 
 Meteor.startup(() => {
   clubes.rawCollection().drop();
@@ -142,11 +137,58 @@ Meteor.startup(() => {
   utilizadores.forEach((user) => {
     arbitros.insert({
       nome: user.username,
+      email: user.emails[0].address,
       licenca: 0,
-      nivel: 0
+      nivel: 0,
+      isAdmin: false,
     });
     console.log("inserted: " + user.username);
   });
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR CONSELHO DE ARBITRAGEM   ********************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  conselhoDeArbitragem.rawCollection().drop();
+
+  // NAO EXISTE CA NA BASE DE DADOS
+
+
+  console.log("Nao existe CA");
+  var currCA = [
+    "sergiosp@netcabo.pt",
+    "danieljafernandes@gmail.com",
+    "mafalda.bento@gmail.com",
+  ];
+  
+  for (let index = 0; index < currCA.length; index++) {
+    var mail = currCA[index];
+    var a = arbitros.findOne({ email: mail });
+    console.log("arbitro: " + a.nome);
+
+    if (a.nome != "" || a.nome != undefined) {
+      a.isAdmin = true;
+      conselhoDeArbitragem.insert({
+        arbitrosCA: a,
+      });
+      arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
+    }
+  }
+
+  var ca = conselhoDeArbitragem.find();
+
+  if (ca.length != 0) {
+    for (var a of ca) {
+      // JA EXISTE CA NA BASE DE DADOS
+      a.isAdmin = true;
+    }
+  }
 
   console.log(
     "******************************************************************************"
@@ -162,10 +204,10 @@ Meteor.startup(() => {
 
   indisponibilidades.rawCollection().drop();
 
-  arb.forEach((arbitro)=> {
+  arb.forEach((arbitro) => {
     indisponibilidades.insert({
       arbitro: arbitro,
-      disponibilidades: ""
+      disponibilidades: "",
     });
     console.log("inserted: INDISPONIBILIDADE");
   });
@@ -182,14 +224,13 @@ Meteor.startup(() => {
 
   restricoes.rawCollection().drop();
 
-
-arb.forEach((arbitro)=> {
+  arb.forEach((arbitro) => {
     restricoes.insert({
       arbitro: arbitro,
       recibo: "",
       carro: "",
       relacoes: "",
-    })
+    });
     console.log("inserted: RESTRICAO ");
   });
 
@@ -215,10 +256,9 @@ arb.forEach((arbitro)=> {
 });
 
 Meteor.methods({
-
   /*************************************************************
-  ************************** METODOS DO UTILIZADOR *************
-  ***************************************************************
+   ************************** METODOS DO UTILIZADOR *************
+   ***************************************************************
    */
   authenticateUser: function authenticateUser(user_email, password) {
     if (user_email.length == 0) throw new Meteor.Error("Must insert an email.");
@@ -234,10 +274,8 @@ Meteor.methods({
       digest: password,
       algorithm: "sha-256",
     });
-    console.log(result.error == null);
     if (result) return user.username;
-    else throw new Meteor.Error("Passwords do not match")
-    
+    else throw new Meteor.Error("Passwords do not match");
   },
 
   registerUser: function registerUser(
@@ -247,7 +285,8 @@ Meteor.methods({
     password_repeat
   ) {
     console.log("ENTRIU");
-    if ((user_name.length == 0 ||
+    if (
+      (user_name.length == 0 ||
         user_email.length == 0 ||
         user_password.length == 0,
       password_repeat.length == 0)
@@ -263,6 +302,14 @@ Meteor.methods({
       null
     );
   },
+
+  isAdmin: function isAdmin(user) {
+    var arbitro = arbitros.findOne({ email: user.emails[0].address });
+    var admin = arbitro.isAdmin;
+    console.log(arbitro.nome + " is admin? " + admin);
+    return admin;
+  },
+
   addNomeacao: function addNomeacao(licenca_arbitro, id_jogo) {
     var arbitro = arbitros.find({ licenca: licenca_arbitro });
     var jogo = jogos.find({ id: id_jogo });
@@ -282,24 +329,24 @@ Meteor.methods({
    *****************************************************************
    */
   addIndisponibilidade: function addIndisponibilidade(username, events) {
-
-    
-
-    events.forEach(element => {
-      element.title = " Indisponível "
+    events.forEach((element) => {
+      element.title = " Indisponível ";
     });
 
     try {
-      const a = arbitros.findOne({nome: username});
-      indisponibilidades.update({ arbitro: a }, { $set: { disponibilidades: events } })
+      const a = arbitros.findOne({ nome: username });
+      indisponibilidades.update(
+        { arbitro: a },
+        { $set: { disponibilidades: events } }
+      );
       return true;
     } catch (error) {
       return false;
     }
   },
-  carregaHorario: function carregaHorario(username){
-    const a = arbitros.findOne({nome: username});
-    return indisponibilidades.findOne({arbitro: a});
+  carregaHorario: function carregaHorario(username) {
+    const a = arbitros.findOne({ nome: username });
+    return indisponibilidades.findOne({ arbitro: a });
   },
 
   /*****************************************************************
@@ -307,44 +354,18 @@ Meteor.methods({
    *****************************************************************
    */
 
-
-  //  const relacoesSchema = new RelacoesSchema({
-  //   key: {type: Number,optional: false},
-  //   clube: {type: String,optional: false},
-  //   restricao: { type: [Boolean],optional: false},
-  //   descricao: { type:  String, optional: true}
-  //  })
-  
-  // restricoes.schema = new SimpleSchema({
-  //   arbitro: { type: arbitros, optional: false },
-  //   recibo: { type:Boolean, optional: true},
-  //   carro: { type:Boolean, optional: true},
-  //   relacoes: {type: [relacoesSchema], optional: true},
-  // })
-
-   addRestricao: function addRestricao(username, restrictions) {
-
-    
-  
-
-    // restrictions.forEach(element => {
-    //   element.title = " Indisponível "
-    // });
-
+  addRestricao: function addRestricao(username, restrictions) {
     try {
-      const a = arbitros.findOne({nome: username});
-      restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } })
+      const a = arbitros.findOne({ nome: username });
+      restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } });
       return true;
     } catch (error) {
       return false;
     }
   },
 
-  carregaRestricoes: function carregaRestricoes(username){
-    console.log("CONA");
-    const a = arbitros.findOne({nome: username});
-    return restricoes.findOne({arbitro: a});
+  carregaRestricoes: function carregaRestricoes(username) {
+    const a = arbitros.findOne({ nome: username });
+    return restricoes.findOne({ arbitro: a });
   },
 });
-
-

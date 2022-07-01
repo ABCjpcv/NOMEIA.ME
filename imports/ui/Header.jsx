@@ -23,13 +23,26 @@ export class Header extends React.Component {
           <p id="titulo" style={{ margin: "0", marginLeft:"-120px" }}>
             Plataforma Online de Nomeações de Árbitros de Voleibol
           </p>
+
+          {/* AQUI ESTAO OS HEADERS DOS CONSELHO DE ARBITRAGEM */}
+          <p id="carregarJogos" style={{ margin: "0" }} hidden={true}>
+            Carregar Jogos Semanais 
+          </p>
+          <p id="atribuirArbitros" style={{ margin: "0" }} hidden={true}>
+          Atribuição de Árbitros
+          </p>
+
+
+
+
+          {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
           <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
             As minhas nomeações 📅🏐
           </p>
           <p id="indisponibilidadePrivadas" style={{ margin: "0" }} hidden={true}>
             Marcação de Indisponibilidades:
           </p>
-          <p id="RestricoesPrivadas" style={{ margin: "0" }} hidden={true}>
+          <p id="restricoesPrivadas" style={{ margin: "0" }} hidden={true}>
           Relações com clubes
           </p>
         </div>
