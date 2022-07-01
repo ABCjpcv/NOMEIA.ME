@@ -62,43 +62,43 @@ async function caller(){
      *  CASO O UTILIZADOR SEJA CONSELHO DE ARBITRAGEM (ADMIN)
      */
 
-    if (caller) {
-      return (
-        <div id="profile">
-          <div id="carregarFicheiroJogos">
-            <h1 className="blue"> Inserir tabela de jogos (excel ou csv) </h1>
-          <div>
-            <FileInput></FileInput>
-          </div>
-          </div>
+//     if (caller) {
+//       return (
+//         <div id="profile">
+//           <div id="carregarFicheiroJogos">
+//             <h1 className="blue"> Inserir tabela de jogos (excel ou csv) </h1>
+//           <div>
+//             <FileInput></FileInput>
+//           </div>
+//           </div>
 
-          <div id="atribuirArbitrosAjogos" hidden>
-            <AtribuirJogos></AtribuirJogos>
+//           <div id="atribuirArbitrosAjogos" hidden>
+//             <AtribuirJogos></AtribuirJogos>
 
-          </div>
+//           </div>
 
-          <div id="indisponibilidadesCA" hidden>
-              <Indisponibilidades></Indisponibilidades>
-            </div>
+//           <div id="indisponibilidadesCA" hidden>
+//               <Indisponibilidades></Indisponibilidades>
+//             </div>
 
-            <div id="restricoesCA" hidden>
-              <Restricoes></Restricoes>
-            </div>
+//             <div id="restricoesCA" hidden>
+//               <Restricoes></Restricoes>
+//             </div>
 
-            <div id="consultaPrivadaCA" hidden>
-              <ConsultaPrivada></ConsultaPrivada>
-</div>
+//             <div id="consultaPrivadaCA" hidden>
+//               <ConsultaPrivada></ConsultaPrivada>
+// </div>
 
 
 
-          {/* <div id="listaJogosSemArbitro" hidden>
-            <ListaJogosSemArbitros></ListaJogosSemArbitros>
-          </div> */}
+//           {/* <div id="listaJogosSemArbitro" hidden>
+//             <ListaJogosSemArbitros></ListaJogosSemArbitros>
+//           </div> */}
 
-          <div id="page-wrap-ca"></div>
-        </div>
-      );
-    } else {
+//           <div id="page-wrap-ca"></div>
+//         </div>
+//       );
+//     } else {
     /**
      *  CASO O UTILIZADOR SEJA ARBITRO
      */
@@ -121,7 +121,7 @@ async function caller(){
           </div>
         </div>
       );
-    }
+    //}
   } else {
     return (
       <div>

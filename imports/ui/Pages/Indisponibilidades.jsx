@@ -136,7 +136,9 @@ export class Indisponibilidades extends React.Component {
 
     let r = this.validDate(this.state.currentEvents, newStart, newEnd, hoje);
 
-    if (r) {
+    if(newStart < hoje){
+      window.alert(Meteor.user().username +", não pode marcar indisponibilidade antes de hoje.")
+    } else if (r) {
       this.calendarApi.addEvent({
         id: _(),
         title,
@@ -162,7 +164,7 @@ export class Indisponibilidades extends React.Component {
           resultado = false;
           break;
         }
-      } else if (newStart > element.end) {
+      } else if (newStart >= element.end) {
         resultado = true;
       } else {
         resultado = false;

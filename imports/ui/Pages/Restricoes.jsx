@@ -36,9 +36,9 @@ export const listaClubesColumns = [
     key: "Clube",
   },
   {
-    title: "Restrição",
-    dataIndex: "Restrição",
-    key: "Restrição",
+    title: "Cargo",
+    dataIndex: "Cargo",
+    key: "Cargo",
     render: (_, { Restricao }) => (
       <div style={{ width: "auto" }}>
         <input
@@ -73,16 +73,16 @@ export const listaClubesColumns = [
     ),
   },
   {
-    title: "Descrição",
-    dataIndex: "Descrição",
-    key: "Descrição",
-    render: (_, {Descricao}) => (
+    title: "Informação adicional",
+    dataIndex: "InformacaoAdicional",
+    key: "InformacaoAdicional",
+    render: (_, { Descricao }) => (
       <input
         type="text"
         name="descricao"
         style={{ width: "auto" }}
         onChange={onChangeText}
-        defaultValue={Descricao }
+        defaultValue={Descricao}
       ></input>
     ),
   },
@@ -96,45 +96,216 @@ function loadData() {
       (err, result) => {
         if (err) {
           console.log("ERRRRROOOOO", { err });
-          reject(err)
-        } else if (result) {          
+          reject(err);
+        } else if (result) {
           let j = JSON.parse(JSON.stringify(result));
-          
+
           let dataFromDB = j.relacoes;
 
-          if(dataFromDB == ''){
-            resolve(fetchData())
+          if (dataFromDB == "") {
+            resolve(fetchData());
+          } else {
+            resolve({ data: dataFromDB });
           }
-          else{
-
-            resolve({data: dataFromDB});
-          }
-          
         }
       }
     );
-  })
+  });
 }
 
 export function Restricoes() {
   const [searchVal, setSearchVal] = useState(null);
 
-  
   let [data, setData] = useState(fetchData);
 
-  
   const { filteredData, loading } = useTableSearch({
     searchVal,
-    retrieve: loadData 
+    retrieve: loadData,
   });
-  
-    useEffect(() => {
 
-      }, [data]);
-      
-      return (
-        <div>
-      <div className="demo-app-main" style={{ overflow: "auto" }}>
+  useEffect(() => {
+    console.log("NOVA DATA: ");
+    console.log(data);
+  }, [data]);
+
+  function adicionaRestricao(key, valorRestricao, isChecked) {
+    let changedLine;
+
+    const analyzer = Promise.resolve(data);
+    analyzer.then((resultado) => {
+
+      if (resultado.data != undefined) {
+      // console.log("RESULTADO");
+      // console.log(resultado.data);
+
+      // console.log("RESULTADO DATA [K-1]");
+      // console.log(resultado.data[key - 1]);
+
+      let obj = resultado.data[key - 1];
+      let j = JSON.parse(JSON.stringify(obj));
+
+      j.Restricao[valorRestricao] = isChecked;
+
+     // console.log("After changes resultado.data[key-1]");
+
+      resultado.data[key - 1] = j;
+
+      //console.log(resultado.data[key - 1]);
+
+      changedLine = resultado.data[key - 1];
+
+      // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
+      //setData(data[k-1] = resultado.data[k-1])
+
+      //   Promise.resolve(resultado));
+    
+
+    var d = Promise.resolve(data);
+    d.then(function (v) {
+      const newState = v.data.map((obj) => {
+        // 👇️ if id equals 2 replace object
+        if (obj.key === key) {
+          return changedLine;
+        }
+        // 👇️ otherwise return object as is
+        return obj;
+      });
+
+      setData(newState);
+    });
+  } else {
+    //console.log("RESULTADO");
+      //  console.log(resultado);
+
+     //   console.log("RESULTADO DATA [K-1]");
+       // console.log(resultado[key - 1]);
+
+        let obj = resultado[key - 1];
+        let j = JSON.parse(JSON.stringify(obj));
+
+//        console.log("J before changes");
+  //      console.log(j);
+
+        j.Restricao[valorRestricao] = isChecked;
+        resultado[key - 1] = j;
+
+ //       console.log("After changes resultado[k-1]");
+   //     console.log(resultado[key - 1]);
+
+        changedLine = resultado[key - 1];
+
+        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
+        //setData(data[k-1] = resultado.data[k-1])
+
+        //   Promise.resolve(resultado));
+
+        var d = Promise.resolve(data);
+        d.then(function (v) {
+          const newState = v.map((obj) => {
+            // 👇️ if id equals 2 replace object
+            if (obj.key === key) {
+              return changedLine;
+            }
+            // 👇️ otherwise return object as is
+            return obj;
+          });
+
+          setData(newState);
+        });
+      }
+    });
+  }
+
+  function adicionaDescricao(key, valorDescricao) {
+    let changedLine;
+
+    const analyzer = Promise.resolve(data);
+    analyzer.then((resultado) => {
+      if (resultado.data != undefined) {
+    //    console.log("RESULTADO");
+    //    console.log(resultado);
+
+    //    console.log("RESULTADO DATA [K-1]");
+    //    console.log(resultado.data[key - 1]);
+
+        let obj = resultado.data[key - 1];
+        let j = JSON.parse(JSON.stringify(obj));
+
+    //    console.log("J before changes");
+    //    console.log(j);
+
+        j.Descricao = valorDescricao;
+        resultado.data[key - 1] = j;
+
+    //    console.log("After changes resultado.data[k-1]");
+    //    console.log(resultado.data[key - 1]);
+
+        changedLine = resultado.data[key - 1];
+
+        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
+        //setData(data[k-1] = resultado.data[k-1])
+
+        //   Promise.resolve(resultado));
+
+        var d = Promise.resolve(data);
+        d.then(function (v) {
+          const newState = v.data.map((obj) => {
+            // 👇️ if id equals 2 replace object
+            if (obj.key === key) {
+              return changedLine;
+            }
+            // 👇️ otherwise return object as is
+            return obj;
+          });
+
+          setData(newState);
+        });
+      } else {
+    //    console.log("RESULTADO");
+    //    console.log(resultado);
+
+     //   console.log("RESULTADO DATA [K-1]");
+     //   console.log(resultado[key - 1]);
+
+        let obj = resultado[key - 1];
+        let j = JSON.parse(JSON.stringify(obj));
+
+     //   console.log("J before changes");
+     //   console.log(j);
+
+        j.Descricao = valorDescricao;
+        resultado[key - 1] = j;
+
+     //   console.log("After changes resultado[k-1]");
+     //   console.log(resultado[key - 1]);
+
+        changedLine = resultado[key - 1];
+
+        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
+        //setData(data[k-1] = resultado.data[k-1])
+
+        //   Promise.resolve(resultado));
+
+        var d = Promise.resolve(data);
+        d.then(function (v) {
+          const newState = v.map((obj) => {
+            // 👇️ if id equals 2 replace object
+            if (obj.key === key) {
+              return changedLine;
+            }
+            // 👇️ otherwise return object as is
+            return obj;
+          });
+
+          setData(newState);
+        });
+      }
+    });
+  }
+
+  return (
+    <div>
+      <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
         <form>
           <div>
             <label>
@@ -158,55 +329,38 @@ export function Restricoes() {
               dataSource={filteredData}
               loading={loading}
               onRow={(record) => {
-                let k = 1;
-                let boolAr = [false, false, false, false];
+                let k = record.key;
+                let descr = "";
 
                 return {
-                  onClick: (event) => {
+                  onChange: (event) => {
+                   // console.log(event.target.type === "text");
+
                     // save row data to state
 
-                    sleep(5500).then((r) => {
-                      const curr = $("input[type=checkbox]:checked")
-                        .map(function (_, el) {
-                          return $(el).val();
-                        })
-                        .get();
+                    if (event.target.value === undefined) {
+                      // nothing to do
+                    }
 
-                      console.log("curr");
-                      console.log(curr);
+                    if (event.target.type === "text") {
+                      descr = event.target.value;
+                      adicionaDescricao(k, descr);
+                    }
 
-                      if (Array.from(curr).includes("Atleta")) boolAr[0] = true;
-                      if (Array.from(curr).includes("Dirigente"))
-                        boolAr[1] = true;
-                      if (Array.from(curr).includes("Treinador"))
-                        boolAr[2] = true;
-                      if (Array.from(curr).includes("Outra")) boolAr[3] = true;
-
-                      k = record.key;
-
-                      const analyzer = Promise.resolve(data);
-                      analyzer.then((resultado) => {
-                        console.log("RESULTADO");
-                        console.log(resultado);
-
-                        let obj = resultado.data[k - 1];
-
-                        let j = JSON.parse(JSON.stringify(obj));
-
-                        console.log(j);
-
-                        j.Restricao = boolAr;
-                        j.Descricao = currText;
-
-                        console.log(j);
-
-                        resultado.data[k - 1] = j;
-
-                        setData(Promise.resolve(resultado));
-
-                        currText = "";
-                      });
-                    });
+                    if (event.target.type === "checkbox") {
+                      if (event.target.value === "Atleta") {
+                        adicionaRestricao(k, 0, event.target.checked);
+                      }
+                      if (event.target.value === "Dirigente") {
+                        adicionaRestricao(k, 1, event.target.checked);
+                      }
+                      if (event.target.value === "Treinador") {
+                        adicionaRestricao(k, 2, event.target.checked);
+                      }
+                      if (event.target.value === "Outra") {
+                        adicionaRestricao(k, 3, event.target.checked);
+                      }
+                    }
                   },
                 };
               }}
@@ -216,12 +370,13 @@ export function Restricoes() {
             type="button"
             value="Submeter"
             onClick={() => {
-              let dataParaBD = Promise.resolve(data);
-              dataParaBD.then((resultado) => {
+              console.log("esta é a data que vou mandar para a base de dados...");
+              console.log(data);
+
                 Meteor.call(
                   "addRestricao",
                   Meteor.user().username,
-                  resultado.data,
+                  data,
                   (err, result) => {
                     if (err) {
                       //Fazer aparecer mensagem de texto de credenciais erradas.
@@ -234,8 +389,7 @@ export function Restricoes() {
                     }
                   }
                 );
-              });
-            }}
+              }}
           />
         </form>
       </div>

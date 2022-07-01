@@ -166,7 +166,7 @@ Meteor.startup(() => {
     "danieljafernandes@gmail.com",
     "mafalda.bento@gmail.com",
   ];
-  
+
   for (let index = 0; index < currCA.length; index++) {
     var mail = currCA[index];
     var a = arbitros.findOne({ email: mail });
@@ -341,6 +341,7 @@ Meteor.methods({
       );
       return true;
     } catch (error) {
+      
       return false;
     }
   },
@@ -357,6 +358,7 @@ Meteor.methods({
   addRestricao: function addRestricao(username, restrictions) {
     try {
       const a = arbitros.findOne({ nome: username });
+      let r = restricoes.findOne({ arbitro: a });
       restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } });
       return true;
     } catch (error) {

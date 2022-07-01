@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 import { Meteor } from "meteor/meteor";
 import { slide as Menu } from "react-burger-menu";
@@ -12,7 +12,7 @@ export default (props) => {
     document.getElementById("titulo").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = false;
@@ -23,7 +23,7 @@ export default (props) => {
     document.getElementById("titulo").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = false;
-    document.getElementById("RestricoesPrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("indisponibilidades").hidden = false;
     document.getElementById("consultaPrivada").hidden = true;
@@ -34,7 +34,7 @@ export default (props) => {
     document.getElementById("titulo").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = false;
+    document.getElementById("restricoesPrivadas").hidden = false;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = true;
@@ -45,7 +45,7 @@ export default (props) => {
     document.getElementById("titulo").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = true;
@@ -53,9 +53,11 @@ export default (props) => {
     
   }
 
+  
+
   return (
     // Pass on our props
-    <Menu right={true} {...props}>
+    <Menu right={true}  {...props}>
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}

@@ -20,7 +20,7 @@ export const App = () => (
 
     <Router>
     <Header></Header>
-    <div style={{ textAlign: "center", backgroundColor: "#b9b7b7" }}>
+    <div style={{ textAlign: "center", backgroundColor: "#b9b7b7"}} onClick={ ()=> {document.getElementById("react-burger-cross-btn").tabIndex=-1}}>
       
         <Routes>
           <Route path="/" element={<Home />}></Route>

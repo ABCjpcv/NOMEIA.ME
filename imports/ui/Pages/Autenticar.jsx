@@ -8,8 +8,8 @@ export function Autenticar() {
 
    function mostraPerfil() {
     document.getElementById("titulo").hidden = true;
-    document.getElementById("carregarJogos").hidden = true;
-    document.getElementById("atribuirArbitros").hidden = true;
+   // document.getElementById("carregarJogos").hidden = true;
+   // document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
@@ -17,11 +17,11 @@ export function Autenticar() {
     document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = true;
-    document.getElementById("restricoesCA").hidden = true;
-    document.getElementById("consultaPrivadaCA").hidden = true;
-    // document.getElementById("indisponibilidades").hidden = true;
-    // document.getElementById("restricoes").hidden = true;
-    // document.getElementById("consultaPrivada").hidden = false;
+    //document.getElementById("restricoesCA").hidden = true;
+    //document.getElementById("consultaPrivadaCA").hidden = true;
+     document.getElementById("indisponibilidades").hidden = true;
+     document.getElementById("restricoes").hidden = true;
+     document.getElementById("consultaPrivada").hidden = false;
   }
 
   function mostraPerfilCA() {
