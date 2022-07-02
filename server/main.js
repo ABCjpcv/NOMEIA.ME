@@ -267,6 +267,7 @@ Meteor.methods({
     if (user == undefined) {
       throw new Meteor.Error("Invalid credentials / user does not exist.");
     }
+    
     console.log("User found by email.");
 
     //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
@@ -341,7 +342,7 @@ Meteor.methods({
       );
       return true;
     } catch (error) {
-      
+
       return false;
     }
   },

@@ -8,26 +8,17 @@ import { Meteor } from "meteor/meteor";
 
 const { Search } = Input;
 
+
 const fetchData = async () => {
   const { data } = await axios.get("ClubesAVLnomes.json");
   return { data };
 };
 
-let sleep = (milliseconds) => {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-};
-
-let currChange = "";
-const onChangeCheckbox = function (e) {
-  currChange = e.target.value;
-  return currChange;
-};
-
-let currText = "";
-const onChangeText = function (e) {
-  currText = e.target.value;
-  return currText;
-};
+let bdInfo;
+const fetchDataFromDB = () => {
+  const { data } = bdInfo;
+  return { data };
+}
 
 export const listaClubesColumns = [
   {
@@ -44,28 +35,24 @@ export const listaClubesColumns = [
         <input
           type="checkbox"
           value="Atleta"
-          onChange={onChangeCheckbox}
           defaultChecked={Restricao[0]}
         />{" "}
         Atleta
         <input
           type="checkbox"
           value="Dirigente"
-          onChange={onChangeCheckbox}
           defaultChecked={Restricao[1]}
         />{" "}
         Dirigente
         <input
           type="checkbox"
           value="Treinador"
-          onChange={onChangeCheckbox}
           defaultChecked={Restricao[2]}
         />
         Treinador
         <input
           type="checkbox"
           value="Outra"
-          onChange={onChangeCheckbox}
           defaultChecked={Restricao[3]}
         />{" "}
         Outra
@@ -81,7 +68,6 @@ export const listaClubesColumns = [
         type="text"
         name="descricao"
         style={{ width: "auto" }}
-        onChange={onChangeText}
         defaultValue={Descricao}
       ></input>
     ),
@@ -98,14 +84,30 @@ function loadData() {
           console.log("ERRRRROOOOO", { err });
           reject(err);
         } else if (result) {
+
+          
+
           let j = JSON.parse(JSON.stringify(result));
 
           let dataFromDB = j.relacoes;
 
-          if (dataFromDB == "") {
+          console.log("dataFromDB: ");
+          console.log(dataFromDB);
+
+          // Nao ha data na base de dados
+          if (dataFromDB.length = 0) {
             resolve(fetchData());
-          } else {
-            resolve({ data: dataFromDB });
+          } 
+
+          // O PROBLEMA ESTÁ AQUI
+          
+          
+          else {
+            bd = dataFromDB;
+            resolve(fetchDataFromDB())
+
+
+            //resolve({data: dataFromDB});
           }
         }
       }
@@ -200,7 +202,17 @@ export function Restricoes() {
         //   Promise.resolve(resultado));
 
         var d = Promise.resolve(data);
+
+       
+
         d.then(function (v) {
+
+          const i = v.map( (obj) =>{
+            return obj
+          });
+          console.log("iiiiiiiiii");
+          console.log(i);
+
           const newState = v.map((obj) => {
             // 👇️ if id equals 2 replace object
             if (obj.key === key) {
@@ -209,6 +221,9 @@ export function Restricoes() {
             // 👇️ otherwise return object as is
             return obj;
           });
+
+          console.log("ATUALIZACAO DE DATA - adicionado Cargo:");
+          console.log(newState);
 
           setData(newState);
         });
@@ -258,6 +273,8 @@ export function Restricoes() {
             return obj;
           });
 
+          console.log("ATUALIZACAO DE DATA - adicionada info:");
+          console.log(newState);
           setData(newState);
         });
       } else {
@@ -289,11 +306,11 @@ export function Restricoes() {
         var d = Promise.resolve(data);
         d.then(function (v) {
           const newState = v.map((obj) => {
-            // 👇️ if id equals 2 replace object
+            // 👇️ if equals key replace object
             if (obj.key === key) {
               return changedLine;
             }
-            // 👇️ otherwise return object as is
+            // 👇️ otherwise return object as it is
             return obj;
           });
 
@@ -330,21 +347,32 @@ export function Restricoes() {
               loading={loading}
               onRow={(record) => {
                 let k = record.key;
-                let descr = "";
+
+                 
 
                 return {
-                  onChange: (event) => {
-                   // console.log(event.target.type === "text");
+                  onClick: (event) => {
+                    
+                    if(event.target.type === 'text') {
+                      adicionaDescricao(k, event.target.value);
+                    }
+                  },
 
+
+                  onChange: (event) => {
+
+                   
                     // save row data to state
 
                     if (event.target.value === undefined) {
                       // nothing to do
                     }
 
+
                     if (event.target.type === "text") {
-                      descr = event.target.value;
-                      adicionaDescricao(k, descr);
+                      adicionaDescricao(k, event.target.value);
+                    } else if(record.Descricao != ""){
+                      adicionaDescricao(k, record.Descricao);
                     }
 
                     if (event.target.type === "checkbox") {
