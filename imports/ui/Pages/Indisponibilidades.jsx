@@ -19,6 +19,7 @@ export class Indisponibilidades extends React.Component {
       currentEvents: [],
       loaded: false,
       resultado: [],
+      show: false,
     };
   }
 
@@ -26,17 +27,23 @@ export class Indisponibilidades extends React.Component {
     if (!this.state.loaded) {
       this.loadData();
     }
-  }
+    setTimeout( () => {
+      const { state: currentState } = this;
+        const newState = { ...currentState, show: true };
+        this.setState(newState)}, 2000)
+    }
+  
 
   render() {
     const _ = require("lodash");
 
-    const { loaded, resultado } = this.state;
+    const { loaded, resultado, show } = this.state;
+
     if (!loaded) {
       return "";
     }
-
-    return (
+    if(show){
+        return (
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>
           <form>
@@ -50,11 +57,11 @@ export class Indisponibilidades extends React.Component {
                   right: "timeGridWeek,timeGridDay",
                 }}
                 allDaySlot={false}
-                height={"350px"}
+                height={"410px"}
                 dayMinWidth={"8px"}
                 firstDay={1}
                 slotDuration={"00:60:00"}
-                slotMinTime={"09:00:00"}
+                slotMinTime={"09:00:00"} 
                 slotMaxTime={"23:00:00"}
                 initialView="timeGridWeek"
                 editable={true}
@@ -106,6 +113,7 @@ export class Indisponibilidades extends React.Component {
         </div>
       </div>
     );
+            }
   }
 
   loadData() {
@@ -136,8 +144,11 @@ export class Indisponibilidades extends React.Component {
 
     let r = this.validDate(this.state.currentEvents, newStart, newEnd, hoje);
 
-    if(newStart < hoje){
-      window.alert(Meteor.user().username +", não pode marcar indisponibilidade antes de hoje.")
+    if (newStart < hoje) {
+      window.alert(
+        Meteor.user().username +
+          ", não pode marcar indisponibilidade antes de hoje."
+      );
     } else if (r) {
       this.calendarApi.addEvent({
         id: _(),
@@ -148,7 +159,8 @@ export class Indisponibilidades extends React.Component {
       });
     } else {
       window.alert(
-         Meteor.user().username + ", já possui indisponibilidades marcadas nesse intervalo."
+        Meteor.user().username +
+          ", já possui indisponibilidades marcadas nesse intervalo."
       );
     }
   };
