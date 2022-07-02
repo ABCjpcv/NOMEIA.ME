@@ -85,8 +85,6 @@ function loadData() {
           reject(err);
         } else if (result) {
 
-          
-
           let j = JSON.parse(JSON.stringify(result));
 
           let dataFromDB = j.relacoes;
@@ -103,11 +101,11 @@ function loadData() {
           
           
           else {
-            bd = dataFromDB;
-            resolve(fetchDataFromDB())
+            //bd = dataFromDB;
+            //resolve(fetchDataFromDB())
 
-
-            //resolve({data: dataFromDB});
+            // ISTO NÃO ESTÁ A FUNCIONAR
+            resolve({data: dataFromDB});
           }
         }
       }
