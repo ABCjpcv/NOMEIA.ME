@@ -8,17 +8,15 @@ import { Meteor } from "meteor/meteor";
 
 const { Search } = Input;
 
-
+let dbInfo = "";
 const fetchData = async () => {
-  const { data } = await axios.get("ClubesAVLnomes.json");
+  let { data } = await axios.get("ClubesAVLnomes.json");
+  if (dbInfo != "") {
+    data = dbInfo;
+    //dbInfo = ""; 
+  }
   return { data };
 };
-
-let bdInfo;
-const fetchDataFromDB = () => {
-  const { data } = bdInfo;
-  return { data };
-}
 
 export const listaClubesColumns = [
   {
@@ -32,11 +30,7 @@ export const listaClubesColumns = [
     key: "Cargo",
     render: (_, { Restricao }) => (
       <div style={{ width: "auto" }}>
-        <input
-          type="checkbox"
-          value="Atleta"
-          defaultChecked={Restricao[0]}
-        />{" "}
+        <input type="checkbox" value="Atleta" defaultChecked={Restricao[0]} />{" "}
         Atleta
         <input
           type="checkbox"
@@ -84,28 +78,22 @@ function loadData() {
           console.log("ERRRRROOOOO", { err });
           reject(err);
         } else if (result) {
-
           let j = JSON.parse(JSON.stringify(result));
-
           let dataFromDB = j.relacoes;
 
-          console.log("dataFromDB: ");
-          console.log(dataFromDB);
-
           // Nao ha data na base de dados
-          if (dataFromDB.length = 0) {
+          if (dataFromDB.length == 0) {
             resolve(fetchData());
-          } 
+          }
 
           // O PROBLEMA ESTÁ AQUI
-          
-          
           else {
-            //bd = dataFromDB;
-            //resolve(fetchDataFromDB())
-
+            dbInfo = dataFromDB;
             // ISTO NÃO ESTÁ A FUNCIONAR
-            resolve({data: dataFromDB});
+            resolve(fetchData());
+
+            //PK ACIMA TENHO: resolve(fetchData()) que me devolve ()=>Promise<{data}>
+            //AQUI TENHO {data: dataFromDB}, ou seja nao eh uma ()=>Promise<{data}>
           }
         }
       }
@@ -133,80 +121,41 @@ export function Restricoes() {
 
     const analyzer = Promise.resolve(data);
     analyzer.then((resultado) => {
-
       if (resultado.data != undefined) {
-      // console.log("RESULTADO");
-      // console.log(resultado.data);
-
-      // console.log("RESULTADO DATA [K-1]");
-      // console.log(resultado.data[key - 1]);
-
-      let obj = resultado.data[key - 1];
-      let j = JSON.parse(JSON.stringify(obj));
-
-      j.Restricao[valorRestricao] = isChecked;
-
-     // console.log("After changes resultado.data[key-1]");
-
-      resultado.data[key - 1] = j;
-
-      //console.log(resultado.data[key - 1]);
-
-      changedLine = resultado.data[key - 1];
-
-      // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
-      //setData(data[k-1] = resultado.data[k-1])
-
-      //   Promise.resolve(resultado));
-    
-
-    var d = Promise.resolve(data);
-    d.then(function (v) {
-      const newState = v.data.map((obj) => {
-        // 👇️ if id equals 2 replace object
-        if (obj.key === key) {
-          return changedLine;
-        }
-        // 👇️ otherwise return object as is
-        return obj;
-      });
-
-      setData(newState);
-    });
-  } else {
-    //console.log("RESULTADO");
-      //  console.log(resultado);
-
-     //   console.log("RESULTADO DATA [K-1]");
-       // console.log(resultado[key - 1]);
-
-        let obj = resultado[key - 1];
+        let obj = resultado.data[key - 1];
         let j = JSON.parse(JSON.stringify(obj));
 
-//        console.log("J before changes");
-  //      console.log(j);
+        j.Restricao[valorRestricao] = isChecked;
+        resultado.data[key - 1] = j;
+
+        changedLine = resultado.data[key - 1];
+
+        var d = Promise.resolve(data);
+        d.then(function (v) {
+          const newState = v.data.map((obj) => {
+            // 👇️ if id equals 2 replace object
+            if (obj.key === key) {
+              return changedLine;
+            }
+            // 👇️ otherwise return object as is
+            return obj;
+          });
+
+          setData(newState);
+        });
+      } else {
+        let obj = resultado[key - 1];
+        let j = JSON.parse(JSON.stringify(obj));
 
         j.Restricao[valorRestricao] = isChecked;
         resultado[key - 1] = j;
 
- //       console.log("After changes resultado[k-1]");
-   //     console.log(resultado[key - 1]);
-
         changedLine = resultado[key - 1];
 
-        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
-        //setData(data[k-1] = resultado.data[k-1])
-
-        //   Promise.resolve(resultado));
-
         var d = Promise.resolve(data);
-
-       
-
         d.then(function (v) {
-
-          const i = v.map( (obj) =>{
-            return obj
+          const i = v.map((obj) => {
+            return obj;
           });
           console.log("iiiiiiiiii");
           console.log(i);
@@ -235,30 +184,13 @@ export function Restricoes() {
     const analyzer = Promise.resolve(data);
     analyzer.then((resultado) => {
       if (resultado.data != undefined) {
-    //    console.log("RESULTADO");
-    //    console.log(resultado);
-
-    //    console.log("RESULTADO DATA [K-1]");
-    //    console.log(resultado.data[key - 1]);
-
         let obj = resultado.data[key - 1];
         let j = JSON.parse(JSON.stringify(obj));
-
-    //    console.log("J before changes");
-    //    console.log(j);
 
         j.Descricao = valorDescricao;
         resultado.data[key - 1] = j;
 
-    //    console.log("After changes resultado.data[k-1]");
-    //    console.log(resultado.data[key - 1]);
-
         changedLine = resultado.data[key - 1];
-
-        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
-        //setData(data[k-1] = resultado.data[k-1])
-
-        //   Promise.resolve(resultado));
 
         var d = Promise.resolve(data);
         d.then(function (v) {
@@ -276,30 +208,13 @@ export function Restricoes() {
           setData(newState);
         });
       } else {
-    //    console.log("RESULTADO");
-    //    console.log(resultado);
-
-     //   console.log("RESULTADO DATA [K-1]");
-     //   console.log(resultado[key - 1]);
-
         let obj = resultado[key - 1];
         let j = JSON.parse(JSON.stringify(obj));
-
-     //   console.log("J before changes");
-     //   console.log(j);
 
         j.Descricao = valorDescricao;
         resultado[key - 1] = j;
 
-     //   console.log("After changes resultado[k-1]");
-     //   console.log(resultado[key - 1]);
-
         changedLine = resultado[key - 1];
-
-        // HOW TO SET DATA WITHOUT SETTING FULL TABLE VALUES
-        //setData(data[k-1] = resultado.data[k-1])
-
-        //   Promise.resolve(resultado));
 
         var d = Promise.resolve(data);
         d.then(function (v) {
@@ -346,30 +261,23 @@ export function Restricoes() {
               onRow={(record) => {
                 let k = record.key;
 
-                 
-
                 return {
                   onClick: (event) => {
-                    
-                    if(event.target.type === 'text') {
+                    if (event.target.type === "text") {
                       adicionaDescricao(k, event.target.value);
                     }
                   },
 
-
                   onChange: (event) => {
-
-                   
                     // save row data to state
 
                     if (event.target.value === undefined) {
                       // nothing to do
                     }
 
-
                     if (event.target.type === "text") {
                       adicionaDescricao(k, event.target.value);
-                    } else if(record.Descricao != ""){
+                    } else if (record.Descricao != "") {
                       adicionaDescricao(k, record.Descricao);
                     }
 
@@ -396,9 +304,16 @@ export function Restricoes() {
             type="button"
             value="Submeter"
             onClick={() => {
-              console.log("esta é a data que vou mandar para a base de dados...");
+              console.log(
+                "esta é a data que vou mandar para a base de dados..."
+              );
               console.log(data);
 
+              if (data[0] === undefined) {
+                window.alert(
+                  "Nenhuma alteração detetada " + Meteor.user().username
+                );
+              } else {
                 Meteor.call(
                   "addRestricao",
                   Meteor.user().username,
@@ -415,7 +330,8 @@ export function Restricoes() {
                     }
                   }
                 );
-              }}
+              }
+            }}
           />
         </form>
       </div>
