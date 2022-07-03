@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Input } from "antd";
 import axios from "axios";
-import { userColumns } from "./userColumns";
+import { colunasNomeacoes } from "./colunasNomeacoes";
 import { useTableSearch } from "./useTableSearch";
 import "antd/dist/antd.css";
 
@@ -42,7 +42,7 @@ export function ConsultaTotal() {
       <Table
         rowKey="name"
         dataSource={filteredData}
-        columns={userColumns}
+        columns={colunasNomeacoes}
         loading={loading}
         pagination={false}
       />

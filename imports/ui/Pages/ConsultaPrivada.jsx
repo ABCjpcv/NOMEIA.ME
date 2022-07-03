@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Table, Input } from "antd";
 import axios from "axios";
-import { userColumns } from "./userColumns";
+import { colunasNomeacoesPrivadas } from "./colunasNomeacoesPrivadas";
 import { useTableSearch } from "./useTableSearch";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
-import { useEffect } from "react/cjs/react.production.min";
 
 const fetchData = async () => {
   const { data } = await axios.get("Livro.json");
@@ -22,19 +21,6 @@ export function ConsultaPrivada() {
     retrieve: fetchData,
   });
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-  const hasSelected = selectedRowKeys.length > 0;
-
   return (
     <div
       className="demo-app"
@@ -49,8 +35,7 @@ export function ConsultaPrivada() {
               <Table
                 rowKey="name"
                 dataSource={filteredData}
-                rowSelection={rowSelection}
-                columns={userColumns}
+                columns={colunasNomeacoesPrivadas}
                 loading={loading}
                 pagination={false}
               />
@@ -59,10 +44,7 @@ export function ConsultaPrivada() {
                   marginLeft: 8,
                 }}
               >
-                <br></br>
-                {hasSelected
-                  ? `Confirmar ${selectedRowKeys.length} jogos selecionados?`
-                  : "Nenhum jogo selecionado"}
+                
               </span>
             </div>
           </div>

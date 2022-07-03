@@ -1,4 +1,4 @@
-export const userColumns = [
+export const colunasNomeacoes = [
   {
     title: "Jogo",
     dataIndex: "Jogo",
