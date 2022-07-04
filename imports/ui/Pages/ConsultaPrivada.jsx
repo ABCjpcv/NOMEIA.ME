@@ -335,9 +335,6 @@ export function ConsultaPrivada() {
 
           let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
 
-          console.log("tags", tags);
-          console.log("jogoLido", jogoLido);
-
           let obj = {
             Jogo: jogoLido.id,
             Dia: jogoLido.dia,

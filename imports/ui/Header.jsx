@@ -1,5 +1,6 @@
 import React from "react";
 import SideBar from "./sidebar";
+import SideBarCA from "./sidebarCA";
 import { Fragment } from "react/cjs/react.production.min";
 import { useNavigate } from "react-router-dom";
 import { LogoHeader } from "./Pages/LogoHeader";
@@ -56,6 +57,15 @@ export class Header extends React.Component {
                 outerContainerId={"menuPrivado"}
               />
               <div id="page-wrap"></div>
+            </div>
+
+            <div id="menuPrivadoCA" hidden={true}>
+              <p id="usernameStatusCA" style={{ margin: "0", marginLeft: "-110px", fontSize: "18px" }} hidden={false}> username </p>
+              <SideBarCA
+                pageWrapId={"page-wrap-ca"}
+                outerContainerId={"menuPrivadoCA"}
+              />
+              <div id="page-wrap-ca"></div>
             </div>
             
           </Fragment>

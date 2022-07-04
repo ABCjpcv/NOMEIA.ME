@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 export default (props) => {
 
-
-
   let navigate = useNavigate();
   
 
@@ -54,53 +52,54 @@ export default (props) => {
     document.getElementById("consultaPrivada").hidden = true;
     document.getElementById("restricoes").hidden = true;
     
-  }  
+  }
 
-  return (
-    // Pass on our props
-    <Menu right={true}  {...props}>
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaNomeacoes();
-          }}
-        >
-          Consultar Nomeações
-        </p>
-      </a>
+    return (
+      // Pass on our props
+      <Menu right={true}  {...props}>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => {
+              mostraPaginaNomeacoes();
+            }}
+          >
+            MENU DO CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          </p>
+        </a>
+  
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => {
+              mostraPaginaIndisponibilidades();
+            }}
+          >
+            Marcar Indisponibilidades
+          </p>
+        </a>
+  
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => {
+              mostraPaginaRestricoes();
+            }}
+          >
+            Indicar Restrições
+          </p>
+        </a>
+  
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (mostraTitulo(), navigate("/"), Meteor.logout())}
+          >
+            Sair
+          </p>
+        </a>
+      </Menu>
+    );
 
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaIndisponibilidades();
-          }}
-        >
-          Marcar Indisponibilidades
-        </p>
-      </a>
-
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaRestricoes();
-          }}
-        >
-          Indicar Restrições
-        </p>
-      </a>
-
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (mostraTitulo(), navigate("/"), Meteor.logout())}
-        >
-          Sair
-        </p>
-      </a>
-    </Menu>
-  );
-        
+  
 };

@@ -15,6 +15,7 @@ import { EscolhaArbitros } from "./Pages/EscolhaArbitros.jsx";
 import { NotFoundPage } from "./Pages/NotFoundPage.jsx";
 
 import {Header} from "./Header";
+import { ProfileCA } from "./Pages/ProfileCA";
 
 export const App = () => (
 
@@ -37,7 +38,7 @@ export const App = () => (
           <Route path="/ContaNova" element={<ContaNova />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
-          <Route path="/EscolhaArbitros" element={<EscolhaArbitros />}></Route>
+          <Route path="/ProfileCA" element={<ProfileCA />}></Route>
           {/* <Route path="*" element={<NotFoundPage />}></Route> */}
         </Routes>
       

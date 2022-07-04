@@ -14,14 +14,15 @@ export function Autenticar() {
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
+    document.getElementById("menuPrivadoCA").hidden = true;
     document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = true;
     //document.getElementById("restricoesCA").hidden = true;
     //document.getElementById("consultaPrivadaCA").hidden = true;
-     document.getElementById("indisponibilidades").hidden = true;
-     document.getElementById("restricoes").hidden = true;
-     document.getElementById("consultaPrivada").hidden = false;
+          //  document.getElementById("indisponibilidades").hidden = true;
+          //  document.getElementById("restricoes").hidden = true;
+          //  document.getElementById("consultaPrivada").hidden = false;
   }
 
   function mostraPerfilCA() {
@@ -31,12 +32,13 @@ export function Autenticar() {
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
-    document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("carregarFicheiroJogos").hidden = false;
-    document.getElementById("atribuirArbitrosAjogos").hidden = true;
-    document.getElementById("indisponibilidadesCA").hidden = true;
-    document.getElementById("restricoesCA").hidden = true;
-    document.getElementById("consultaPrivadaCA").hidden = true;
+    document.getElementById("menuPrivado").hidden = true;
+    document.getElementById("menuPrivadoCA").hidden = false;
+          // document.getElementById("carregarFicheiroJogos").hidden = false;
+          // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+          // document.getElementById("indisponibilidadesCA").hidden = true;
+          // document.getElementById("restricoesCA").hidden = true;
+          // document.getElementById("consultaPrivadaCA").hidden = true;
    // document.getElementById("indisponibilidades").hidden = true;
     // document.getElementById("restricoes").hidden = true;
    // document.getElementById("consultaPrivada").hidden = true;
@@ -51,7 +53,7 @@ export function Autenticar() {
     }
 
     Meteor.loginWithPassword(result, pass, () => {
-      navigate("/Profile");
+      
       Meteor.call("isAdmin", Meteor.user(), (err, result) => {
 
         console.log(result);
@@ -61,11 +63,15 @@ export function Autenticar() {
           
         } else if (result) {
             console.log("vou mostrar Perfil do CA");
-            mostraPerfilCA()
+            navigate("/ProfileCA");
+            mostraPerfilCA();
+            
           }
           else if(!result){
             console.log("vou mostrar Perfil do Arbitro");
-            mostraPerfil()
+           navigate("/Profile"); 
+           mostraPerfil();
+            
         }
       })
     });

@@ -451,4 +451,5 @@ Meteor.methods({
     const a = arbitros.findOne({ nome: username });
     return restricoes.findOne({ arbitro: a });
   },
+
 });
