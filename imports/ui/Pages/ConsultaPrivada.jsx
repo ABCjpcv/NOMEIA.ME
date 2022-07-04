@@ -144,7 +144,7 @@ export function ConsultaPrivada() {
           <div>
             <Popconfirm
               title="Confirmar jogo?"
-              onConfirm={() => handleConfirmation(record.key)}
+              onConfirm={() => handleConfirmation(record)}
             >
               <a>Confirmar</a>
             </Popconfirm>
@@ -152,7 +152,7 @@ export function ConsultaPrivada() {
             <br></br>
             <Popconfirm
               title="Recusar jogo?"
-              onConfirm={() => handleRefuse(record.key)}
+              onConfirm={() => handleRefuse(record)}
             >
               <a> Recusar </a>
             </Popconfirm>
@@ -169,17 +169,17 @@ export function ConsultaPrivada() {
           {tags.map((tag) => {
             let color;
 
-            if (tag === "pendente") {
-              color = "volcano";
-            } else if (tag === "confirmado") {
+            if (tag[0] === "pendente") {
+              color = "yellow";
+            } else if (tag[0] === "confirmado") {
               color = "green";
-            } else if (tag === "recusado") {
+            } else if (tag[0] === "recusado") {
               color = "red";
             }
 
             return (
               <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
+                {tag[0].toUpperCase()}
               </Tag>
             );
           })}
@@ -254,10 +254,10 @@ export function ConsultaPrivada() {
     // },
   ]);
 
-  const handleConfirmation = (key) => {
+  const handleConfirmation = (record) => {
     const newData = dataSource.filter((item) => {
-      if (item.key == key) {
-        return (item.tags = ["confirmado"]);
+      if (item.key == record.key) {
+        return (item.tags[0] = ["confirmado"]);
       } else {
         return item;
       }
@@ -267,15 +267,15 @@ export function ConsultaPrivada() {
 
   const handleAllConfirmation = () => {
     const newData = dataSource.filter((item) => {
-      return (item.tags = ["confirmado"]);
+      return (item.tags[0] = ["confirmado"]);
     });
     setDataSource(newData);
   };
 
-  const handleRefuse = (key) => {
+  const handleRefuse = (record) => {
     const newData = dataSource.filter((item) => {
-      if (item.key == key) {
-        return (item.tags = ["recusado"]);
+      if (item.key == record.key) {
+        return (item.tags[0] = ["recusado"]);
       } else {
         return item;
       }
@@ -295,7 +295,9 @@ export function ConsultaPrivada() {
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
-      if (data[index].tags.includes("pendente")) {
+
+
+      if (data[index].tags[0].includes("pendente")) {
         return window.alert(
           "Tem jogos por confirmar, " + Meteor.user().username
         );
@@ -350,17 +352,15 @@ export function ConsultaPrivada() {
             JL3: jogoLido.juiz_linha_3,
             JL4: jogoLido.juiz_linha_4,
             key: jogoLido.key,
-            tags: tags,
+            tags: [tags],
           };
 
           dataFromDB.push(obj);
         }
 
         setDataSource(dataFromDB);
-      }
-      else{
-        setDataSource([
-         ]);
+      } else {
+        setDataSource([]);
       }
     });
   }
@@ -370,10 +370,10 @@ export function ConsultaPrivada() {
     setMudouNome(true);
   }
 
-  if (!mudouNome) {
-    handleDelete();
-    setMudouNome(true);
-  }
+  // if (!mudouNome) {
+  //   handleDelete();
+  //   setMudouNome(true);
+  // }
 
   return (
     <div

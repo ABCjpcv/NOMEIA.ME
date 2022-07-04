@@ -15,9 +15,9 @@ export function Autenticar() {
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("menuPrivadoCA").hidden = true;
-    document.getElementById("carregarFicheiroJogos").hidden = true;
-    document.getElementById("atribuirArbitrosAjogos").hidden = true;
-    document.getElementById("indisponibilidadesCA").hidden = true;
+          // document.getElementById("carregarFicheiroJogos").hidden = true;
+          // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+          // document.getElementById("indisponibilidadesCA").hidden = true;
     //document.getElementById("restricoesCA").hidden = true;
     //document.getElementById("consultaPrivadaCA").hidden = true;
           //  document.getElementById("indisponibilidades").hidden = true;
@@ -27,9 +27,8 @@ export function Autenticar() {
 
   function mostraPerfilCA() {
     document.getElementById("titulo").hidden = true;
-    document.getElementById("carregarJogos").hidden = false;
     document.getElementById("atribuirArbitros").hidden = true;
-    document.getElementById("nomeacoesPrivadas").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = true;

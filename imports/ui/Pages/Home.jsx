@@ -20,10 +20,10 @@ export function Home() {
         <div className="botao" onClick={() => {mostraTitulo(), navigate("/ConsultaNomeacoes")}}>
           Consulta de Nomeações
         </div>
-        <p></p>
+        {/* <p></p>
         <div className="botao" onClick={() => {mostraTitulo(), navigate("/ContaNova")}}>
           Criar Conta Nova
-        </div>
+        </div> */}
         <p></p>
         <div className="botao" onClick={() => {mostraTitulo(), navigate("/Autenticar")}}>
           Autenticar

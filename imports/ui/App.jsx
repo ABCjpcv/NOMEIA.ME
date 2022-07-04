@@ -35,7 +35,6 @@ export const App = () => (
             element={<Indisponibilidades />}
           ></Route>
           <Route path="/Restricoes" element={<Restricoes />}></Route>
-          <Route path="/ContaNova" element={<ContaNova />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
           <Route path="/ProfileCA" element={<ProfileCA />}></Route>

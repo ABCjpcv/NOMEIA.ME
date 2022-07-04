@@ -27,13 +27,14 @@ export class Indisponibilidades extends React.Component {
     if (!this.state.loaded) {
       this.loadData();
     }
+    }
 
+  componentDidUpdate(){
     setTimeout( () => {
       const { state: currentState } = this;
         const newState = { ...currentState, show: true };
-        this.setState(newState)}, 4000)
+        this.setState(newState)}, 6000)
     }
-  
 
   render() {
     const _ = require("lodash");
@@ -45,6 +46,7 @@ export class Indisponibilidades extends React.Component {
     }
     if(show){
         return (
+          
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>
           <form>

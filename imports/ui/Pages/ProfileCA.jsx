@@ -64,16 +64,12 @@ async function caller(){
 
       return (
         <div id="profileCA">
-          <div id="carregarFicheiroJogos">
-            <h1 className="blue"> Inserir tabela de jogos (excel ou csv) </h1>
-          <div>
-            <FileInput></FileInput>
-          </div>
-          </div>
+          
 
           <div id="atribuirArbitrosAjogos" hidden>
+          <FileInput></FileInput>
+          <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1>
             <AtribuirJogos></AtribuirJogos>
-
           </div>
 
           <div id="indisponibilidadesCA" hidden>
@@ -84,7 +80,7 @@ async function caller(){
               <Restricoes></Restricoes>
             </div>
 
-            <div id="consultaPrivadaCA" hidden>
+            <div id="consultaPrivadaCA">
               <ConsultaPrivada></ConsultaPrivada>
 </div>
 

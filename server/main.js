@@ -75,7 +75,7 @@ conselhoDeArbitragem.schema = new SimpleSchema({
 });
 
 //Schema Jogos importados de um dado csv.
-jogos.schema = new SimpleSchema({
+jogos.schema = new SimpleSchema({ 
   id: { type: Number, optional: false }, //Retirar Unique no futuro
   dia: { type: String, optional: false },
   hora: { type: String, optional: false },
@@ -89,6 +89,7 @@ jogos.schema = new SimpleSchema({
   juiz_linha_2: { type: String, optional: true },
   juiz_linha_3: { type: String, optional: true },
   juiz_linha_4: { type: String, optional: true },
+  key: {type: Number, optional: true}
 });
 
 //Schema Clubes:
@@ -280,6 +281,7 @@ Meteor.startup(() => {
       juiz_linha_2: titleCase(rows[index][10]),
       juiz_linha_3: titleCase(rows[index][11]),
       juiz_linha_4: titleCase(rows[index][12]),
+      key: index
     });
     console.log("inserted JOGO " + rows[index][0]);
   }
