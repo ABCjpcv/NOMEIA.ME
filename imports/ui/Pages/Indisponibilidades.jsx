@@ -27,10 +27,11 @@ export class Indisponibilidades extends React.Component {
     if (!this.state.loaded) {
       this.loadData();
     }
+
     setTimeout( () => {
       const { state: currentState } = this;
         const newState = { ...currentState, show: true };
-        this.setState(newState)}, 2000)
+        this.setState(newState)}, 4000)
     }
   
 

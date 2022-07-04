@@ -49,9 +49,15 @@ indisponibilidades.schema = new SimpleSchema({
 });
 
 //Schema nomeacoes:
+
+const nomSchema = new SimpleSchema({
+  jogo: { type: jogos, optional: false },
+  confirmacao: { type: String, optional: false },
+});
+
 nomeacoes.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
-  jogo: { type: jogos, optional: false },
+  nomeacoesPrivadas: [nomSchema],
 });
 
 //Schema Arbitros:
@@ -64,7 +70,6 @@ arbitros.schema = new SimpleSchema({
 });
 
 //Schema ConselhoDeArbitragem
-
 conselhoDeArbitragem.schema = new SimpleSchema({
   arbitrosCA: { type: arbitros, optional: false },
 });
@@ -72,12 +77,11 @@ conselhoDeArbitragem.schema = new SimpleSchema({
 //Schema Jogos importados de um dado csv.
 jogos.schema = new SimpleSchema({
   id: { type: Number, optional: false }, //Retirar Unique no futuro
-  dia: { type: Date, optional: false },
+  dia: { type: String, optional: false },
   hora: { type: String, optional: false },
   prova: { type: String, optional: false },
-  Serie: { type: String, optional: false },
-  equipa_casa: { type: String, optional: false },
-  equipa_fora: { type: String, optional: false },
+  serie: { type: String, optional: false },
+  equipas: { type: String, optional: false },
   pavilhao: { type: String, optional: false },
   arbitro_1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro.
   arbitro_2: { type: String, optional: true }, //Mesmo que acima.
@@ -159,7 +163,6 @@ Meteor.startup(() => {
 
   // NAO EXISTE CA NA BASE DE DADOS
 
-
   console.log("Nao existe CA");
   var currCA = [
     "sergiosp@netcabo.pt",
@@ -227,9 +230,6 @@ Meteor.startup(() => {
   arb.forEach((arbitro) => {
     restricoes.insert({
       arbitro: arbitro,
-      recibo: "",
-      carro: "",
-      relacoes: "",
     });
     console.log("inserted: RESTRICAO ");
   });
@@ -246,13 +246,82 @@ Meteor.startup(() => {
 
   //Get the csvText:
   var csvFile = Assets.getText("Livro1.csv");
+
   var rows = Papa.parse(csvFile).data;
 
+  jogos.rawCollection().drop();
+
+  function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' '); 
+ }
+
   //Setup the database, by adding games.
-  for (i in rows) {
-    jogos.insert(rows[i]);
-    console.log("inserted" + rows[i]);
+  for (let index = 1; index < rows.length - 1; index++) {
+    // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
+
+    jogos.insert({
+      id: parseInt(rows[index][0]),
+      dia: rows[index][1],
+      hora: rows[index][2],
+      prova: rows[index][3],
+      serie: rows[index][4],
+      equipas: rows[index][5],
+      pavilhao: rows[index][6],
+      arbitro_1: titleCase(rows[index][7]),
+      arbitro_2: titleCase(rows[index][8]),
+      juiz_linha_1: titleCase(rows[index][9]),
+      juiz_linha_2: titleCase(rows[index][10]),
+      juiz_linha_3: titleCase(rows[index][11]),
+      juiz_linha_4: titleCase(rows[index][12]),
+    });
+    console.log("inserted JOGO " + rows[index][0]);
   }
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR NOMEACOES   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  nomeacoes.rawCollection().drop();
+
+  var jog = jogos.find();
+
+  arb.forEach((arbitro) => {
+    let nomeacoesAuxiliares = [];
+
+    jog.forEach((jogo) => {
+      if (
+        jogo.arbitro_1 == arbitro.nome ||
+        jogo.arbitro_1 == arbitro.nome ||
+        jogo.arbitro_2 == arbitro.nome ||
+        jogo.juiz_linha_1 == arbitro.nome ||
+        jogo.juiz_linha_2 == arbitro.nome ||
+        jogo.juiz_linha_3 == arbitro.nome ||
+        jogo.juiz_linha_4 == arbitro.nome
+      ) {
+        nomeacoesAuxiliares.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
+      }
+    });
+
+    nomeacoes.insert({
+      arbitro: arbitro,
+      nomeacoesPrivadas: nomeacoesAuxiliares,
+    });
+
+    console.log("inserted nomeacoes a: " + arbitro.nome);
+  });
 });
 
 Meteor.methods({
@@ -267,7 +336,7 @@ Meteor.methods({
     if (user == undefined) {
       throw new Meteor.Error("Invalid credentials / user does not exist.");
     }
-    
+
     console.log("User found by email.");
 
     //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
@@ -285,7 +354,6 @@ Meteor.methods({
     user_password,
     password_repeat
   ) {
-    console.log("ENTRIU");
     if (
       (user_name.length == 0 ||
         user_email.length == 0 ||
@@ -311,17 +379,30 @@ Meteor.methods({
     return admin;
   },
 
-  addNomeacao: function addNomeacao(licenca_arbitro, id_jogo) {
-    var arbitro = arbitros.find({ licenca: licenca_arbitro });
-    var jogo = jogos.find({ id: id_jogo });
-    var nomeacao = { arbitro, jogo };
-    console.log("Arbitro " + arbitro + " ficou com o jogo " + jogo);
-    nomeacoes.insert(nomeacao);
+  addNomeacao: function addNomeacao(email, idsJogos, confirmacoes) {
+    var arb = arbitros.findOne({ email: email });
+    let nomeacoesAuxiliares = [];
+
+    for (let index = 0; index < idsJogos.length; index++) {
+      let idAtual = idsJogos[index];
+      let confirmacaoAtual = confirmacoes[index];
+      var jogo = jogos.findOne({ id: idAtual });
+      var nomeacao = { jogo, confirmacaoAtual };
+      nomeacoesAuxiliares.push(nomeacao);
+      console.log("Arbitro " + arb.nome + " ficou com o jogo " + idAtual);
+    }
+
+    nomeacoes.update(
+      { arbitro: arb },
+      { $set: { nomeacoesPrivadas: nomeacoesAuxiliares } }
+    );
   },
-  getNomeacoes: function getNomeacoes(licenca_arbitro) {
-    var arbitro = arbitros.find({ licenca: licenca_arbitro });
-    var result = nomeacoes.find({ arbitro: arbitro });
-    console.log(result);
+
+  carregaNomeacoes: function carregaNomeacoes(email) {
+    console.log("ENTRASTE?");
+    var arbitro = arbitros.findOne({ email: email });
+    var result = nomeacoes.findOne({ arbitro: arbitro });
+
     return result;
   },
 
@@ -342,7 +423,6 @@ Meteor.methods({
       );
       return true;
     } catch (error) {
-
       return false;
     }
   },

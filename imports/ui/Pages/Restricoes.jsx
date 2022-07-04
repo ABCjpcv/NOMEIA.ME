@@ -82,7 +82,7 @@ function loadData() {
           let dataFromDB = j.relacoes;
 
           // Nao ha data na base de dados
-          if (dataFromDB.length == 0) {
+          if (dataFromDB == undefined) {
             resolve(fetchData());
           }
 
