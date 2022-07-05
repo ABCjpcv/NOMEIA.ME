@@ -69,13 +69,8 @@ arbitros.schema = new SimpleSchema({
   isAdmin: { type: Boolean, optional: false },
 });
 
-//Schema ConselhoDeArbitragem
-conselhoDeArbitragem.schema = new SimpleSchema({
-  arbitrosCA: { type: arbitros, optional: false },
-});
-
 //Schema Jogos importados de um dado csv.
-jogos.schema = new SimpleSchema({ 
+jogos.schema = new SimpleSchema({
   id: { type: Number, optional: false }, //Retirar Unique no futuro
   dia: { type: String, optional: false },
   hora: { type: String, optional: false },
@@ -89,7 +84,13 @@ jogos.schema = new SimpleSchema({
   juiz_linha_2: { type: String, optional: true },
   juiz_linha_3: { type: String, optional: true },
   juiz_linha_4: { type: String, optional: true },
-  key: {type: Number, optional: true}
+  key: { type: Number, optional: true },
+});
+
+//Schema ConselhoDeArbitragem
+conselhoDeArbitragem.schema = new SimpleSchema({
+  arbitrosCA: { type: arbitros, optional: false },
+  preNomeacoes: [jogos],
 });
 
 //Schema Clubes:
@@ -180,6 +181,7 @@ Meteor.startup(() => {
       a.isAdmin = true;
       conselhoDeArbitragem.insert({
         arbitrosCA: a,
+        preNomeacoes: [],
       });
       arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
     }
@@ -253,15 +255,16 @@ Meteor.startup(() => {
   jogos.rawCollection().drop();
 
   function titleCase(str) {
-    var splitStr = str.toLowerCase().split(' ');
+    var splitStr = str.toLowerCase().split(" ");
     for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+      // You do not need to check if i is larger than splitStr length, as your for does that for you
+      // Assign it back to the array
+      splitStr[i] =
+        splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
     // Directly return the joined string
-    return splitStr.join(' '); 
- }
+    return splitStr.join(" ");
+  }
 
   //Setup the database, by adding games.
   for (let index = 1; index < rows.length - 1; index++) {
@@ -281,7 +284,7 @@ Meteor.startup(() => {
       juiz_linha_2: titleCase(rows[index][10]),
       juiz_linha_3: titleCase(rows[index][11]),
       juiz_linha_4: titleCase(rows[index][12]),
-      key: index
+      key: index,
     });
     console.log("inserted JOGO " + rows[index][0]);
   }
@@ -313,7 +316,10 @@ Meteor.startup(() => {
         jogo.juiz_linha_3 == arbitro.nome ||
         jogo.juiz_linha_4 == arbitro.nome
       ) {
-        nomeacoesAuxiliares.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
+        nomeacoesAuxiliares.push({
+          jogo: jogo,
+          confirmacaoAtual: ["pendente"],
+        });
       }
     });
 
@@ -454,4 +460,56 @@ Meteor.methods({
     return restricoes.findOne({ arbitro: a });
   },
 
+  /*****************************************************************
+   **************** METODOS DO CONSELHO DE ARBITRAGEM *************
+   *****************************************************************
+   */
+
+  addJogosSemanais: function addJogosSemanais(jogos) {
+    let ca = conselhoDeArbitragem.find();
+    let arbCAs = [];
+    ca.forEach((ca) => {
+      arbCAs.push(ca.arbitrosCA);
+    });
+
+    let newGames = [];
+
+    for (let index = 1; index < jogos.length; index++) {
+      let game = {
+        id: jogos[index][0],
+        dia: jogos[index][1],
+        hora: jogos[index][2],
+        prova: jogos[index][3],
+        serie: jogos[index][4],
+        equipas: jogos[index][5],
+        pavilhao: jogos[index][6],
+        arbitro_1: jogos[index][7],
+        arbitro_2: jogos[index][8],
+        juiz_linha_1: jogos[index][9],
+        juiz_linha_2: jogos[index][10],
+        juiz_linha_3: jogos[index][11],
+        juiz_linha_4: jogos[index][12],
+        key: index,
+        tags: ["pendente"],
+      };
+
+      newGames.push(game);
+    }
+
+    conselhoDeArbitragem.rawCollection().drop();
+
+    for (let index = 0; index < arbCAs.length; index++) {
+      conselhoDeArbitragem.insert({
+        arbitrosCA: arbCAs[index],
+        preNomeacoes: newGames,
+      });
+    }
+    return true;
+  },
+
+  carregaJogosSemanais: function carregaJogosSemanais(email){
+    const a = arbitros.findOne({ email: email });
+    return conselhoDeArbitragem.findOne({ arbitrosCA: a });
+
+  }
 });

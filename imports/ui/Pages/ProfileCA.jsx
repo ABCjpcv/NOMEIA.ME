@@ -7,7 +7,7 @@ import "./app.css";
 import { Indisponibilidades } from "./Indisponibilidades";
 import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
-import { FileInput } from "./FileInput";
+import {FileInput} from "./FileInput";
 import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
 import { AtribuirJogos } from "./AtribuirJogos";
 
@@ -64,11 +64,14 @@ async function caller(){
 
       return (
         <div id="profileCA">
-          
+
+
+          <div id="carregarFicheiroJogos" hidden>
+          <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1>
+        <FileInput></FileInput>
+          </div>
 
           <div id="atribuirArbitrosAjogos" hidden>
-          <FileInput></FileInput>
-          <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1>
             <AtribuirJogos></AtribuirJogos>
           </div>
 

@@ -8,10 +8,29 @@ export default (props) => {
 
   let navigate = useNavigate();
   
+  function mostraPaginaCarregarJogos() {
+    // HEADERS
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = false;
+    document.getElementById("atribuirArbitros").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = true;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
+    document.getElementById("menuPrivadoCA").hidden = false;
+    document.getElementById("menuPrivado").hidden = true;
+    
+    // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = false;
+    document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    document.getElementById("indisponibilidadesCA").hidden = true;
+    document.getElementById("restricoesCA").hidden = true;
+    document.getElementById("consultaPrivadaCA").hidden = true;
+  }
 
   function mostraPaginaAtribuicaoArbitros() {
     // HEADERS
     document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
@@ -20,6 +39,7 @@ export default (props) => {
     document.getElementById("menuPrivado").hidden = true;
     
     // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = false;
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
@@ -29,6 +49,7 @@ export default (props) => {
   function mostraPaginaNomeacoesCA() {
     // HEADERS
     document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
@@ -37,6 +58,7 @@ export default (props) => {
     document.getElementById("menuPrivado").hidden = true;
     
     // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
@@ -46,6 +68,7 @@ export default (props) => {
   function mostraPaginaIndisponibilidadesCA() {
     // HEADERS
     document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = false;
@@ -54,6 +77,7 @@ export default (props) => {
     document.getElementById("menuPrivado").hidden = true;
     
     // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = false;
     document.getElementById("restricoesCA").hidden = true;
@@ -63,6 +87,7 @@ export default (props) => {
   function mostraPaginaRestricoesCA() {
     // HEADERS
     document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
@@ -71,6 +96,7 @@ export default (props) => {
     document.getElementById("menuPrivado").hidden = true;
     
     // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = false;
@@ -80,6 +106,7 @@ export default (props) => {
   function mostraTitulo() {
     // HEADERS
     document.getElementById("titulo").hidden = false;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
@@ -88,6 +115,7 @@ export default (props) => {
     document.getElementById("menuPrivado").hidden = true;
     
     // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
     document.getElementById("atribuirArbitrosAjogos").hidden = true;
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
@@ -98,6 +126,18 @@ export default (props) => {
     return (
       // Pass on our props
       <Menu right={true}  {...props}>
+
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => {
+              mostraPaginaCarregarJogos();
+            }}
+          >
+            Carregar Jogos Novos
+          </p>
+        </a>
+        
         <a className="menu-item">
           <p
             style={{ fontSize: "15px" }}
@@ -105,7 +145,7 @@ export default (props) => {
               mostraPaginaAtribuicaoArbitros();
             }}
           >
-            Realizar Nomeações Novas
+            Atribuir Árbitros a Jogos
           </p>
         </a>
 

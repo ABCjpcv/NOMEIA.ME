@@ -23,6 +23,10 @@ export class Header extends React.Component {
             Atribuição de Árbitros
           </p>
 
+          <p id="carregarJogos" style={{ margin: "0" }} hidden={true}>
+            Carregar Jogos Novos:
+          </p>
+
           {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
           <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
             As minhas nomeações 📅🏐

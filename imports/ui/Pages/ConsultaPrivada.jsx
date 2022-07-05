@@ -196,8 +196,6 @@ export function ConsultaPrivada() {
    *
    */
 
-  const [dataIsLoaded, setDataIsLoaded] = useState(false);
-
   const [mudouNome, setMudouNome] = useState(false);
 
   const [dataSource, setDataSource] = useState([
@@ -326,7 +324,6 @@ export function ConsultaPrivada() {
   function loadData() {
     let email = Meteor.user().emails[0].address;
     Meteor.call("carregaNomeacoes", email, (err, result) => {
-      console.log("RESULTADO", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result.nomeacoesPrivadas.length > 0) {
