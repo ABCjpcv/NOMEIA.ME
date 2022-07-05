@@ -140,12 +140,67 @@ Meteor.startup(() => {
 
   arbitros.rawCollection().drop();
 
+  let nivel1 = [
+    "andre.21carvalho@gmail.com",
+    "danielcborga9@gmail.com",
+    "diogosilva.ovc@gmail.com",
+    "gabrielaciriani@gmail.com",
+    "riquelopes03@gmail.com",
+    "inespereira04@gmail.com",
+    "jjustocaldeira@gmail.com",
+    "mariacferreira98@hotmail.com",
+    "clatoven.musica@gmail.com",
+    "matilde.maranha@gmail.com",
+    "ricardo03fernandes@hotmail.com",
+    "ricardo.madeira11@hotmail.com",
+    "andrecruz5094@gmail.com"
+  ];
+  let nivel2 = ["analoidearbitragem@gmail.com",
+    "aca.pereira@campus.fct.unl.pt",
+    "catarinafiliparodrigues@hotmail.com",
+    "eliz.munteanu@gmail.com",
+    "hugocruz116@gmail.com",
+    "joaopmateus@hotmail.com",
+    "margaridapformiga@gmail.com",
+    "ralha.marta19@gmail.com",
+    "sousanicky@gmail.com",
+    "samuelpatrao@gmail.com",
+    "mtvaleria20@gmail.com"
+    ];
+  let nivel3 = ["mafalda.bento@gmail.com",
+    "danieljafernandes@gmail.com",
+    "sergiosp@netcabo.pt",
+    "aninhasfranco@gmail.com",
+    "brunoescorpiao1984@gmail.com",
+    "silvacvoleibol@gmail.com",
+    "diogo.rcgeraldes@gmail.com",
+    "goncalomonteiro.arbitragem@gmail.com",
+    "jorgereis1995@gmail.com",
+    "ralha.madalena18@gmail.com",
+    "michellecferreira@yahoo.com",
+    "rui.costa.reis@gmail.com",
+    "sandra.deveza@gmail.com",
+    "sofiarodrcosta@gmail.com",
+    "andrebrascorreia.42@gmail.com"
+    ];
+  let nivel4 = [];
+
   utilizadores.forEach((user) => {
+    let nivel = 0;
+    if(nivel1.includes(user.emails[0].address)){
+      nivel = 1;
+    } else if(nivel2.includes(user.emails[0].address)){
+      nivel = 2;
+    }
+    else if(nivel3.includes(user.emails[0].address)){
+      nivel = 3;
+    }
+
     arbitros.insert({
       nome: user.username,
       email: user.emails[0].address,
       licenca: 0,
-      nivel: 0,
+      nivel: nivel,
       isAdmin: false,
     });
     console.log("inserted: " + user.username);
@@ -359,6 +414,8 @@ Meteor.methods({
   registerUser: function registerUser(
     user_name,
     user_email,
+    nivelArbitro,
+    licencaArbitro,
     user_password,
     password_repeat
   ) {
@@ -375,7 +432,13 @@ Meteor.methods({
       throw new Meteor.Error("Passwords do not match.");
     console.log("Passwords match. User registered.");
     return Accounts.createUser(
-      { username: user_name, email: user_email, password: user_password },
+      {
+        username: user_name,
+        email: user_email,
+        licenca: licencaArbitro,
+        nivel: nivelArbitro,
+        password: user_password,
+      },
       null
     );
   },
@@ -507,9 +570,70 @@ Meteor.methods({
     return true;
   },
 
-  carregaJogosSemanais: function carregaJogosSemanais(email){
+  carregaJogosSemanais: function carregaJogosSemanais(email) {
     const a = arbitros.findOne({ email: email });
     return conselhoDeArbitragem.findOne({ arbitrosCA: a });
+  },
 
+  arbitrosDisponiveis: function arbitrosDisponiveis(jogo){
+    let indis = indisponibilidades.find();
+
+    let indisponibilidadesDaBD = [];
+    indis.forEach(i => {
+      indisponibilidadesDaBD.push(i);
+    });
+
+    console.log("indisponibilidadesDaBD",indisponibilidadesDaBD);
+
+    let arbitrosDisponiveis = [];
+
+    let diaDeJogo = jogo.Dia;
+    let horaDeJogo = jogo.Hora;
+
+    indisponibilidadesDaBD.forEach(elem => {
+      if(elem.disponibilidades==""){
+        arbitrosDisponiveis.push(elem.arbitro);
+      }else {
+        let resultado = true;
+        for (let index = 0; index < elem.disponibilidades.length; index++) {
+
+            console.log("elem.disponibilidades[index]", elem.disponibilidades[index]);
+          console.log("diaDeJogo", diaDeJogo);
+          console.log("horaDeJogo", horaDeJogo);
+
+
+          // TO DO 
+          // DONE FOR THE DAY
+          // BETTER GET SOME REST
+          
+              if (newStart < element.start) {
+                if (newEnd < element.start) {
+                  resultado = true;
+                } else {
+                  resultado = false;
+                  break;
+                }
+              } else if (newStart >= element.end) {
+                resultado = true;
+              } else {
+                resultado = false;
+                break;
+              }
+            
+            return resultado;
+          
+
+
+
+
+          
+        }
+      }
+      
+      
+      
+    });
+
+    console.log("jogo: ", jogo);
   }
 });

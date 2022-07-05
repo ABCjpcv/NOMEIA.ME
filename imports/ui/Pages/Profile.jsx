@@ -7,9 +7,6 @@ import "./app.css";
 import { Indisponibilidades } from "./Indisponibilidades";
 import { Restricoes } from "./Restricoes";
 import { ConsultaPrivada } from "./ConsultaPrivada";
-import { FileInput } from "./FileInput";
-import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
-import { AtribuirJogos } from "./AtribuirJogos";
 
 export function Profile() {
   let navigate = useNavigate();
@@ -30,31 +27,6 @@ export function Profile() {
     }
     return false;
   }
-
-  let adminRights = false;
-
-  function isAdmin(user){
-    return new Promise((resolve,reject)=>{
-        //here our function should be implemented 
-        setTimeout(()=>{
-          Meteor.call("isAdmin", user, (err, result) => {
-            if (err) {
-              console.log("ERRRRROOOOO", { err });
-            } else if (result) {
-              adminRights = result;
-            }
-          });
-            resolve();
-        ;} , 5000
-        );
-    });
-}
-
-async function caller(){
-    await isAdmin(Meteor.user?.());
-    console.log("After waiting" + adminRights);
-    return adminRights;
-}
 
 
   if (!changeUsernameStatus()) {

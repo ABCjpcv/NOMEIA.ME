@@ -37,6 +37,16 @@ export function ContaNova() {
         </div>
         <br></br>
         <div className="input">
+          <label className="labels">Nivel</label>
+          <input className="inputt" type={"number"} id="nivelArbitro"></input>
+        </div>
+        <br></br>
+        <div className="input">
+          <label className="labels">Licença</label>
+          <input className="inputt" type={"number"} id="licencaArbitro"></input>
+        </div>
+        <br></br>
+        <div className="input">
           <label className="labels">Password</label>
           <input className="inputt" type={"password"} id="pass"></input>
         </div>
@@ -53,6 +63,8 @@ export function ContaNova() {
               "registerUser",
               document.getElementById("nome").value,
               document.getElementById("email").value,
+              document.getElementById("nivelArbitro").value,
+              document.getElementById("licencaArbitro").value,
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
               (err, result) => {

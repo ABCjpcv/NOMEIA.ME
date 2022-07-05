@@ -100,9 +100,7 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
     },
@@ -115,9 +113,7 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-              
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
     },
@@ -130,9 +126,7 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-              
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
     },
@@ -145,9 +139,7 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-              
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
     },
@@ -160,9 +152,7 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-              
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
     },
@@ -175,13 +165,9 @@ export function AtribuirJogos() {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <div>
-            <Select>
-              
-            </Select>
+            <Select></Select>
           </div>
         ) : null,
-    
-    
     },
   ];
 
@@ -249,8 +235,6 @@ export function AtribuirJogos() {
     // },
   ]);
 
-  
-
   const handleAllConfirmation = () => {
     const newData = dataSource.filter((item) => {
       return (item.tags[0] = ["confirmado"]);
@@ -263,8 +247,6 @@ export function AtribuirJogos() {
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
-
-
       if (data[index].tags[0].includes("pendente")) {
         return window.alert(
           "Tem jogos por confirmar, " + Meteor.user().username
@@ -294,7 +276,6 @@ export function AtribuirJogos() {
   function loadData() {
     let email = Meteor.user().emails[0].address;
     Meteor.call("carregaJogosSemanais", email, (err, result) => {
-
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result.preNomeacoes.length > 0) {
@@ -340,7 +321,6 @@ export function AtribuirJogos() {
   // }
 
   return (
-
     <div
       className="demo-app"
       style={{ height: "10%", width: "auto", alignSelf: "center" }}
@@ -348,14 +328,73 @@ export function AtribuirJogos() {
       <div className="demo-app-sidebar"></div>
       <div>
         <div className="demo-app-main" style={{ overflow: "auto" }}>
-        
           <div className="container">
             <div className="table-responsive">
               <br />
+              <h1 className="blue"> Arbitros disponiveis: </h1>
+              <span></span>
+
+              <br></br>
               <Table
                 bordered
                 dataSource={dataSource}
                 columns={colunasNomeacoesPrivadas}
+                onRow={(record) => {
+                  let k = record.key;
+
+                  
+
+                   return {
+                     onClick: (event) => {
+                      let arbitrosDisponiveis = [];
+                      
+                      Meteor.call(
+                        "arbitrosDisponiveis",
+                        record,
+                        (err, result) => {
+                          if (err) {
+                            console.log("ERRRRROOOOO", { err });
+                          } else if (result) {
+                            arbitrosDisponiveis= result;
+                          } else {
+                            arbitrosDisponiveis = [];
+                          }
+                        }
+                      );
+    
+                      console.log("arbitrosDisponiveis",arbitrosDisponiveis);
+                     },
+
+                  //   onChange: (event) => {
+                  //     // save row data to state
+
+                  //     if (event.target.value === undefined) {
+                  //       // nothing to do
+                  //     }
+
+                  //     if (event.target.type === "text") {
+                  //       adicionaDescricao(k, event.target.value);
+                  //     } else if (record.Descricao != "") {
+                  //       adicionaDescricao(k, record.Descricao);
+                  //     }
+
+                  //     if (event.target.type === "checkbox") {
+                  //       if (event.target.value === "Atleta") {
+                  //         adicionaRestricao(k, 0, event.target.checked);
+                  //       }
+                  //       if (event.target.value === "Dirigente") {
+                  //         adicionaRestricao(k, 1, event.target.checked);
+                  //       }
+                  //       if (event.target.value === "Treinador") {
+                  //         adicionaRestricao(k, 2, event.target.checked);
+                  //       }
+                  //       if (event.target.value === "Outra") {
+                  //         adicionaRestricao(k, 3, event.target.checked);
+                  //       }
+                  //     }
+                  //   },
+                   };
+                }}
               />
               <Button
                 onClick={handleAllConfirmation}

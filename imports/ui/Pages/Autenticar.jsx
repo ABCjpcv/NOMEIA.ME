@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 export function Autenticar() {
   let navigate = useNavigate();
-  const admins = ["Daniel Fernandes", "Sérgio Pereira", "Mafalda Bento"];
 
    function mostraPerfil() {
     document.getElementById("titulo").hidden = true;

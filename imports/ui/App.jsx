@@ -30,15 +30,10 @@ export const App = () => (
             path="/ConsultaNomeacoes"
             element={<ConsultaNomeacoes />}
           ></Route>
-          <Route
-            path="/Indisponibilidades"
-            element={<Indisponibilidades />}
-          ></Route>
-          <Route path="/Restricoes" element={<Restricoes />}></Route>
           <Route path="/Autenticar" element={<Autenticar />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
           <Route path="/ProfileCA" element={<ProfileCA />}></Route>
-          {/* <Route path="*" element={<NotFoundPage />}></Route> */}
+          <Route path="*" element={<NotFoundPage />}></Route> 
         </Routes>
       
     </div>
