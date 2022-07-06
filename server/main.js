@@ -153,9 +153,10 @@ Meteor.startup(() => {
     "matilde.maranha@gmail.com",
     "ricardo03fernandes@hotmail.com",
     "ricardo.madeira11@hotmail.com",
-    "andrecruz5094@gmail.com"
+    "andrecruz5094@gmail.com",
   ];
-  let nivel2 = ["analoidearbitragem@gmail.com",
+  let nivel2 = [
+    "analoidearbitragem@gmail.com",
     "aca.pereira@campus.fct.unl.pt",
     "catarinafiliparodrigues@hotmail.com",
     "eliz.munteanu@gmail.com",
@@ -165,9 +166,10 @@ Meteor.startup(() => {
     "ralha.marta19@gmail.com",
     "sousanicky@gmail.com",
     "samuelpatrao@gmail.com",
-    "mtvaleria20@gmail.com"
-    ];
-  let nivel3 = ["mafalda.bento@gmail.com",
+    "mtvaleria20@gmail.com",
+  ];
+  let nivel3 = [
+    "mafalda.bento@gmail.com",
     "danieljafernandes@gmail.com",
     "sergiosp@netcabo.pt",
     "aninhasfranco@gmail.com",
@@ -181,18 +183,17 @@ Meteor.startup(() => {
     "rui.costa.reis@gmail.com",
     "sandra.deveza@gmail.com",
     "sofiarodrcosta@gmail.com",
-    "andrebrascorreia.42@gmail.com"
-    ];
+    "andrebrascorreia.42@gmail.com",
+  ];
   let nivel4 = [];
 
   utilizadores.forEach((user) => {
     let nivel = 0;
-    if(nivel1.includes(user.emails[0].address)){
+    if (nivel1.includes(user.emails[0].address)) {
       nivel = 1;
-    } else if(nivel2.includes(user.emails[0].address)){
+    } else if (nivel2.includes(user.emails[0].address)) {
       nivel = 2;
-    }
-    else if(nivel3.includes(user.emails[0].address)){
+    } else if (nivel3.includes(user.emails[0].address)) {
       nivel = 3;
     }
 
@@ -572,68 +573,143 @@ Meteor.methods({
 
   carregaJogosSemanais: function carregaJogosSemanais(email) {
     const a = arbitros.findOne({ email: email });
-    return conselhoDeArbitragem.findOne({ arbitrosCA: a });
+    const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
+    return ca.preNomeacoes;
   },
 
-  arbitrosDisponiveis: function arbitrosDisponiveis(jogo){
-    let indis = indisponibilidades.find();
+  arbitrosDisponiveis: function arbitrosDisponiveis(jogo) {
+    let todasIndisponiibilidades = [];
 
-    let indisponibilidadesDaBD = [];
-    indis.forEach(i => {
-      indisponibilidadesDaBD.push(i);
-    });
+    indisponibilidades.find().forEach((indisponibilidade) => {
+      todasIndisponiibilidades.push(indisponibilidade);
+    }); //Vai buscar todas as indisponibilidades
 
-    console.log("indisponibilidadesDaBD",indisponibilidadesDaBD);
+    let todosArbitros = [];
+    arbitros.find().forEach((arbitro) => {
+      todosArbitros.push(arbitro);
+    }); //Vai buscar todas as arbitros
+
+    let diaDeJogo = (jogo.Dia + "").split("/");
+    let horaDeJogo = (jogo.Hora + "").split(":");
+    console.log("ano", diaDeJogo[2]);
+    console.log("mes", diaDeJogo[1]);
+    console.log("dia", diaDeJogo[0]);
+
+    console.log("hora", horaDeJogo[0]);
+    console.log("minutos", horaDeJogo[1]);
+
+    let horaPavilhao = parseInt(horaDeJogo[0]) - 1;
+    console.log("horaPavilhao", horaPavilhao);
+
+    let dataInicio =
+      diaDeJogo[2] +
+      "-" +
+      diaDeJogo[1] +
+      "-" +
+      diaDeJogo[0] +
+      "T" +
+      (horaPavilhao + 1) + // NAO FACO IDEIA PORQUE, MAS TEVE DE SER
+      ":" +
+      horaDeJogo[1] +
+      ":00";
+
+    let inicioDoJogo = new Date(dataInicio);
+
+    let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
+    console.log("horaFimDeJogo: ", horaFimDeJogo);
+
+    let dataFim =
+      diaDeJogo[2] +
+      "-" +
+      diaDeJogo[1] +
+      "-" +
+      diaDeJogo[0] +
+      "T" +
+      (horaFimDeJogo + 1) + // NAO FACO IDEIA PORQUE, MAS TEVE DE SER
+      ":" +
+      horaDeJogo[1] +
+      ":00";
+
+    let fimDoJogo = new Date(dataFim);
+
+    //Primeiro passo:
 
     let arbitrosDisponiveis = [];
 
-    let diaDeJogo = jogo.Dia;
-    let horaDeJogo = jogo.Hora;
+    todasIndisponiibilidades.forEach((indisponibilidade) => {
+      //console.log("ENTREI NO CICLO");
 
-    indisponibilidadesDaBD.forEach(elem => {
-      if(elem.disponibilidades==""){
-        arbitrosDisponiveis.push(elem.arbitro);
-      }else {
-        let resultado = true;
-        for (let index = 0; index < elem.disponibilidades.length; index++) {
+      // console.log("ESTOU NA INDISPONIBILIDADE", indisponibilidade);
 
-            console.log("elem.disponibilidades[index]", elem.disponibilidades[index]);
-          console.log("diaDeJogo", diaDeJogo);
-          console.log("horaDeJogo", horaDeJogo);
+      let disponibilidades = indisponibilidade.disponibilidades; //Vai buscar o array de disponibilidades
 
+      //console.log("disponibilidades", disponibilidades);
 
-          // TO DO 
-          // DONE FOR THE DAY
-          // BETTER GET SOME REST
-          
-              if (newStart < element.start) {
-                if (newEnd < element.start) {
-                  resultado = true;
-                } else {
-                  resultado = false;
-                  break;
-                }
-              } else if (newStart >= element.end) {
-                resultado = true;
-              } else {
-                resultado = false;
-                break;
-              }
-            
-            return resultado;
-          
+      //console.log("disponibilidades length", disponibilidades.length);
 
-
-
-
-          
+      if (disponibilidades.length == 0) {
+        console.log("Disponivel.");
+        console.log(indisponibilidade.arbitro);
+        arbitrosDisponiveis.push(indisponibilidade.arbitro);
+      } else {
+        let v = validDate(disponibilidades, inicioDoJogo, fimDoJogo);
+        if (!v) {
+          // Nao esta disponivel
+          console.log("arbitrosDisponiveis", arbitrosDisponiveis);
+        } else if (v) {
+          console.log("Disponivel.");
+          arbitrosDisponiveis.push(indisponibilidade.arbitro);
         }
       }
-      
-      
-      
     });
 
-    console.log("jogo: ", jogo);
-  }
+    return arbitrosDisponiveis;
+  },
 });
+
+function validDate(eventsArray, newStart, newEnd) {
+  if (eventsArray.length === 0) return true;
+  else {
+    let resultado = true;
+    for (var element of eventsArray) {
+      // console.log("resultado", resultado);
+      // console.log("newStart", newStart);
+      // console.log("element.start", element.start);
+      // console.log("newStart < element.start", newStart < element.start);
+      // console.log("new Date(element.start", new Date(element.start));
+      // console.log(
+      //   "newStart < new Date(element.start)",
+      //   newStart < new Date(element.start)
+      // );
+      if (newStart < new Date(element.start)) {
+        // console.log("newEnd", newEnd);
+        // console.log(
+        //   "newEnd < new Date(element.start))",
+        //   newEnd < new Date(element.start)
+        // );
+        if (newEnd < new Date(element.start)) {
+          console.log("TRUEEEEEE");
+          resultado = true;
+        } else {
+          console.log("FALSEEE");
+          resultado = false;
+          break;
+        }
+        // console.log("new Date(element.end)", new Date(element.end));
+        // console.log(
+        //   "newStart >= new Date(element.end)",
+        //   newStart >= new Date(element.end)
+        // );
+      } else if (newStart >= new Date(element.end)) {
+        console.log("TRUEEEEEE");
+        resultado = true;
+      } else {
+        console.log("FALSEEE");
+        resultado = false;
+        break;
+      }
+    }
+
+    return resultado;
+  }
+}

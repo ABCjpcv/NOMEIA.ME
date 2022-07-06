@@ -9,13 +9,14 @@ export const LogoHeader = () => {
   function mostraTitulo() {
     // HEADERS
     document.getElementById("titulo").hidden = false;
+    document.getElementById("carregarJogos").hidden = true;
     document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivadoCA").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
-    
+
     // PROFILE
     // document.getElementById("atribuirArbitrosAjogos").hidden = true;
     // document.getElementById("indisponibilidadesCA").hidden = true;
@@ -23,15 +24,22 @@ export const LogoHeader = () => {
     // document.getElementById("consultaPrivadaCA").hidden = true;
   }
 
-  function logout(){
-    if(Meteor.user() != undefined){
+  function logout() {
+    if (Meteor.user() != undefined) {
       Meteor.logout();
     }
   }
 
   return (
     <Fragment>
-       <img id="imgLogo" src="logo.png" style={{ marginLeft: "50px", width: "100px", cursor: "pointer" }} onClick={()=>{mostraTitulo(), navigate("/"), logout()}} />      
+      <img
+        id="imgLogo"
+        src="logo.png"
+        style={{ marginLeft: "50px", width: "100px", cursor: "pointer" }}
+        onClick={() => {
+          mostraTitulo(), navigate("/"), logout();
+        }}
+      />
     </Fragment>
   );
 };

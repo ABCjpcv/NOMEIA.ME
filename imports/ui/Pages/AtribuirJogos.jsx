@@ -3,6 +3,9 @@ import { Button, Popconfirm, Select, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 
+// Requiring the lodash library
+const _ = require("lodash");
+
 function comparaAminhaLindaString(a, b) {
   let x = 0;
   let tamanho = a.length > b.length ? b.length : a.length;
@@ -97,11 +100,27 @@ export function AtribuirJogos() {
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_arbitro1"
+              style={{ width: "150px" }}
+              key="select_arbitro1"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_arbitro1" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
     {
@@ -110,11 +129,27 @@ export function AtribuirJogos() {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_arbitro2"
+              style={{ width: "150px" }}
+              key="select_arbitro2"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_arbitro2" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
     {
@@ -123,11 +158,27 @@ export function AtribuirJogos() {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_jl1"
+              style={{ width: "150px" }}
+              key="select_jl1"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_jl1" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
     {
@@ -136,11 +187,27 @@ export function AtribuirJogos() {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_jl2"
+              style={{ width: "150px" }}
+              key="select_jl2"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_jl2" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
     {
@@ -149,11 +216,27 @@ export function AtribuirJogos() {
       key: "JL3",
       sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_jl3"
+              style={{ width: "150px" }}
+              key="select_jl3"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_jl3" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
     {
@@ -162,11 +245,27 @@ export function AtribuirJogos() {
       key: "JL4",
       sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
       sortDirections: ["descend", "ascend"],
-      render: (_, record) =>
+      render: (record) =>
         dataSource.length >= 1 ? (
-          <div>
-            <Select></Select>
-          </div>
+          <>
+            <Select
+              name="select_jl3"
+              style={{ width: "150px" }}
+              key="select_jl3"
+              type="select"
+            >
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option
+                    value={arb.nome}
+                    key={"option_jl3" + _.uniqueId()}
+                  >
+                    {arb.nome}
+                  </Select.Option>
+                );
+              })}
+            </Select>
+          </>
         ) : null,
     },
   ];
@@ -179,7 +278,7 @@ export function AtribuirJogos() {
    *
    */
 
-  const [mudouNome, setMudouNome] = useState(false);
+  const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
   const [dataSource, setDataSource] = useState([
     // {
@@ -278,11 +377,11 @@ export function AtribuirJogos() {
     Meteor.call("carregaJogosSemanais", email, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", err);
-      } else if (result.preNomeacoes.length > 0) {
+      } else if (result.length > 0) {
         let dataFromDB = [];
 
-        for (let index = 0; index < result.preNomeacoes.length; index++) {
-          let jogoLido = result.preNomeacoes[index];
+        for (let index = 0; index < result.length; index++) {
+          let jogoLido = result[index];
           let obj = {
             Jogo: jogoLido.id,
             Dia: jogoLido.dia,
@@ -303,10 +402,9 @@ export function AtribuirJogos() {
 
           dataFromDB.push(obj);
         }
-
-        setDataSource(dataFromDB);
+        return setDataSource(dataFromDB);
       } else {
-        setDataSource([]);
+        return setDataSource([]);
       }
     });
   }
@@ -314,11 +412,6 @@ export function AtribuirJogos() {
   useEffect(() => {
     loadData();
   }, [dataSource]);
-
-  // if (!mudouNome) {
-  //   handleDelete();
-  //   setMudouNome(true);
-  // }
 
   return (
     <div
@@ -331,8 +424,8 @@ export function AtribuirJogos() {
           <div className="container">
             <div className="table-responsive">
               <br />
-              <h1 className="blue"> Arbitros disponiveis: </h1>
-              <span></span>
+              {/* <h1 className="blue"> Arbitros disponiveis: </h1>
+              <ul>{arbitrosDisponiveis.map(renderSidebarArbitro)}</ul> */}
 
               <br></br>
               <Table
@@ -342,58 +435,57 @@ export function AtribuirJogos() {
                 onRow={(record) => {
                   let k = record.key;
 
-                  
-
-                   return {
-                     onClick: (event) => {
-                      let arbitrosDisponiveis = [];
-                      
-                      Meteor.call(
-                        "arbitrosDisponiveis",
-                        record,
-                        (err, result) => {
-                          if (err) {
-                            console.log("ERRRRROOOOO", { err });
-                          } else if (result) {
-                            arbitrosDisponiveis= result;
-                          } else {
-                            arbitrosDisponiveis = [];
+                  return {
+                    onClick: (event) => {
+                      console.log("event", event);
+                      console.log("event.target.value", event.target.value);
+                      if (event.target != "div.ant-select-selector") {
+                        Meteor.call(
+                          "arbitrosDisponiveis",
+                          record,
+                          (err, result) => {
+                            console.log("result: ", result);
+                            if (err) {
+                              console.log("ERRRRROOOOO", { err });
+                            } else if (result.length != 0) {
+                              return setArbitrosDisponiveis(result);
+                            }
                           }
-                        }
-                      );
-    
-                      console.log("arbitrosDisponiveis",arbitrosDisponiveis);
-                     },
+                        );
+                      }
+                      // console.log("arbitrosDisponiveis",arbitrosDisponiveis);
+                    },
 
-                  //   onChange: (event) => {
-                  //     // save row data to state
+                    onChange: (event) => {
+                      // save row data to state
+                      console.log("MUDEI O EVENTO!", event);
 
-                  //     if (event.target.value === undefined) {
-                  //       // nothing to do
-                  //     }
+                      //  if (event.target.value === undefined) {
+                      //    // nothing to do
+                      //  }
 
-                  //     if (event.target.type === "text") {
-                  //       adicionaDescricao(k, event.target.value);
-                  //     } else if (record.Descricao != "") {
-                  //       adicionaDescricao(k, record.Descricao);
-                  //     }
+                      //  if (event.target.type === "text") {
+                      //       adicionaDescricao(k, event.target.value);
+                      //     } else if (record.Descricao != "") {
+                      //       adicionaDescricao(k, record.Descricao);
+                      //     }
 
-                  //     if (event.target.type === "checkbox") {
-                  //       if (event.target.value === "Atleta") {
-                  //         adicionaRestricao(k, 0, event.target.checked);
-                  //       }
-                  //       if (event.target.value === "Dirigente") {
-                  //         adicionaRestricao(k, 1, event.target.checked);
-                  //       }
-                  //       if (event.target.value === "Treinador") {
-                  //         adicionaRestricao(k, 2, event.target.checked);
-                  //       }
-                  //       if (event.target.value === "Outra") {
-                  //         adicionaRestricao(k, 3, event.target.checked);
-                  //       }
-                  //     }
-                  //   },
-                   };
+                      //     if (event.target.type === "checkbox") {
+                      //       if (event.target.value === "Atleta") {
+                      //         adicionaRestricao(k, 0, event.target.checked);
+                      //       }
+                      //       if (event.target.value === "Dirigente") {
+                      //         adicionaRestricao(k, 1, event.target.checked);
+                      //       }
+                      //       if (event.target.value === "Treinador") {
+                      //         adicionaRestricao(k, 2, event.target.checked);
+                      //       }
+                      //       if (event.target.value === "Outra") {
+                      //         adicionaRestricao(k, 3, event.target.checked);
+                      //       }
+                      //     }
+                    },
+                  };
                 }}
               />
               <Button

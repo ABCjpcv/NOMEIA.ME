@@ -24,16 +24,25 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidMount() {
+    
     if (!this.state.loaded) {
       this.loadData();
     }
+
+    setTimeout( () => {
+      const { state: currentState } = this;
+        const newState = { ...currentState, show: true };
+        this.setState(newState)}, 5000)
     }
+
+    
+    
 
   componentDidUpdate(){
     setTimeout( () => {
       const { state: currentState } = this;
         const newState = { ...currentState, show: true };
-        this.setState(newState)}, 6000)
+        this.setState(newState)}, 5000)
     }
 
   render() {
@@ -141,6 +150,7 @@ export class Indisponibilidades extends React.Component {
 
     let hoje = new Date();
 
+    console.log("selectInfo.start",selectInfo.start);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -169,6 +179,11 @@ export class Indisponibilidades extends React.Component {
   };
 
   validDate(eventsArray, newStart, newEnd, hoje) {
+
+    console.log("newStart: ",newStart);
+    console.log("newEnd: ",newEnd);
+
+
     let resultado = true;
     for (var element of eventsArray) {
       if (newStart < hoje) return false;

@@ -120,13 +120,13 @@ export function Autenticar() {
         >
           Autenticar
         </button>
-        <p></p>
+        {/* <p></p>
         <div className="input">
           <label>Ainda não tem conta?</label>
           <button className="botao" onClick={() => navigate("/ContaNova")}>
             Criar Conta Nova
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
