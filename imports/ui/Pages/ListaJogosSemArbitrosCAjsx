@@ -11,7 +11,7 @@ const fetchLeftOverGames = async () => {
   return { data };
 };
 
-export function listaJogosSemArbitros() {
+export function listaJogosSemArbitrosCA() {
   const [searchVal, setSearchVal] = useState(null);
 
   const { filteredData, loading } = useTableSearch({

@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Button, Popconfirm, Select, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
+import styled from "styled-components";
+
+const StyledTable = styled((props) => <Table {...props} />)`
+  && tbody > tr:hover > td {
+    background: rgba(224, 248, 232, 1);
+  }
+`;
 
 // Requiring the lodash library
 const _ = require("lodash");
@@ -225,16 +232,19 @@ export function AtribuirJogos() {
               key="select_jl3"
               type="select"
             >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option
-                    value={arb.nome}
-                    key={"option_jl3" + _.uniqueId()}
-                  >
-                    {arb.nome}
-                  </Select.Option>
-                );
-              })}
+              {() => {
+                for (let arb in arbitrosDisponiveis) {
+                  console.log("arbitro", arb);
+                  return (
+                    <Select.Option
+                      value={arb}
+                      key={"option_jl3" + _.uniqueId()}
+                    >
+                      {arb.nome}
+                    </Select.Option>
+                  );
+                }
+              }}
             </Select>
           </>
         ) : null,
@@ -258,7 +268,7 @@ export function AtribuirJogos() {
                 return (
                   <Select.Option
                     value={arb.nome}
-                    key={"option_jl3" + _.uniqueId()}
+                    key={"option_jl4" + _.uniqueId()}
                   >
                     {arb.nome}
                   </Select.Option>
@@ -280,90 +290,24 @@ export function AtribuirJogos() {
 
   const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
-  const [dataSource, setDataSource] = useState([
-    // {
-    //   Jogo: "2059",
-    //   Dia: "01/05/2022",
-    //   Hora: "17:00",
-    //   Prova: "CNMJuv",
-    //   Serie: "D",
-    //   Equipas: "SCPORT. - CNGINAS",
-    //   Pavilhao: "PAV. MULTID. SPORTING CP",
-    //   Arbitro1: "André Carvalho",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "5",
-    //   tags: ['pendente']
-    // },
-    // {
-    //   Jogo: "2178",
-    //   Dia: "30/04/2022",
-    //   Hora: "15:00",
-    //   Prova: "CNFJuv",
-    //   Serie: "D",
-    //   Equipas: "SCPORT. - SLBENFI",
-    //   Pavilhao: "PAV. MULTID. SPORTING CP",
-    //   Arbitro1: "André Correia",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "6",
-    //   tags: ['pendente']
-    // },
-    // {
-    //   Jogo: "1526",
-    //   Dia: "01/05/2022",
-    //   Hora: "18:00",
-    //   Prova: "JUV F",
-    //   Serie: "TPAP",
-    //   Equipas: "CFB B - EFL",
-    //   Pavilhao: "PAV. ACACIO ROSA- RESTELO",
-    //   Arbitro1: "André Correia",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "7",
-    //   tags: ['pendente']
-    // },
-  ]);
-
-  const handleAllConfirmation = () => {
-    const newData = dataSource.filter((item) => {
-      return (item.tags[0] = ["confirmado"]);
-    });
-    setDataSource(newData);
-  };
+  const [dataSource, setDataSource] = useState([]);
 
   function handleSubmissionConfirmation(data) {
-    let idsJogos = [];
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
-      if (data[index].tags[0].includes("pendente")) {
-        return window.alert(
-          "Tem jogos por confirmar, " + Meteor.user().username
-        );
-      } else {
-        idsJogos.push(parseInt(data[index].Jogo));
-        confirmacoes.push(data[index].tags[0]);
-      }
+      confirmacoes.push(data[index]);
     }
 
-    for (let index = 0; index < idsJogos.length; index++) {
-      console.log(idsJogos[index]);
-      console.log(confirmacoes[index]);
-    }
+    Meteor.call("carregaJogosComNomeacoes", (err, result) => {
+      if (err) {
+        console.log("ERRRRROOOOO", { err });
+      }
+    });
 
     let email = Meteor.user().emails[0].address;
 
-    Meteor.call("addNomeacao", email, idsJogos, confirmacoes, (err, result) => {
+    Meteor.call("addNomeacaoCalendario", email, data, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", { err });
       } else {
@@ -428,8 +372,11 @@ export function AtribuirJogos() {
               <ul>{arbitrosDisponiveis.map(renderSidebarArbitro)}</ul> */}
 
               <br></br>
-              <Table
-                bordered
+              <StyledTable
+                //bordered
+                rowClassName={(record, index) =>
+                  index % 2 === 0 ? "table-row-light" : "table-row-dark"
+                }
                 dataSource={dataSource}
                 columns={colunasNomeacoesPrivadas}
                 onRow={(record) => {
@@ -452,6 +399,9 @@ export function AtribuirJogos() {
                             }
                           }
                         );
+                      }
+                      if (event.key === "Enter") {
+                        console.log("event.target.value", event.target.value);
                       }
                       // console.log("arbitrosDisponiveis",arbitrosDisponiveis);
                     },
@@ -489,13 +439,13 @@ export function AtribuirJogos() {
                 }}
               />
               <Button
-                onClick={handleAllConfirmation}
+                onClick={handleSubmissionConfirmation}
                 type="primary"
                 style={{
                   marginBottom: 16,
                 }}
               >
-                Confirmar todos
+                Submeter e enviar nomeações
               </Button>
             </div>
           </div>

@@ -29,17 +29,21 @@ export class Header extends React.Component {
 
           {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
           <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
-            As minhas nomeações 📅🏐
+            As minhas nomeações:
           </p>
           <p
             id="indisponibilidadePrivadas"
             style={{ margin: "0" }}
             hidden={true}
           >
-            Marcação de Indisponibilidades:
+            📅 Calendário 📅
           </p>
           <p id="restricoesPrivadas" style={{ margin: "0" }} hidden={true}>
-            Relações com clubes
+            Relações com clubes:
+          </p>
+
+          <p id="definicoes" style={{ margin: "0" }} hidden={true}>
+            ⚙️ Definições ⚙️
           </p>
         </div>
 
@@ -51,8 +55,7 @@ export class Header extends React.Component {
                 style={{ margin: "0", marginLeft: "-110px", fontSize: "18px" }}
                 hidden={false}
               >
-                {" "}
-                username{" "}
+                username
               </p>
               <SideBar
                 pageWrapId={"page-wrap"}
@@ -67,8 +70,7 @@ export class Header extends React.Component {
                 style={{ margin: "0", marginLeft: "-110px", fontSize: "18px" }}
                 hidden={false}
               >
-                {" "}
-                username{" "}
+                username
               </p>
               <SideBarCA
                 pageWrapId={"page-wrap-ca"}

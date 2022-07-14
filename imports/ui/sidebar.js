@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Meteor } from "meteor/meteor";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";
 
 export default (props) => {
-
-
-
   let navigate = useNavigate();
-  
 
   function mostraPaginaNomeacoes() {
     document.getElementById("titulo").hidden = true;
@@ -20,6 +16,8 @@ export default (props) => {
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = false;
     document.getElementById("restricoes").hidden = true;
+    document.getElementById("definicoes").hidden = true;
+    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   function mostraPaginaIndisponibilidades() {
@@ -31,6 +29,8 @@ export default (props) => {
     document.getElementById("indisponibilidades").hidden = false;
     document.getElementById("consultaPrivada").hidden = true;
     document.getElementById("restricoes").hidden = true;
+    document.getElementById("definicoes").hidden = true;
+    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   function mostraPaginaRestricoes() {
@@ -42,9 +42,24 @@ export default (props) => {
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = true;
     document.getElementById("restricoes").hidden = false;
+    document.getElementById("definicoes").hidden = true;
+    document.getElementById("definicoesPerfil").hidden = true;
   }
 
-  function mostraTitulo(){
+  function mostraPaginaDefinicoes() {
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = true;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
+    document.getElementById("menuPrivado").hidden = false;
+    document.getElementById("indisponibilidades").hidden = true;
+    document.getElementById("consultaPrivada").hidden = true;
+    document.getElementById("restricoes").hidden = true;
+    document.getElementById("definicoes").hidden = false;
+    document.getElementById("definicoesPerfil").hidden = false;
+  }
+
+  function mostraTitulo() {
     document.getElementById("titulo").hidden = false;
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
@@ -53,12 +68,13 @@ export default (props) => {
     document.getElementById("indisponibilidades").hidden = true;
     document.getElementById("consultaPrivada").hidden = true;
     document.getElementById("restricoes").hidden = true;
-    
-  }  
+    document.getElementById("definicoes").hidden = true;
+    document.getElementById("definicoesPerfil").hidden = true;
+  }
 
   return (
     // Pass on our props
-    <Menu right={true}  {...props}>
+    <Menu right={true} {...props}>
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
@@ -95,6 +111,17 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
+          onClick={() => {
+            mostraPaginaDefinicoes();
+          }}
+        >
+          Definições
+        </p>
+      </a>
+
+      <a className="menu-item">
+        <p
+          style={{ fontSize: "15px" }}
           onClick={() => (mostraTitulo(), navigate("/"), Meteor.logout())}
         >
           Sair
@@ -102,5 +129,4 @@ export default (props) => {
       </a>
     </Menu>
   );
-        
 };

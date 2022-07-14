@@ -16,6 +16,7 @@ export const LogoHeader = () => {
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivadoCA").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
+    document.getElementById("definicoes").hidden = true;
 
     // PROFILE
     // document.getElementById("atribuirArbitrosAjogos").hidden = true;

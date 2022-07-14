@@ -154,3 +154,10 @@
   flex-flow: row nowrap;
   justify-content: stretch;
 } */
+
+.table-row-light {
+  background-color: #ded9d9;
+}
+.table-row-dark {
+  background-color: #ded9d8;
+}
