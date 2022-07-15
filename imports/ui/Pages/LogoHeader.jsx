@@ -14,8 +14,12 @@ export const LogoHeader = () => {
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
-    document.getElementById("menuPrivadoCA").hidden = true;
-    document.getElementById("menuPrivado").hidden = true;
+
+    try {
+      document.getElementById("menuPrivadoCA").hidden = true;
+      document.getElementById("menuPrivado").hidden = true;
+    } catch (e) {}
+
     document.getElementById("definicoes").hidden = true;
     document.getElementById("criarContaNova").hidden = true;
 

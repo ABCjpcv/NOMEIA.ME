@@ -1,5 +1,6 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
+import { Button } from "antd";
 import FullCalendar, {
   CalendarApi,
   EventSourceApi,
@@ -24,26 +25,24 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidMount() {
-    
     if (!this.state.loaded) {
       this.loadData();
     }
 
-    setTimeout( () => {
+    setTimeout(() => {
       const { state: currentState } = this;
-        const newState = { ...currentState, show: true };
-        this.setState(newState)}, 5000)
-    }
+      const newState = { ...currentState, show: true };
+      this.setState(newState);
+    }, 5000);
+  }
 
-    
-    
-
-  componentDidUpdate(){
-    setTimeout( () => {
+  componentDidUpdate() {
+    setTimeout(() => {
       const { state: currentState } = this;
-        const newState = { ...currentState, show: true };
-        this.setState(newState)}, 5000)
-    }
+      const newState = { ...currentState, show: true };
+      this.setState(newState);
+    }, 5000);
+  }
 
   render() {
     const _ = require("lodash");
@@ -53,79 +52,100 @@ export class Indisponibilidades extends React.Component {
     if (!loaded) {
       return "";
     }
-    if(show){
-        return (
-          
-      <div>
-        <div className="demo-app-main" style={{ overflow: "auto" }}>
-          <form>
-            <div>
-              <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                locale="pt"
-                headerToolbar={{
-                  left: "prev,next today",
-                  center: "title",
-                  right: "timeGridWeek,timeGridDay",
-                }}
-                allDaySlot={false}
-                height={"410px"}
-                dayMinWidth={"8px"}
-                firstDay={1}
-                slotDuration={"00:60:00"}
-                slotMinTime={"09:00:00"} 
-                slotMaxTime={"23:00:00"}
-                initialView="timeGridWeek"
-                editable={true}
-                selectable={true}
-                selectMirror={true}
-                dayMaxEvents={true}
-                weekends={true}
-                initialEvents={resultado} // Indisponibilidades da BD
-                select={this.handleDateSelect}
-                eventContent={renderEventContent} // custom render function
-                eventClick={this.handleEventClick}
-                eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-              />
-            </div>
-            <input
-              className="botao"
-              type={"button"}
-              value="Submeter"
-              onClick={() => {
-                let curr = this.state.currentEvents;
-                let eventos = [];
-                curr.map((evento) =>
-                  eventos.push({
-                    id: evento.id,
-                    start: evento.startStr,
-                    end: evento.endStr,
-                  })
-                );
-
-                Meteor.call(
-                  "addIndisponibilidade",
-                  Meteor.user().username,
-                  eventos,
-                  (err, result) => {
-                    if (err) {
-                      //Fazer aparecer mensagem de texto de credenciais erradas.
-                      console.log(err);
-                    } else if (result) {
-                      window.alert(
-                        "Indisponibilidades registadas " +
-                          Meteor.user().username
-                      );
-                    }
-                  }
-                );
-              }}
-            />
-          </form>
-        </div>
-      </div>
-    );
+    if (show) {
+      return (
+        <div>
+          <input
+            className="botao"
+            type={"button"}
+            value="Instruções"
+            onClick={() =>
+              window.alert(
+                "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma."
+              )
             }
+          />
+          {/* <ul>
+            <li>
+              Selecione as datas e você será solicitado a criar um novo evento
+            </li>
+            <li>Arraste, solte e redimensione eventos</li>
+            <li>Clique em um evento para excluí-lo</li>
+          </ul> */}
+          <div className="demo-app-main" style={{ overflow: "auto" }}>
+            <form>
+              <div>
+                <FullCalendar
+                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                  locale="pt"
+                  headerToolbar={{
+                    left: "prev,next today",
+                    center: "title",
+                    right: "timeGridWeek,timeGridDay",
+                  }}
+                  allDaySlot={false}
+                  height={"410px"}
+                  dayMinWidth={"8px"}
+                  firstDay={1}
+                  slotDuration={"00:60:00"}
+                  slotMinTime={"09:00:00"}
+                  slotMaxTime={"23:00:00"}
+                  initialView="timeGridWeek"
+                  editable={true}
+                  selectable={true}
+                  selectMirror={true}
+                  dayMaxEvents={true}
+                  weekends={true}
+                  initialEvents={resultado} // Indisponibilidades da BD
+                  select={this.handleDateSelect}
+                  eventContent={renderEventContent} // custom render function
+                  eventClick={this.handleEventClick}
+                  eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+                />
+              </div>
+              <br></br>
+
+              <Button
+                onClick={() => {
+                  let curr = this.state.currentEvents;
+                  let eventos = [];
+                  curr.map((evento) =>
+                    eventos.push({
+                      id: evento.id,
+                      start: evento.startStr,
+                      end: evento.endStr,
+                    })
+                  );
+
+                  Meteor.call(
+                    "addIndisponibilidade",
+                    Meteor.user().username,
+                    eventos,
+                    (err, result) => {
+                      if (err) {
+                        //Fazer aparecer mensagem de texto de credenciais erradas.
+                        console.log(err);
+                      } else if (result) {
+                        window.alert(
+                          "Indisponibilidades registadas " +
+                            Meteor.user().username
+                        );
+                      }
+                    }
+                  );
+                }}
+                type="primary"
+                style={{
+                  marginBottom: 16,
+                }}
+              >
+                Submeter Indisponibilidades
+              </Button>
+            </form>
+          </div>
+        </div>
+      );
+    }
   }
 
   loadData() {
@@ -150,7 +170,7 @@ export class Indisponibilidades extends React.Component {
 
     let hoje = new Date();
 
-    console.log("selectInfo.start",selectInfo.start);
+    console.log("selectInfo.start", selectInfo.start);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -179,10 +199,8 @@ export class Indisponibilidades extends React.Component {
   };
 
   validDate(eventsArray, newStart, newEnd, hoje) {
-
-    console.log("newStart: ",newStart);
-    console.log("newEnd: ",newEnd);
-
+    console.log("newStart: ", newStart);
+    console.log("newEnd: ", newEnd);
 
     let resultado = true;
     for (var element of eventsArray) {

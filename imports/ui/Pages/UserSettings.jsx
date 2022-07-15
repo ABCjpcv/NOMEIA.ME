@@ -1,17 +1,13 @@
 import { Meteor } from "meteor/meteor";
 import React, { useState, useEffect } from "react";
 
-export function UserSettings() {
-  let [user, setUser] = useState(Meteor.user());
-
-  let [temRecibo, setTemRecibo] = useState(() =>
-    getEmissaoReciboUser(Meteor.user())
-  );
+export function UserSettings({ user }) {
+  let [temRecibo, setTemRecibo] = useState(() => getEmissaoReciboUser(user));
   let [temTransporte, setTemTransporte] = useState(() =>
-    getTransporteProprioUser(Meteor.user())
+    getTransporteProprioUser(user)
   );
 
-  let [nivel, setNivel] = useState(() => getNivel(Meteor.user()));
+  let [nivel, setNivel] = useState(() => getNivel(user));
 
   function submeterAlteracaoPassword(user, newPassword) {
     Meteor.call("alteraPassword", user, newPassword, (err, result) => {
@@ -128,9 +124,7 @@ export function UserSettings() {
             <input
               className="inputt"
               type={"checkbox"}
-              onChange={() =>
-                adicionaTransporteProprioUserSettings(Meteor.user())
-              }
+              onChange={() => adicionaTransporteProprioUserSettings(user)}
               style={{ marginLeft: "180px", height: "30px", width: "30px" }}
               checked={temTransporte}
             ></input>
@@ -144,7 +138,7 @@ export function UserSettings() {
             <input
               className="inputt"
               type={"checkbox"}
-              onChange={() => adicionaEmissaoReciboUserSettings(Meteor.user())}
+              onChange={() => adicionaEmissaoReciboUserSettings(user)}
               style={{ marginLeft: "188px", height: "30px", width: "30px" }}
               checked={temRecibo}
             ></input>

@@ -4,6 +4,7 @@ import axios from "axios";
 import { useTableSearch } from "./useTableSearch";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
+import { useTracker } from "meteor/react-meteor-data";
 
 function comparaAminhaLindaString(a, b) {
   let x = 0;
@@ -42,7 +43,7 @@ function comparaAminhaLindaData(a, b) {
 //   return { data };
 // };
 
-export function ConsultaPrivada() {
+export function ConsultaPrivada({ user }) {
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
@@ -281,22 +282,13 @@ export function ConsultaPrivada() {
     setDataSource(newData);
   };
 
-  function handleDelete() {
-    let arbitro = Meteor.user().username;
-    // AQUI SERIA METEOR.USER().USERNAME
-    const newData = dataSource.filter((item) => item.Arbitro1 === arbitro);
-    setDataSource(newData);
-  }
-
   function handleSubmissionConfirmation(data) {
     let idsJogos = [];
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
-        return window.alert(
-          "Tem jogos por confirmar, " + Meteor.user().username
-        );
+        return window.alert("Tem jogos por confirmar, " + user.username);
       } else {
         idsJogos.push(parseInt(data[index].Jogo));
         confirmacoes.push(data[index].tags[0]);
@@ -308,19 +300,19 @@ export function ConsultaPrivada() {
       console.log(confirmacoes[index]);
     }
 
-    let email = Meteor.user().emails[0].address;
+    let email = user.emails[0].address;
 
     Meteor.call("addNomeacao", email, idsJogos, confirmacoes, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", { err });
       } else {
-        window.alert("Confirmações submetidas " + Meteor.user().username);
+        window.alert("Confirmações submetidas " + user.username);
       }
     });
   }
 
   function loadData() {
-    let email = Meteor.user().emails[0].address;
+    let email = user.emails[0].address;
 
     console.log("email", email);
     Meteor.call("carregaNomeacoes", email, (err, result) => {

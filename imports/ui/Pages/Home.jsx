@@ -9,7 +9,6 @@ export function Home() {
     document.getElementById("nomeacoesPrivadas").hidden = true;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
-    document.getElementById("menuPrivado").hidden = true;
   }
 
   return (

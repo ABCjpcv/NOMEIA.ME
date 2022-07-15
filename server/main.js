@@ -242,8 +242,8 @@ Meteor.startup(() => {
   console.log("Nao existe CA");
   var currCA = [
     "sergiosp@netcabo.pt",
-    // "danieljafernandes@gmail.com",
-    // "mafalda.bento@gmail.com",
+    "danieljafernandes@gmail.com",
+    "mafalda.bento@gmail.com",
   ];
 
   for (let index = 0; index < currCA.length; index++) {
