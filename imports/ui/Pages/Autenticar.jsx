@@ -5,23 +5,23 @@ import { useNavigate } from "react-router-dom";
 export function Autenticar() {
   let navigate = useNavigate();
 
-   function mostraPerfil() {
+  function mostraPerfil() {
     document.getElementById("titulo").hidden = true;
-   // document.getElementById("carregarJogos").hidden = true;
-   // document.getElementById("atribuirArbitros").hidden = true;
+    // document.getElementById("carregarJogos").hidden = true;
+    // document.getElementById("atribuirArbitros").hidden = true;
     document.getElementById("nomeacoesPrivadas").hidden = false;
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
     document.getElementById("menuPrivadoCA").hidden = true;
-          // document.getElementById("carregarFicheiroJogos").hidden = true;
-          // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-          // document.getElementById("indisponibilidadesCA").hidden = true;
+    // document.getElementById("carregarFicheiroJogos").hidden = true;
+    // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    // document.getElementById("indisponibilidadesCA").hidden = true;
     //document.getElementById("restricoesCA").hidden = true;
     //document.getElementById("consultaPrivadaCA").hidden = true;
-          //  document.getElementById("indisponibilidades").hidden = true;
-          //  document.getElementById("restricoes").hidden = true;
-          //  document.getElementById("consultaPrivada").hidden = false;
+    //  document.getElementById("indisponibilidades").hidden = true;
+    //  document.getElementById("restricoes").hidden = true;
+    //  document.getElementById("consultaPrivada").hidden = false;
   }
 
   function mostraPerfilCA() {
@@ -32,47 +32,47 @@ export function Autenticar() {
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("menuPrivadoCA").hidden = false;
-          // document.getElementById("carregarFicheiroJogos").hidden = false;
-          // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-          // document.getElementById("indisponibilidadesCA").hidden = true;
-          // document.getElementById("restricoesCA").hidden = true;
-          // document.getElementById("consultaPrivadaCA").hidden = true;
-   // document.getElementById("indisponibilidades").hidden = true;
+    // document.getElementById("carregarFicheiroJogos").hidden = false;
+    // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    // document.getElementById("indisponibilidadesCA").hidden = true;
+    // document.getElementById("restricoesCA").hidden = true;
+    // document.getElementById("consultaPrivadaCA").hidden = true;
+    // document.getElementById("indisponibilidades").hidden = true;
     // document.getElementById("restricoes").hidden = true;
-   // document.getElementById("consultaPrivada").hidden = true;
+    // document.getElementById("consultaPrivada").hidden = true;
   }
 
-  function login(result, pass) {
+  function login(user, pass) {
     if (Meteor.user() != undefined) {
       //console.log("current user: " + Meteor.user().username);
       Meteor.logout();
     } else {
-     // console.log("Não há user");
-    }
+      // console.log("Não há user");
+      console.log("user", user);
 
-    Meteor.loginWithPassword(result, pass, () => {
-      
-      Meteor.call("isAdmin", Meteor.user(), (err, result) => {
+      let utilizador = JSON.parse(JSON.stringify(user));
 
-        console.log(result);
+      console.log("utilizador: ", utilizador);
+      // TENHO O USER CERTO AQUI
 
-        if (err) {
-          console.log("ERRRRROOOOO", { err });
-          
-        } else if (result) {
+      Meteor.loginWithPassword(utilizador.username, pass, () => {
+        Meteor.call("isAdmin", utilizador, (err, result) => {
+          console.log("Meteor.user()", Meteor.user());
+
+          if (err) {
+            console.log("ERRRRROOOOO", { err });
+          } else if (result) {
             console.log("vou mostrar Perfil do CA");
             navigate("/ProfileCA");
             mostraPerfilCA();
-            
-          }
-          else if(!result){
+          } else if (!result) {
             console.log("vou mostrar Perfil do Arbitro");
-           navigate("/Profile"); 
-           mostraPerfil();
-            
-        }
-      })
-    });
+            navigate("/Profile");
+            mostraPerfil();
+          }
+        });
+      });
+    }
   }
 
   return (
@@ -110,6 +110,7 @@ export function Autenticar() {
                   //Fazer aparecer mensagem de texto de credenciais erradas.
                   console.log(err);
                 } else if (result) {
+                  console.log("result p login", result);
                   // trata do login deste user
                   pass = document.getElementById("ppass").value;
                   login(result, pass);
@@ -120,13 +121,13 @@ export function Autenticar() {
         >
           Autenticar
         </button>
-        {/* <p></p>
+        <p></p>
         <div className="input">
-          <label>Ainda não tem conta?</label>
-          <button className="botao" onClick={() => navigate("/ContaNova")}>
-            Criar Conta Nova
+          <label> Esqueceu-se da password?</label>
+          <button className="botao" onClick={() => navigate("/ForgotPassword")}>
+            Redefinir password
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );

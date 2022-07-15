@@ -1,4 +1,3 @@
-import { mergeEventStores } from "@fullcalendar/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
@@ -6,17 +5,9 @@ import { Meteor } from "meteor/meteor";
 export function ContaNova() {
   let navigate = useNavigate();
 
-  function mostraPerfil() {
-    document.getElementById("titulo").hidden = true;
-    document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("nomeacoesPrivadas").hidden = false;
-    document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("RestricoesPrivadas").hidden = true;
-  }
-
   return (
     <div>
-      <h1 className="blue">Criar Conta Nova </h1>
+      <h1 className="blue">Informações do Árbitro: </h1>
 
       <div
         style={{
@@ -47,6 +38,18 @@ export function ContaNova() {
         </div>
         <br></br>
         <div className="input">
+          <label className="labels">
+            Conselho de Arbitragem:
+            <input
+              className="inputt"
+              type={"checkbox"}
+              id="isCA"
+              style={{ marginLeft: "150px", height: "30px", width: "30px" }}
+            ></input>
+          </label>
+        </div>
+        <br></br>
+        <div className="input">
           <label className="labels">Password</label>
           <input className="inputt" type={"password"} id="pass"></input>
         </div>
@@ -67,33 +70,29 @@ export function ContaNova() {
               document.getElementById("licencaArbitro").value,
               document.getElementById("pass").value,
               document.getElementById("pass2").value,
+              document.getElementById("isCA").checked,
               (err, result) => {
-                console.log("ENTRASTE pota ????");
-                if (!err) {
-                  console.log("ENTRASTE????");
-                  if (result) {
-                    //Meteor.call("readCsv", "Livro1.csv");
-                    console.log(document.getElementById("nome").value);
-                    // Meteor.loginWithPassword(
-                    //   document.getElementById("nome").value,
-                    //   document.getElementById("pass").value
-                    // );
-                    // console.log(Meteor.users.findOne(Meteor.userId).username);
-                    // mostraPerfil();
-                    // Meteor.loggingIn();
-                    navigate("/Autenticar");
-                    
-                  }
+                console.log("O QUE APARECE DO OUTRO LADO?", result);
+
+                if (result) {
+                  window.alert(
+                    "Árbitro " +
+                      document.getElementById("nome").value +
+                      ", criado com sucesso!"
+                  );
+                  document.getElementById("nome").value = "";
+                  document.getElementById("email").value = "";
+                  document.getElementById("nivelArbitro").value = "";
+                  document.getElementById("licencaArbitro").value = "";
+                  document.getElementById("pass").value = "";
+                  document.getElementById("pass2").value = "";
+                  document.getElementById("isCA").checked = false;
                 }
               }
             )
           }
         >
-          Registar
-        </button>
-        Já tem conta?
-        <button className="botao" onClick={() => navigate("/Autenticar")}>
-          Autenticar
+          Registar árbitro novo
         </button>
       </div>
     </div>

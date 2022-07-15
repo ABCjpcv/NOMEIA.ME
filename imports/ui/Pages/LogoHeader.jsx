@@ -17,6 +17,7 @@ export const LogoHeader = () => {
     document.getElementById("menuPrivadoCA").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     // document.getElementById("atribuirArbitrosAjogos").hidden = true;

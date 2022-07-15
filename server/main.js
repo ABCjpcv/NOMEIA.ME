@@ -1,7 +1,9 @@
 import { Meteor } from "meteor/meteor";
 import { Accounts } from "meteor/accounts-base";
 import { Papa } from "meteor/harrison:papa-parse";
+import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
+import { error } from "jquery";
 
 let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 let jogos = new Mongo.Collection("jogos");
@@ -11,6 +13,7 @@ let conselhoDeArbitragem = new Mongo.Collection("conselhoDeArbitragem");
 let nomeacoes = new Mongo.Collection("nomeacoes");
 let indisponibilidades = new Mongo.Collection("indisponibilidades");
 let restricoes = new Mongo.Collection("restricoes");
+let definicoesPessoais = new Mongo.Collection("definicoesPessoais");
 
 /************************************************************************************************
  *********************************** SCHEMA TABLE ***********************************************
@@ -30,8 +33,6 @@ const relacoesSchema = new SimpleSchema({
 
 restricoes.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
-  recibo: { type: Boolean, optional: true },
-  carro: { type: Boolean, optional: true },
   relacoes: [relacoesSchema],
 });
 
@@ -58,6 +59,13 @@ const nomSchema = new SimpleSchema({
 nomeacoes.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
   nomeacoesPrivadas: [nomSchema],
+});
+
+//Schema Definicoes:
+definicoesPessoais.schema = new SimpleSchema({
+  arbitro: { type: arbitros, optional: false },
+  temCarro: { type: Boolean, optional: false },
+  emiteRecibo: { type: Boolean, optional: false },
 });
 
 //Schema Arbitros:
@@ -105,6 +113,17 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
+  process.env.MAIL_URL =
+    "smtp://nomeiame_ponav@hotmail.com:ElChefinho8@smtp.live.com:587/";
+
+  let transporter = nodemailer.createTransport({
+    service: "Hotmail", // no need to set host or port etc.
+    auth: {
+      user: "nomeiame_ponav@hotmail.com",
+      pass: "ElChefinho8",
+    },
+  });
+
   clubes.rawCollection().drop();
 
   //Read the clubs:
@@ -185,7 +204,6 @@ Meteor.startup(() => {
     "sofiarodrcosta@gmail.com",
     "andrebrascorreia.42@gmail.com",
   ];
-  let nivel4 = [];
 
   utilizadores.forEach((user) => {
     let nivel = 0;
@@ -224,8 +242,8 @@ Meteor.startup(() => {
   console.log("Nao existe CA");
   var currCA = [
     "sergiosp@netcabo.pt",
-    "danieljafernandes@gmail.com",
-    "mafalda.bento@gmail.com",
+    // "danieljafernandes@gmail.com",
+    // "mafalda.bento@gmail.com",
   ];
 
   for (let index = 0; index < currCA.length; index++) {
@@ -278,7 +296,7 @@ Meteor.startup(() => {
     "******************************************************************************"
   );
   console.log(
-    "*****************   DATABASE FOR RESTRICOES   ************************"
+    "************   DATABASE FOR RESTRICOES    ******************************"
   );
   console.log(
     "*****************************************************************************"
@@ -291,6 +309,27 @@ Meteor.startup(() => {
       arbitro: arbitro,
     });
     console.log("inserted: RESTRICAO ");
+  });
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "*****************   DATABASE FOR DEFINICOES PESSOAIS   ************************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  definicoesPessoais.rawCollection().drop();
+
+  arb.forEach((arbitro) => {
+    definicoesPessoais.insert({
+      arbitro: arbitro,
+      temCarro: false,
+      emiteRecibo: false,
+    });
+    console.log("inserted: DEFINICOES PESSOAIS BASE ");
   });
 
   console.log(
@@ -408,7 +447,7 @@ Meteor.methods({
       digest: password,
       algorithm: "sha-256",
     });
-    if (result) return user.username;
+    if (result) return user;
     else throw new Meteor.Error("Passwords do not match");
   },
 
@@ -418,7 +457,8 @@ Meteor.methods({
     nivelArbitro,
     licencaArbitro,
     user_password,
-    password_repeat
+    password_repeat,
+    isAdmin
   ) {
     if (
       (user_name.length == 0 ||
@@ -431,17 +471,83 @@ Meteor.methods({
     }
     if (user_password != password_repeat)
       throw new Meteor.Error("Passwords do not match.");
-    console.log("Passwords match. User registered.");
-    return Accounts.createUser(
+    console.log("Passwords match.");
+
+    //Accounts.verifyEmail(user_email, (error) => {
+    //  if (!error) {
+    //    return
+    Accounts.createUser(
       {
         username: user_name,
         email: user_email,
-        licenca: licencaArbitro,
-        nivel: nivelArbitro,
         password: user_password,
       },
       null
     );
+    //   } else {
+    //     throw new Meteor.Error("Email is invalid.");
+    //   }
+    // });
+
+    let a = {
+      nome: user_name,
+      email: user_email,
+      licenca: parseInt(licencaArbitro),
+      nivel: parseInt(nivelArbitro),
+      isAdmin: isAdmin,
+    };
+
+    arbitros.insert(a);
+
+    console.log("inserted: " + user_name);
+
+    if (isAdmin) {
+      let ca = conselhoDeArbitragem.findOne();
+
+      conselhoDeArbitragem.insert({
+        arbitrosCA: a,
+        preNomeacoes: ca.preNomeacoes,
+      });
+    }
+
+    return true;
+  },
+
+  esqueceuPassword: function esqueceuPassword(email) {
+    let u = Accounts.findUserByEmail(email);
+    let newDefaultPassword = randomPassword(8);
+
+    Accounts.setPassword(u._id, newDefaultPassword);
+
+    let transporter = nodemailer.createTransport({
+      service: "Hotmail", // no need to set host or port etc.
+      auth: {
+        user: "nomeiame_ponav@hotmail.com",
+        pass: "ElChefinho8",
+      },
+    });
+
+    transporter.sendMail({
+      from: "nomeiame_ponav@hotmail.com",
+      to: email,
+      subject: "Recuperacao de password de " + u.username + "",
+      text:
+        "Boas " +
+        u.username +
+        ", \n\n A sua password foi alterada para: " +
+        newDefaultPassword +
+        ". \n Por favor altere a mesma na sua página da plataforma Nomeia.Me acedendo às suas Definições. \n\n Saudações Desportivas, \n A equipa Nomeia.Me",
+    });
+
+    return true;
+  },
+
+  alteraPassword: function alteraPassword(user, novaPass) {
+    let utilizador = Meteor.users.findOne({ username: user.username });
+    console.log("utilizador", utilizador);
+    let result = Accounts.setPassword(utilizador._id, novaPass);
+    console.log("result", result);
+    return 1;
   },
 
   isAdmin: function isAdmin(user) {
@@ -471,10 +577,8 @@ Meteor.methods({
   },
 
   carregaNomeacoes: function carregaNomeacoes(email) {
-    console.log("ENTRASTE?");
-    var arbitro = arbitros.findOne({ email: email });
-    var result = nomeacoes.findOne({ arbitro: arbitro });
-
+    var arb = arbitros.findOne({ email: email });
+    var result = nomeacoes.findOne({ arbitro: arb });
     return result;
   },
 
@@ -522,6 +626,77 @@ Meteor.methods({
   carregaRestricoes: function carregaRestricoes(username) {
     const a = arbitros.findOne({ nome: username });
     return restricoes.findOne({ arbitro: a });
+  },
+
+  /*****************************************************************
+   **************** METODOS DAS DEFINICOES PESSOAIS  *************
+   *****************************************************************
+   */
+
+  alteraRecibo: function alteraRecibo(user) {
+    try {
+      let utilizador = Meteor.users.findOne(user);
+      let username = utilizador.username;
+      let a = arbitros.findOne({ nome: username });
+      let def = definicoesPessoais.findOne({ arbitro: a });
+      let defRecibo = !def.emiteRecibo;
+      definicoesPessoais.update(
+        { arbitro: a },
+        { $set: { emiteRecibo: defRecibo } }
+      );
+      if (defRecibo === false) return 0;
+      else return 1;
+    } catch (error) {
+      return -1;
+    }
+  },
+
+  alteraTransporte: function alteraTransporte(user) {
+    try {
+      let utilizador = Meteor.users.findOne(user);
+      let username = utilizador.username;
+      let a = arbitros.findOne({ nome: username });
+      let def = definicoesPessoais.findOne({ arbitro: a });
+      let defTransporte = !def.temCarro;
+      definicoesPessoais.update(
+        { arbitro: a },
+        { $set: { temCarro: defTransporte } }
+      );
+      if (defTransporte === false) return 0;
+      else return 1;
+    } catch (error) {
+      return -1;
+    }
+  },
+
+  getRecibo: function getRecibo(user) {
+    let utilizador = Meteor.users.findOne(user);
+    let email = utilizador.emails[0].address;
+    var arb = arbitros.findOne({ email: email });
+    var def = definicoesPessoais.findOne({ arbitro: arb });
+    var result = def.emiteRecibo;
+
+    console.log("TEM RECIBO NA BD?", result);
+    return result;
+  },
+
+  getTransporte: function getTransporte(user) {
+    let utilizador = Meteor.users.findOne(user);
+    let email = utilizador.emails[0].address;
+    var arb = arbitros.findOne({ email: email });
+    var def = definicoesPessoais.findOne({ arbitro: arb });
+    var result = def.temCarro;
+    console.log("TEM CARRO NA BD?", result);
+    return result;
+  },
+
+  getNivel: function getNivel(user) {
+    let utilizador = Meteor.users.findOne(user);
+    let email = utilizador.emails[0].address;
+    var arb = arbitros.findOne({ email: email });
+    var result = arb.nivel;
+    console.log("NIVEL DE ARBITRO NA BD?", result);
+    return result;
   },
 
   /*****************************************************************
@@ -712,4 +887,15 @@ function validDate(eventsArray, newStart, newEnd) {
 
     return resultado;
   }
+}
+
+function randomPassword(length) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 }

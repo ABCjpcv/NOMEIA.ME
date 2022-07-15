@@ -18,6 +18,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = false;
@@ -25,7 +26,8 @@ export default (props) => {
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = true;
-    document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   function mostraPaginaAtribuicaoArbitros() {
@@ -39,6 +41,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = true;
@@ -46,7 +49,8 @@ export default (props) => {
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = true;
-    document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   function mostraPaginaNomeacoesCA() {
@@ -60,6 +64,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = true;
@@ -67,7 +72,8 @@ export default (props) => {
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = false;
-    document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   function mostraPaginaIndisponibilidadesCA() {
@@ -81,6 +87,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = true;
@@ -88,7 +95,8 @@ export default (props) => {
     document.getElementById("indisponibilidadesCA").hidden = false;
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = true;
-    document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   function mostraPaginaRestricoesCA() {
@@ -102,6 +110,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = true;
@@ -109,8 +118,8 @@ export default (props) => {
     document.getElementById("indisponibilidadesCA").hidden = true;
     document.getElementById("restricoesCA").hidden = false;
     document.getElementById("consultaPrivadaCA").hidden = true;
-
-    document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   function mostraPaginaDefinicoesCA() {
@@ -124,6 +133,7 @@ export default (props) => {
     document.getElementById("menuPrivadoCA").hidden = false;
     document.getElementById("menuPrivado").hidden = true;
     document.getElementById("definicoes").hidden = false;
+    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     document.getElementById("carregarFicheiroJogos").hidden = true;
@@ -132,6 +142,30 @@ export default (props) => {
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = true;
     document.getElementById("definicoesCA").hidden = false;
+    document.getElementById("criarArbitro").hidden = true;
+  }
+
+  function mostraPaginaContaNovaCA() {
+    // HEADERS
+    document.getElementById("titulo").hidden = true;
+    document.getElementById("carregarJogos").hidden = true;
+    document.getElementById("atribuirArbitros").hidden = true;
+    document.getElementById("nomeacoesPrivadas").hidden = true;
+    document.getElementById("indisponibilidadePrivadas").hidden = true;
+    document.getElementById("restricoesPrivadas").hidden = true;
+    document.getElementById("menuPrivadoCA").hidden = false;
+    document.getElementById("menuPrivado").hidden = true;
+    document.getElementById("definicoes").hidden = true;
+    document.getElementById("criarContaNova").hidden = false;
+
+    // PROFILE
+    document.getElementById("carregarFicheiroJogos").hidden = true;
+    document.getElementById("atribuirArbitrosAjogos").hidden = true;
+    document.getElementById("indisponibilidadesCA").hidden = true;
+    document.getElementById("restricoesCA").hidden = true;
+    document.getElementById("consultaPrivadaCA").hidden = true;
+    document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = false;
   }
 
   function mostraTitulo() {
@@ -144,7 +178,7 @@ export default (props) => {
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivadoCA").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
-
+    document.getElementById("criarContaNova").hidden = true;
     document.getElementById("definicoes").hidden = true;
 
     // PROFILE
@@ -154,6 +188,7 @@ export default (props) => {
     document.getElementById("restricoesCA").hidden = true;
     document.getElementById("consultaPrivadaCA").hidden = true;
     document.getElementById("definicoesCA").hidden = true;
+    document.getElementById("criarArbitro").hidden = true;
   }
 
   return (
@@ -211,6 +246,17 @@ export default (props) => {
           }}
         >
           Indicar Restrições
+        </p>
+      </a>
+
+      <a className="menu-item">
+        <p
+          style={{ fontSize: "15px" }}
+          onClick={() => {
+            mostraPaginaContaNovaCA();
+          }}
+        >
+          Criar Conta Nova
         </p>
       </a>
 

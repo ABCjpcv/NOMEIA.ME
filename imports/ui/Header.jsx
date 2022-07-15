@@ -27,6 +27,10 @@ export class Header extends React.Component {
             Carregar Jogos Novos:
           </p>
 
+          <p id="criarContaNova" style={{ margin: "0" }} hidden={true}>
+            Criar Conta Nova:
+          </p>
+
           {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
           <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
             As minhas nomeações:
@@ -82,10 +86,5 @@ export class Header extends React.Component {
         </div>
       </div>
     );
-
-    function navigate(a) {
-      let n = useNavigate();
-      return n(a);
-    }
   }
 }

@@ -11,6 +11,7 @@ import { FileInput } from "./FileInput";
 import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
 import { AtribuirJogos } from "./AtribuirJogos";
 import { UserSettings } from "./UserSettings";
+import { ContaNova } from "./ContaNova";
 
 export function ProfileCA() {
   let navigate = useNavigate();
@@ -86,6 +87,10 @@ export function ProfileCA() {
 
         <div id="definicoesCA" hidden>
           <UserSettings></UserSettings>
+        </div>
+
+        <div id="criarArbitro" hidden>
+          <ContaNova></ContaNova>
         </div>
 
         {/* <div id="listaJogosSemArbitro" hidden>

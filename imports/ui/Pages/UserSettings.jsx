@@ -1,12 +1,17 @@
-// PAGINA DEDICADA AOS UTILIZADORES PODEREM MUDAR DE PASSWORD, INDICAREM O SEU NIVEL DE ARBITRO E LICENÇA
-
 import { Meteor } from "meteor/meteor";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 export function UserSettings() {
-  let navigate = useNavigate();
-  let user = Meteor.user();
+  let [user, setUser] = useState(Meteor.user());
+
+  let [temRecibo, setTemRecibo] = useState(() =>
+    getEmissaoReciboUser(Meteor.user())
+  );
+  let [temTransporte, setTemTransporte] = useState(() =>
+    getTransporteProprioUser(Meteor.user())
+  );
+
+  let [nivel, setNivel] = useState(() => getNivel(Meteor.user()));
 
   function submeterAlteracaoPassword(user, newPassword) {
     Meteor.call("alteraPassword", user, newPassword, (err, result) => {
@@ -18,9 +23,57 @@ export function UserSettings() {
     });
   }
 
-  function adicionaTransporteProprioUserSettings(user) {}
+  function getNivel(user) {
+    Meteor.call("getNivel", user, (err, result) => {
+      setNivel(result);
+    });
+  }
 
-  function adicionaEmissaoReciboUserSettings(user) {}
+  function adicionaTransporteProprioUserSettings(user) {
+    Meteor.call("alteraTransporte", user, (err, result) => {
+      console.log("result", result);
+      if (result === 1) {
+        window.alert("Adicionado transporte próprio!");
+        setTemTransporte(true);
+      }
+      if (result === 0) {
+        window.alert("Removido transporte próprio!");
+        setTemTransporte(false);
+      }
+    });
+  }
+
+  function adicionaEmissaoReciboUserSettings(user) {
+    Meteor.call("alteraRecibo", user, (err, result) => {
+      console.log("result", result);
+      if (result === 1) {
+        window.alert("Adicionada emissão de recibo!");
+        setTemRecibo(true);
+      }
+      if (result === 0) {
+        window.alert("Removida emissão de recibo!");
+        setTemRecibo(false);
+      }
+    });
+  }
+
+  function getTransporteProprioUser(user) {
+    Meteor.call("getTransporte", user, (err, result) => {
+      console.log("result", result);
+      if (result) {
+        setTemTransporte(result);
+      }
+    });
+  }
+
+  function getEmissaoReciboUser(user) {
+    return Meteor.call("getRecibo", user, (err, result) => {
+      console.log("result", result);
+      if (result) {
+        setTemRecibo(result);
+      }
+    });
+  }
 
   return (
     <div>
@@ -55,6 +108,17 @@ export function UserSettings() {
           ></input>
         </div>
         <p></p>
+        <div className="input">
+          <label className="labels">Nivel</label>
+          <input
+            className="inputt"
+            type={"text"}
+            id="nivelUserSettings"
+            value={nivel}
+            disabled
+          ></input>
+        </div>
+        <p></p>
 
         <p></p>
 
@@ -64,12 +128,15 @@ export function UserSettings() {
             <input
               className="inputt"
               type={"checkbox"}
-              id="transporteProprioUserSettings"
-              onClick={adicionaTransporteProprioUserSettings()}
+              onChange={() =>
+                adicionaTransporteProprioUserSettings(Meteor.user())
+              }
               style={{ marginLeft: "180px", height: "30px", width: "30px" }}
+              checked={temTransporte}
             ></input>
           </label>
         </div>
+
         <p></p>
         <div className="input">
           <label className="labels">
@@ -77,9 +144,9 @@ export function UserSettings() {
             <input
               className="inputt"
               type={"checkbox"}
-              id="emitoReciboUserSettings"
-              onClick={adicionaEmissaoReciboUserSettings()}
+              onChange={() => adicionaEmissaoReciboUserSettings(Meteor.user())}
               style={{ marginLeft: "188px", height: "30px", width: "30px" }}
+              checked={temRecibo}
             ></input>
           </label>
         </div>
