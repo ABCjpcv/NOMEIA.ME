@@ -293,8 +293,6 @@ export function ConsultaPrivada() {
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
-
-
       if (data[index].tags[0].includes("pendente")) {
         return window.alert(
           "Tem jogos por confirmar, " + Meteor.user().username
@@ -323,7 +321,10 @@ export function ConsultaPrivada() {
 
   function loadData() {
     let email = Meteor.user().emails[0].address;
+
+    console.log("email", email);
     Meteor.call("carregaNomeacoes", email, (err, result) => {
+      console.log("resultado de carregaNomeacoes da BD:", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result.nomeacoesPrivadas.length > 0) {
