@@ -15,6 +15,13 @@ const _ = require("lodash");
 
 function comparaAminhaLindaString(a, b) {
   let x = 0;
+
+  try {
+    a.length;
+  } catch (error) {
+    console.log("O ERRO FOI: -> a", a);
+  }
+
   let tamanho = a.length > b.length ? b.length : a.length;
   for (let index = 0; index < tamanho; index++) {
     posA = a.charCodeAt(index);
@@ -45,10 +52,46 @@ function comparaAminhaLindaData(a, b) {
   return 0;
 }
 
-// const fetchData = async () => {
-//   const { data } = await axios.get("Livro.json");
-//   return { data };
-// };
+let currJogo = {};
+
+function handleChange(value) {
+  console.log("currJogo: ", currJogo);
+
+  let nomeArbitro = value;
+  console.log("nomeArbitro: ", nomeArbitro);
+  let diaDeJogo = currJogo.Dia;
+  console.log("currJogo Dia: ", currJogo.Dia);
+  let horaDeJogo = currJogo.Hora;
+  console.log("currJogo Dia: ", currJogo.Dia);
+  let titulo =
+    currJogo.Prova +
+    " Serie " +
+    currJogo.Serie +
+    " " +
+    currJogo.Equipas +
+    " " +
+    currJogo.Pavilhao;
+  console.log("titulo: ", titulo);
+
+  Meteor.call("verificaRestricoes", nomeArbitro, (err, result) => {});
+
+  Meteor.call(
+    "addNomeacaoCalendarioArbitro",
+    nomeArbitro,
+    titulo,
+    diaDeJogo,
+    horaDeJogo,
+    (err, result) => {
+      console.log("RESULTADO", result);
+
+      if (err) {
+        console.error(err);
+      } else if (result) {
+        console.log(result);
+      }
+    }
+  );
+}
 
 export function AtribuirJogos() {
   const colunasNomeacoesPrivadas = [
@@ -115,14 +158,15 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_arbitro1"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
                   <Select.Option
-                    value={arb.nome}
+                    value={arb}
                     key={"option_arbitro1" + _.uniqueId()}
                   >
-                    {arb.nome}
+                    {arb}
                   </Select.Option>
                 );
               })}
@@ -148,10 +192,10 @@ export function AtribuirJogos() {
               {arbitrosDisponiveis.map((arb) => {
                 return (
                   <Select.Option
-                    value={arb.nome}
+                    value={arb}
                     key={"option_arbitro2" + _.uniqueId()}
                   >
-                    {arb.nome}
+                    {arb}
                   </Select.Option>
                 );
               })}
@@ -176,11 +220,8 @@ export function AtribuirJogos() {
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option
-                    value={arb.nome}
-                    key={"option_jl1" + _.uniqueId()}
-                  >
-                    {arb.nome}
+                  <Select.Option value={arb} key={"option_jl1" + _.uniqueId()}>
+                    {arb}
                   </Select.Option>
                 );
               })}
@@ -205,11 +246,8 @@ export function AtribuirJogos() {
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option
-                    value={arb.nome}
-                    key={"option_jl2" + _.uniqueId()}
-                  >
-                    {arb.nome}
+                  <Select.Option value={arb} key={"option_jl2" + _.uniqueId()}>
+                    {arb}
                   </Select.Option>
                 );
               })}
@@ -232,19 +270,13 @@ export function AtribuirJogos() {
               key="select_jl3"
               type="select"
             >
-              {() => {
-                for (let arb in arbitrosDisponiveis) {
-                  console.log("arbitro", arb);
-                  return (
-                    <Select.Option
-                      value={arb}
-                      key={"option_jl3" + _.uniqueId()}
-                    >
-                      {arb.nome}
-                    </Select.Option>
-                  );
-                }
-              }}
+              {arbitrosDisponiveis.map((arb) => {
+                return (
+                  <Select.Option value={arb} key={"option_jl3" + _.uniqueId()}>
+                    {arb}
+                  </Select.Option>
+                );
+              })}
             </Select>
           </>
         ) : null,
@@ -259,18 +291,15 @@ export function AtribuirJogos() {
         dataSource.length >= 1 ? (
           <>
             <Select
-              name="select_jl3"
+              name="select_jl4"
               style={{ width: "150px" }}
-              key="select_jl3"
+              key="select_jl4"
               type="select"
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option
-                    value={arb.nome}
-                    key={"option_jl4" + _.uniqueId()}
-                  >
-                    {arb.nome}
+                  <Select.Option value={arb} key={"option_jl4" + _.uniqueId()}>
+                    {arb}
                   </Select.Option>
                 );
               })}
@@ -307,7 +336,7 @@ export function AtribuirJogos() {
 
     let email = Meteor.user().emails[0].address;
 
-    Meteor.call("addNomeacaoCalendario", email, data, (err, result) => {
+    Meteor.call("", email, data, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", { err });
       } else {
@@ -368,8 +397,12 @@ export function AtribuirJogos() {
           <div className="container">
             <div className="table-responsive">
               <br />
-              {/* <h1 className="blue"> Arbitros disponiveis: </h1>
-              <ul>{arbitrosDisponiveis.map(renderSidebarArbitro)}</ul> */}
+              <h1 className="blue"> Arbitros disponiveis: </h1>
+              <ul>
+                {arbitrosDisponiveis.map((arb) => {
+                  return arb + "\n";
+                })}
+              </ul>
 
               <br></br>
               <StyledTable
@@ -379,6 +412,7 @@ export function AtribuirJogos() {
                 }
                 dataSource={dataSource}
                 columns={colunasNomeacoesPrivadas}
+                pagination={false}
                 onRow={(record) => {
                   let k = record.key;
 
@@ -399,6 +433,7 @@ export function AtribuirJogos() {
                             }
                           }
                         );
+                        currJogo = record;
                       }
                       if (event.key === "Enter") {
                         console.log("event.target.value", event.target.value);
@@ -438,6 +473,7 @@ export function AtribuirJogos() {
                   };
                 }}
               />
+              <br></br>
               <Button
                 onClick={handleSubmissionConfirmation}
                 type="primary"

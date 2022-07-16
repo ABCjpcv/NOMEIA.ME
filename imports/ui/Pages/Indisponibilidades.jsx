@@ -55,16 +55,6 @@ export class Indisponibilidades extends React.Component {
     if (show) {
       return (
         <div>
-          <input
-            className="botao"
-            type={"button"}
-            value="Instruções"
-            onClick={() =>
-              window.alert(
-                "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma."
-              )
-            }
-          />
           {/* <ul>
             <li>
               Selecione as datas e você será solicitado a criar um novo evento
@@ -104,7 +94,20 @@ export class Indisponibilidades extends React.Component {
                 />
               </div>
               <br></br>
-
+              <Button
+                style={{
+                  marginBottom: 16,
+                }}
+                value="Instruções"
+                onClick={() =>
+                  window.alert(
+                    "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'."
+                  )
+                }
+              >
+                {" "}
+                Instruções{" "}
+              </Button>
               <Button
                 onClick={() => {
                   let curr = this.state.currentEvents;
@@ -170,7 +173,8 @@ export class Indisponibilidades extends React.Component {
 
     let hoje = new Date();
 
-    console.log("selectInfo.start", selectInfo.start);
+    console.log("selectInfo.start", selectInfo.startStr);
+    console.log("selectInfo.end", selectInfo.endStr);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -223,7 +227,11 @@ export class Indisponibilidades extends React.Component {
   }
 
   handleEventClick = (clickInfo) => {
-    clickInfo.event.remove();
+    if (clickInfo.event._def.title === " Indisponível ") {
+      clickInfo.event.remove();
+    } else {
+      window.alert("Impossive remover um Jogo Nomeado");
+    }
   };
 
   handleEvents = (events) => {

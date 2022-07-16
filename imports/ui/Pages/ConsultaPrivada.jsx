@@ -302,13 +302,19 @@ export function ConsultaPrivada({ user }) {
 
     let email = user.emails[0].address;
 
-    Meteor.call("addNomeacao", email, idsJogos, confirmacoes, (err, result) => {
-      if (err) {
-        console.log("ERRRRROOOOO", { err });
-      } else {
-        window.alert("Confirmações submetidas " + user.username);
+    Meteor.call(
+      "addConfirmacaoNomeacao",
+      email,
+      idsJogos,
+      confirmacoes,
+      (err, result) => {
+        if (err) {
+          console.log("ERRRRROOOOO", { err });
+        } else {
+          window.alert("Confirmações submetidas " + user.username);
+        }
       }
-    });
+    );
   }
 
   function loadData() {

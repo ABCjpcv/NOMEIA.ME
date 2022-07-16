@@ -4,6 +4,7 @@ import { Papa } from "meteor/harrison:papa-parse";
 import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
 import { error } from "jquery";
+import _ from "lodash.uniqueid";
 
 let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 let jogos = new Mongo.Collection("jogos");
@@ -557,7 +558,11 @@ Meteor.methods({
     return admin;
   },
 
-  addNomeacao: function addNomeacao(email, idsJogos, confirmacoes) {
+  addConfirmacaoNomeacao: function addConfirmacaoNomeacao(
+    email,
+    idsJogos,
+    confirmacoes
+  ) {
     var arb = arbitros.findOne({ email: email });
     let nomeacoesAuxiliares = [];
 
@@ -704,6 +709,93 @@ Meteor.methods({
    *****************************************************************
    */
 
+  verificaRestricoes: function verificaRestricoes(nomeArbitro) {
+    let arb = arbitros.findOne({ nome: nomeArbitro });
+    let defP = definicoesPessoais.findOne({ arbitro: arb });
+    let temCarro = defP.temCarro;
+    let emiteRecibo = defP.emiteRecibo;
+
+    let relacoesClubes = restricoes.findOne({ arbitro: arb });
+    try {
+      let relacoes = relacoesClubes.relacoes;
+      console.log("RELACOES", relacoes);
+    } catch (error) {
+      // Não tem relacoes
+    }
+  },
+
+  addNomeacaoCalendarioArbitro: function addNomeacaoCalendarioArbitro(
+    nomeArbitro,
+    titulo,
+    diaDeJogo,
+    horaDeJogo
+  ) {
+    // FORMAT -> 2022-07-17T11:00:00+01:00
+
+    // DIA DE JOGO : "24/07/2022"
+
+    let diaDividido = diaDeJogo.split("/");
+    let horaDividido = horaDeJogo.split(":");
+
+    console.log("diaDividido", diaDividido);
+
+    let startStr =
+      diaDividido[2] +
+      "-" +
+      diaDividido[1] +
+      "-" +
+      diaDividido[0] +
+      "T" +
+      horaDividido[0] +
+      ":" +
+      horaDividido[1] +
+      ":00+01:00";
+    let endStr =
+      diaDividido[2] +
+      "-" +
+      diaDividido[1] +
+      "-" +
+      diaDividido[0] +
+      "T" +
+      (parseInt(horaDividido[0]) + 2) +
+      ":" +
+      horaDividido[1] +
+      ":00+01:00";
+
+    let newId = _("jogo");
+
+    let novoEvento = {
+      title: "\n" + titulo,
+      id: newId,
+      start: startStr,
+      end: endStr,
+      color: "#000000",
+      editable: false,
+    };
+
+    console.log("novoEvento", novoEvento);
+
+    const a = arbitros.findOne({ nome: nomeArbitro });
+    console.log("a", a);
+    const i = indisponibilidades.findOne({ arbitro: a });
+    console.log("i", i);
+
+    let events = i.disponibilidades;
+    console.log("events", events);
+
+    if (events === "") {
+      events = [];
+    }
+
+    events.push(novoEvento);
+
+    indisponibilidades.update(
+      { arbitro: a },
+      { $set: { disponibilidades: events } }
+    );
+    return true;
+  },
+
   addJogosSemanais: function addJogosSemanais(jogos) {
     let ca = conselhoDeArbitragem.find();
     let arbCAs = [];
@@ -731,7 +823,6 @@ Meteor.methods({
         key: index,
         tags: ["pendente"],
       };
-
       newGames.push(game);
     }
 
@@ -753,28 +844,28 @@ Meteor.methods({
   },
 
   arbitrosDisponiveis: function arbitrosDisponiveis(jogo) {
-    let todasIndisponiibilidades = [];
+    let todasIndisponibilidades = [];
 
     indisponibilidades.find().forEach((indisponibilidade) => {
-      todasIndisponiibilidades.push(indisponibilidade);
+      todasIndisponibilidades.push(indisponibilidade);
     }); //Vai buscar todas as indisponibilidades
 
     let todosArbitros = [];
     arbitros.find().forEach((arbitro) => {
       todosArbitros.push(arbitro);
-    }); //Vai buscar todas as arbitros
+    }); //Vai buscar todos as arbitros
 
     let diaDeJogo = (jogo.Dia + "").split("/");
     let horaDeJogo = (jogo.Hora + "").split(":");
-    console.log("ano", diaDeJogo[2]);
-    console.log("mes", diaDeJogo[1]);
-    console.log("dia", diaDeJogo[0]);
+    // console.log("ano", diaDeJogo[2]);
+    // console.log("mes", diaDeJogo[1]);
+    // console.log("dia", diaDeJogo[0]);
 
-    console.log("hora", horaDeJogo[0]);
-    console.log("minutos", horaDeJogo[1]);
+    // console.log("hora", horaDeJogo[0]);
+    // console.log("minutos", horaDeJogo[1]);
 
     let horaPavilhao = parseInt(horaDeJogo[0]) - 1;
-    console.log("horaPavilhao", horaPavilhao);
+    //console.log("horaPavilhao", horaPavilhao);
 
     let dataInicio =
       diaDeJogo[2] +
@@ -791,7 +882,7 @@ Meteor.methods({
     let inicioDoJogo = new Date(dataInicio);
 
     let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
-    console.log("horaFimDeJogo: ", horaFimDeJogo);
+    //console.log("horaFimDeJogo: ", horaFimDeJogo);
 
     let dataFim =
       diaDeJogo[2] +
@@ -809,9 +900,9 @@ Meteor.methods({
 
     //Primeiro passo:
 
-    let arbitrosDisponiveis = [];
+    let nomesArbitrosDisponiveis = [];
 
-    todasIndisponiibilidades.forEach((indisponibilidade) => {
+    todasIndisponibilidades.forEach((indisponibilidade) => {
       //console.log("ENTREI NO CICLO");
 
       // console.log("ESTOU NA INDISPONIBILIDADE", indisponibilidade);
@@ -823,22 +914,23 @@ Meteor.methods({
       //console.log("disponibilidades length", disponibilidades.length);
 
       if (disponibilidades.length == 0) {
-        console.log("Disponivel.");
-        console.log(indisponibilidade.arbitro);
-        arbitrosDisponiveis.push(indisponibilidade.arbitro);
+        // console.log("Disponivel.");
+        nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
       } else {
         let v = validDate(disponibilidades, inicioDoJogo, fimDoJogo);
         if (!v) {
           // Nao esta disponivel
-          console.log("arbitrosDisponiveis", arbitrosDisponiveis);
+          // console.log("arbitrosDisponiveis", nomesArbitrosDisponiveis);
         } else if (v) {
           console.log("Disponivel.");
-          arbitrosDisponiveis.push(indisponibilidade.arbitro);
+          nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
         }
       }
     });
 
-    return arbitrosDisponiveis;
+    nomesArbitrosDisponiveis.push(" ");
+
+    return nomesArbitrosDisponiveis.sort();
   },
 });
 
