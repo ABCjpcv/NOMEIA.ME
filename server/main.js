@@ -544,9 +544,9 @@ Meteor.methods({
 
   alteraPassword: function alteraPassword(user, novaPass) {
     let utilizador = Meteor.users.findOne({ username: user.username });
-    console.log("utilizador", utilizador);
+    //console.log("utilizador", utilizador);
     let result = Accounts.setPassword(utilizador._id, novaPass);
-    console.log("result", result);
+    //console.log("result", result);
     return 1;
   },
 
@@ -674,27 +674,27 @@ Meteor.methods({
   },
 
   getRecibo: function getRecibo(user) {
-    console.log("user in getRecibo", user);
+    //console.log("user in getRecibo", user);
 
     let utilizador = Meteor.users.findOne({ username: user.username });
 
-    console.log("utilizador", utilizador);
+    //console.log("utilizador", utilizador);
 
     let email = utilizador.emails[0].address;
 
-    console.log("email", email);
+    //console.log("email", email);
 
     var arb = arbitros.findOne({ email: email });
 
-    console.log("arb", arb);
+    // console.log("arb", arb);
 
     var def = definicoesPessoais.findOne({ arbitro: arb });
 
-    console.log("def", def);
+    //console.log("def", def);
 
     var result = def.emiteRecibo;
 
-    console.log("TEM RECIBO NA BD?", result);
+    //console.log("TEM RECIBO NA BD?", result);
     return result;
   },
 
@@ -704,7 +704,7 @@ Meteor.methods({
     var arb = arbitros.findOne({ email: email });
     var def = definicoesPessoais.findOne({ arbitro: arb });
     var result = def.temCarro;
-    console.log("TEM CARRO NA BD?", result);
+    //console.log("TEM CARRO NA BD?", result);
     return result;
   },
 
@@ -713,7 +713,7 @@ Meteor.methods({
     let email = utilizador.emails[0].address;
     var arb = arbitros.findOne({ email: email });
     var result = arb.nivel;
-    console.log("NIVEL DE ARBITRO NA BD?", result);
+    //  console.log("NIVEL DE ARBITRO NA BD?", result);
     return result;
   },
 
@@ -829,7 +829,7 @@ Meteor.methods({
     let diaDividido = diaDeJogo.split("/");
     let horaDividido = horaDeJogo.split(":");
 
-    console.log("diaDividido", diaDividido);
+    // console.log("diaDividido", diaDividido);
 
     let startStr =
       diaDividido[2] +
@@ -865,11 +865,11 @@ Meteor.methods({
       editable: false,
     };
 
-    console.log("novoEvento", novoEvento);
+    // console.log("novoEvento", novoEvento);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
     console.log("a", a);
-    const i = indisponibilidades.findOne({ arbitro: a });
+    let i = indisponibilidades.findOne({ arbitro: a });
     console.log("i", i);
 
     let events = i.disponibilidades;
@@ -881,9 +881,111 @@ Meteor.methods({
 
     events.push(novoEvento);
 
+    // console.log("events after push", events);
+
     indisponibilidades.update(
       { arbitro: a },
       { $set: { disponibilidades: events } }
+    );
+
+    i = indisponibilidades.findOne({ arbitro: a });
+
+    // console.log("events depois de mudanca", i.disponibilidades);
+
+    let ca = conselhoDeArbitragem.find();
+    let arbCAs = [];
+    let ca1;
+    ca.forEach((ca) => {
+      arbCAs.push(ca.arbitrosCA);
+      ca1 = ca;
+    });
+
+    let atuaisPreNomeacoes = ca1.preNomeacoes;
+
+    for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
+      if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
+        if (funcao.toString().includes("option_1_arbitro")) {
+          atuaisPreNomeacoes[index].arbitro_1 = nomeArbitro;
+        } else if (funcao.toString().includes("option_2_arbitro")) {
+          atuaisPreNomeacoes[index].arbitro_2 = nomeArbitro;
+        } else if (funcao.toString().includes("option_1_jl")) {
+          atuaisPreNomeacoes[index].juiz_linha_1 = nomeArbitro;
+        } else if (funcao.toString().includes("option_2_jl")) {
+          atuaisPreNomeacoes[index].juiz_linha_2 = nomeArbitro;
+        } else if (funcao.toString().includes("option_3_jl")) {
+          atuaisPreNomeacoes[index].juiz_linha_3 = nomeArbitro;
+        } else if (funcao.toString().includes("option_4_jl")) {
+          atuaisPreNomeacoes[index].juiz_linha_4 = nomeArbitro;
+        }
+      }
+    }
+    let newGames = atuaisPreNomeacoes;
+
+    conselhoDeArbitragem.rawCollection().drop();
+
+    for (let index = 0; index < arbCAs.length; index++) {
+      conselhoDeArbitragem.insert({
+        arbitrosCA: arbCAs[index],
+        preNomeacoes: newGames,
+      });
+    }
+    return true;
+  },
+
+  //
+  // NAO ACABEI ESTE METODO!!!!!
+  //
+
+  removeNomeacaoCalendarioArbitro: function removeNomeacaoCalendarioArbitro(
+    nomeArbitro,
+    tituloJogo,
+    currJogo
+  ) {
+    console.log("***********************************");
+
+    console.log("nomeArbitro", nomeArbitro);
+
+    console.log("********************************");
+
+    const a = arbitros.findOne({ nome: nomeArbitro });
+    console.log("a", a);
+    const i = indisponibilidades.findOne({ arbitro: a });
+    console.log("i", i);
+
+    let events = i.disponibilidades;
+    console.log("events", events);
+
+    if (events === "") {
+      events = [];
+      return true;
+    }
+
+    let novosEvents = [];
+    for (let index = 0; index < events.length; index++) {
+      const titulo = events[index].title;
+
+      console.log("TITULO DO JOGO DA BD: ", events[index].title);
+      console.log("TITULO RECEBIDO A COMPARAR:", titulo);
+
+      console.log("SÃO IGUAIS?", titulo === tituloJogo);
+
+      let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
+
+      let numeroJogoRecebido = parseInt(tituloJogo.split(" ")[2]);
+
+      console.log("numeroJogoDaBD : ", numeroJogoDaBD);
+      console.log("numeroJogoRecebido:", numeroJogoRecebido);
+
+      console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
+
+      if (numeroJogoDaBD != numeroJogoRecebido) {
+        novosEvents.push(events[index]);
+      }
+    }
+
+    indisponibilidades.update(
+      { arbitro: a },
+      { $set: { disponibilidades: novosEvents } }
     );
 
     let ca = conselhoDeArbitragem.find();
@@ -913,7 +1015,6 @@ Meteor.methods({
         }
       }
     }
-
     let newGames = atuaisPreNomeacoes;
 
     conselhoDeArbitragem.rawCollection().drop();
@@ -924,38 +1025,6 @@ Meteor.methods({
         preNomeacoes: newGames,
       });
     }
-    return true;
-  },
-
-  removeNomeacaoCalendarioArbitro: function removeNomeacaoCalendarioArbitro(
-    nomeArbitro,
-    tituloJogo
-  ) {
-    const a = arbitros.findOne({ nome: nomeArbitro });
-    console.log("a", a);
-    const i = indisponibilidades.findOne({ arbitro: a });
-    console.log("i", i);
-
-    let events = i.disponibilidades;
-    console.log("events", events);
-
-    if (events === "") {
-      events = [];
-      return true;
-    }
-
-    let novosEvents = [];
-    for (let index = 0; index < events.length; index++) {
-      const titulo = events[index].title;
-      if (titulo != tituloJogo) {
-        novosEvents.push(events[index]);
-      }
-    }
-
-    indisponibilidades.update(
-      { arbitro: a },
-      { $set: { disponibilidades: novosEvents } }
-    );
     return true;
   },
 

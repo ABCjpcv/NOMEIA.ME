@@ -68,12 +68,19 @@ function handleChange(value, key) {
     " " +
     currJogo.Pavilhao;
 
-  if (value === "") {
+  console.log("currNomeArbitro", currNomeArbitro);
+
+  console.log("value.length", value.length);
+
+  if (value.length === 1) {
+    console.log("ENTRASTE????????");
+
     // remover a nomeacao anterior
     Meteor.call(
       "removeNomeacaoCalendarioArbitro",
       currNomeArbitro,
       titulo,
+      currJogo,
       (err, result) => {
         console.log("RESULTADO", result);
 
@@ -87,10 +94,6 @@ function handleChange(value, key) {
   } else {
     currNomeArbitro = value;
     console.log("nomeArbitro: ", currNomeArbitro);
-    let diaDeJogo = currJogo.Dia;
-    console.log("currJogo Dia: ", currJogo.Dia);
-    let horaDeJogo = currJogo.Hora;
-    console.log("currJogo Dia: ", currJogo.Dia);
 
     Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
       let condicoesArbitro = JSON.parse(JSON.stringify(result));
@@ -107,7 +110,6 @@ function handleChange(value, key) {
         "\n";
 
       let mensagemRelacoesClubes = currNomeArbitro;
-
       if (relacoes.length > 0) {
         for (let index = 0; index < relacoes.length; index++) {
           let cargo = relacoes[index].cargo;
@@ -115,6 +117,9 @@ function handleChange(value, key) {
           mensagemRelacoesClubes =
             mensagemRelacoesClubes + " é " + cargo + " do clube " + clube + ".";
         }
+      } else {
+        mensagemRelacoesClubes =
+          mensagemRelacoesClubes + " não tem relações com clubes.";
       }
 
       let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
@@ -122,7 +127,7 @@ function handleChange(value, key) {
       window.alert(mensagemTotal);
     });
 
-    console.log("key", key);
+    //console.log("key", key);
 
     Meteor.call(
       "addNomeacaoCalendarioArbitro",
@@ -375,14 +380,14 @@ export function AtribuirJogos() {
 
   const [dataSource, setDataSource] = useState([]);
 
-  let [carregado, setCarregado] = useState(false);
-
   function handleSubmissionConfirmation(data) {
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
       confirmacoes.push(data[index]);
     }
+
+    loadData();
 
     console.log("data a enviar para BD", dataSource);
 
@@ -473,14 +478,14 @@ export function AtribuirJogos() {
 
                   return {
                     onClick: (event) => {
-                      console.log("event", event);
-                      console.log("event.target.value", event.target.value);
+                      //console.log("event", event);
+                      //console.log("event.target.value", event.target.value);
                       if (event.target != "div.ant-select-selector") {
                         Meteor.call(
                           "arbitrosDisponiveis",
                           record,
                           (err, result) => {
-                            console.log("result: ", result);
+                            //console.log("result: ", result);
                             if (err) {
                               console.log("ERRRRROOOOO", { err });
                             } else if (result.length != 0) {
@@ -491,7 +496,7 @@ export function AtribuirJogos() {
                         currJogo = record;
                       }
                       if (event.key === "Enter") {
-                        console.log("event.target.value", event.target.value);
+                        //console.log("event.target.value", event.target.value);
                       }
                       // console.log("arbitrosDisponiveis",arbitrosDisponiveis);
                     },
@@ -530,7 +535,9 @@ export function AtribuirJogos() {
               />
               <br></br>
               <Button
-                onClick={() => handleSubmissionConfirmation(dataSource)}
+                onClick={() => {
+                  handleSubmissionConfirmation(dataSource);
+                }}
                 type="primary"
                 style={{
                   marginBottom: 16,
