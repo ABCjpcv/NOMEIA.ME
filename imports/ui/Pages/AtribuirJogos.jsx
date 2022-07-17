@@ -53,17 +53,13 @@ function comparaAminhaLindaData(a, b) {
 }
 
 let currJogo = {};
+let currNomeArbitro = "";
 
-function handleChange(value) {
-  console.log("currJogo: ", currJogo);
-
-  let nomeArbitro = value;
-  console.log("nomeArbitro: ", nomeArbitro);
-  let diaDeJogo = currJogo.Dia;
-  console.log("currJogo Dia: ", currJogo.Dia);
-  let horaDeJogo = currJogo.Hora;
-  console.log("currJogo Dia: ", currJogo.Dia);
+function handleChange(value, key) {
   let titulo =
+    "Jogo nº " +
+    currJogo.Jogo +
+    " " +
     currJogo.Prova +
     " Serie " +
     currJogo.Serie +
@@ -71,26 +67,79 @@ function handleChange(value) {
     currJogo.Equipas +
     " " +
     currJogo.Pavilhao;
-  console.log("titulo: ", titulo);
 
-  Meteor.call("verificaRestricoes", nomeArbitro, (err, result) => {});
+  if (value === "") {
+    // remover a nomeacao anterior
+    Meteor.call(
+      "removeNomeacaoCalendarioArbitro",
+      currNomeArbitro,
+      titulo,
+      (err, result) => {
+        console.log("RESULTADO", result);
 
-  Meteor.call(
-    "addNomeacaoCalendarioArbitro",
-    nomeArbitro,
-    titulo,
-    diaDeJogo,
-    horaDeJogo,
-    (err, result) => {
-      console.log("RESULTADO", result);
-
-      if (err) {
-        console.error(err);
-      } else if (result) {
-        console.log(result);
+        if (err) {
+          console.error(err);
+        } else if (result) {
+          console.log(result);
+        }
       }
-    }
-  );
+    );
+  } else {
+    currNomeArbitro = value;
+    console.log("nomeArbitro: ", currNomeArbitro);
+    let diaDeJogo = currJogo.Dia;
+    console.log("currJogo Dia: ", currJogo.Dia);
+    let horaDeJogo = currJogo.Hora;
+    console.log("currJogo Dia: ", currJogo.Dia);
+
+    Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
+      let condicoesArbitro = JSON.parse(JSON.stringify(result));
+      let temCarro = condicoesArbitro.temCarro;
+      let emiteRecibo = condicoesArbitro.emiteRecibo;
+      let relacoes = condicoesArbitro.relacaoComEquipas;
+
+      let mensagemRestricoes =
+        currNomeArbitro +
+        (!temCarro ? " não tem carro." : " tem carro.") +
+        "\n" +
+        currNomeArbitro +
+        (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+        "\n";
+
+      let mensagemRelacoesClubes = currNomeArbitro;
+
+      if (relacoes.length > 0) {
+        for (let index = 0; index < relacoes.length; index++) {
+          let cargo = relacoes[index].cargo;
+          let clube = relacoes[index].clube;
+          mensagemRelacoesClubes =
+            mensagemRelacoesClubes + " é " + cargo + " do clube " + clube + ".";
+        }
+      }
+
+      let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
+
+      window.alert(mensagemTotal);
+    });
+
+    console.log("key", key);
+
+    Meteor.call(
+      "addNomeacaoCalendarioArbitro",
+      currNomeArbitro,
+      currJogo,
+      key.key,
+      (err, result) => {
+        console.log("RESULTADO", result);
+
+        if (err) {
+          console.error(err);
+        } else if (result) {
+          console.log(result);
+        }
+      }
+    );
+  }
 }
 
 export function AtribuirJogos() {
@@ -99,56 +148,56 @@ export function AtribuirJogos() {
       title: "Jogo",
       dataIndex: "Jogo",
       key: "Jogo",
-      sorter: (a, b) => a.Jogo - b.Jogo,
+      sorter: (a, b) => a.key - b.key,
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Dia",
       dataIndex: "Dia",
       key: "Dia",
-      sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+      sorter: (a, b) => comparaAminhaLindaData(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Hora",
       dataIndex: "Hora",
       key: "Hora",
-      sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Prova",
       dataIndex: "Prova",
       key: "Prova",
-      sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Serie",
       dataIndex: "Serie",
       key: "Serie",
-      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Equipas",
       dataIndex: "Equipas",
       key: "Equipas",
-      sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Pavilhao",
       dataIndex: "Pavilhao",
       key: "Pavilhao",
-      sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Arbitro1",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -164,7 +213,7 @@ export function AtribuirJogos() {
                 return (
                   <Select.Option
                     value={arb}
-                    key={"option_arbitro1" + _.uniqueId()}
+                    key={"option_1_arbitro" + _.uniqueId()}
                   >
                     {arb}
                   </Select.Option>
@@ -178,7 +227,7 @@ export function AtribuirJogos() {
       title: "Arbitro2",
       dataIndex: "Arbitro2",
       key: "Arbitro2",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -188,12 +237,13 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_arbitro2"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
                   <Select.Option
                     value={arb}
-                    key={"option_arbitro2" + _.uniqueId()}
+                    key={"option_2_arbitro" + _.uniqueId()}
                   >
                     {arb}
                   </Select.Option>
@@ -207,7 +257,7 @@ export function AtribuirJogos() {
       title: "JL",
       dataIndex: "JL1",
       key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -217,10 +267,11 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_jl1"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option value={arb} key={"option_jl1" + _.uniqueId()}>
+                  <Select.Option value={arb} key={"option_1_jl" + _.uniqueId()}>
                     {arb}
                   </Select.Option>
                 );
@@ -233,7 +284,7 @@ export function AtribuirJogos() {
       title: "JL",
       dataIndex: "JL2",
       key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -243,10 +294,11 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_jl2"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option value={arb} key={"option_jl2" + _.uniqueId()}>
+                  <Select.Option value={arb} key={"option_2_jl" + _.uniqueId()}>
                     {arb}
                   </Select.Option>
                 );
@@ -259,7 +311,7 @@ export function AtribuirJogos() {
       title: "JL",
       dataIndex: "JL3",
       key: "JL3",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -269,10 +321,11 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_jl3"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option value={arb} key={"option_jl3" + _.uniqueId()}>
+                  <Select.Option value={arb} key={"option_3_jl" + _.uniqueId()}>
                     {arb}
                   </Select.Option>
                 );
@@ -285,7 +338,7 @@ export function AtribuirJogos() {
       title: "JL",
       dataIndex: "JL4",
       key: "JL4",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
+      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (record) =>
         dataSource.length >= 1 ? (
@@ -295,10 +348,11 @@ export function AtribuirJogos() {
               style={{ width: "150px" }}
               key="select_jl4"
               type="select"
+              onChange={handleChange}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
-                  <Select.Option value={arb} key={"option_jl4" + _.uniqueId()}>
+                  <Select.Option value={arb} key={"option_4_jl" + _.uniqueId()}>
                     {arb}
                   </Select.Option>
                 );
@@ -321,6 +375,8 @@ export function AtribuirJogos() {
 
   const [dataSource, setDataSource] = useState([]);
 
+  let [carregado, setCarregado] = useState(false);
+
   function handleSubmissionConfirmation(data) {
     let confirmacoes = [];
 
@@ -328,19 +384,14 @@ export function AtribuirJogos() {
       confirmacoes.push(data[index]);
     }
 
-    Meteor.call("carregaJogosComNomeacoes", (err, result) => {
+    console.log("data a enviar para BD", dataSource);
+
+    Meteor.call("submeteJogosComNomeacoes", data, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", { err });
       }
-    });
-
-    let email = Meteor.user().emails[0].address;
-
-    Meteor.call("", email, data, (err, result) => {
-      if (err) {
-        console.log("ERRRRROOOOO", { err });
-      } else {
-        window.alert("Confirmações submetidas " + Meteor.user().username);
+      if (result) {
+        window.alert("Lista de Jogos com Nomeações enviada para os árbitros.");
       }
     });
   }
@@ -375,6 +426,7 @@ export function AtribuirJogos() {
 
           dataFromDB.push(obj);
         }
+        console.log("dataFromDB: ", dataFromDB);
         return setDataSource(dataFromDB);
       } else {
         return setDataSource([]);
@@ -383,7 +435,10 @@ export function AtribuirJogos() {
   }
 
   useEffect(() => {
-    loadData();
+    if (dataSource.length === 0) {
+      loadData();
+    }
+    // setCarregado(true);
   }, [dataSource]);
 
   return (
@@ -475,7 +530,7 @@ export function AtribuirJogos() {
               />
               <br></br>
               <Button
-                onClick={handleSubmissionConfirmation}
+                onClick={() => handleSubmissionConfirmation(dataSource)}
                 type="primary"
                 style={{
                   marginBottom: 16,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Table, Input } from "antd";
+import { Table, Input, Button } from "antd";
 import axios from "axios";
 import { useTableSearch } from "./useTableSearch";
 
@@ -13,7 +13,7 @@ const fetchData = async () => {
   let { data } = await axios.get("ClubesAVLnomes.json");
   if (dbInfo != "") {
     data = dbInfo;
-    //dbInfo = ""; 
+    //dbInfo = "";
   }
   return { data };
 };
@@ -29,27 +29,53 @@ export const listaClubesColumns = [
     dataIndex: "Cargo",
     key: "Cargo",
     render: (_, { Restricao }) => (
-      <div style={{ width: "auto" }}>
-        <input type="checkbox" value="Atleta" defaultChecked={Restricao[0]} />{" "}
-        Atleta
-        <input
-          type="checkbox"
-          value="Dirigente"
-          defaultChecked={Restricao[1]}
-        />{" "}
-        Dirigente
-        <input
-          type="checkbox"
-          value="Treinador"
-          defaultChecked={Restricao[2]}
-        />
-        Treinador
-        <input
-          type="checkbox"
-          value="Outra"
-          defaultChecked={Restricao[3]}
-        />{" "}
-        Outra
+      <div
+        style={{
+          width: "auto",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          Atleta
+          {"            "}
+          <input
+            type="checkbox"
+            value="Atleta"
+            defaultChecked={Restricao[0]}
+            style={{ height: "25px", width: "25px" }}
+          />
+        </div>
+        <div>
+          Dirigente
+          {"            "}
+          <input
+            type="checkbox"
+            value="Dirigente"
+            defaultChecked={Restricao[1]}
+            style={{ height: "25px", width: "25px" }}
+          />
+        </div>
+        <div>
+          Treinador
+          {"            "}
+          <input
+            type="checkbox"
+            value="Treinador"
+            defaultChecked={Restricao[2]}
+            style={{ height: "25px", width: "25px" }}
+          />
+        </div>
+        <div>
+          Outro
+          {"            "}
+          <input
+            type="checkbox"
+            value="Outra"
+            defaultChecked={Restricao[3]}
+            style={{ height: "25px", width: "25px" }}
+          />
+        </div>
       </div>
     ),
   },
@@ -238,20 +264,18 @@ export function Restricoes() {
       <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
         <form>
           <div>
-            <label>
-              <Search
-                onChange={(e) => setSearchVal(e.target.value)}
-                placeholder="Search"
-                enterButton
-                style={{
-                  position: "sticky",
-                  top: "0",
-                  left: "0",
-                  width: "200px",
-                  marginTop: "2vh",
-                }}
-              />
-            </label>
+            <Search
+              onChange={(e) => setSearchVal(e.target.value)}
+              placeholder="Pesquise aqui por um Clube"
+              enterButton
+              style={{
+                position: "sticky",
+                top: "0",
+                left: "0",
+                width: "250px",
+                marginTop: "2vh",
+              }}
+            />
             <br /> <br />
             <Table
               className="tableRestricoes"
@@ -300,9 +324,8 @@ export function Restricoes() {
               }}
             />
           </div>
-          <input
-            type="button"
-            value="Submeter"
+
+          <Button
             onClick={() => {
               console.log(
                 "esta é a data que vou mandar para a base de dados..."
@@ -332,7 +355,13 @@ export function Restricoes() {
                 );
               }
             }}
-          />
+            type="primary"
+            style={{
+              marginBottom: 16,
+            }}
+          >
+            Submeter relações com clubes
+          </Button>
         </form>
       </div>
     </div>

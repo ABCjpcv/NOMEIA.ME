@@ -387,6 +387,7 @@ export function ConsultaPrivada({ user }) {
                 dataSource={dataSource}
                 columns={colunasNomeacoesPrivadas}
               />
+              <br></br>
               <Button
                 onClick={handleAllConfirmation}
                 type="primary"

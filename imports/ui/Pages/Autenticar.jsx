@@ -57,18 +57,20 @@ export function Autenticar() {
 
       Meteor.loginWithPassword(utilizador.username, pass, () => {
         Meteor.call("isAdmin", utilizador, (err, result) => {
-          console.log("Meteor.user()", Meteor.user());
-
-          if (err) {
-            console.log("ERRRRROOOOO", { err });
-          } else if (result) {
-            console.log("vou mostrar Perfil do CA");
-            navigate("/ProfileCA");
-            mostraPerfilCA();
-          } else if (!result) {
-            console.log("vou mostrar Perfil do Arbitro");
-            navigate("/Profile");
-            mostraPerfil();
+          if (Meteor.user() === null)
+            window.alert("Credenciais erradas ou utilizador inexistente.");
+          else {
+            if (err) {
+              console.log("ERRRRROOOOO", { err });
+            } else if (result) {
+              console.log("vou mostrar Perfil do CA");
+              navigate("/ProfileCA");
+              mostraPerfilCA();
+            } else if (!result) {
+              console.log("vou mostrar Perfil do Arbitro");
+              navigate("/Profile");
+              mostraPerfil();
+            }
           }
         });
       });
