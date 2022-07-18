@@ -161,3 +161,7 @@
 .table-row-dark {
   background-color: #ded9d8;
 }
+
+.demo-option-label-item > span {
+  margin-right: 6px;
+}

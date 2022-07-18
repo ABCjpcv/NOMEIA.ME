@@ -4,6 +4,8 @@ import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
 
+const { Option } = Select;
+
 const StyledTable = styled((props) => <Table {...props} />)`
   && tbody > tr:hover > td {
     background: rgba(224, 248, 232, 1);
@@ -53,6 +55,7 @@ function comparaAminhaLindaData(a, b) {
 }
 
 let currJogo = {};
+
 let currNomeArbitro = "";
 
 function handleChange(value, key) {
@@ -68,32 +71,31 @@ function handleChange(value, key) {
     " " +
     currJogo.Pavilhao;
 
-  console.log("currNomeArbitro", currNomeArbitro);
+  //console.log("currNomeArbitro", currNomeArbitro);
 
-  console.log("value.length", value.length);
+  //console.log("value.length", value.length);
 
   if (value.length === 1) {
-    console.log("ENTRASTE????????");
-
     // remover a nomeacao anterior
     Meteor.call(
       "removeNomeacaoCalendarioArbitro",
       currNomeArbitro,
       titulo,
       currJogo,
+      key.key,
       (err, result) => {
-        console.log("RESULTADO", result);
+        //console.log("RESULTADO", result);
 
         if (err) {
           console.error(err);
         } else if (result) {
-          console.log(result);
+          // console.log(result);
         }
       }
     );
   } else {
     currNomeArbitro = value;
-    console.log("nomeArbitro: ", currNomeArbitro);
+    // console.log("nomeArbitro: ", currNomeArbitro);
 
     Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
       let condicoesArbitro = JSON.parse(JSON.stringify(result));
@@ -135,19 +137,23 @@ function handleChange(value, key) {
       currJogo,
       key.key,
       (err, result) => {
-        console.log("RESULTADO", result);
+        //console.log("RESULTADO", result);
 
         if (err) {
           console.error(err);
         } else if (result) {
-          console.log(result);
+          //console.log(result);
         }
       }
     );
   }
 }
 
-export function AtribuirJogos() {
+function handleChangeClubes() {
+  // TODO
+}
+
+export function AtribuirJogos(props) {
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
@@ -369,16 +375,18 @@ export function AtribuirJogos() {
   ];
 
   /**
-   *
-   *
    * ATRIBUICAO DOS ESTADOS (STATES)
-   *
-   *
    */
 
   const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
   const [dataSource, setDataSource] = useState([]);
+
+  let [temRecibo, setTemRecibo] = useState(false);
+  let [naoTemRecibo, setNaoTemRecibo] = useState(false);
+  let [temTransporte, setTemTransporte] = useState(false);
+  let [naoTemTransporte, setNaoTemTransporte] = useState(false);
+  let [clubesRelacionados, setClubesRelacionados] = useState([]);
 
   function handleSubmissionConfirmation(data) {
     let confirmacoes = [];
@@ -431,7 +439,7 @@ export function AtribuirJogos() {
 
           dataFromDB.push(obj);
         }
-        console.log("dataFromDB: ", dataFromDB);
+        //console.log("dataFromDB: ", dataFromDB);
         return setDataSource(dataFromDB);
       } else {
         return setDataSource([]);
@@ -439,116 +447,497 @@ export function AtribuirJogos() {
     });
   }
 
-  useEffect(() => {
+  function reloadData() {
+    console.log("Entrei no metodo!! ");
+
+    // Carrega pela primeira vez
     if (dataSource.length === 0) {
       loadData();
     }
-    // setCarregado(true);
-  }, [dataSource]);
+    // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
+    else {
+      Meteor.call(
+        "jogosForamUpdated",
+        Meteor.user(),
+        dataSource,
+        (err, result) => {
+          console.log("jogos atualizados???", result);
+          if (result === true) {
+            loadData();
+          }
+        }
+      );
+    }
+  }
 
   return (
-    <div
-      className="demo-app"
-      style={{ height: "10%", width: "auto", alignSelf: "center" }}
-    >
-      <div className="demo-app-sidebar"></div>
-      <div>
-        <div className="demo-app-main" style={{ overflow: "auto" }}>
-          <div className="container">
-            <div className="table-responsive">
-              <br />
-              <h1 className="blue"> Arbitros disponiveis: </h1>
-              <ul>
-                {arbitrosDisponiveis.map((arb) => {
-                  return arb + "\n";
-                })}
-              </ul>
+    <>
+      {reloadData()}
 
-              <br></br>
-              <StyledTable
-                //bordered
-                rowClassName={(record, index) =>
-                  index % 2 === 0 ? "table-row-light" : "table-row-dark"
-                }
-                dataSource={dataSource}
-                columns={colunasNomeacoesPrivadas}
-                pagination={false}
-                onRow={(record) => {
-                  let k = record.key;
-
-                  return {
-                    onClick: (event) => {
-                      //console.log("event", event);
-                      //console.log("event.target.value", event.target.value);
-                      if (event.target != "div.ant-select-selector") {
-                        Meteor.call(
-                          "arbitrosDisponiveis",
-                          record,
-                          (err, result) => {
-                            //console.log("result: ", result);
-                            if (err) {
-                              console.log("ERRRRROOOOO", { err });
-                            } else if (result.length != 0) {
-                              return setArbitrosDisponiveis(result);
-                            }
+      <div
+        className="demo-app"
+        style={{ height: "10%", width: "auto", alignSelf: "center" }}
+      >
+        <div className="demo-app-sidebar"></div>
+        <div>
+          <div className="demo-app-main" style={{ overflow: "auto" }}>
+            <div className="container">
+              <div className="table-responsive">
+                <br />
+                <div
+                  style={{ backgroundColor: "white", alignSelf: "flex-start" }}
+                >
+                  <h1 className="blue">Selecionado: Jogo nº {currJogo.Jogo}</h1>
+                  <div id="filtros">
+                    <label className="labels">
+                      Transporte próprio:
+                      <input
+                        className="inputt"
+                        type={"checkbox"}
+                        onChange={() => {
+                          if (naoTemTransporte) {
+                            window.alert(
+                              "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                            );
+                          } else {
+                            setTemTransporte(!temTransporte);
                           }
-                        );
-                        currJogo = record;
-                      }
-                      if (event.key === "Enter") {
+                        }}
+                        style={{
+                          marginLeft: "15px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        checked={temTransporte}
+                      ></input>
+                    </label>
+                    <label className="labels">
+                      Não tem transporte próprio:
+                      <input
+                        className="inputt"
+                        type={"checkbox"}
+                        onChange={() => {
+                          if (temTransporte) {
+                            window.alert(
+                              "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                            );
+                          } else {
+                            setNaoTemTransporte(!naoTemTransporte);
+                          }
+                        }}
+                        style={{
+                          marginLeft: "15px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        checked={naoTemTransporte}
+                      ></input>
+                    </label>
+                    <label className="labels">
+                      Emite Recibo Verde:
+                      <input
+                        className="inputt"
+                        type={"checkbox"}
+                        onChange={() => {
+                          if (naoTemRecibo) {
+                            window.alert(
+                              "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                            );
+                          } else {
+                            setTemRecibo(!temRecibo);
+                          }
+                        }}
+                        style={{
+                          marginLeft: "25px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        checked={temRecibo}
+                      ></input>
+                    </label>
+                    <label className="labels">
+                      Não Emite Recibo Verde:
+                      <input
+                        className="inputt"
+                        type={"checkbox"}
+                        onChange={() => {
+                          if (temRecibo) {
+                            window.alert(
+                              "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                            );
+                          } else {
+                            setNaoTemRecibo(!naoTemRecibo);
+                          }
+                        }}
+                        style={{
+                          marginLeft: "25px",
+                          height: "30px",
+                          width: "30px",
+                        }}
+                        checked={naoTemRecibo}
+                      ></input>
+                    </label>
+
+                    <label className="labels">
+                      Relação com clubes:
+                      <br></br>
+                      <Select
+                        mode="multiple"
+                        style={{
+                          marginLeft: "14px",
+                          width: "400px",
+                        }}
+                        placeholder="Selecione clubes"
+                        onChange={handleChangeClubes}
+                        optionLabelProp="label"
+                      >
+                        <Option
+                          value="Academia de Voleibol Colégio Atlântico"
+                          label="Academia de Voleibol Colégio Atlântico"
+                        >
+                          <div className="demo-option-label-item">
+                            Academia de Voleibol Colégio Atlântico
+                          </div>
+                        </Option>
+                        <Option
+                          value="Academia Mateus Nogueira"
+                          label="Academia Mateus Nogueira"
+                        >
+                          <div className="demo-option-label-item">
+                            Academia Mateus Nogueira
+                          </div>
+                        </Option>
+                        <Option
+                          value="Academia Voleibol Praia"
+                          label="Academia Voleibol Praia"
+                        >
+                          <div className="demo-option-label-item">
+                            Academia Voleibol Praia
+                          </div>
+                        </Option>
+                        <Option value="Ape Lobato" label="Ape Lobato">
+                          <div className="demo-option-label-item">
+                            Ape Lobato
+                          </div>
+                        </Option>
+                        <Option
+                          value="Associação De Voleibol Da Escola B. Sec. Gama Barros"
+                          label="Associação De Voleibol Da Escola B. Sec. Gama Barros"
+                        >
+                          <div className="demo-option-label-item">
+                            Associação De Voleibol Da Escola B. Sec. Gama Barros
+                          </div>
+                        </Option>
+                        <Option
+                          value="Associação Desportiva Marista"
+                          label="Associação Desportiva Marista"
+                        >
+                          <div className="demo-option-label-item">
+                            Associação Desportiva Marista
+                          </div>
+                        </Option>
+                        <Option
+                          value="Cascais Volley4all"
+                          label="Cascais Volley4all"
+                        >
+                          <div className="demo-option-label-item">
+                            Cascais Volley4all
+                          </div>
+                        </Option>
+                        <Option
+                          value="Cd Alverca Volei"
+                          label="Cd Alverca Volei"
+                        >
+                          <div className="demo-option-label-item">
+                            Cd Alverca Volei
+                          </div>
+                        </Option>
+                        <Option
+                          value="Centro De Voleibol De Lisboa"
+                          label="Centro De Voleibol De Lisboa"
+                        >
+                          <div className="demo-option-label-item">
+                            Centro De Voleibol De Lisboa
+                          </div>
+                        </Option>
+                        <Option value="Cf Belenenses" label="Cf Belenenses">
+                          <div className="demo-option-label-item">
+                            Cf Belenenses
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Col Guadalupe"
+                          label="Clube Col Guadalupe"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Col Guadalupe
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Desportivo Colégio Minerva"
+                          label="Clube Desportivo Colégio Minerva"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Desportivo Colégio Minerva
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Desportivo Marista De Carcavelos"
+                          label="Clube Desportivo Marista De Carcavelos"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Desportivo Marista De Carcavelos
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Juvenil De Voleibol Filipa De Lencastre"
+                          label="Clube Juvenil De Voleibol Filipa De Lencastre"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Juvenil De Voleibol Filipa De Lencastre
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Nacional De Ginástica"
+                          label="Clube Nacional De Ginástica"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Nacional De Ginástica
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Recreativo Piedense"
+                          label="Clube Recreativo Piedense"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Recreativo Piedense
+                          </div>
+                        </Option>
+                        <Option
+                          value="Clube Voleibol De Oeiras"
+                          label="Clube Voleibol De Oeiras"
+                        >
+                          <div className="demo-option-label-item">
+                            Clube Voleibol De Oeiras
+                          </div>
+                        </Option>
+                        <Option
+                          value="Colégio Pedro Arrupe"
+                          label="Colégio Pedro Arrupe"
+                        >
+                          <div className="demo-option-label-item">
+                            Colégio Pedro Arrupe
+                          </div>
+                        </Option>
+                        <Option
+                          value="Colégio Salesianos De Lisboa – Oficina S. José"
+                          label="Colégio Salesianos De Lisboa – Oficina S. José"
+                        >
+                          <div className="demo-option-label-item">
+                            Colégio Salesianos De Lisboa – Oficina S. José
+                          </div>
+                        </Option>
+                        <Option
+                          value="Colégio São João De Brito"
+                          label="Colégio São João De Brito"
+                        >
+                          <div className="demo-option-label-item">
+                            Colégio São João De Brito
+                          </div>
+                        </Option>
+                        <Option
+                          value="Famões Clube Atlético"
+                          label="Famões Clube Atlético"
+                        >
+                          <div className="demo-option-label-item">
+                            Famões Clube Atlético
+                          </div>
+                        </Option>
+                        <Option value="Gd Sesimbra" label="Gd Sesimbra">
+                          <div className="demo-option-label-item">
+                            Gd Sesimbra
+                          </div>
+                        </Option>
+                        <Option
+                          value="Ginásio Clube Português"
+                          label="Ginásio Clube Português"
+                        >
+                          <div className="demo-option-label-item">
+                            Ginásio Clube Português
+                          </div>
+                        </Option>
+                        <Option
+                          value="Grupo Dramático E Sportivo De Cascais"
+                          label="Grupo Dramático E Sportivo De Cascais"
+                        >
+                          <div className="demo-option-label-item">
+                            Grupo Dramático E Sportivo De Cascais
+                          </div>
+                        </Option>
+                        <Option
+                          value="Grupo Rec. Cultural Do Bom Retiro"
+                          label="Grupo Rec. Cultural Do Bom Retiro"
+                        >
+                          <div className="demo-option-label-item">
+                            Grupo Rec. Cultural Do Bom Retiro
+                          </div>
+                        </Option>
+                        <Option
+                          value="Grupo União Recreativo E Desportivo 'Mtba'"
+                          label="Grupo União Recreativo E Desportivo 'Mtba'"
+                        >
+                          <div className="demo-option-label-item">
+                            Grupo União Recreativo E Desportivo "Mtba"
+                          </div>
+                        </Option>
+                        <Option value="Lobatos Volley" label="Lobatos Volley">
+                          <div className="demo-option-label-item">
+                            Lobatos Volley
+                          </div>
+                        </Option>
+                        <Option value="Lusófona Vc" label="Lusófona Vc">
+                          <div className="demo-option-label-item">
+                            Lusófona Vc
+                          </div>
+                        </Option>
+                        <Option value="Madeira Torres" label="Madeira Torres">
+                          <div className="demo-option-label-item">
+                            Madeira Torres
+                          </div>
+                        </Option>
+                        <Option
+                          value="Odivelas Sports Club"
+                          label="Odivelas Sports Club"
+                        >
+                          <div className="demo-option-label-item">
+                            Odivelas Sports Club
+                          </div>
+                        </Option>
+                        <Option
+                          value="Odivelas Voleibol Clube"
+                          label="Odivelas Voleibol Clube"
+                        >
+                          <div className="demo-option-label-item">
+                            Odivelas Voleibol Clube
+                          </div>
+                        </Option>
+                        <Option
+                          value="Salesianos Do Estoril"
+                          label="Salesianos Do Estoril"
+                        >
+                          <div className="demo-option-label-item">
+                            Salesianos Do Estoril
+                          </div>
+                        </Option>{" "}
+                        <Option value="Sintra Volei" label="Sintra Volei">
+                          <div className="demo-option-label-item">
+                            Sintra Volei
+                          </div>
+                        </Option>{" "}
+                        <Option
+                          value="Sport Lisboa E Benfica"
+                          label="Sport Lisboa E Benfica"
+                        >
+                          <div className="demo-option-label-item">
+                            Sport Lisboa E Benfica
+                          </div>
+                        </Option>
+                        <Option
+                          value="Sporting Clube De Torres"
+                          label="Sporting Clube De Torres"
+                        >
+                          <div className="demo-option-label-item">
+                            Sporting Clube De Torres
+                          </div>
+                        </Option>{" "}
+                        <Option value="Sporting CP" label="Sporting CP">
+                          <div className="demo-option-label-item">
+                            Sporting CP
+                          </div>
+                        </Option>{" "}
+                        <Option
+                          value="Volei Clube De Setúbal 1990"
+                          label="Volei Clube De Setúbal 1990"
+                        >
+                          <div className="demo-option-label-item">
+                            Volei Clube De Setúbal 1990
+                          </div>
+                        </Option>
+                      </Select>
+                    </label>
+
+                    <label className="labels">Arbitros disponíveis:</label>
+                    <ul
+                      style={{
+                        marginTop: "0px",
+                        marginBottom: "-10px",
+                        height: "auto",
+                      }}
+                    >
+                      {arbitrosDisponiveis.map((arb) => {
+                        if (arb != " ") return arb + "; \n";
+                      })}
+                    </ul>
+                  </div>
+                </div>
+
+                <br></br>
+                <StyledTable
+                  //bordered
+                  rowClassName={(record, index) =>
+                    index % 2 === 0 ? "table-row-light" : "table-row-dark"
+                  }
+                  dataSource={dataSource}
+                  columns={colunasNomeacoesPrivadas}
+                  pagination={false}
+                  onRow={(record) => {
+                    let k = record.key;
+
+                    return {
+                      onClick: (event) => {
+                        console.log("event", event);
                         //console.log("event.target.value", event.target.value);
-                      }
-                      // console.log("arbitrosDisponiveis",arbitrosDisponiveis);
-                    },
-
-                    onChange: (event) => {
-                      // save row data to state
-                      console.log("MUDEI O EVENTO!", event);
-
-                      //  if (event.target.value === undefined) {
-                      //    // nothing to do
-                      //  }
-
-                      //  if (event.target.type === "text") {
-                      //       adicionaDescricao(k, event.target.value);
-                      //     } else if (record.Descricao != "") {
-                      //       adicionaDescricao(k, record.Descricao);
-                      //     }
-
-                      //     if (event.target.type === "checkbox") {
-                      //       if (event.target.value === "Atleta") {
-                      //         adicionaRestricao(k, 0, event.target.checked);
-                      //       }
-                      //       if (event.target.value === "Dirigente") {
-                      //         adicionaRestricao(k, 1, event.target.checked);
-                      //       }
-                      //       if (event.target.value === "Treinador") {
-                      //         adicionaRestricao(k, 2, event.target.checked);
-                      //       }
-                      //       if (event.target.value === "Outra") {
-                      //         adicionaRestricao(k, 3, event.target.checked);
-                      //       }
-                      //     }
-                    },
-                  };
-                }}
-              />
-              <br></br>
-              <Button
-                onClick={() => {
-                  handleSubmissionConfirmation(dataSource);
-                }}
-                type="primary"
-                style={{
-                  marginBottom: 16,
-                }}
-              >
-                Submeter e enviar nomeações
-              </Button>
+                        if (event.target != "div.ant-select-selector") {
+                          Meteor.call(
+                            "arbitrosDisponiveis",
+                            record,
+                            temRecibo,
+                            naoTemRecibo,
+                            temTransporte,
+                            naoTemTransporte,
+                            clubesRelacionados,
+                            (err, result) => {
+                              //console.log("result: ", result);
+                              if (err) {
+                                console.log("ERRRRROOOOO", { err });
+                              } else if (result.length != 0) {
+                                return setArbitrosDisponiveis(result);
+                              }
+                            }
+                          );
+                          currJogo = record;
+                        }
+                      },
+                    };
+                  }}
+                />
+                <br></br>
+                <Button
+                  onClick={() => {
+                    handleSubmissionConfirmation(dataSource);
+                  }}
+                  type="primary"
+                  style={{
+                    marginBottom: 16,
+                  }}
+                >
+                  Submeter e enviar nomeações
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -722,10 +722,38 @@ Meteor.methods({
    *****************************************************************
    */
 
+  jogosForamUpdated: function jogosForamUpdated(user, data) {
+    let u = Meteor.users.findOne(user);
+    console.log("utilizador CA", u);
+    let arb = arbitros.findOne({ email: u.emails[0].address });
+    console.log("arbitro CA", arb);
+    let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+    console.log("ca", ca);
+    let atuaisPreNomeacoes = ca.preNomeacoes;
+    console.log("data[0]", data[0]);
+    console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
+
+    console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
+
+    if (data.length != atuaisPreNomeacoes.length) {
+      return true;
+    } else {
+      for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
+        let numeroJogoDaBD = parseInt(atuaisPreNomeacoes[index].id);
+        let numeroJogoRecebido = parseInt(data[index].Jogo);
+        if (numeroJogoDaBD != numeroJogoRecebido) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  },
+
   submeteJogosComNomeacoes: function submeteJogosComNomeacoes(data) {
     // REVER MUITO BEM
 
-    console.log("data", data);
+    //console.log("data", data);
 
     jogos.rawCollection().drop();
 
@@ -932,20 +960,13 @@ Meteor.methods({
     return true;
   },
 
-  //
-  // NAO ACABEI ESTE METODO!!!!!
-  //
-
   removeNomeacaoCalendarioArbitro: function removeNomeacaoCalendarioArbitro(
     nomeArbitro,
     tituloJogo,
-    currJogo
+    currJogo,
+    funcao
   ) {
-    console.log("***********************************");
-
-    console.log("nomeArbitro", nomeArbitro);
-
-    console.log("********************************");
+    //console.log("nomeArbitro", nomeArbitro);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
     console.log("a", a);
@@ -964,19 +985,19 @@ Meteor.methods({
     for (let index = 0; index < events.length; index++) {
       const titulo = events[index].title;
 
-      console.log("TITULO DO JOGO DA BD: ", events[index].title);
-      console.log("TITULO RECEBIDO A COMPARAR:", titulo);
+      // console.log("TITULO DO JOGO DA BD: ", events[index].title);
+      // console.log("TITULO RECEBIDO A COMPARAR:", titulo);
 
-      console.log("SÃO IGUAIS?", titulo === tituloJogo);
+      // console.log("SÃO IGUAIS?", titulo === tituloJogo);
 
       let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
 
       let numeroJogoRecebido = parseInt(tituloJogo.split(" ")[2]);
 
-      console.log("numeroJogoDaBD : ", numeroJogoDaBD);
-      console.log("numeroJogoRecebido:", numeroJogoRecebido);
+      // console.log("numeroJogoDaBD : ", numeroJogoDaBD);
+      // console.log("numeroJogoRecebido:", numeroJogoRecebido);
 
-      console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
+      // console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
 
       if (numeroJogoDaBD != numeroJogoRecebido) {
         novosEvents.push(events[index]);
@@ -1001,17 +1022,17 @@ Meteor.methods({
     for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
       if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
         if (funcao.toString().includes("option_1_arbitro")) {
-          atuaisPreNomeacoes[index].arbitro_1 = nomeArbitro;
+          atuaisPreNomeacoes[index].arbitro_1 = "";
         } else if (funcao.toString().includes("option_2_arbitro")) {
-          atuaisPreNomeacoes[index].arbitro_2 = nomeArbitro;
+          atuaisPreNomeacoes[index].arbitro_2 = "";
         } else if (funcao.toString().includes("option_1_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_1 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha_1 = "";
         } else if (funcao.toString().includes("option_2_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_2 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha_2 = "";
         } else if (funcao.toString().includes("option_3_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_3 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha_3 = "";
         } else if (funcao.toString().includes("option_4_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_4 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha_4 = "";
         }
       }
     }
@@ -1077,7 +1098,16 @@ Meteor.methods({
     return ca.preNomeacoes;
   },
 
-  arbitrosDisponiveis: function arbitrosDisponiveis(jogo) {
+  arbitrosDisponiveis: function arbitrosDisponiveis(
+    jogo,
+    temRecibo,
+    naoTemRecibo,
+    temTransporte,
+    naoTemTransporte,
+    clubesRelacionados
+  ) {
+    // ESTA DISPONIVEL PARA AQUELE HORARIO???
+
     let todasIndisponibilidades = [];
 
     indisponibilidades.find().forEach((indisponibilidade) => {
@@ -1091,15 +1121,8 @@ Meteor.methods({
 
     let diaDeJogo = (jogo.Dia + "").split("/");
     let horaDeJogo = (jogo.Hora + "").split(":");
-    // console.log("ano", diaDeJogo[2]);
-    // console.log("mes", diaDeJogo[1]);
-    // console.log("dia", diaDeJogo[0]);
-
-    // console.log("hora", horaDeJogo[0]);
-    // console.log("minutos", horaDeJogo[1]);
 
     let horaPavilhao = parseInt(horaDeJogo[0]) - 1;
-    //console.log("horaPavilhao", horaPavilhao);
 
     let dataInicio =
       diaDeJogo[2] +
@@ -1162,9 +1185,56 @@ Meteor.methods({
       }
     });
 
-    nomesArbitrosDisponiveis.push(" ");
+    // Segundo passo:
 
-    return nomesArbitrosDisponiveis.sort();
+    let futurosArbitrosDisponiveis = [];
+
+    // QUERO VER APENAS OS QUE EMITEM RECIBO
+    if (temRecibo) {
+      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
+        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+        let def = definicoesPessoais.findOne({ arbitro: arb });
+        if (def.temRecibo) {
+          futurosArbitrosDisponiveis.push(arb.nome);
+        }
+      }
+    }
+    // QUERO VER APENAS OS QUE NÃO EMITEM RECIBO
+    else if (naoTemRecibo) {
+      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
+        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+        let def = definicoesPessoais.findOne({ arbitro: arb });
+        if (!def.temRecibo) {
+          futurosArbitrosDisponiveis.push(arb.nome);
+        }
+      }
+    }
+    // Depois de adicionar os arbitros que tem ou nao recibo
+
+    // QUERO VER APENAS OS QUE TEM TRANSPORTE
+    if (temTransporte) {
+      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
+        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+        let def = definicoesPessoais.findOne({ arbitro: arb });
+        if (def.temCarro) {
+          futurosArbitrosDisponiveis.push(arb.nome);
+        }
+      }
+    }
+    // QUERO VER APENAS OS QUE NAO TEM TRANSPORTE
+    else if (naoTemTransporte) {
+      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
+        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+        let def = definicoesPessoais.findOne({ arbitro: arb });
+        if (!def.temCarro) {
+          futurosArbitrosDisponiveis.push(arb.nome);
+        }
+      }
+    }
+
+    futurosArbitrosDisponiveis.push(" ");
+
+    return futurosArbitrosDisponiveis.sort();
   },
 });
 

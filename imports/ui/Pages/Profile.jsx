@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import "./app.css";
 
@@ -8,28 +8,6 @@ import { ConsultaPrivada } from "./ConsultaPrivada";
 import { UserSettings } from "./UserSettings";
 
 export function Profile({ user }) {
-  // function changeUsernameStatus() {
-  //   try {
-  //     user = Meteor.user?.();
-
-  //     console.log("user", user);
-
-  //     const username = user.username;
-  //     if (username === null || username === undefined)
-  //       throw new Error("sessionExpired");
-  //     else {
-  //       document.getElementById("usernameStatus").innerHTML = username;
-  //     }
-  //   } catch (sessionExpired) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  //if (!changeUsernameStatus()) {
-  /**
-   *  CASO O UTILIZADOR SEJA ARBITRO
-   */
   return (
     <div>
       <div id="profile">
@@ -53,23 +31,4 @@ export function Profile({ user }) {
       </div>
     </div>
   );
-  //}
-  // } else {
-  //   return (
-  //     <div>
-  //       <h1 className="blue">
-  //         A sua sessão expirou.
-  //         <p>
-  //           <a
-  //             onClick={() => {
-  //               navigate("/");
-  //             }}
-  //           >
-  //             Página Principal
-  //           </a>
-  //         </p>
-  //       </h1>
-  //     </div>
-  //   );
-  // }
 }
