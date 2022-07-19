@@ -2,8 +2,17 @@ import { Meteor } from "meteor/meteor";
 import React, { useState, useEffect } from "react";
 
 export function UserSettings({ user }) {
+  /**
+   * ATRIBUICAO DOS ESTADOS
+   */
   let [temRecibo, setTemRecibo] = useState(() => getEmissaoReciboUser(user));
   let [temTransporte, setTemTransporte] = useState(() =>
+    getTransporteProprioUser(user)
+  );
+  let [naoTemRecibo, setNaoTemRecibo] = useState(() =>
+    getEmissaoReciboUser(user)
+  );
+  let [naoTemTransporte, setNaoTemTransporte] = useState(() =>
     getTransporteProprioUser(user)
   );
 
@@ -12,7 +21,12 @@ export function UserSettings({ user }) {
   function submeterAlteracaoPassword(user, newPassword) {
     Meteor.call("alteraPassword", user, newPassword, (err, result) => {
       if (result === 1) {
-        window.alert("Password alterada com sucesso!");
+        window.alert(
+          "Password alterada com sucesso! Faça a autenticação novamente."
+        );
+        Meteor.logout();
+        document.getElementById("definicoes").hidden = true;
+        document.getElementById("titulo").hidden = false;
       } else {
         window.alert("ERRO");
       }
@@ -26,29 +40,45 @@ export function UserSettings({ user }) {
   }
 
   function adicionaTransporteProprioUserSettings(user) {
-    Meteor.call("alteraTransporte", user, (err, result) => {
+    Meteor.call("adicionaTransporte", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
         window.alert("Adicionado transporte próprio!");
         setTemTransporte(true);
+        setNaoTemTransporte(false);
       }
-      if (result === 0) {
+    });
+  }
+
+  function removeTransporteProprioUserSettings(user) {
+    Meteor.call("removeTransporte", user, (err, result) => {
+      console.log("result", result);
+      if (result === 1) {
         window.alert("Removido transporte próprio!");
         setTemTransporte(false);
+        setNaoTemTransporte(true);
       }
     });
   }
 
   function adicionaEmissaoReciboUserSettings(user) {
-    Meteor.call("alteraRecibo", user, (err, result) => {
+    Meteor.call("adicionaRecibo", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
         window.alert("Adicionada emissão de recibo!");
         setTemRecibo(true);
+        setNaoTemRecibo(false);
       }
-      if (result === 0) {
+    });
+  }
+
+  function removeEmissaoReciboUserSettings(user) {
+    Meteor.call("removeRecibo", user, (err, result) => {
+      console.log("result", result);
+      if (result === 1) {
         window.alert("Removida emissão de recibo!");
         setTemRecibo(false);
+        setNaoTemRecibo(true);
       }
     });
   }
@@ -58,6 +88,7 @@ export function UserSettings({ user }) {
       console.log("result", result);
       if (result) {
         setTemTransporte(result);
+        setNaoTemTransporte(!result);
       }
     });
   }
@@ -67,6 +98,7 @@ export function UserSettings({ user }) {
       console.log("result", result);
       if (result) {
         setTemRecibo(result);
+        setNaoTemRecibo(!result);
       }
     });
   }
@@ -120,13 +152,41 @@ export function UserSettings({ user }) {
 
         <div className="input">
           <label className="labels">
-            Transporte próprio:
+            Tenho Transporte próprio:
             <input
               className="inputt"
               type={"checkbox"}
-              onChange={() => adicionaTransporteProprioUserSettings(user)}
-              style={{ marginLeft: "180px", height: "30px", width: "30px" }}
+              onChange={() => {
+                if (temTransporte) {
+                  removeTransporteProprioUserSettings(user);
+                }
+                if (!temTransporte) {
+                  adicionaTransporteProprioUserSettings(user);
+                }
+              }}
+              style={{ marginLeft: "135px", height: "30px", width: "30px" }}
               checked={temTransporte}
+            ></input>
+          </label>
+        </div>
+
+        <p></p>
+        <div className="input">
+          <label className="labels">
+            Não tenho Transporte próprio:
+            <input
+              className="inputt"
+              type={"checkbox"}
+              onChange={() => {
+                if (!naoTemTransporte) {
+                  removeTransporteProprioUserSettings(user);
+                }
+                if (naoTemTransporte) {
+                  adicionaTransporteProprioUserSettings(user);
+                }
+              }}
+              style={{ marginLeft: "105px", height: "30px", width: "30px" }}
+              checked={naoTemTransporte}
             ></input>
           </label>
         </div>
@@ -138,9 +198,36 @@ export function UserSettings({ user }) {
             <input
               className="inputt"
               type={"checkbox"}
-              onChange={() => adicionaEmissaoReciboUserSettings(user)}
-              style={{ marginLeft: "188px", height: "30px", width: "30px" }}
+              onChange={() => {
+                if (temRecibo) {
+                  removeEmissaoReciboUserSettings(user);
+                }
+                if (!temRecibo) {
+                  adicionaEmissaoReciboUserSettings(user);
+                }
+              }}
+              style={{ marginLeft: "190px", height: "30px", width: "30px" }}
               checked={temRecibo}
+            ></input>
+          </label>
+        </div>
+        <p></p>
+        <div className="input">
+          <label className="labels">
+            Não emito recibo verde:
+            <input
+              className="inputt"
+              type={"checkbox"}
+              onChange={() => {
+                if (!naoTemRecibo) {
+                  removeEmissaoReciboUserSettings(user);
+                }
+                if (naoTemRecibo) {
+                  adicionaEmissaoReciboUserSettings(user);
+                }
+              }}
+              style={{ marginLeft: "159px", height: "30px", width: "30px" }}
+              checked={naoTemRecibo}
             ></input>
           </label>
         </div>

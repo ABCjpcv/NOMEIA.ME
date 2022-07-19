@@ -67,6 +67,8 @@ definicoesPessoais.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
   temCarro: { type: Boolean, optional: false },
   emiteRecibo: { type: Boolean, optional: false },
+  naoTemCarro: { type: Boolean, optional: false },
+  naoEmiteRecibo: { type: Boolean, optional: false },
 });
 
 //Schema Arbitros:
@@ -328,6 +330,8 @@ Meteor.startup(() => {
       arbitro: arbitro,
       temCarro: false,
       emiteRecibo: false,
+      naoTemCarro: false,
+      naoTemRecibo: false,
     });
     console.log("inserted : DEFINICOES PESSOAIS BASE ");
   });
@@ -559,20 +563,24 @@ Meteor.methods({
 
   addConfirmacaoNomeacao: function addConfirmacaoNomeacao(
     email,
-    idsJogos,
+    games,
     confirmacoes
   ) {
     var arb = arbitros.findOne({ email: email });
     let nomeacoesAuxiliares = [];
 
-    for (let index = 0; index < idsJogos.length; index++) {
-      let idAtual = idsJogos[index];
+    for (let index = 0; index < games.length; index++) {
+      let jogo = jogos.findOne({ key: games[index].key });
+      console.log("jogo", jogo);
+
       let confirmacaoAtual = confirmacoes[index];
-      var jogo = jogos.findOne({ id: idAtual });
-      var nomeacao = { jogo, confirmacaoAtual };
+
+      var nomeacao = { jogo: jogo, confirmacaoAtual: confirmacaoAtual };
       nomeacoesAuxiliares.push(nomeacao);
-      console.log("Arbitro " + arb.nome + " ficou com o jogo " + idAtual);
+      console.log("Arbitro " + arb.nome + " ficou com o jogo " + jogo.id);
     }
+
+    console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
 
     nomeacoes.update(
       { arbitro: arb },
@@ -637,37 +645,65 @@ Meteor.methods({
    *****************************************************************
    */
 
-  alteraRecibo: function alteraRecibo(user) {
+  adicionaRecibo: function adicionaRecibo(user) {
     try {
       let utilizador = Meteor.users.findOne(user);
       let username = utilizador.username;
       let a = arbitros.findOne({ nome: username });
-      let def = definicoesPessoais.findOne({ arbitro: a });
-      let defRecibo = !def.emiteRecibo;
       definicoesPessoais.update(
         { arbitro: a },
-        { $set: { emiteRecibo: defRecibo } }
+        { $set: { emiteRecibo: true } },
+        { $set: { naoEmiteRecibo: false } }
       );
-      if (defRecibo === false) return 0;
-      else return 1;
+      return 1;
     } catch (error) {
       return -1;
     }
   },
 
-  alteraTransporte: function alteraTransporte(user) {
+  adicionaTransporte: function adicionaTransporte(user) {
     try {
       let utilizador = Meteor.users.findOne(user);
       let username = utilizador.username;
       let a = arbitros.findOne({ nome: username });
-      let def = definicoesPessoais.findOne({ arbitro: a });
-      let defTransporte = !def.temCarro;
       definicoesPessoais.update(
         { arbitro: a },
-        { $set: { temCarro: defTransporte } }
+        { $set: { temCarro: true } },
+        { $set: { naoTemCarro: false } }
       );
-      if (defTransporte === false) return 0;
-      else return 1;
+      return 1;
+    } catch (error) {
+      return -1;
+    }
+  },
+
+  removeRecibo: function removeRecibo(user) {
+    try {
+      let utilizador = Meteor.users.findOne(user);
+      let username = utilizador.username;
+      let a = arbitros.findOne({ nome: username });
+      definicoesPessoais.update(
+        { arbitro: a },
+        { $set: { emiteRecibo: false } },
+        { $set: { naoEmiteRecibo: true } }
+      );
+      return 1;
+    } catch (error) {
+      return -1;
+    }
+  },
+
+  removeTransporte: function removeTransporte(user) {
+    try {
+      let utilizador = Meteor.users.findOne(user);
+      let username = utilizador.username;
+      let a = arbitros.findOne({ nome: username });
+      definicoesPessoais.update(
+        { arbitro: a },
+        { $set: { temCarro: false } },
+        { $set: { naoTemCarro: true } }
+      );
+      return 1;
     } catch (error) {
       return -1;
     }
@@ -723,17 +759,15 @@ Meteor.methods({
    */
 
   jogosForamUpdated: function jogosForamUpdated(user, data) {
-    let u = Meteor.users.findOne(user);
-    console.log("utilizador CA", u);
-    let arb = arbitros.findOne({ email: u.emails[0].address });
-    console.log("arbitro CA", arb);
+    let arb = arbitros.findOne({ email: user.emails[0].address });
+    // console.log("arbitro CA", arb);
     let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-    console.log("ca", ca);
+    // console.log("ca", ca);
     let atuaisPreNomeacoes = ca.preNomeacoes;
-    console.log("data[0]", data[0]);
-    console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
+    // console.log("data[0]", data[0]);
+    // console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
 
-    console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
+    // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
 
     if (data.length != atuaisPreNomeacoes.length) {
       return true;
@@ -750,32 +784,73 @@ Meteor.methods({
     return false;
   },
 
+  getPreNomeacoesRealizadas: function getPreNomeacoesRealizadas(user) {
+    try {
+      let arb = arbitros.findOne({ nome: user.username });
+      let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+      return ca.preNomeacoes;
+    } catch (error) {
+      return -1;
+    }
+  },
+
   submeteJogosComNomeacoes: function submeteJogosComNomeacoes(data) {
     // REVER MUITO BEM
 
-    //console.log("data", data);
-
-    jogos.rawCollection().drop();
+    jogos.remove({});
 
     for (let index = 0; index < data.length; index++) {
       const jogo = data[index];
       jogos.insert({
-        id: jogo.Jogo,
-        dia: jogo.Dia,
-        hora: jogo.Hora,
-        prova: jogo.Prova,
-        serie: jogo.Serie,
-        equipas: jogo.Equipas,
-        pavilhao: jogo.Pavilhao,
-        arbitro_1: jogo.Arbitro1,
-        arbitro_2: jogo.Arbitro2,
-        juiz_linha_1: jogo.JL1,
-        juiz_linha_2: jogo.JL2,
-        juiz_linha_3: jogo.JL3,
-        juiz_linha_4: jogo.JL4,
-        key: index,
+        id: jogo.id,
+        dia: jogo.dia,
+        hora: jogo.hora,
+        prova: jogo.prova,
+        serie: jogo.serie,
+        equipas: jogo.equipas,
+        pavilhao: jogo.pavilhao,
+        arbitro_1: jogo.arbitro_1,
+        arbitro_2: jogo.arbitro_2,
+        juiz_linha_1: jogo.juiz_linha_1,
+        juiz_linha_2: jogo.juiz_linha_2,
+        juiz_linha_3: jogo.juiz_linha_3,
+        juiz_linha_4: jogo.juiz_linha_4,
+        key: jogo.key,
       });
     }
+
+    nomeacoes.remove({});
+
+    let games = jogos.find();
+    let refs = arbitros.find();
+
+    refs.forEach((arbitro) => {
+      let nomeacoesAuxiliares = [];
+
+      games.forEach((jogo) => {
+        if (
+          jogo.arbitro_1 == arbitro.nome ||
+          jogo.arbitro_1 == arbitro.nome ||
+          jogo.arbitro_2 == arbitro.nome ||
+          jogo.juiz_linha_1 == arbitro.nome ||
+          jogo.juiz_linha_2 == arbitro.nome ||
+          jogo.juiz_linha_3 == arbitro.nome ||
+          jogo.juiz_linha_4 == arbitro.nome
+        ) {
+          nomeacoesAuxiliares.push({
+            jogo: jogo,
+            confirmacaoAtual: ["pendente"],
+          });
+        }
+      });
+
+      nomeacoes.insert({
+        arbitro: arbitro,
+        nomeacoesPrivadas: nomeacoesAuxiliares,
+      });
+
+      console.log("inserted nomeacoes a: " + arbitro.nome);
+    });
   },
 
   verificaRestricoes: function verificaRestricoes(nomeArbitro) {
@@ -1104,7 +1179,8 @@ Meteor.methods({
     naoTemRecibo,
     temTransporte,
     naoTemTransporte,
-    clubesRelacionados
+    clubesRelacionados,
+    nivel
   ) {
     // ESTA DISPONIVEL PARA AQUELE HORARIO???
 
@@ -1113,11 +1189,6 @@ Meteor.methods({
     indisponibilidades.find().forEach((indisponibilidade) => {
       todasIndisponibilidades.push(indisponibilidade);
     }); //Vai buscar todas as indisponibilidades
-
-    let todosArbitros = [];
-    arbitros.find().forEach((arbitro) => {
-      todosArbitros.push(arbitro);
-    }); //Vai buscar todos as arbitros
 
     let diaDeJogo = (jogo.Dia + "").split("/");
     let horaDeJogo = (jogo.Hora + "").split(":");
@@ -1185,56 +1256,177 @@ Meteor.methods({
       }
     });
 
+    console.log("nivel", nivel);
+
+    let auxiliarNivel = [];
+
+    if (nivel != " ") {
+      nomesArbitrosDisponiveis.forEach((nomeArbitro) => {
+        let arb = arbitros.findOne({ nome: nomeArbitro });
+        console.log("nivel do Arbitro", arb.nivel);
+        if (parseInt(arb.nivel) - parseInt(nivel) == 0) {
+          auxiliarNivel.push(nomeArbitro);
+        }
+      });
+
+      nomesArbitrosDisponiveis = auxiliarNivel;
+    }
+
     // Segundo passo:
+    // QUERO SABER DE MAIS ALGUMA COISA????
+    if (!temRecibo && !naoTemRecibo) {
+      // NAO QUERO SABER SE EMITE RECIBO OU NAO
+      if (!temTransporte && !naoTemTransporte) {
+        //NAO QUERO SABER SE TEM CARRO OU NAO
+        if (clubesRelacionados.length === 0) {
+          // NAO QUERO SABER DAS RELACOES COM CLUBES
+          return nomesArbitrosDisponiveis.sort();
+        }
+      }
+    }
 
-    let futurosArbitrosDisponiveis = [];
+    // QUERO RECIBOS:
 
-    // QUERO VER APENAS OS QUE EMITEM RECIBO
+    let arbitrosDisponiveisComRecibo = [];
+    let arbitrosDisponiveisSemRecibo = [];
+
+    let arbitrosDisponiveisRecibos = [];
+
     if (temRecibo) {
       for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
         let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
         let def = definicoesPessoais.findOne({ arbitro: arb });
         if (def.temRecibo) {
-          futurosArbitrosDisponiveis.push(arb.nome);
+          arbitrosDisponiveisComRecibo.push(arb.nome);
         }
       }
-    }
-    // QUERO VER APENAS OS QUE NÃO EMITEM RECIBO
-    else if (naoTemRecibo) {
+      arbitrosDisponiveisRecibos = arbitrosDisponiveisComRecibo;
+    } else if (naoTemRecibo) {
       for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
         let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
         let def = definicoesPessoais.findOne({ arbitro: arb });
         if (!def.temRecibo) {
-          futurosArbitrosDisponiveis.push(arb.nome);
+          arbitrosDisponiveisSemRecibo.push(arb.nome);
         }
       }
+      arbitrosDisponiveisRecibos = arbitrosDisponiveisSemRecibo;
     }
+
+    // NAO QUERO RECIBOS
+    if (!temRecibo && !naoTemRecibo) {
+      arbitrosDisponiveisRecibos = nomesArbitrosDisponiveis;
+    }
+
     // Depois de adicionar os arbitros que tem ou nao recibo
 
-    // QUERO VER APENAS OS QUE TEM TRANSPORTE
+    // QUERO TRANSPORTES
+
+    let arbitrosDisponiveisComTransporte = [];
+    let arbitrosDisponiveisSemTransporte = [];
+
+    let arbitrosDisponiveisTransportes = [];
+
     if (temTransporte) {
-      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
-        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+      for (let index = 0; index < arbitrosDisponiveisRecibos.length; index++) {
+        let arb = arbitros.findOne({ nome: arbitrosDisponiveisRecibos[index] });
         let def = definicoesPessoais.findOne({ arbitro: arb });
         if (def.temCarro) {
-          futurosArbitrosDisponiveis.push(arb.nome);
+          arbitrosDisponiveisComTransporte.push(arb.nome);
         }
       }
-    }
-    // QUERO VER APENAS OS QUE NAO TEM TRANSPORTE
-    else if (naoTemTransporte) {
-      for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
-        let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
+      arbitrosDisponiveisTransportes = arbitrosDisponiveisComTransporte;
+    } else if (naoTemTransporte) {
+      for (let index = 0; index < novosArbitrosDisponiveis.length; index++) {
+        let arb = arbitros.findOne({ nome: novosArbitrosDisponiveis[index] });
         let def = definicoesPessoais.findOne({ arbitro: arb });
         if (!def.temCarro) {
-          futurosArbitrosDisponiveis.push(arb.nome);
+          arbitrosDisponiveisSemTransporte.push(arb.nome);
         }
       }
+      arbitrosDisponiveisTransportes = arbitrosDisponiveisSemTransporte;
     }
 
-    futurosArbitrosDisponiveis.push(" ");
+    if (!temTransporte && !naoTemTransporte) {
+      arbitrosDisponiveisTransportes = arbitrosDisponiveisRecibos;
+    }
 
-    return futurosArbitrosDisponiveis.sort();
+    // Terceiro Passo:
+
+    console.log("clubesRelacionados", clubesRelacionados);
+
+    // VAMOS ASSUMIR QUE NINGUEM TEM RELACOES COM CLUBES
+    let relacoes = [];
+    for (
+      let index = 0;
+      index < arbitrosDisponiveisTransportes.length;
+      index++
+    ) {
+      relacoes.push(false);
+    }
+
+    //console.log("Array com relacoes", relacoes);
+
+    let arbitrosDisponiveisSemRelacoes = [];
+
+    // TENHO CLUBES PARA VERIFICAR:
+    if (clubesRelacionados.length != 0) {
+      clubesRelacionados.forEach((element) => {
+        let index = clubesRelacionados.indexOf(element);
+        clubesRelacionados[index] = element.toUpperCase();
+      });
+      // DENTRO DOS ARBITROS DISPONIVEIS PROCURA OS QUE NAO TEM RELACOES COM OS CLUBES RECEBIDOS
+      for (let i = 0; i < arbitrosDisponiveisTransportes.length; i++) {
+        let arb = arbitros.findOne({ nome: arbitrosDisponiveisTransportes[i] });
+
+        //console.log("Vou verificar Restricoes do Arbitro:", arb.nome);
+
+        let restricoesArb = restricoes.findOne({ arbitro: arb });
+
+        // console.log("As Restricoes:", restricoesArb.relacoes);
+
+        // VOU PESQUISAR CADA UMA DAS RELACOES EXISTENTES DO ARBITRO A SER REVISTO ATUALMENTE
+        for (let j = 0; j < restricoesArb.relacoes.length; j++) {
+          let currentRelacao = restricoesArb.relacoes[j];
+
+          //console.log("currentRelacao:", currentRelacao);
+
+          //console.log("clube da CurrentRelacao", currentRelacao.Clube);
+
+          console.log(
+            "clubesRelacionados includes esse Clube?",
+            clubesRelacionados.includes(currentRelacao.Clube)
+          );
+
+          // NESTA RELACAO TENHO O CLUBE PEDIDO?
+          if (clubesRelacionados.includes(currentRelacao.Clube.toUpperCase())) {
+            let temRelacao = false;
+            for (let index = 0; index < 3 && !temRelacao; index++) {
+              if (currentRelacao.Restricao[index]) {
+                // TEM RELACOES COM O CLUBE
+                relacoes[i] = true;
+                temRelacao = true;
+              } else {
+                // NAO TEM RELACOES COM O CLUBE
+              }
+            }
+          }
+        }
+      }
+
+      for (let index = 0; index < relacoes.length; index++) {
+        if (!relacoes[index]) {
+          arbitrosDisponiveisSemRelacoes.push(
+            arbitrosDisponiveisTransportes[index]
+          );
+        }
+      }
+
+      arbitrosDisponiveisSemRelacoes.push(" ");
+      return arbitrosDisponiveisSemRelacoes.sort();
+    } else {
+      arbitrosDisponiveisTransportes.push(" ");
+      return arbitrosDisponiveisTransportes.sort();
+    }
   },
 });
 

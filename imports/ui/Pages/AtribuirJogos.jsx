@@ -39,8 +39,8 @@ function comparaAminhaLindaString(a, b) {
 
 function comparaAminhaLindaData(a, b) {
   let x = 0;
-  let dataSplitada1 = a.split("/");
-  let dataSplitada2 = b.split("/");
+  let dataSplitada1 = a.toString().split("/");
+  let dataSplitada2 = b.toString().split("/");
   for (let index = dataSplitada1.length - 1; index >= 0; index--) {
     // PROF, DESCULPE, A MINHA SA4NIDADE MENTAL SE FOI...
     let res = comparaAminhaLindaString(
@@ -58,7 +58,7 @@ let currJogo = {};
 
 let currNomeArbitro = "";
 
-function handleChange(value, key) {
+function handleChangeSelecaoArbitro(value, key) {
   let titulo =
     "Jogo nº " +
     currJogo.Jogo +
@@ -149,10 +149,6 @@ function handleChange(value, key) {
   }
 }
 
-function handleChangeClubes() {
-  // TODO
-}
-
 export function AtribuirJogos(props) {
   const colunasNomeacoesPrivadas = [
     {
@@ -218,7 +214,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_arbitro1"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -248,7 +244,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_arbitro2"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -278,7 +274,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_jl1"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -305,7 +301,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_jl2"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -332,7 +328,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_jl3"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -359,7 +355,7 @@ export function AtribuirJogos(props) {
               style={{ width: "150px" }}
               key="select_jl4"
               type="select"
-              onChange={handleChange}
+              onChange={handleChangeSelecaoArbitro}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -388,23 +384,29 @@ export function AtribuirJogos(props) {
   let [naoTemTransporte, setNaoTemTransporte] = useState(false);
   let [clubesRelacionados, setClubesRelacionados] = useState([]);
 
-  function handleSubmissionConfirmation(data) {
-    let confirmacoes = [];
+  let [nivelDeArbitro, setNivelDeArbitro] = useState(1);
 
-    for (let index = 0; index < data.length; index++) {
-      confirmacoes.push(data[index]);
-    }
-
-    loadData();
-
-    console.log("data a enviar para BD", dataSource);
-
-    Meteor.call("submeteJogosComNomeacoes", data, (err, result) => {
+  function handleSubmissionConfirmation() {
+    Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
       if (err) {
-        console.log("ERRRRROOOOO", { err });
-      }
-      if (result) {
-        window.alert("Lista de Jogos com Nomeações enviada para os árbitros.");
+        console.log(err);
+      } else if (result) {
+        console.log("result", result);
+
+        let preNomeacoesRealizadas = result;
+
+        Meteor.call(
+          "submeteJogosComNomeacoes",
+          preNomeacoesRealizadas,
+          (err, result) => {
+            if (err) {
+              console.log("ERRRRROOOOO", { err });
+            }
+            if (result) {
+              console.log("Success");
+            }
+          }
+        );
       }
     });
   }
@@ -448,7 +450,7 @@ export function AtribuirJogos(props) {
   }
 
   function reloadData() {
-    console.log("Entrei no metodo!! ");
+    //console.log("Entrei no metodo!! ");
 
     // Carrega pela primeira vez
     if (dataSource.length === 0) {
@@ -461,13 +463,21 @@ export function AtribuirJogos(props) {
         Meteor.user(),
         dataSource,
         (err, result) => {
-          console.log("jogos atualizados???", result);
+          //console.log("jogos atualizados???", result);
           if (result === true) {
             loadData();
           }
         }
       );
     }
+  }
+
+  function handleChangeClubes(value) {
+    setClubesRelacionados(value);
+  }
+
+  function handleChangeNivel(value) {
+    setNivelDeArbitro(value);
   }
 
   return (
@@ -482,15 +492,23 @@ export function AtribuirJogos(props) {
         <div>
           <div className="demo-app-main" style={{ overflow: "auto" }}>
             <div className="container">
-              <div className="table-responsive">
+              <div className="table-responsive" style={{ display: "flex" }}>
                 <br />
                 <div
-                  style={{ backgroundColor: "white", alignSelf: "flex-start" }}
+                  style={{
+                    backgroundColor: "white",
+                    alignSelf: "flex-start",
+                    marginTop: "5px",
+                  }}
                 >
-                  <h1 className="blue">Selecionado: Jogo nº {currJogo.Jogo}</h1>
+                  <h2 className="blue">
+                    {currJogo.Jogo != undefined
+                      ? "Selecionado: Jogo nº " + currJogo.Jogo
+                      : "Clique num jogo para o selecionar."}
+                  </h2>
                   <div id="filtros">
-                    <label className="labels">
-                      Transporte próprio:
+                    <label className="labels" style={{ marginLeft: "5px" }}>
+                      Tem Transporte próprio:
                       <input
                         className="inputt"
                         type={"checkbox"}
@@ -504,14 +522,14 @@ export function AtribuirJogos(props) {
                           }
                         }}
                         style={{
-                          marginLeft: "15px",
+                          marginLeft: "46px",
                           height: "30px",
                           width: "30px",
                         }}
                         checked={temTransporte}
                       ></input>
                     </label>
-                    <label className="labels">
+                    <label className="labels" style={{ marginLeft: "5px" }}>
                       Não tem transporte próprio:
                       <input
                         className="inputt"
@@ -533,7 +551,7 @@ export function AtribuirJogos(props) {
                         checked={naoTemTransporte}
                       ></input>
                     </label>
-                    <label className="labels">
+                    <label className="labels" style={{ marginLeft: "5px" }}>
                       Emite Recibo Verde:
                       <input
                         className="inputt"
@@ -548,14 +566,14 @@ export function AtribuirJogos(props) {
                           }
                         }}
                         style={{
-                          marginLeft: "25px",
+                          marginLeft: "85px",
                           height: "30px",
                           width: "30px",
                         }}
                         checked={temRecibo}
                       ></input>
                     </label>
-                    <label className="labels">
+                    <label className="labels" style={{ marginLeft: "5px" }}>
                       Não Emite Recibo Verde:
                       <input
                         className="inputt"
@@ -570,7 +588,7 @@ export function AtribuirJogos(props) {
                           }
                         }}
                         style={{
-                          marginLeft: "25px",
+                          marginLeft: "54px",
                           height: "30px",
                           width: "30px",
                         }}
@@ -578,15 +596,49 @@ export function AtribuirJogos(props) {
                       ></input>
                     </label>
 
-                    <label className="labels">
+                    <label className="labels" style={{ marginLeft: "5px" }}>
+                      Árbitro de Nível:
+                      <Select
+                        className="inputt"
+                        onChange={handleChangeNivel}
+                        style={{
+                          marginLeft: "60px",
+                          height: "30px",
+                          width: "70px",
+                          borderRadius: "5px",
+                          borderBlockColor: "rgba(255, 255, 255, 0.5)",
+                          boxSizing: "border-box",
+                          backgroundColor: "#f0f0f0",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                        }}
+                      >
+                        <Option className="inputt-option" value={" "}></Option>
+                        <Option className="inputt-option" value={"1"}>
+                          I
+                        </Option>
+                        <Option className="inputt-option" value={"2"}>
+                          II
+                        </Option>
+                        <Option className="inputt-option" value={"3"}>
+                          III
+                        </Option>
+                      </Select>
+                    </label>
+
+                    <label className="labels" style={{ marginLeft: "5px" }}>
                       Relação com clubes:
+                    </label>
+                    <label className="labels">
+                      <br></br>
                       <br></br>
                       <Select
                         mode="multiple"
                         style={{
-                          marginLeft: "14px",
-                          width: "400px",
+                          marginLeft: "5px",
+                          width: "380px",
                         }}
+                        defaultValue={[]}
                         placeholder="Selecione clubes"
                         onChange={handleChangeClubes}
                         optionLabelProp="label"
@@ -866,22 +918,44 @@ export function AtribuirJogos(props) {
                       </Select>
                     </label>
 
-                    <label className="labels">Arbitros disponíveis:</label>
+                    <label className="labels" style={{ marginLeft: "5px" }}>
+                      Arbitros disponíveis:
+                    </label>
                     <ul
                       style={{
                         marginTop: "0px",
-                        marginBottom: "-10px",
                         height: "auto",
                       }}
                     >
                       {arbitrosDisponiveis.map((arb) => {
-                        if (arb != " ") return arb + "; \n";
+                        if (currJogo === {}) {
+                          return "Clique num jogo para obter os Árbitros Disponíveis";
+                        } else if (arbitrosDisponiveis.length === 1) {
+                          return "SEM RESULTADOS";
+                        } else if (arb != " ")
+                          return (
+                            <li style={{ textAlign: "initial" }}>
+                              {" "}
+                              {arb + "; \n"}{" "}
+                            </li>
+                          );
                       })}
                     </ul>
                   </div>
+                  <Button
+                    onClick={() => {
+                      handleSubmissionConfirmation();
+                      window.alert("Nomeações enviadas para os Árbitros.");
+                    }}
+                    type="primary"
+                    style={{
+                      marginBottom: 16,
+                    }}
+                  >
+                    Submeter e enviar nomeações
+                  </Button>
                 </div>
 
-                <br></br>
                 <StyledTable
                   //bordered
                   rowClassName={(record, index) =>
@@ -890,6 +964,7 @@ export function AtribuirJogos(props) {
                   dataSource={dataSource}
                   columns={colunasNomeacoesPrivadas}
                   pagination={false}
+                  style={{ marginLeft: "5px", marginTop: "5px" }}
                   onRow={(record) => {
                     let k = record.key;
 
@@ -906,8 +981,12 @@ export function AtribuirJogos(props) {
                             temTransporte,
                             naoTemTransporte,
                             clubesRelacionados,
+                            nivelDeArbitro,
                             (err, result) => {
-                              //console.log("result: ", result);
+                              console.log(
+                                "result arbitros disponiveis: ",
+                                result
+                              );
                               if (err) {
                                 console.log("ERRRRROOOOO", { err });
                               } else if (result.length != 0) {
@@ -922,17 +1001,6 @@ export function AtribuirJogos(props) {
                   }}
                 />
                 <br></br>
-                <Button
-                  onClick={() => {
-                    handleSubmissionConfirmation(dataSource);
-                  }}
-                  type="primary"
-                  style={{
-                    marginBottom: 16,
-                  }}
-                >
-                  Submeter e enviar nomeações
-                </Button>
               </div>
             </div>
           </div>

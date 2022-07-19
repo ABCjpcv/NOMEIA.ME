@@ -283,21 +283,16 @@ export function ConsultaPrivada({ user }) {
   };
 
   function handleSubmissionConfirmation(data) {
-    let idsJogos = [];
+    let jogos = [];
     let confirmacoes = [];
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
         return window.alert("Tem jogos por confirmar, " + user.username);
       } else {
-        idsJogos.push(parseInt(data[index].Jogo));
+        jogos.push(parseInt(data[index]));
         confirmacoes.push(data[index].tags[0]);
       }
-    }
-
-    for (let index = 0; index < idsJogos.length; index++) {
-      console.log(idsJogos[index]);
-      console.log(confirmacoes[index]);
     }
 
     let email = user.emails[0].address;
@@ -305,7 +300,7 @@ export function ConsultaPrivada({ user }) {
     Meteor.call(
       "addConfirmacaoNomeacao",
       email,
-      idsJogos,
+      jogos,
       confirmacoes,
       (err, result) => {
         if (err) {
