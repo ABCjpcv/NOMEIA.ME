@@ -580,7 +580,7 @@ Meteor.methods({
       console.log("Arbitro " + arb.nome + " ficou com o jogo " + jogo.id);
     }
 
-    console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
+    //console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
 
     nomeacoes.update(
       { arbitro: arb },
@@ -592,6 +592,36 @@ Meteor.methods({
     var arb = arbitros.findOne({ email: email });
     var result = nomeacoes.findOne({ arbitro: arb });
     return result;
+  },
+
+  nomeacoesForamUpdated: function nomeacoesForamUpdated(user, data) {
+    let arb = arbitros.findOne({ email: user.emails[0].address });
+    let nomeacoesArbitro = nomeacoes.findOne({ arbitro: arb });
+
+    console.log("data", data);
+    // console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
+
+    // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
+
+    if (data.length != nomeacoesArbitro.nomeacoesPrivadas.length) {
+      return true;
+    } else {
+      for (
+        let index = 0;
+        index < nomeacoesArbitro.nomeacoesPrivadas.length;
+        index++
+      ) {
+        let numeroJogoDaBD = parseInt(
+          nomeacoesArbitro.nomeacoesPrivadas[index].jogo.id
+        );
+        let numeroJogoRecebido = parseInt(data[index].Jogo);
+        if (numeroJogoDaBD != numeroJogoRecebido) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   },
 
   /*****************************************************************
@@ -627,7 +657,6 @@ Meteor.methods({
   addRestricao: function addRestricao(username, restrictions) {
     try {
       const a = arbitros.findOne({ nome: username });
-      let r = restricoes.findOne({ arbitro: a });
       restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } });
       return true;
     } catch (error) {
@@ -853,6 +882,22 @@ Meteor.methods({
     });
   },
 
+  getClubesDisponiveis: function getClubesDisponiveis() {
+    let clubesDisponiveis = [];
+
+    clubes.find().forEach((clube) => {
+      clubesDisponiveis.push(clube);
+    }); //Vai buscar toda a info na bd de clubes
+
+    let resultado = [];
+    for (let i = 1; i < clubesDisponiveis.length; i++) {
+      if (clubesDisponiveis[i][0] != "") {
+        resultado.push(clubesDisponiveis[i][0]);
+      }
+    }
+    return resultado.sort();
+  },
+
   verificaRestricoes: function verificaRestricoes(nomeArbitro) {
     let arb = arbitros.findOne({ nome: nomeArbitro });
     let defP = definicoesPessoais.findOne({ arbitro: arb });
@@ -875,6 +920,12 @@ Meteor.methods({
 
       relacoes.forEach((element) => {
         let clubeAnalisar = element.Clube;
+        if (element.Descricao != "") {
+          auxiliarRelacaoes.push({
+            informacao: element.Descricao,
+            clube: clubeAnalisar,
+          });
+        }
         for (let index = 0; index < element.Restricao.length; index++) {
           if (element.Restricao[index]) {
             if (index === 0) {
@@ -1024,7 +1075,7 @@ Meteor.methods({
     }
     let newGames = atuaisPreNomeacoes;
 
-    conselhoDeArbitragem.rawCollection().drop();
+    conselhoDeArbitragem.remove({});
 
     for (let index = 0; index < arbCAs.length; index++) {
       conselhoDeArbitragem.insert({
@@ -1250,20 +1301,24 @@ Meteor.methods({
           // Nao esta disponivel
           // console.log("arbitrosDisponiveis", nomesArbitrosDisponiveis);
         } else if (v) {
-          console.log("Disponivel.");
+          //console.log("Disponivel.");
           nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
         }
       }
     });
 
-    console.log("nivel", nivel);
+    //console.log("nivel", nivel);
 
     let auxiliarNivel = [];
 
-    if (nivel != " ") {
+    if (
+      parseInt(nivel) === 1 ||
+      parseInt(nivel) === 2 ||
+      parseInt(nivel) === 3
+    ) {
       nomesArbitrosDisponiveis.forEach((nomeArbitro) => {
         let arb = arbitros.findOne({ nome: nomeArbitro });
-        console.log("nivel do Arbitro", arb.nivel);
+        // console.log("nivel do Arbitro", arb.nivel);
         if (parseInt(arb.nivel) - parseInt(nivel) == 0) {
           auxiliarNivel.push(nomeArbitro);
         }
@@ -1280,6 +1335,7 @@ Meteor.methods({
         //NAO QUERO SABER SE TEM CARRO OU NAO
         if (clubesRelacionados.length === 0) {
           // NAO QUERO SABER DAS RELACOES COM CLUBES
+          nomesArbitrosDisponiveis.push(" ");
           return nomesArbitrosDisponiveis.sort();
         }
       }
@@ -1352,7 +1408,7 @@ Meteor.methods({
 
     // Terceiro Passo:
 
-    console.log("clubesRelacionados", clubesRelacionados);
+    //console.log("clubesRelacionados", clubesRelacionados);
 
     // VAMOS ASSUMIR QUE NINGUEM TEM RELACOES COM CLUBES
     let relacoes = [];
@@ -1391,11 +1447,6 @@ Meteor.methods({
           //console.log("currentRelacao:", currentRelacao);
 
           //console.log("clube da CurrentRelacao", currentRelacao.Clube);
-
-          console.log(
-            "clubesRelacionados includes esse Clube?",
-            clubesRelacionados.includes(currentRelacao.Clube)
-          );
 
           // NESTA RELACAO TENHO O CLUBE PEDIDO?
           if (clubesRelacionados.includes(currentRelacao.Clube.toUpperCase())) {
@@ -1451,10 +1502,10 @@ function validDate(eventsArray, newStart, newEnd) {
         //   newEnd < new Date(element.start)
         // );
         if (newEnd < new Date(element.start)) {
-          console.log("TRUEEEEEE");
+          //console.log("TRUEEEEEE");
           resultado = true;
         } else {
-          console.log("FALSEEE");
+          //console.log("FALSEEE");
           resultado = false;
           break;
         }
@@ -1464,10 +1515,10 @@ function validDate(eventsArray, newStart, newEnd) {
         //   newStart >= new Date(element.end)
         // );
       } else if (newStart >= new Date(element.end)) {
-        console.log("TRUEEEEEE");
+        //console.log("TRUEEEEEE");
         resultado = true;
       } else {
-        console.log("FALSEEE");
+        //console.log("FALSEEE");
         resultado = false;
         break;
       }

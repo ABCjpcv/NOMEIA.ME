@@ -59,6 +59,8 @@ let currJogo = {};
 let currNomeArbitro = "";
 
 function handleChangeSelecaoArbitro(value, key) {
+  console.log("value", value);
+
   let titulo =
     "Jogo nº " +
     currJogo.Jogo +
@@ -210,11 +212,19 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_arbitro1"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_arbitro1"
               type="select"
-              onChange={handleChangeSelecaoArbitro}
+              //value={"banana"}
+              onChange={
+                //setSelectedOptions(o),
+                handleChangeSelecaoArbitro
+              }
+
+              //value={getInitialValueA1}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -240,8 +250,10 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_arbitro2"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_arbitro2"
               type="select"
               onChange={handleChangeSelecaoArbitro}
@@ -270,8 +282,10 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_jl1"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_jl1"
               type="select"
               onChange={handleChangeSelecaoArbitro}
@@ -297,8 +311,10 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_jl2"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_jl2"
               type="select"
               onChange={handleChangeSelecaoArbitro}
@@ -324,8 +340,10 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_jl3"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_jl3"
               type="select"
               onChange={handleChangeSelecaoArbitro}
@@ -351,8 +369,10 @@ export function AtribuirJogos(props) {
         dataSource.length >= 1 ? (
           <>
             <Select
+              showSearch
+              mode="single"
               name="select_jl4"
-              style={{ width: "150px" }}
+              style={{ width: "180px" }}
               key="select_jl4"
               type="select"
               onChange={handleChangeSelecaoArbitro}
@@ -374,7 +394,11 @@ export function AtribuirJogos(props) {
    * ATRIBUICAO DOS ESTADOS (STATES)
    */
 
+  const [selectedOptions, setSelectedOptions] = React.useState([]);
+
   const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
+
+  const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
   const [dataSource, setDataSource] = useState([]);
 
@@ -384,7 +408,7 @@ export function AtribuirJogos(props) {
   let [naoTemTransporte, setNaoTemTransporte] = useState(false);
   let [clubesRelacionados, setClubesRelacionados] = useState([]);
 
-  let [nivelDeArbitro, setNivelDeArbitro] = useState(1);
+  let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
   function handleSubmissionConfirmation() {
     Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
@@ -477,7 +501,12 @@ export function AtribuirJogos(props) {
   }
 
   function handleChangeNivel(value) {
-    setNivelDeArbitro(value);
+    console.log("value nivel", value);
+    if (value === " ") {
+      setNivelDeArbitro(0);
+    } else {
+      setNivelDeArbitro(value);
+    }
   }
 
   return (
@@ -613,7 +642,7 @@ export function AtribuirJogos(props) {
                           fontSize: "15px",
                         }}
                       >
-                        <Option className="inputt-option" value={" "}></Option>
+                        <Option className="inputt-option" value={""}></Option>
                         <Option className="inputt-option" value={"1"}>
                           I
                         </Option>
@@ -640,10 +669,34 @@ export function AtribuirJogos(props) {
                         }}
                         defaultValue={[]}
                         placeholder="Selecione clubes"
+                        onClick={() =>
+                          Meteor.call("getClubesDisponiveis", (err, result) => {
+                            console.log(result);
+                            if (err) {
+                              console.log(err);
+                            } else if (result) {
+                              return setClubesDisponiveis(result);
+                            }
+                          })
+                        }
                         onChange={handleChangeClubes}
                         optionLabelProp="label"
                       >
-                        <Option
+                        {clubesDisponiveis.map((clube) => {
+                          return (
+                            <Select.Option
+                              value={clube}
+                              label={clube}
+                              key={"option_clube" + _.uniqueId()}
+                            >
+                              <div className="demo-option-label-item">
+                                {" "}
+                                {clube}{" "}
+                              </div>
+                            </Select.Option>
+                          );
+                        })}
+                        {/* <Option
                           value="Academia de Voleibol Colégio Atlântico"
                           label="Academia de Voleibol Colégio Atlântico"
                         >
@@ -914,7 +967,7 @@ export function AtribuirJogos(props) {
                           <div className="demo-option-label-item">
                             Volei Clube De Setúbal 1990
                           </div>
-                        </Option>
+                        </Option> */}
                       </Select>
                     </label>
 
@@ -970,7 +1023,7 @@ export function AtribuirJogos(props) {
 
                     return {
                       onClick: (event) => {
-                        console.log("event", event);
+                        //console.log("event", event);
                         //console.log("event.target.value", event.target.value);
                         if (event.target != "div.ant-select-selector") {
                           Meteor.call(

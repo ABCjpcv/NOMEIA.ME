@@ -264,19 +264,7 @@ export function Restricoes() {
       <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
         <form>
           <div>
-            <Search
-              onChange={(e) => setSearchVal(e.target.value)}
-              placeholder="Pesquise aqui por um Clube"
-              enterButton
-              style={{
-                position: "sticky",
-                top: "0",
-                left: "0",
-                width: "250px",
-                marginTop: "2vh",
-              }}
-            />
-            <br /> <br />
+            <br></br>
             <Table
               className="tableRestricoes"
               columns={listaClubesColumns}
@@ -324,14 +312,34 @@ export function Restricoes() {
               }}
             />
           </div>
+          <Button
+            style={{
+              marginBottom: 16,
+            }}
+            value="Instruções"
+            onClick={() =>
+              window.alert(
+                "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'."
+              )
+            }
+          >
+            {" "}
+            Instruções{" "}
+          </Button>
+          <Search
+            onChange={(e) => setSearchVal(e.target.value)}
+            placeholder="Pesquise aqui por um Clube"
+            enterButton
+            style={{
+              position: "sticky",
+              top: "0",
+              left: "0",
+              width: "250px",
+            }}
+          />
 
           <Button
             onClick={() => {
-              console.log(
-                "esta é a data que vou mandar para a base de dados..."
-              );
-              console.log(data);
-
               if (data[0] === undefined) {
                 window.alert(
                   "Nenhuma alteração detetada " + Meteor.user().username

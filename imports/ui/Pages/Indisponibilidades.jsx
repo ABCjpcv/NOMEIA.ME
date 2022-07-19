@@ -33,7 +33,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 5000);
+    }, 4000);
   }
 
   componentDidUpdate() {
@@ -41,7 +41,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 5000);
+    }, 4000);
   }
 
   render() {
@@ -91,6 +91,7 @@ export class Indisponibilidades extends React.Component {
                   eventContent={renderEventContent} // custom render function
                   eventClick={this.handleEventClick}
                   eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
+                  eventOverlap={false}
                 />
               </div>
               <br></br>
@@ -197,7 +198,7 @@ export class Indisponibilidades extends React.Component {
     } else {
       window.alert(
         Meteor.user().username +
-          ", já possui indisponibilidades marcadas nesse intervalo."
+          ", não pode marcar indisponibilidades nesse intervalo."
       );
     }
   };

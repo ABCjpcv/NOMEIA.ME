@@ -141,7 +141,7 @@ export function ConsultaPrivada({ user }) {
       dataIndex: "confirmacao",
       key: "confirmacao",
       render: (_, record) =>
-        dataSource.length >= 1 ? (
+        dataSource.length > 1 ? (
           <div>
             <Popconfirm
               title="Confirmar jogo?"
@@ -165,27 +165,28 @@ export function ConsultaPrivada({ user }) {
       dataIndex: "estado",
       key: "estado",
       width: "15%",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color;
+      render: (_, { tags }) =>
+        dataSource.length > 1 ? (
+          <>
+            {tags.map((tag) => {
+              let color;
 
-            if (tag[0] === "pendente") {
-              color = "yellow";
-            } else if (tag[0] === "confirmado") {
-              color = "green";
-            } else if (tag[0] === "recusado") {
-              color = "red";
-            }
+              if (tag[0] === "pendente") {
+                color = "yellow";
+              } else if (tag[0] === "confirmado") {
+                color = "green";
+              } else if (tag[0] === "recusado") {
+                color = "red";
+              }
 
-            return (
-              <Tag color={color} key={tag}>
-                {tag[0].toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+              return (
+                <Tag color={color} key={tag}>
+                  {tag[0].toUpperCase()}
+                </Tag>
+              );
+            })}
+          </>
+        ) : null,
     },
   ];
 
@@ -196,8 +197,6 @@ export function ConsultaPrivada({ user }) {
    *
    *
    */
-
-  const [mudouNome, setMudouNome] = useState(false);
 
   const [dataSource, setDataSource] = useState([
     // {
@@ -310,12 +309,15 @@ export function ConsultaPrivada({ user }) {
         }
       }
     );
+
+    document.getElementById("submissionConfirmationButton").disabled = true;
+    document.getElementById("confirmAllNominations").disabled = true;
   }
 
   function loadData() {
     let email = user.emails[0].address;
 
-    console.log("email", email);
+    //console.log("email", email);
     Meteor.call("carregaNomeacoes", email, (err, result) => {
       console.log("resultado de carregaNomeacoes da BD:", result);
       if (err) {
@@ -351,62 +353,94 @@ export function ConsultaPrivada({ user }) {
 
         setDataSource(dataFromDB);
       } else {
-        setDataSource([]);
+        setDataSource([""]);
       }
     });
   }
 
-  if (!mudouNome) {
-    loadData();
-    setMudouNome(true);
+  // NAO ESTOU A CONSEGUIR FAZER RELOAD DA DATA QUANDO ENTRA NA PÁGINA
+  function reloadData() {
+    //console.log("Entrei no metodo!! ");
+
+    // Carrega pela primeira vez
+    if (dataSource.length === 0) {
+      loadData();
+    }
+    // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
+    else {
+      Meteor.call(
+        "nomeacoesForamUpdated",
+        Meteor.user(),
+        dataSource,
+        (err, result) => {
+          console.log("nomeacoes atualizados???", result);
+          if (result === true) {
+            loadData();
+          }
+        }
+      );
+    }
   }
 
-  // if (!mudouNome) {
-  //   handleDelete();
-  //   setMudouNome(true);
-  // }
+  if (dataSource.length === 0) {
+    loadData();
+  } else {
+    return (
+      <>
+        <div
+          className="demo-app"
+          style={{ height: "10%", width: "auto", alignSelf: "center" }}
+        >
+          <div className="demo-app-sidebar"></div>
+          <div>
+            <div className="demo-app-main" style={{ overflow: "auto" }}>
+              <div className="container">
+                <div className="table-responsive">
+                  <br />
+                  {dataSource.length > 1 ? (
+                    <>
+                      <Table
+                        bordered
+                        dataSource={dataSource}
+                        columns={colunasNomeacoesPrivadas}
+                      />
+                      <br></br>
+                      <Button
+                        onClick={handleAllConfirmation}
+                        style={{
+                          marginBottom: 16,
+                        }}
+                        id="confirmAllNominations"
+                        disabled={dataSource.length > 1 ? false : true}
+                      >
+                        Confirmar todos
+                      </Button>
 
-  return (
-    <div
-      className="demo-app"
-      style={{ height: "10%", width: "auto", alignSelf: "center" }}
-    >
-      <div className="demo-app-sidebar"></div>
-      <div>
-        <div className="demo-app-main" style={{ overflow: "auto" }}>
-          <div className="container">
-            <div className="table-responsive">
-              <br />
-              <Table
-                bordered
-                dataSource={dataSource}
-                columns={colunasNomeacoesPrivadas}
-              />
-              <br></br>
-              <Button
-                onClick={handleAllConfirmation}
-                type="primary"
-                style={{
-                  marginBottom: 16,
-                }}
-              >
-                Confirmar todos
-              </Button>
-
-              <Button
-                onClick={() => {
-                  handleSubmissionConfirmation(dataSource);
-                }}
-                style={{
-                  marginBottom: 16,
-                }}
-              >
-                Submeter Confirmações
-              </Button>
+                      <Button
+                        onClick={() => {
+                          handleSubmissionConfirmation(dataSource);
+                        }}
+                        type="primary"
+                        style={{
+                          marginBottom: 16,
+                        }}
+                        id="submissionConfirmationButton"
+                        disabled={dataSource.length > 1 ? false : true}
+                      >
+                        Submeter Confirmações
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="blue">Não tem nomeações de momento.</h2>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
+      </>
+    );
+  }
 }
