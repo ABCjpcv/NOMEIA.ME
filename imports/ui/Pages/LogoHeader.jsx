@@ -8,20 +8,19 @@ export const LogoHeader = () => {
 
   function mostraTitulo() {
     // HEADERS
-    document.getElementById("titulo").hidden = false;
-    document.getElementById("carregarJogos").hidden = true;
-    document.getElementById("atribuirArbitros").hidden = true;
-    document.getElementById("nomeacoesPrivadas").hidden = true;
-    document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("restricoesPrivadas").hidden = true;
-
     try {
+      document.getElementById("titulo").hidden = false;
+      document.getElementById("carregarJogos").hidden = true;
+      document.getElementById("atribuirArbitros").hidden = true;
+      document.getElementById("nomeacoesPrivadas").hidden = true;
+      document.getElementById("indisponibilidadePrivadas").hidden = true;
+      document.getElementById("restricoesPrivadas").hidden = true;
+
       document.getElementById("menuPrivadoCA").hidden = true;
       document.getElementById("menuPrivado").hidden = true;
+      document.getElementById("definicoes").hidden = true;
+      document.getElementById("criarContaNova").hidden = true;
     } catch (e) {}
-
-    document.getElementById("definicoes").hidden = true;
-    document.getElementById("criarContaNova").hidden = true;
 
     // PROFILE
     // document.getElementById("atribuirArbitrosAjogos").hidden = true;
@@ -41,7 +40,7 @@ export const LogoHeader = () => {
       <img
         id="imgLogo"
         src="logo.png"
-        style={{ marginLeft: "50px", width: "100px", cursor: "pointer" }}
+        style={{ width: "30%", cursor: "pointer" }}
         onClick={() => {
           mostraTitulo(), navigate("/"), logout();
         }}

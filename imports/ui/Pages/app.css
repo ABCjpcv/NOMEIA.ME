@@ -122,6 +122,7 @@
 /* Color/shape of close button cross */
 .bm-cross {
   background: #bdc3c7;
+  margin-top: 26px;
 }
 
 /* General sidebar styles */
@@ -129,6 +130,7 @@
   background: #373a47;
   padding: 2.5em 1.5em 0;
   font-size: 1.15em;
+  margin-top: 6px;
 }
 
 /* Morph shape necessary with bubble or elastic */

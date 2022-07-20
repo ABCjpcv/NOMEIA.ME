@@ -5,10 +5,12 @@ export function Home() {
   let navigate = useNavigate();
 
   function mostraTitulo() {
-    document.getElementById("titulo").hidden = false;
-    document.getElementById("nomeacoesPrivadas").hidden = true;
-    document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("restricoesPrivadas").hidden = true;
+    try {
+      document.getElementById("titulo").hidden = false;
+      document.getElementById("nomeacoesPrivadas").hidden = true;
+      document.getElementById("indisponibilidadePrivadas").hidden = true;
+      document.getElementById("restricoesPrivadas").hidden = true;
+    } catch (error) {}
   }
 
   return (

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { Meteor } from "meteor/meteor";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import "../ui/Pages/app.css";
@@ -26,7 +27,19 @@ import { AtribuirJogos } from "./Pages/AtribuirJogos";
 
 export const App = () => {
   //Track the current user in our application
-  const user = useTracker(() => Meteor.user());
+
+  const [user, setUser] = React.useState(Meteor.user());
+
+  const handleLogin = () => setUser(Meteor.user());
+
+  const [isAdmin, setIsAdmin] = React.useState(
+    Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+      if (result === 1) return true;
+      else if (result === 0) return false;
+    })
+  );
+
+  const handleLogout = () => setUser(null);
 
   return (
     <>
@@ -41,6 +54,7 @@ export const App = () => {
           }}
         >
           <Routes>
+            {/* NAO EH NECESSARIO AUTORIZACOES */}
             <Route path="/" element={<Home />}></Route>
             <Route path="/sobre" element={<Sobre />}></Route>
             <Route
@@ -48,64 +62,155 @@ export const App = () => {
               element={<ConsultaNomeacoes />}
             ></Route>
             <Route path="/Autenticar" element={<Autenticar />}></Route>
+            <Route path="/Clubes_da_AVL" element={<Clubes_da_AVL />}></Route>
+            <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
+            <Route path="*" element={<NotFoundPage />}></Route>
 
-            <Route element={<ProtectedRoutes user={user} />}>
-              <Route path="/Profile" element={<Profile user={user} />}></Route>
-
+            {/* EH NECESSARIO SER ARBITRO */}
+            <Route
+              path="Profile"
+              element={
+                <ProtectedRoutes
+                  user={user}
+                  allowed={!isAdmin}
+                  redirectPath="/"
+                >
+                  <Profile user={user} />
+                </ProtectedRoutes>
+              }
+            >
               <Route
                 path="/Profile/Indisponibilidades"
-                element={<Indisponibilidades user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={!isAdmin}
+                    redirectPath="/"
+                  >
+                    <Indisponibilidades user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/Profile/Relacoes"
-                element={<Restricoes user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={!isAdmin}
+                    redirectPath="/"
+                  >
+                    <Restricoes user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/Profile/Definicoes"
-                element={<UserSettings user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={!isAdmin}
+                    redirectPath="/"
+                  >
+                    <UserSettings user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
+
+              {/* EH NECESSARIO SER CONSELHO DE ARBITRAGEM*/}
 
               <Route
                 path="/ProfileCA"
-                element={<ProfileCA user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <ProfileCA user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Carregar_Novos_Jogos"
-                element={<FileInput />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <FileInput user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Atribuir_Arbitros"
-                element={<AtribuirJogos user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <AtribuirJogos user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Criar_Arbitro"
-                element={<ContaNova user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <ContaNova user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Indisponibilidades"
-                element={<Indisponibilidades user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <Indisponibilidades user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Relacoes"
-                element={<Restricoes user={user} />}
+                element={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <Restricoes user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
 
               <Route
                 path="/ProfileCA/Definicoes"
-                element={<UserSettings user={user} />}
+                elelement={
+                  <ProtectedRoutes
+                    user={user}
+                    allowed={isAdmin}
+                    redirectPath="/"
+                  >
+                    <UserSettings user={user} />
+                  </ProtectedRoutes>
+                }
               ></Route>
             </Route>
-
-            <Route path="/Clubes_da_AVL" element={<Clubes_da_AVL />}></Route>
-            <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
-            <Route path="*" element={<NotFoundPage />}></Route>
           </Routes>
         </div>
       </Router>

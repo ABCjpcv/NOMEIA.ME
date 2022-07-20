@@ -3,8 +3,13 @@ import { Accounts } from "meteor/accounts-base";
 import { Papa } from "meteor/harrison:papa-parse";
 import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
-import { error } from "jquery";
 import _ from "lodash.uniqueid";
+import { Roles } from "meteor/alanning:roles";
+
+try {
+  Roles.createRole("arbitro");
+  Roles.createRole("admin");
+} catch (error) {}
 
 let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 let jogos = new Mongo.Collection("jogos");
@@ -224,6 +229,8 @@ Meteor.startup(() => {
       isAdmin: false,
     });
     console.log("inserted: " + user.username);
+
+    Roles.addUsersToRoles(user._id, ["arbitro"]);
   });
 
   console.log(
@@ -252,14 +259,19 @@ Meteor.startup(() => {
     var a = arbitros.findOne({ email: mail });
     console.log("arbitro: " + a.nome);
 
+    let isAdmin = true;
+
     if (a.nome != "" || a.nome != undefined) {
-      a.isAdmin = true;
+      a.isAdmin = isAdmin;
       conselhoDeArbitragem.insert({
         arbitrosCA: a,
         preNomeacoes: [],
       });
       arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
     }
+
+    let u = Meteor.users.findOne({ username: a.nome });
+    Roles.addUsersToRoles(u._id, [isAdmin ? "admin" : "arbitro"]);
   }
 
   var ca = conselhoDeArbitragem.find();
@@ -480,14 +492,11 @@ Meteor.methods({
     //Accounts.verifyEmail(user_email, (error) => {
     //  if (!error) {
     //    return
-    Accounts.createUser(
-      {
-        username: user_name,
-        email: user_email,
-        password: user_password,
-      },
-      null
-    );
+    Accounts.createUser({
+      username: user_name,
+      email: user_email,
+      password: user_password,
+    });
     //   } else {
     //     throw new Meteor.Error("Email is invalid.");
     //   }
@@ -500,6 +509,10 @@ Meteor.methods({
       nivel: parseInt(nivelArbitro),
       isAdmin: isAdmin,
     };
+
+    let u = Meteor.users.findOne({ emails: user_email });
+
+    Roles.addUsersToRoles(u._id, [isAdmin ? "admin" : "arbitro"]);
 
     arbitros.insert(a);
 

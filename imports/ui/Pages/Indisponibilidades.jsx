@@ -64,7 +64,7 @@ export class Indisponibilidades extends React.Component {
           </ul> */}
           <div className="demo-app-main" style={{ overflow: "auto" }}>
             <form>
-              <div>
+              <div style={{ /*backgroundColor: "white",*/ marginTop: "10px" }}>
                 <FullCalendar
                   plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                   locale="pt"

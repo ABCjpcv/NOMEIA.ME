@@ -7,40 +7,44 @@ export function Autenticar() {
   let navigate = useNavigate();
 
   function mostraPerfil() {
-    document.getElementById("titulo").hidden = true;
-    // document.getElementById("carregarJogos").hidden = true;
-    // document.getElementById("atribuirArbitros").hidden = true;
-    document.getElementById("nomeacoesPrivadas").hidden = false;
-    document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("restricoesPrivadas").hidden = true;
-    document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("menuPrivadoCA").hidden = true;
-    // document.getElementById("carregarFicheiroJogos").hidden = true;
-    // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-    // document.getElementById("indisponibilidadesCA").hidden = true;
-    //document.getElementById("restricoesCA").hidden = true;
-    //document.getElementById("consultaPrivadaCA").hidden = true;
-    //  document.getElementById("indisponibilidades").hidden = true;
-    //  document.getElementById("restricoes").hidden = true;
-    //  document.getElementById("consultaPrivada").hidden = false;
+    try {
+      document.getElementById("titulo").hidden = true;
+      // document.getElementById("carregarJogos").hidden = true;
+      // document.getElementById("atribuirArbitros").hidden = true;
+      document.getElementById("nomeacoesPrivadas").hidden = false;
+      document.getElementById("indisponibilidadePrivadas").hidden = true;
+      document.getElementById("restricoesPrivadas").hidden = true;
+      document.getElementById("menuPrivado").hidden = false;
+      document.getElementById("menuPrivadoCA").hidden = true;
+      // document.getElementById("carregarFicheiroJogos").hidden = true;
+      // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+      // document.getElementById("indisponibilidadesCA").hidden = true;
+      //document.getElementById("restricoesCA").hidden = true;
+      //document.getElementById("consultaPrivadaCA").hidden = true;
+      //  document.getElementById("indisponibilidades").hidden = true;
+      //  document.getElementById("restricoes").hidden = true;
+      //  document.getElementById("consultaPrivada").hidden = false;
+    } catch (error) {}
   }
 
   function mostraPerfilCA() {
-    document.getElementById("titulo").hidden = true;
-    document.getElementById("atribuirArbitros").hidden = true;
-    document.getElementById("nomeacoesPrivadas").hidden = false;
-    document.getElementById("indisponibilidadePrivadas").hidden = true;
-    document.getElementById("restricoesPrivadas").hidden = true;
-    document.getElementById("menuPrivado").hidden = true;
-    document.getElementById("menuPrivadoCA").hidden = false;
-    // document.getElementById("carregarFicheiroJogos").hidden = false;
-    // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-    // document.getElementById("indisponibilidadesCA").hidden = true;
-    // document.getElementById("restricoesCA").hidden = true;
-    // document.getElementById("consultaPrivadaCA").hidden = true;
-    // document.getElementById("indisponibilidades").hidden = true;
-    // document.getElementById("restricoes").hidden = true;
-    // document.getElementById("consultaPrivada").hidden = true;
+    try {
+      document.getElementById("titulo").hidden = true;
+      document.getElementById("atribuirArbitros").hidden = true;
+      document.getElementById("nomeacoesPrivadas").hidden = false;
+      document.getElementById("indisponibilidadePrivadas").hidden = true;
+      document.getElementById("restricoesPrivadas").hidden = true;
+      document.getElementById("menuPrivado").hidden = true;
+      document.getElementById("menuPrivadoCA").hidden = false;
+      // document.getElementById("carregarFicheiroJogos").hidden = false;
+      // document.getElementById("atribuirArbitrosAjogos").hidden = true;
+      // document.getElementById("indisponibilidadesCA").hidden = true;
+      // document.getElementById("restricoesCA").hidden = true;
+      // document.getElementById("consultaPrivadaCA").hidden = true;
+      // document.getElementById("indisponibilidades").hidden = true;
+      // document.getElementById("restricoes").hidden = true;
+      // document.getElementById("consultaPrivada").hidden = true;
+    } catch (error) {}
   }
 
   function login(user, pass) {

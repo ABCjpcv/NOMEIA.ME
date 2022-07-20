@@ -315,6 +315,7 @@ export function ConsultaPrivada({ user }) {
   }
 
   function loadData() {
+    user = Meteor.user();
     let email = user.emails[0].address;
 
     //console.log("email", email);
