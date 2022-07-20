@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 export function Autenticar() {
   let navigate = useNavigate();
@@ -55,13 +56,17 @@ export function Autenticar() {
       console.log("utilizador: ", utilizador);
       // TENHO O USER CERTO AQUI
 
-      Meteor.loginWithPassword(utilizador.username, pass, () => {
+      Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
+        if (err) {
+          message.error("Credenciais erradas ou utilizador inexistente.");
+        }
+
         Meteor.call("isAdmin", utilizador, (err, result) => {
           if (Meteor.user() === null)
-            window.alert("Credenciais erradas ou utilizador inexistente.");
+            message.error("Credenciais erradas ou utilizador inexistente.");
           else {
             if (err) {
-              console.log("ERRRRROOOOO", { err });
+              message.error("Credenciais erradas ou utilizador inexistente.");
             } else if (result) {
               console.log("vou mostrar Perfil do CA");
               navigate("/ProfileCA");
@@ -100,26 +105,36 @@ export function Autenticar() {
         <p></p>
         <button
           className="botao"
-          onClick={() =>
-            Meteor.call(
-              // faz a verificacao dos parametros e se o user existe ou não
-              "authenticateUser",
-              document.getElementById("eemail").value,
-              document.getElementById("ppass").value,
+          onClick={() => {
+            let email = document.getElementById("eemail").value;
+            let pass = document.getElementById("ppass").value;
+            if (email === "") {
+              message.warn("Por favor insira email.");
+            } else if (pass === "") {
+              message.warn("Por favor insira password.");
+            }
 
-              (err, result) => {
-                if (err) {
-                  //Fazer aparecer mensagem de texto de credenciais erradas.
-                  console.log(err);
-                } else if (result) {
-                  console.log("result p login", result);
-                  // trata do login deste user
-                  pass = document.getElementById("ppass").value;
-                  login(result, pass);
+            if (email != "" && pass != "") {
+              Meteor.call(
+                // faz a verificacao dos parametros e se o user existe ou não
+                "authenticateUser",
+                email,
+                pass,
+
+                (err, result) => {
+                  if (err) {
+                    //Fazer aparecer mensagem de texto de credenciais erradas.
+                    console.log(err);
+                  } else if (result) {
+                    console.log("result p login", result);
+                    // trata do login deste user
+                    pass = document.getElementById("ppass").value;
+                    login(result, pass);
+                  }
                 }
-              }
-            )
-          }
+              );
+            }
+          }}
         >
           Autenticar
         </button>
