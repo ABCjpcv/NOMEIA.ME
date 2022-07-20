@@ -1,85 +1,68 @@
 import React from "react";
 import Papa from "papaparse";
-import { Button } from "antd";
+import { Meteor } from "meteor/meteor";
+import { InboxOutlined } from "@ant-design/icons";
+import { message, Upload } from "antd";
 
-export class FileInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.uploadFile = this.uploadFile.bind(this);
-  }
+const { Dragger } = Upload;
 
-  uploadFile(event) {
-    let file = event.target.files[0];
+const props = {
+  beforeUpload: (file) => {
+    let isValidFyleType = file.type === "text/csv";
+    isValidFyleType = isValidFyleType || file.type === ".xlsx";
+    isValidFyleType = isValidFyleType || file.type === ".xls";
 
-    if (file) {
-      let data = new FormData();
-      data.append("file", file);
-      // axios.post('/files', data)...
+    if (!isValidFyleType) {
+      message.error(
+        "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
+      );
+    } else {
+      message.success("Novos jogos semanais carregados");
     }
-  }
 
-  render() {
-    return (
-      <span>
-        <input
-          type="file"
-          accept=".csv,.xlsx,.xls"
-          onChange={(e) => {
-            const files = e.target.files;
-            if (files) {
-              if (files[0].type === "text/csv") {
-                // Aceita ficheiros csv, xls, xlsx
-                Papa.parse(files[0], {
-                  complete: function (results) {
-                    let newGames = results.data;
+    return isValidFyleType;
+  },
+  Upload: {},
+  onChange: (event) => {
+    if (event.file) {
+      // Aceita ficheiros csv, xls, xlsx
+      Papa.parse(event.file.originFileObj, {
+        complete: function (results) {
+          let newGames = results.data;
 
-                    Meteor.call("addJogosSemanais", newGames, (err, result) => {
-                      if (err) {
-                        console.log("Error: " + err);
-                      } else if (result) {
-                        window.alert("Novos jogos semanais carregados");
-                        mostraPaginaAtribuicaoArbitros();
-                      }
-                    });
-
-                    // ESTÁ A FAZER DOWNLOAD DO FICHEIRO JSON
-                    // QUERO PÔ-LO NA BASE DE DADOS PARA DEPOIS LER O MESMO EM VEZ DE FAZER DOWNLOAD
-
-                    // link.download = "Livro.json";
-                    // link.href = url;
-                    // link.click();
-                  },
-                });
-              } else {
-                window.alert("not accepting at the moment");
-              }
+          Meteor.call("addJogosSemanais", newGames, (err, result) => {
+            if (err) {
+              //console.log("Error: " + err);
+            } else if (result) {
+              document
+                .getElementById("clickOptionMenuAtribuirArbitros")
+                .click();
             }
-          }}
-        />
+          });
+        },
+      });
+    }
+  },
+};
+
+export function FileInput() {
+  return (
+    <div style={{ marginTop: "10px" }}>
+      {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
+
+      <span>
+        <Dragger {...props} accept=".csv, .xlsx, .xls">
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Selecione ou arraste um ficheiro para esta área para o carregar
+          </p>
+          <p className="ant-upload-hint">
+            Formato do ficheiro {"("} .csv {")"}.
+          </p>
+        </Dragger>
       </span>
-    );
-  }
-}
-
-function mostraPaginaAtribuicaoArbitros() {
-  // HEADERS
-  document.getElementById("titulo").hidden = true;
-  document.getElementById("carregarJogos").hidden = true;
-  document.getElementById("atribuirArbitros").hidden = false;
-  document.getElementById("nomeacoesPrivadas").hidden = true;
-  document.getElementById("indisponibilidadePrivadas").hidden = true;
-  document.getElementById("restricoesPrivadas").hidden = true;
-  document.getElementById("menuPrivadoCA").hidden = false;
-  document.getElementById("menuPrivado").hidden = true;
-  document.getElementById("definicoes").hidden = true;
-  document.getElementById("criarContaNova").hidden = true;
-
-  // PROFILE
-  document.getElementById("carregarFicheiroJogos").hidden = true;
-  document.getElementById("atribuirArbitrosAjogos").hidden = false;
-  document.getElementById("indisponibilidadesCA").hidden = true;
-  document.getElementById("restricoesCA").hidden = true;
-  document.getElementById("consultaPrivadaCA").hidden = true;
-  document.getElementById("definicoesCA").hidden = true;
-  document.getElementById("criarArbitro").hidden = true;
+    </div>
+  );
 }

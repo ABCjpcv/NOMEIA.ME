@@ -20,6 +20,9 @@ import { ProfileCA } from "./Pages/ProfileCA";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { ProtectedRoutes } from "./Pages/ProtectedRoutes";
+import { UserSettings } from "./Pages/UserSettings";
+import { FileInput } from "./Pages/FileInput";
+import { AtribuirJogos } from "./Pages/AtribuirJogos";
 
 export const App = () => {
   //Track the current user in our application
@@ -48,9 +51,55 @@ export const App = () => {
 
             <Route element={<ProtectedRoutes user={user} />}>
               <Route path="/Profile" element={<Profile user={user} />}></Route>
+
+              <Route
+                path="/Profile/Indisponibilidades"
+                element={<Indisponibilidades user={user} />}
+              ></Route>
+
+              <Route
+                path="/Profile/Relacoes"
+                element={<Restricoes user={user} />}
+              ></Route>
+
+              <Route
+                path="/Profile/Definicoes"
+                element={<UserSettings user={user} />}
+              ></Route>
+
               <Route
                 path="/ProfileCA"
                 element={<ProfileCA user={user} />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Carregar_Novos_Jogos"
+                element={<FileInput />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Atribuir_Arbitros"
+                element={<AtribuirJogos user={user} />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Criar_Arbitro"
+                element={<ContaNova user={user} />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Indisponibilidades"
+                element={<Indisponibilidades user={user} />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Relacoes"
+                element={<Restricoes user={user} />}
+              ></Route>
+
+              <Route
+                path="/ProfileCA/Definicoes"
+                element={<UserSettings user={user} />}
               ></Route>
             </Route>
 

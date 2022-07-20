@@ -958,7 +958,7 @@ Meteor.methods({
     currJogo,
     funcao
   ) {
-    console.log(" currJogo: ", currJogo);
+    //console.log(" currJogo: ", currJogo);
 
     let titulo =
       "Jogo nº " +
@@ -1083,6 +1083,7 @@ Meteor.methods({
         preNomeacoes: newGames,
       });
     }
+
     return true;
   },
 

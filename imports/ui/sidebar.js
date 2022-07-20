@@ -13,11 +13,7 @@ export default (props) => {
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("indisponibilidades").hidden = true;
-    document.getElementById("consultaPrivada").hidden = false;
-    document.getElementById("restricoes").hidden = true;
     document.getElementById("definicoes").hidden = true;
-    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   function mostraPaginaIndisponibilidades() {
@@ -26,11 +22,7 @@ export default (props) => {
     document.getElementById("indisponibilidadePrivadas").hidden = false;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("indisponibilidades").hidden = false;
-    document.getElementById("consultaPrivada").hidden = true;
-    document.getElementById("restricoes").hidden = true;
     document.getElementById("definicoes").hidden = true;
-    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   function mostraPaginaRestricoes() {
@@ -39,11 +31,7 @@ export default (props) => {
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = false;
     document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("indisponibilidades").hidden = true;
-    document.getElementById("consultaPrivada").hidden = true;
-    document.getElementById("restricoes").hidden = false;
     document.getElementById("definicoes").hidden = true;
-    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   function mostraPaginaDefinicoes() {
@@ -52,11 +40,7 @@ export default (props) => {
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = false;
-    document.getElementById("indisponibilidades").hidden = true;
-    document.getElementById("consultaPrivada").hidden = true;
-    document.getElementById("restricoes").hidden = true;
     document.getElementById("definicoes").hidden = false;
-    document.getElementById("definicoesPerfil").hidden = false;
   }
 
   function mostraTitulo() {
@@ -65,11 +49,7 @@ export default (props) => {
     document.getElementById("indisponibilidadePrivadas").hidden = true;
     document.getElementById("restricoesPrivadas").hidden = true;
     document.getElementById("menuPrivado").hidden = true;
-    document.getElementById("indisponibilidades").hidden = true;
-    document.getElementById("consultaPrivada").hidden = true;
-    document.getElementById("restricoes").hidden = true;
     document.getElementById("definicoes").hidden = true;
-    document.getElementById("definicoesPerfil").hidden = true;
   }
 
   return (
@@ -78,9 +58,7 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaNomeacoes();
-          }}
+          onClick={() => (navigate("Profile"), mostraPaginaNomeacoes())}
         >
           Consultar Nomeações
         </p>
@@ -89,9 +67,10 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaIndisponibilidades();
-          }}
+          onClick={() => (
+            mostraPaginaIndisponibilidades(),
+            navigate("Profile/Indisponibilidades")
+          )}
         >
           Marcar Indisponibilidades
         </p>
@@ -100,9 +79,9 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaRestricoes();
-          }}
+          onClick={() => (
+            navigate("Profile/Relacoes"), mostraPaginaRestricoes()
+          )}
         >
           Indicar Restrições
         </p>
@@ -111,9 +90,9 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => {
-            mostraPaginaDefinicoes();
-          }}
+          onClick={() => (
+            navigate("Profile/Definicoes"), mostraPaginaDefinicoes()
+          )}
         >
           Definições
         </p>

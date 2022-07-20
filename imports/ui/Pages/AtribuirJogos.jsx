@@ -60,6 +60,7 @@ let currNomeArbitro = "";
 
 function handleChangeSelecaoArbitro(value, key) {
   console.log("value", value);
+  console.log("key", key);
 
   let titulo =
     "Jogo nº " +
@@ -208,7 +209,7 @@ export function AtribuirJogos(props) {
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
+      render: () =>
         dataSource.length >= 1 ? (
           <>
             <Select
@@ -218,7 +219,6 @@ export function AtribuirJogos(props) {
               style={{ width: "180px" }}
               key="select_arbitro1"
               type="select"
-              //value={"banana"}
               onChange={
                 //setSelectedOptions(o),
                 handleChangeSelecaoArbitro
@@ -696,278 +696,6 @@ export function AtribuirJogos(props) {
                             </Select.Option>
                           );
                         })}
-                        {/* <Option
-                          value="Academia de Voleibol Colégio Atlântico"
-                          label="Academia de Voleibol Colégio Atlântico"
-                        >
-                          <div className="demo-option-label-item">
-                            Academia de Voleibol Colégio Atlântico
-                          </div>
-                        </Option>
-                        <Option
-                          value="Academia Mateus Nogueira"
-                          label="Academia Mateus Nogueira"
-                        >
-                          <div className="demo-option-label-item">
-                            Academia Mateus Nogueira
-                          </div>
-                        </Option>
-                        <Option
-                          value="Academia Voleibol Praia"
-                          label="Academia Voleibol Praia"
-                        >
-                          <div className="demo-option-label-item">
-                            Academia Voleibol Praia
-                          </div>
-                        </Option>
-                        <Option value="Ape Lobato" label="Ape Lobato">
-                          <div className="demo-option-label-item">
-                            Ape Lobato
-                          </div>
-                        </Option>
-                        <Option
-                          value="Associação De Voleibol Da Escola B. Sec. Gama Barros"
-                          label="Associação De Voleibol Da Escola B. Sec. Gama Barros"
-                        >
-                          <div className="demo-option-label-item">
-                            Associação De Voleibol Da Escola B. Sec. Gama Barros
-                          </div>
-                        </Option>
-                        <Option
-                          value="Associação Desportiva Marista"
-                          label="Associação Desportiva Marista"
-                        >
-                          <div className="demo-option-label-item">
-                            Associação Desportiva Marista
-                          </div>
-                        </Option>
-                        <Option
-                          value="Cascais Volley4all"
-                          label="Cascais Volley4all"
-                        >
-                          <div className="demo-option-label-item">
-                            Cascais Volley4all
-                          </div>
-                        </Option>
-                        <Option
-                          value="Cd Alverca Volei"
-                          label="Cd Alverca Volei"
-                        >
-                          <div className="demo-option-label-item">
-                            Cd Alverca Volei
-                          </div>
-                        </Option>
-                        <Option
-                          value="Centro De Voleibol De Lisboa"
-                          label="Centro De Voleibol De Lisboa"
-                        >
-                          <div className="demo-option-label-item">
-                            Centro De Voleibol De Lisboa
-                          </div>
-                        </Option>
-                        <Option value="Cf Belenenses" label="Cf Belenenses">
-                          <div className="demo-option-label-item">
-                            Cf Belenenses
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Col Guadalupe"
-                          label="Clube Col Guadalupe"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Col Guadalupe
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Desportivo Colégio Minerva"
-                          label="Clube Desportivo Colégio Minerva"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Desportivo Colégio Minerva
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Desportivo Marista De Carcavelos"
-                          label="Clube Desportivo Marista De Carcavelos"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Desportivo Marista De Carcavelos
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Juvenil De Voleibol Filipa De Lencastre"
-                          label="Clube Juvenil De Voleibol Filipa De Lencastre"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Juvenil De Voleibol Filipa De Lencastre
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Nacional De Ginástica"
-                          label="Clube Nacional De Ginástica"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Nacional De Ginástica
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Recreativo Piedense"
-                          label="Clube Recreativo Piedense"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Recreativo Piedense
-                          </div>
-                        </Option>
-                        <Option
-                          value="Clube Voleibol De Oeiras"
-                          label="Clube Voleibol De Oeiras"
-                        >
-                          <div className="demo-option-label-item">
-                            Clube Voleibol De Oeiras
-                          </div>
-                        </Option>
-                        <Option
-                          value="Colégio Pedro Arrupe"
-                          label="Colégio Pedro Arrupe"
-                        >
-                          <div className="demo-option-label-item">
-                            Colégio Pedro Arrupe
-                          </div>
-                        </Option>
-                        <Option
-                          value="Colégio Salesianos De Lisboa – Oficina S. José"
-                          label="Colégio Salesianos De Lisboa – Oficina S. José"
-                        >
-                          <div className="demo-option-label-item">
-                            Colégio Salesianos De Lisboa – Oficina S. José
-                          </div>
-                        </Option>
-                        <Option
-                          value="Colégio São João De Brito"
-                          label="Colégio São João De Brito"
-                        >
-                          <div className="demo-option-label-item">
-                            Colégio São João De Brito
-                          </div>
-                        </Option>
-                        <Option
-                          value="Famões Clube Atlético"
-                          label="Famões Clube Atlético"
-                        >
-                          <div className="demo-option-label-item">
-                            Famões Clube Atlético
-                          </div>
-                        </Option>
-                        <Option value="Gd Sesimbra" label="Gd Sesimbra">
-                          <div className="demo-option-label-item">
-                            Gd Sesimbra
-                          </div>
-                        </Option>
-                        <Option
-                          value="Ginásio Clube Português"
-                          label="Ginásio Clube Português"
-                        >
-                          <div className="demo-option-label-item">
-                            Ginásio Clube Português
-                          </div>
-                        </Option>
-                        <Option
-                          value="Grupo Dramático E Sportivo De Cascais"
-                          label="Grupo Dramático E Sportivo De Cascais"
-                        >
-                          <div className="demo-option-label-item">
-                            Grupo Dramático E Sportivo De Cascais
-                          </div>
-                        </Option>
-                        <Option
-                          value="Grupo Rec. Cultural Do Bom Retiro"
-                          label="Grupo Rec. Cultural Do Bom Retiro"
-                        >
-                          <div className="demo-option-label-item">
-                            Grupo Rec. Cultural Do Bom Retiro
-                          </div>
-                        </Option>
-                        <Option
-                          value="Grupo União Recreativo E Desportivo 'Mtba'"
-                          label="Grupo União Recreativo E Desportivo 'Mtba'"
-                        >
-                          <div className="demo-option-label-item">
-                            Grupo União Recreativo E Desportivo "Mtba"
-                          </div>
-                        </Option>
-                        <Option value="Lobatos Volley" label="Lobatos Volley">
-                          <div className="demo-option-label-item">
-                            Lobatos Volley
-                          </div>
-                        </Option>
-                        <Option value="Lusófona Vc" label="Lusófona Vc">
-                          <div className="demo-option-label-item">
-                            Lusófona Vc
-                          </div>
-                        </Option>
-                        <Option value="Madeira Torres" label="Madeira Torres">
-                          <div className="demo-option-label-item">
-                            Madeira Torres
-                          </div>
-                        </Option>
-                        <Option
-                          value="Odivelas Sports Club"
-                          label="Odivelas Sports Club"
-                        >
-                          <div className="demo-option-label-item">
-                            Odivelas Sports Club
-                          </div>
-                        </Option>
-                        <Option
-                          value="Odivelas Voleibol Clube"
-                          label="Odivelas Voleibol Clube"
-                        >
-                          <div className="demo-option-label-item">
-                            Odivelas Voleibol Clube
-                          </div>
-                        </Option>
-                        <Option
-                          value="Salesianos Do Estoril"
-                          label="Salesianos Do Estoril"
-                        >
-                          <div className="demo-option-label-item">
-                            Salesianos Do Estoril
-                          </div>
-                        </Option>{" "}
-                        <Option value="Sintra Volei" label="Sintra Volei">
-                          <div className="demo-option-label-item">
-                            Sintra Volei
-                          </div>
-                        </Option>{" "}
-                        <Option
-                          value="Sport Lisboa E Benfica"
-                          label="Sport Lisboa E Benfica"
-                        >
-                          <div className="demo-option-label-item">
-                            Sport Lisboa E Benfica
-                          </div>
-                        </Option>
-                        <Option
-                          value="Sporting Clube De Torres"
-                          label="Sporting Clube De Torres"
-                        >
-                          <div className="demo-option-label-item">
-                            Sporting Clube De Torres
-                          </div>
-                        </Option>{" "}
-                        <Option value="Sporting CP" label="Sporting CP">
-                          <div className="demo-option-label-item">
-                            Sporting CP
-                          </div>
-                        </Option>{" "}
-                        <Option
-                          value="Volei Clube De Setúbal 1990"
-                          label="Volei Clube De Setúbal 1990"
-                        >
-                          <div className="demo-option-label-item">
-                            Volei Clube De Setúbal 1990
-                          </div>
-                        </Option> */}
                       </Select>
                     </label>
 
@@ -1019,12 +747,13 @@ export function AtribuirJogos(props) {
                   pagination={false}
                   style={{ marginLeft: "5px", marginTop: "5px" }}
                   onRow={(record) => {
-                    let k = record.key;
-
                     return {
                       onClick: (event) => {
                         //console.log("event", event);
                         //console.log("event.target.value", event.target.value);
+
+                        console.log("record eh:", record);
+
                         if (event.target != "div.ant-select-selector") {
                           Meteor.call(
                             "arbitrosDisponiveis",
