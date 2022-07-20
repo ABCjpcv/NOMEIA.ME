@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { Meteor } from "meteor/meteor";
 import React, { useState, useEffect } from "react";
 
@@ -21,14 +22,14 @@ export function UserSettings({ user }) {
   function submeterAlteracaoPassword(user, newPassword) {
     Meteor.call("alteraPassword", user, newPassword, (err, result) => {
       if (result === 1) {
-        window.alert(
+        message.success(
           "Password alterada com sucesso! Faça a autenticação novamente."
         );
         Meteor.logout();
         document.getElementById("definicoes").hidden = true;
         document.getElementById("titulo").hidden = false;
       } else {
-        window.alert("ERRO");
+        message.error("ERRO");
       }
     });
   }
@@ -43,7 +44,7 @@ export function UserSettings({ user }) {
     Meteor.call("adicionaTransporte", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
-        window.alert("Adicionado transporte próprio!");
+        message.success("Adicionado transporte próprio!");
         setTemTransporte(true);
         setNaoTemTransporte(false);
       }
@@ -54,7 +55,7 @@ export function UserSettings({ user }) {
     Meteor.call("removeTransporte", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
-        window.alert("Removido transporte próprio!");
+        message.warn("Removido transporte próprio!");
         setTemTransporte(false);
         setNaoTemTransporte(true);
       }
@@ -65,7 +66,7 @@ export function UserSettings({ user }) {
     Meteor.call("adicionaRecibo", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
-        window.alert("Adicionada emissão de recibo!");
+        message.success("Adicionada emissão de recibo!");
         setTemRecibo(true);
         setNaoTemRecibo(false);
       }
@@ -76,7 +77,7 @@ export function UserSettings({ user }) {
     Meteor.call("removeRecibo", user, (err, result) => {
       console.log("result", result);
       if (result === 1) {
-        window.alert("Removida emissão de recibo!");
+        message.warn("Removida emissão de recibo!");
         setTemRecibo(false);
         setNaoTemRecibo(true);
       }
@@ -266,9 +267,9 @@ export function UserSettings({ user }) {
             ).value;
 
             if (passwordUserSettings === "" || password2UserSettings === "") {
-              window.alert("Não colocou valores nos campos");
+              message.warn("Por favor coloque valores nos campos");
             } else if (passwordUserSettings != password2UserSettings) {
-              window.alert("As passwords não correspondem.");
+              message.error("As passwords não correspondem.");
             } else {
               submeterAlteracaoPassword(user, passwordUserSettings);
             }

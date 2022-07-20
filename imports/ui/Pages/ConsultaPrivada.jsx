@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Popconfirm, Table, Tag } from "antd";
+import { Button, message, Popconfirm, Table, Tag } from "antd";
 import axios from "axios";
 import { useTableSearch } from "./useTableSearch";
 import "antd/dist/antd.css";
@@ -287,7 +287,7 @@ export function ConsultaPrivada({ user }) {
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
-        return window.alert("Tem jogos por confirmar, " + user.username);
+        return message.info("Tem jogos por confirmar, " + user.username);
       } else {
         jogos.push(parseInt(data[index]));
         confirmacoes.push(data[index].tags[0]);
@@ -305,7 +305,7 @@ export function ConsultaPrivada({ user }) {
         if (err) {
           console.log("ERRRRROOOOO", { err });
         } else {
-          window.alert("Confirmações submetidas " + user.username);
+          message.success("Confirmações submetidas " + user.username);
         }
       }
     );

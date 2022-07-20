@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
+import { message } from "antd";
 
 export function ContaNova() {
   let navigate = useNavigate();
@@ -75,7 +76,7 @@ export function ContaNova() {
                 console.log("O QUE APARECE DO OUTRO LADO?", result);
 
                 if (result) {
-                  window.alert(
+                  message.success(
                     "Árbitro " +
                       document.getElementById("nome").value +
                       ", criado com sucesso!"

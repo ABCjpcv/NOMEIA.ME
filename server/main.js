@@ -441,7 +441,7 @@ Meteor.methods({
     if (password.length == 0) throw new Meteor.Error("Must insert a password.");
     var user = Accounts.findUserByEmail(user_email);
     if (user == undefined) {
-      throw new Meteor.Error("Invalid credentials / user does not exist.");
+      return "Invalid credentials / user does not exist.";
     }
 
     console.log("User found by email.");
@@ -452,7 +452,7 @@ Meteor.methods({
       algorithm: "sha-256",
     });
     if (result) return user;
-    else throw new Meteor.Error("Passwords do not match");
+    else return "Passwords do not match";
   },
 
   registerUser: function registerUser(
@@ -554,11 +554,14 @@ Meteor.methods({
     return 1;
   },
 
-  isAdmin: function isAdmin(user) {
-    var arbitro = arbitros.findOne({ email: user.emails[0].address });
-    var admin = arbitro.isAdmin;
-    console.log(arbitro.nome + " is admin? " + admin);
-    return admin;
+  isAdmin: function isAdmin(user, loggado) {
+    if (loggado != null) {
+      var arbitro = arbitros.findOne({ email: user.emails[0].address });
+      var admin = arbitro.isAdmin;
+      console.log(arbitro.nome + " is admin? " + admin);
+      return admin ? 1 : 0;
+    }
+    return -1;
   },
 
   addConfirmacaoNomeacao: function addConfirmacaoNomeacao(

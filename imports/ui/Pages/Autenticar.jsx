@@ -49,36 +49,36 @@ export function Autenticar() {
       Meteor.logout();
     } else {
       // console.log("Não há user");
-      console.log("user", user);
+      if (user != "Invalid credentials / user does not exist.") {
+        let utilizador = JSON.parse(JSON.stringify(user));
 
-      let utilizador = JSON.parse(JSON.stringify(user));
+        //console.log("utilizador: ", utilizador);
+        // TENHO O USER CERTO AQUI
 
-      console.log("utilizador: ", utilizador);
-      // TENHO O USER CERTO AQUI
+        Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
+          if (err) {
+            //message.error("Credenciais erradas ou utilizador inexistente.");
+          }
 
-      Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
-        if (err) {
-          message.error("Credenciais erradas ou utilizador inexistente.");
-        }
+          Meteor.call("isAdmin", utilizador, Meteor.user(), (err, result) => {
+            console.log("result", result);
 
-        Meteor.call("isAdmin", utilizador, (err, result) => {
-          if (Meteor.user() === null)
-            message.error("Credenciais erradas ou utilizador inexistente.");
-          else {
-            if (err) {
-              message.error("Credenciais erradas ou utilizador inexistente.");
-            } else if (result) {
-              console.log("vou mostrar Perfil do CA");
+            if (result === -1) {
+              message.error("Password incorreta");
+            } else if (result === 1) {
+              //console.log("vou mostrar Perfil do CA");
+              message.success("Bem vindo " + utilizador.username + "!");
               navigate("/ProfileCA");
               mostraPerfilCA();
-            } else if (!result) {
-              console.log("vou mostrar Perfil do Arbitro");
+            } else if (result === 0) {
+              //console.log("vou mostrar Perfil do Arbitro");
+              message.success("Bem vindo " + utilizador.username + "!");
               navigate("/Profile");
               mostraPerfil();
             }
-          }
+          });
         });
-      });
+      }
     }
   }
 
@@ -124,12 +124,20 @@ export function Autenticar() {
                 (err, result) => {
                   if (err) {
                     //Fazer aparecer mensagem de texto de credenciais erradas.
-                    console.log(err);
+                    message.error(
+                      "Credenciais erradas ou utilizador inexistente."
+                    );
                   } else if (result) {
-                    console.log("result p login", result);
-                    // trata do login deste user
-                    pass = document.getElementById("ppass").value;
-                    login(result, pass);
+                    if (
+                      result != "Invalid credentials / user does not exist."
+                    ) {
+                      // trata do login deste user
+                      login(result, pass);
+                    } else {
+                      message.error(
+                        "Credenciais erradas ou utilizador inexistente."
+                      );
+                    }
                   }
                 }
               );

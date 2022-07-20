@@ -1,6 +1,6 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import FullCalendar, {
   CalendarApi,
   EventSourceApi,
@@ -101,8 +101,9 @@ export class Indisponibilidades extends React.Component {
                 }}
                 value="Instruções"
                 onClick={() =>
-                  window.alert(
-                    "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'."
+                  message.info(
+                    "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
+                    10
                   )
                 }
               >
@@ -130,9 +131,10 @@ export class Indisponibilidades extends React.Component {
                         //Fazer aparecer mensagem de texto de credenciais erradas.
                         console.log(err);
                       } else if (result) {
-                        window.alert(
+                        message.success(
                           "Indisponibilidades registadas " +
-                            Meteor.user().username
+                            Meteor.user().username +
+                            "!"
                         );
                       }
                     }
@@ -183,7 +185,7 @@ export class Indisponibilidades extends React.Component {
     let r = this.validDate(this.state.currentEvents, newStart, newEnd, hoje);
 
     if (newStart < hoje) {
-      window.alert(
+      message.error(
         Meteor.user().username +
           ", não pode marcar indisponibilidade antes de hoje."
       );
@@ -196,7 +198,7 @@ export class Indisponibilidades extends React.Component {
         color: "#eb3434",
       });
     } else {
-      window.alert(
+      message.error(
         Meteor.user().username +
           ", não pode marcar indisponibilidades nesse intervalo."
       );
@@ -231,7 +233,7 @@ export class Indisponibilidades extends React.Component {
     if (clickInfo.event._def.title === " Indisponível ") {
       clickInfo.event.remove();
     } else {
-      window.alert("Impossive remover um Jogo Nomeado");
+      message.error("Impossive remover um Jogo Nomeado");
     }
   };
 

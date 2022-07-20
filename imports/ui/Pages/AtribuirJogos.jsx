@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Popconfirm, Select, Table, Tag } from "antd";
+import { Button, message, Popconfirm, Select, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
@@ -129,7 +129,7 @@ function handleChangeSelecaoArbitro(value, key) {
 
       let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
 
-      window.alert(mensagemTotal);
+      message.warn(mensagemTotal);
     });
 
     //console.log("key", key);
@@ -543,7 +543,7 @@ export function AtribuirJogos(props) {
                         type={"checkbox"}
                         onChange={() => {
                           if (naoTemTransporte) {
-                            window.alert(
+                            message.warn(
                               "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
                             );
                           } else {
@@ -565,7 +565,7 @@ export function AtribuirJogos(props) {
                         type={"checkbox"}
                         onChange={() => {
                           if (temTransporte) {
-                            window.alert(
+                            message.warn(
                               "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
                             );
                           } else {
@@ -587,7 +587,7 @@ export function AtribuirJogos(props) {
                         type={"checkbox"}
                         onChange={() => {
                           if (naoTemRecibo) {
-                            window.alert(
+                            message.warn(
                               "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
                             );
                           } else {
@@ -609,7 +609,7 @@ export function AtribuirJogos(props) {
                         type={"checkbox"}
                         onChange={() => {
                           if (temRecibo) {
-                            window.alert(
+                            message.warn(
                               "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
                             );
                           } else {
@@ -726,7 +726,7 @@ export function AtribuirJogos(props) {
                   <Button
                     onClick={() => {
                       handleSubmissionConfirmation();
-                      window.alert("Nomeações enviadas para os Árbitros.");
+                      message.success("Nomeações enviadas para os Árbitros.");
                     }}
                     type="primary"
                     style={{

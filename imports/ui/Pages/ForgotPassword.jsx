@@ -2,6 +2,7 @@ import { mergeEventStores } from "@fullcalendar/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
+import { message } from "antd";
 
 export function ForgotPassword() {
   let navigate = useNavigate();
@@ -35,9 +36,11 @@ export function ForgotPassword() {
                 if (!err) {
                   console.log("ENTRASTE????");
                   if (result) {
-                    window.alert(
-                      "Email enviado com sucesso! Verifique a sua nova password na sua conta de email."
+                    message.success("Email enviado com sucesso!");
+                    message.info(
+                      "Verifique a sua nova password na sua conta de email."
                     );
+
                     navigate("/Autenticar");
                   }
                 }

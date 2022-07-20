@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Table, Input, Button } from "antd";
+import { Table, Input, Button, message } from "antd";
 import axios from "axios";
 import { useTableSearch } from "./useTableSearch";
 
@@ -318,8 +318,9 @@ export function Restricoes() {
             }}
             value="Instruções"
             onClick={() =>
-              window.alert(
-                "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'."
+              message.info(
+                "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'.",
+                10
               )
             }
           >
@@ -341,7 +342,7 @@ export function Restricoes() {
           <Button
             onClick={() => {
               if (data[0] === undefined) {
-                window.alert(
+                message.warn(
                   "Nenhuma alteração detetada " + Meteor.user().username
                 );
               } else {
@@ -354,9 +355,10 @@ export function Restricoes() {
                       //Fazer aparecer mensagem de texto de credenciais erradas.
                       console.log(err);
                     } else if (result) {
-                      window.alert(
+                      message.success(
                         "Relações com clubes guardadas " +
-                          Meteor.user().username
+                          Meteor.user().username +
+                          "!"
                       );
                     }
                   }
