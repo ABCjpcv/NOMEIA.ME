@@ -10,12 +10,16 @@ const { Search } = Input;
 
 let dbInfo = "";
 const fetchData = async () => {
+  // Meteor.call("getClubesDisponiveis", (err, result) => {
+  //   console.log("result", result);
+  //   if (result) {
+  //     return { result };
+  //   }
+  // });
   let { data } = await axios.get("ClubesAVLnomes.json");
   if (dbInfo != "") {
     data = dbInfo;
-    //dbInfo = "";
   }
-  return { data };
 };
 
 export const listaClubesColumns = [
@@ -107,7 +111,7 @@ function loadData() {
           let j = JSON.parse(JSON.stringify(result));
           let dataFromDB = j.relacoes;
 
-          // Nao ha data na base de dados
+          // Nao ha data na base de dados do
           if (dataFromDB == undefined) {
             resolve(fetchData());
           }

@@ -568,6 +568,16 @@ Meteor.methods({
   },
 
   isAdmin: function isAdmin(user, loggado) {
+    console.log("USER: ", user);
+
+    user === null ? (user = Meteor.user()) : (user = user);
+
+    if (user === null) loggado = !loggado;
+
+    console.log("USER DPS DA MAROSCA ", user);
+
+    console.log("LOGGADO", loggado);
+
     if (loggado != null) {
       var arbitro = arbitros.findOne({ email: user.emails[0].address });
       var admin = arbitro.isAdmin;

@@ -58,100 +58,6 @@ let currJogo = {};
 
 let currNomeArbitro = "";
 
-function handleChangeSelecaoArbitro(value, key) {
-  console.log("value", value);
-  console.log("key", key);
-
-  let titulo =
-    "Jogo nº " +
-    currJogo.Jogo +
-    " " +
-    currJogo.Prova +
-    " Serie " +
-    currJogo.Serie +
-    " " +
-    currJogo.Equipas +
-    " " +
-    currJogo.Pavilhao;
-
-  //console.log("currNomeArbitro", currNomeArbitro);
-
-  //console.log("value.length", value.length);
-
-  if (value.length === 1) {
-    // remover a nomeacao anterior
-    Meteor.call(
-      "removeNomeacaoCalendarioArbitro",
-      currNomeArbitro,
-      titulo,
-      currJogo,
-      key.key,
-      (err, result) => {
-        //console.log("RESULTADO", result);
-
-        if (err) {
-          console.error(err);
-        } else if (result) {
-          // console.log(result);
-        }
-      }
-    );
-  } else {
-    currNomeArbitro = value;
-    // console.log("nomeArbitro: ", currNomeArbitro);
-
-    Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
-      let condicoesArbitro = JSON.parse(JSON.stringify(result));
-      let temCarro = condicoesArbitro.temCarro;
-      let emiteRecibo = condicoesArbitro.emiteRecibo;
-      let relacoes = condicoesArbitro.relacaoComEquipas;
-
-      let mensagemRestricoes =
-        currNomeArbitro +
-        (!temCarro ? " não tem carro." : " tem carro.") +
-        "\n" +
-        currNomeArbitro +
-        (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-        "\n";
-
-      let mensagemRelacoesClubes = currNomeArbitro;
-      if (relacoes.length > 0) {
-        for (let index = 0; index < relacoes.length; index++) {
-          let cargo = relacoes[index].cargo;
-          let clube = relacoes[index].clube;
-          mensagemRelacoesClubes =
-            mensagemRelacoesClubes + " é " + cargo + " do clube " + clube + ".";
-        }
-      } else {
-        mensagemRelacoesClubes =
-          mensagemRelacoesClubes + " não tem relações com clubes.";
-      }
-
-      let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
-
-      message.warn(mensagemTotal);
-    });
-
-    //console.log("key", key);
-
-    Meteor.call(
-      "addNomeacaoCalendarioArbitro",
-      currNomeArbitro,
-      currJogo,
-      key.key,
-      (err, result) => {
-        //console.log("RESULTADO", result);
-
-        if (err) {
-          console.error(err);
-        } else if (result) {
-          //console.log(result);
-        }
-      }
-    );
-  }
-}
-
 export function AtribuirJogos(props) {
   const colunasNomeacoesPrivadas = [
     {
@@ -223,8 +129,6 @@ export function AtribuirJogos(props) {
                 //setSelectedOptions(o),
                 handleChangeSelecaoArbitro
               }
-
-              //value={getInitialValueA1}
             >
               {arbitrosDisponiveis.map((arb) => {
                 return (
@@ -394,8 +298,6 @@ export function AtribuirJogos(props) {
    * ATRIBUICAO DOS ESTADOS (STATES)
    */
 
-  const [selectedOptions, setSelectedOptions] = React.useState([]);
-
   const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
   const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
@@ -433,6 +335,107 @@ export function AtribuirJogos(props) {
         );
       }
     });
+  }
+
+  function handleChangeSelecaoArbitro(value, key) {
+    console.log("value", value);
+    console.log("key", key);
+
+    let titulo =
+      "Jogo nº " +
+      currJogo.Jogo +
+      " " +
+      currJogo.Prova +
+      " Serie " +
+      currJogo.Serie +
+      " " +
+      currJogo.Equipas +
+      " " +
+      currJogo.Pavilhao;
+
+    //console.log("currNomeArbitro", currNomeArbitro);
+
+    //console.log("value.length", value.length);
+
+    if (value.length === 1) {
+      // remover a nomeacao anterior
+      Meteor.call(
+        "removeNomeacaoCalendarioArbitro",
+        currNomeArbitro,
+        titulo,
+        currJogo,
+        key.key,
+        (err, result) => {
+          //console.log("RESULTADO", result);
+
+          if (err) {
+            console.error(err);
+          } else if (result) {
+            // console.log(result);
+          }
+        }
+      );
+    } else {
+      currNomeArbitro = value;
+      // console.log("nomeArbitro: ", currNomeArbitro);
+
+      Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
+        let condicoesArbitro = JSON.parse(JSON.stringify(result));
+        let temCarro = condicoesArbitro.temCarro;
+        let emiteRecibo = condicoesArbitro.emiteRecibo;
+        let relacoes = condicoesArbitro.relacaoComEquipas;
+
+        let mensagemRestricoes =
+          currNomeArbitro +
+          (!temCarro ? " não tem carro." : " tem carro.") +
+          "\n" +
+          currNomeArbitro +
+          (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+          "\n";
+
+        let mensagemRelacoesClubes = currNomeArbitro;
+        if (relacoes.length > 0) {
+          for (let index = 0; index < relacoes.length; index++) {
+            let cargo = relacoes[index].cargo;
+            let clube = relacoes[index].clube;
+            mensagemRelacoesClubes =
+              mensagemRelacoesClubes +
+              " é " +
+              cargo +
+              " do clube " +
+              clube +
+              ".";
+          }
+        } else {
+          mensagemRelacoesClubes =
+            mensagemRelacoesClubes + " não tem relações com clubes.";
+        }
+
+        let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
+
+        message.warn(mensagemTotal);
+      });
+
+      //console.log("key", key);
+
+      Meteor.call(
+        "addNomeacaoCalendarioArbitro",
+        currNomeArbitro,
+        currJogo,
+        key.key,
+        (err, result) => {
+          //console.log("RESULTADO", result);
+
+          if (err) {
+            console.error(err);
+          } else if (result) {
+            //console.log(result);
+          }
+        }
+      );
+    }
+
+    loadData();
   }
 
   function loadData() {

@@ -58,7 +58,7 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => (navigate("Profile"), mostraPaginaNomeacoes())}
+          onClick={() => (navigate("Conta/Profile"), mostraPaginaNomeacoes())}
         >
           Consultar Nomeações
         </p>
@@ -69,7 +69,7 @@ export default (props) => {
           style={{ fontSize: "15px" }}
           onClick={() => (
             mostraPaginaIndisponibilidades(),
-            navigate("Profile/Indisponibilidades")
+            navigate("Conta/Profile/Indisponibilidades")
           )}
         >
           Marcar Indisponibilidades
@@ -80,7 +80,7 @@ export default (props) => {
         <p
           style={{ fontSize: "15px" }}
           onClick={() => (
-            navigate("Profile/Relacoes"), mostraPaginaRestricoes()
+            navigate("Conta/Profile/Relacoes"), mostraPaginaRestricoes()
           )}
         >
           Indicar Restrições
@@ -91,7 +91,7 @@ export default (props) => {
         <p
           style={{ fontSize: "15px" }}
           onClick={() => (
-            navigate("Profile/Definicoes"), mostraPaginaDefinicoes()
+            navigate("Conta/Profile/Definicoes"), mostraPaginaDefinicoes()
           )}
         >
           Definições

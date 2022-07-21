@@ -22,25 +22,25 @@ export const Header = ({ user }) => {
             id="divCentral"
             style={{ display: "flex", justifyContent: "center", width: "70%" }}
           >
-            <p id="titulo">
+            <p id="titulo" style={{ marginTop: "1%" }}>
               Plataforma Online de Nomeações de Árbitros de Voleibol
             </p>
 
             {/* AQUI ESTAO OS HEADERS DOS CONSELHO DE ARBITRAGEM */}
-            <p id="atribuirArbitros" style={{ margin: "0" }} hidden={true}>
+            <p id="atribuirArbitros" style={{ marginTop: "1%" }} hidden={true}>
               Atribuição de Árbitros
             </p>
 
-            <p id="carregarJogos" style={{ margin: "0" }} hidden={true}>
+            <p id="carregarJogos" style={{ marginTop: "1%" }} hidden={true}>
               Carregar Jogos Novos:
             </p>
 
-            <p id="criarContaNova" style={{ margin: "0" }} hidden={true}>
+            <p id="criarContaNova" style={{ marginTop: "1%" }} hidden={true}>
               Criar Conta Nova:
             </p>
 
             {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
-            <p id="nomeacoesPrivadas" style={{ margin: "0" }} hidden={true}>
+            <p id="nomeacoesPrivadas" style={{ marginTop: "1%" }} hidden={true}>
               As minhas nomeações:
             </p>
             <p

@@ -127,7 +127,7 @@ export default (props) => {
           style={{ fontSize: "15px" }}
           onClick={() => (
             mostraPaginaCarregarJogos(),
-            navigate("ProfileCA/Carregar_Novos_Jogos")
+            navigate("Conta/ProfileCA/Carregar_Novos_Jogos")
           )}
         >
           Carregar Jogos Novos
@@ -140,7 +140,7 @@ export default (props) => {
           id="clickOptionMenuAtribuirArbitros"
           onClick={() => (
             mostraPaginaAtribuicaoArbitros(),
-            navigate("ProfileCA/Atribuir_Arbitros")
+            navigate("Conta/ProfileCA/Atribuir_Arbitros")
           )}
         >
           Atribuir Árbitros a Jogos
@@ -150,7 +150,9 @@ export default (props) => {
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}
-          onClick={() => (mostraPaginaNomeacoesCA(), navigate("ProfileCA"))}
+          onClick={() => (
+            mostraPaginaNomeacoesCA(), navigate("Conta/ProfileCA")
+          )}
         >
           Consultar Nomeações
         </p>
@@ -161,7 +163,7 @@ export default (props) => {
           style={{ fontSize: "15px" }}
           onClick={() => (
             mostraPaginaIndisponibilidadesCA(),
-            navigate("ProfileCA/Indisponibilidades")
+            navigate("Conta/ProfileCA/Indisponibilidades")
           )}
         >
           Marcar Indisponibilidades
@@ -172,7 +174,7 @@ export default (props) => {
         <p
           style={{ fontSize: "15px" }}
           onClick={() => (
-            mostraPaginaRestricoesCA(), navigate("ProfileCA/Relacoes")
+            mostraPaginaRestricoesCA(), navigate("Conta/ProfileCA/Relacoes")
           )}
         >
           Indicar Restrições
@@ -183,7 +185,7 @@ export default (props) => {
         <p
           style={{ fontSize: "15px" }}
           onClick={() => (
-            mostraPaginaContaNovaCA(), navigate("ProfileCA/Criar_Arbitro")
+            mostraPaginaContaNovaCA(), navigate("Conta/ProfileCA/Criar_Arbitro")
           )}
         >
           Criar Conta Nova
@@ -194,7 +196,7 @@ export default (props) => {
         <p
           style={{ fontSize: "15px" }}
           onClick={() => (
-            mostraPaginaDefinicoesCA(), navigate("ProfileCA/Definicoes")
+            mostraPaginaDefinicoesCA(), navigate("Conta/ProfileCA/Definicoes")
           )}
         >
           Definições

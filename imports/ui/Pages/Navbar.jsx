@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export function Home() {
+export function Navbar() {
   let navigate = useNavigate();
 
   function mostraTitulo() {
@@ -15,8 +15,8 @@ export function Home() {
 
   return (
     <div>
-      <h1 className="blue">Bem-vindo</h1>
-      <div>
+      {/* <h1 className="blue">Bem-vindo</h1> */}
+      <div style={{ marginTop: "1%" }}>
         <div
           className="botao"
           onClick={() => {

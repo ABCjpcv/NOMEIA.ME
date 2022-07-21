@@ -72,12 +72,12 @@ export function Autenticar() {
             } else if (result === 1) {
               //console.log("vou mostrar Perfil do CA");
               message.success("Bem vindo " + utilizador.username + "!");
-              navigate("/ProfileCA");
+              navigate("/Conta/ProfileCA");
               mostraPerfilCA();
             } else if (result === 0) {
               //console.log("vou mostrar Perfil do Arbitro");
               message.success("Bem vindo " + utilizador.username + "!");
-              navigate("/Profile");
+              navigate("/Conta/Profile");
               mostraPerfil();
             }
           });
