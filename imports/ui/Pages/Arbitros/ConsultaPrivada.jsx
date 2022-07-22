@@ -250,6 +250,8 @@ export function ConsultaPrivada({ user }) {
     // },
   ]);
 
+  let [submetido, setSubmetido] = useState(Boolean);
+
   const handleConfirmation = (record) => {
     const newData = dataSource.filter((item) => {
       if (item.key == record.key) {
@@ -324,10 +326,13 @@ export function ConsultaPrivada({ user }) {
       } else if (result.nomeacoesPrivadas.length > 0) {
         let dataFromDB = [];
 
+        let confirmado = true;
         for (let index = 0; index < result.nomeacoesPrivadas.length; index++) {
           let jogoLido = result.nomeacoesPrivadas[index].jogo;
 
           let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
+
+          tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
           let obj = {
             Jogo: jogoLido.id,
@@ -349,7 +354,7 @@ export function ConsultaPrivada({ user }) {
 
           dataFromDB.push(obj);
         }
-
+        setSubmetido(confirmado);
         setDataSource(dataFromDB);
       } else {
         setDataSource([""]);
@@ -375,6 +380,19 @@ export function ConsultaPrivada({ user }) {
           console.log("nomeacoes atualizados???", result);
           if (result === true) {
             loadData();
+          } else {
+            console.log("DATA SOURCE MUAH MUAH MUAH", dataSource);
+            let confirmado = true;
+            for (
+              let index = 0;
+              index < dataSource.length && confirmado;
+              index++
+            ) {
+              if (dataSource[index].tags[0] != "confirmado") {
+                confirmado = false;
+              }
+            }
+            setSubmetido(confirmado);
           }
         }
       );
@@ -386,6 +404,7 @@ export function ConsultaPrivada({ user }) {
   } else {
     return (
       <>
+        {reloadData()}
         <div
           className="demo-app"
           style={{ height: "10%", width: "auto", alignSelf: "center" }}
@@ -410,7 +429,7 @@ export function ConsultaPrivada({ user }) {
                           marginBottom: 16,
                         }}
                         id="confirmAllNominations"
-                        disabled={dataSource.length > 1 ? false : true}
+                        disabled={submetido ? true : false}
                       >
                         Confirmar todos
                       </Button>
@@ -424,7 +443,7 @@ export function ConsultaPrivada({ user }) {
                           marginBottom: 16,
                         }}
                         id="submissionConfirmationButton"
-                        disabled={dataSource.length > 1 ? false : true}
+                        disabled={submetido ? true : false}
                       >
                         Submeter Confirmações
                       </Button>

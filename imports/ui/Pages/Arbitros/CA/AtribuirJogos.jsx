@@ -117,10 +117,7 @@ export function AtribuirJogos(props) {
       dataIndex: "Arbitro1",
       key: "Arbitro1",
       render: (text, record, index) => (
-        // text.Arbitro1.length > 0 ? (
         <>
-          {console.log("text", text)}
-          {console.log("record", record)} {console.log("index", index)}
           <Select
             showSearch
             mode="single"
@@ -144,9 +141,6 @@ export function AtribuirJogos(props) {
           </Select>
         </>
       ),
-      // ) : (
-      //   text
-      // ),
     },
     {
       title: "Arbitro2",
@@ -154,147 +148,159 @@ export function AtribuirJogos(props) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_arbitro2"
-              style={{ width: "180px" }}
-              key="select_arbitro2"
-              type="select"
-              onChange={handleChangeSelecaoArbitro}
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option
-                    value={arb}
-                    key={"option_2_arbitro" + _.uniqueId()}
-                  >
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        <>
+          <Select
+            showSearch
+            mode="single"
+            name="select_arbitro2"
+            style={{ width: "180px" }}
+            key="select_arbitro2"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Arbitro2 != "" ? record.Arbitro2 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_2_arbitro" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
     },
     {
-      title: "JL",
+      title: "JL1",
       dataIndex: "JL1",
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_jl1"
-              style={{ width: "180px" }}
-              key="select_jl1"
-              type="select"
-              onChange={handleChangeSelecaoArbitro}
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option value={arb} key={"option_1_jl" + _.uniqueId()}>
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        <>
+          <Select
+            showSearch
+            mode="single"
+            name="select_jl1"
+            style={{ width: "180px" }}
+            key="select_jl1"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Jl1 != "" ? record.JL1 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_1_jl" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
     },
     {
-      title: "JL",
+      title: "JL2",
       dataIndex: "JL2",
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_jl2"
-              style={{ width: "180px" }}
-              key="select_jl2"
-              type="select"
-              onChange={handleChangeSelecaoArbitro}
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option value={arb} key={"option_2_jl" + _.uniqueId()}>
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        <>
+          <Select
+            showSearch
+            mode="single"
+            name="select_jl2"
+            style={{ width: "180px" }}
+            key="select_jl2"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Jl2 != "" ? record.JL2 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_2_jl" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
     },
     {
-      title: "JL",
+      title: "JL3",
       dataIndex: "JL3",
       key: "JL3",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_jl3"
-              style={{ width: "180px" }}
-              key="select_jl3"
-              type="select"
-              onChange={handleChangeSelecaoArbitro}
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option value={arb} key={"option_3_jl" + _.uniqueId()}>
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        <>
+          <Select
+            showSearch
+            mode="single"
+            name="select_jl3"
+            style={{ width: "180px" }}
+            key="select_jl3"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Jl3 != "" ? record.JL3 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_3_jl" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
     },
     {
-      title: "JL",
+      title: "JL4",
       dataIndex: "JL4",
       key: "JL4",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      render: (record) =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_jl4"
-              style={{ width: "180px" }}
-              key="select_jl4"
-              type="select"
-              onChange={handleChangeSelecaoArbitro}
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option value={arb} key={"option_4_jl" + _.uniqueId()}>
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        <>
+          <Select
+            showSearch
+            mode="single"
+            name="select_jl4"
+            style={{ width: "180px" }}
+            key="select_jl4"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Jl4 != "" ? record.JL4 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_4_jl" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
     },
   ];
 
