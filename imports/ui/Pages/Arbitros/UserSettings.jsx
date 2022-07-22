@@ -1,6 +1,6 @@
 import { message } from "antd";
 import { Meteor } from "meteor/meteor";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);

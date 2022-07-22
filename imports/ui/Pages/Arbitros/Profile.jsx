@@ -1,11 +1,7 @@
 import React from "react";
 
-import "./app.css";
-
-import { Indisponibilidades } from "./Indisponibilidades";
-import { Restricoes } from "./Restricoes";
+import "../../../../imports/ui/Pages/app.css";
 import { ConsultaPrivada } from "./ConsultaPrivada";
-import { UserSettings } from "./UserSettings";
 
 export function Profile({ user }) {
   return (

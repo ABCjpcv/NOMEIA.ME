@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import { Table, Input } from "antd";
 import axios from "axios";
-import { useTableSearch } from "./useTableSearch";
+import { colunasClubesAfiliados } from "../../../api/NaoAutenticado/colunasClubesAfiliados";
+import { useTableSearch } from "../../../api/useTableSearch";
 import "antd/dist/antd.css";
 
 const { Search } = Input;
 
-const fetchLeftOverGames = async () => {
-  const { data } = await axios.get("Livro.json");
+const fetchUsers = async () => {
+  const { data } = await axios.get("ClubesAVL_info.json");
   return { data };
 };
 
-export function listaJogosSemArbitrosCA() {
+export function ConsultaClubes() {
   const [searchVal, setSearchVal] = useState(null);
 
   const { filteredData, loading } = useTableSearch({
     searchVal,
-    retrieve: fetchLeftOverGames,
+    retrieve: fetchUsers,
   });
 
   return (
     <>
       <div>
-        <h1 className="blue"> Jogos sem árbitro </h1>
+        <h1 className="blue"> Clubes Afiliados à AVL </h1>
         <Search
           onChange={(e) => setSearchVal(e.target.value)}
           placeholder="Search"
@@ -39,7 +40,7 @@ export function listaJogosSemArbitrosCA() {
         <Table
           rowKey="name"
           dataSource={filteredData}
-          columns={colunasNomeacoes}
+          columns={colunasClubesAfiliados}
           loading={loading}
           pagination={false}
         />

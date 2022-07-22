@@ -47,7 +47,7 @@ const props = {
 
 export function FileInput() {
   return (
-    <div style={{ marginTop: "10px" }}>
+    <div style={{ marginTop: "1%", marginLeft: "37%", width: "500px" }}>
       {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
 
       <span>

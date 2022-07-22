@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button, message, Popconfirm, Table, Tag } from "antd";
-import axios from "axios";
-import { useTableSearch } from "./useTableSearch";
+
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
-import { useTracker } from "meteor/react-meteor-data";
 
 function comparaAminhaLindaString(a, b) {
   let x = 0;

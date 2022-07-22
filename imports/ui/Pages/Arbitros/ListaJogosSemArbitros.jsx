@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Input } from "antd";
 import axios from "axios";
-import { useTableSearch } from "./useTableSearch";
+import { useTableSearch } from "../../../api/useTableSearch";
 import "antd/dist/antd.css";
 
 const { Search } = Input;

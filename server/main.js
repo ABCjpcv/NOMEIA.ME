@@ -121,6 +121,8 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
+  //if (Meteor.user() != null) Meteor.logout();
+
   process.env.MAIL_URL =
     "smtp://nomeiame_ponav@hotmail.com:ElChefinho8@smtp.live.com:587/";
 
@@ -553,7 +555,7 @@ Meteor.methods({
         u.username +
         ", \n\n A sua password foi alterada para: " +
         newDefaultPassword +
-        ". \n Por favor altere a mesma na sua página da plataforma Nomeia.Me acedendo às suas Definições. \n\n Saudações Desportivas, \n A equipa Nomeia.Me",
+        "\n Por favor altere a mesma na sua página da plataforma Nomeia.Me acedendo às suas Definições. \n\n Saudações Desportivas, \n A equipa Nomeia.Me",
     });
 
     return true;

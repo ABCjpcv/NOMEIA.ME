@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Table, Input } from "antd";
 import axios from "axios";
-import { colunasClubesAfiliados } from "./colunasClubesAfiliados";
-import { useTableSearch } from "./useTableSearch";
+import { colunasNomeacoes } from "../../../api/NaoAutenticado/colunasNomeacoes";
+import { useTableSearch } from "../../../api/useTableSearch";
 import "antd/dist/antd.css";
 
 const { Search } = Input;
 
 const fetchUsers = async () => {
-  const { data } = await axios.get("ClubesAVL_info.json");
+  const { data } = await axios.get("Livro.json");
   return { data };
 };
 
-export function ConsultaClubes() {
+export function ConsultaTotal() {
   const [searchVal, setSearchVal] = useState(null);
 
   const { filteredData, loading } = useTableSearch({
@@ -23,7 +23,7 @@ export function ConsultaClubes() {
   return (
     <>
       <div>
-        <h1 className="blue"> Clubes Afiliados à AVL </h1>
+        <h1 className="blue">Nomeações Semanais</h1>
         <Search
           onChange={(e) => setSearchVal(e.target.value)}
           placeholder="Search"
@@ -40,7 +40,7 @@ export function ConsultaClubes() {
         <Table
           rowKey="name"
           dataSource={filteredData}
-          columns={colunasClubesAfiliados}
+          columns={colunasNomeacoes}
           loading={loading}
           pagination={false}
         />

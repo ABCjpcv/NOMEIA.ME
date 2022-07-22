@@ -3,6 +3,7 @@ import { Button, message, Popconfirm, Select, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -59,6 +60,8 @@ let currJogo = {};
 let currNomeArbitro = "";
 
 export function AtribuirJogos(props) {
+  let navigate = useNavigate();
+
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
@@ -113,36 +116,37 @@ export function AtribuirJogos(props) {
       title: "Arbitro1",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
-      sortDirections: ["descend", "ascend"],
-      render: () =>
-        dataSource.length >= 1 ? (
-          <>
-            <Select
-              showSearch
-              mode="single"
-              name="select_arbitro1"
-              style={{ width: "180px" }}
-              key="select_arbitro1"
-              type="select"
-              onChange={
-                //setSelectedOptions(o),
-                handleChangeSelecaoArbitro
-              }
-            >
-              {arbitrosDisponiveis.map((arb) => {
-                return (
-                  <Select.Option
-                    value={arb}
-                    key={"option_1_arbitro" + _.uniqueId()}
-                  >
-                    {arb}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </>
-        ) : null,
+      render: (text, record, index) => (
+        // text.Arbitro1.length > 0 ? (
+        <>
+          {console.log("text", text)}
+          {console.log("record", record)} {console.log("index", index)}
+          <Select
+            showSearch
+            mode="single"
+            name="select_arbitro1"
+            style={{ width: "180px" }}
+            key="select_arbitro1"
+            type="select"
+            onChange={handleChangeSelecaoArbitro}
+            value={record.Arbitro1 != "" ? record.Arbitro1 : null}
+          >
+            {arbitrosDisponiveis.map((arb) => {
+              return (
+                <Select.Option
+                  value={arb + ""}
+                  key={"option_1_arbitro" + _.uniqueId()}
+                >
+                  {arb + ""}
+                </Select.Option>
+              );
+            })}
+          </Select>
+        </>
+      ),
+      // ) : (
+      //   text
+      // ),
     },
     {
       title: "Arbitro2",
@@ -303,6 +307,8 @@ export function AtribuirJogos(props) {
   const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
   const [dataSource, setDataSource] = useState([]);
+
+  let [numeroDaLinha, setNumeroDaLinha] = useState(0);
 
   let [temRecibo, setTemRecibo] = useState(false);
   let [naoTemRecibo, setNaoTemRecibo] = useState(false);
@@ -505,7 +511,7 @@ export function AtribuirJogos(props) {
 
   function handleChangeNivel(value) {
     console.log("value nivel", value);
-    if (value === " ") {
+    if (value === "Todos") {
       setNivelDeArbitro(0);
     } else {
       setNivelDeArbitro(value);
@@ -516,281 +522,302 @@ export function AtribuirJogos(props) {
     <>
       {reloadData()}
 
-      <div
-        className="demo-app"
-        style={{ height: "10%", width: "auto", alignSelf: "center" }}
-      >
-        <div className="demo-app-sidebar"></div>
-        <div>
-          <div className="demo-app-main" style={{ overflow: "auto" }}>
-            <div className="container">
-              <div className="table-responsive" style={{ display: "flex" }}>
-                <br />
-                <div
-                  style={{
-                    backgroundColor: "white",
-                    alignSelf: "flex-start",
-                    marginTop: "5px",
-                  }}
-                >
-                  <h2 className="blue">
-                    {currJogo.Jogo != undefined
-                      ? "Selecionado: Jogo nº " + currJogo.Jogo
-                      : "Clique num jogo para o selecionar."}
-                  </h2>
-                  <div id="filtros">
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Tem Transporte próprio:
-                      <input
-                        className="inputt"
-                        type={"checkbox"}
-                        onChange={() => {
-                          if (naoTemTransporte) {
-                            message.warn(
-                              "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                            );
-                          } else {
-                            setTemTransporte(!temTransporte);
-                          }
-                        }}
-                        style={{
-                          marginLeft: "46px",
-                          height: "30px",
-                          width: "30px",
-                        }}
-                        checked={temTransporte}
-                      ></input>
-                    </label>
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Não tem transporte próprio:
-                      <input
-                        className="inputt"
-                        type={"checkbox"}
-                        onChange={() => {
-                          if (temTransporte) {
-                            message.warn(
-                              "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                            );
-                          } else {
-                            setNaoTemTransporte(!naoTemTransporte);
-                          }
-                        }}
-                        style={{
-                          marginLeft: "15px",
-                          height: "30px",
-                          width: "30px",
-                        }}
-                        checked={naoTemTransporte}
-                      ></input>
-                    </label>
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Emite Recibo Verde:
-                      <input
-                        className="inputt"
-                        type={"checkbox"}
-                        onChange={() => {
-                          if (naoTemRecibo) {
-                            message.warn(
-                              "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                            );
-                          } else {
-                            setTemRecibo(!temRecibo);
-                          }
-                        }}
-                        style={{
-                          marginLeft: "85px",
-                          height: "30px",
-                          width: "30px",
-                        }}
-                        checked={temRecibo}
-                      ></input>
-                    </label>
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Não Emite Recibo Verde:
-                      <input
-                        className="inputt"
-                        type={"checkbox"}
-                        onChange={() => {
-                          if (temRecibo) {
-                            message.warn(
-                              "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                            );
-                          } else {
-                            setNaoTemRecibo(!naoTemRecibo);
-                          }
-                        }}
-                        style={{
-                          marginLeft: "54px",
-                          height: "30px",
-                          width: "30px",
-                        }}
-                        checked={naoTemRecibo}
-                      ></input>
-                    </label>
-
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Árbitro de Nível:
-                      <Select
-                        className="inputt"
-                        onChange={handleChangeNivel}
-                        style={{
-                          marginLeft: "60px",
-                          height: "30px",
-                          width: "70px",
-                          borderRadius: "5px",
-                          borderBlockColor: "rgba(255, 255, 255, 0.5)",
-                          boxSizing: "border-box",
-                          backgroundColor: "#f0f0f0",
-                          fontWeight: "bold",
-                          fontSize: "15px",
-                        }}
-                      >
-                        <Option className="inputt-option" value={""}></Option>
-                        <Option className="inputt-option" value={"1"}>
-                          I
-                        </Option>
-                        <Option className="inputt-option" value={"2"}>
-                          II
-                        </Option>
-                        <Option className="inputt-option" value={"3"}>
-                          III
-                        </Option>
-                      </Select>
-                    </label>
-
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Relação com clubes:
-                    </label>
-                    <label className="labels">
-                      <br></br>
-                      <br></br>
-                      <Select
-                        mode="multiple"
-                        style={{
-                          marginLeft: "5px",
-                          width: "380px",
-                        }}
-                        defaultValue={[]}
-                        placeholder="Selecione clubes"
-                        onClick={() =>
-                          Meteor.call("getClubesDisponiveis", (err, result) => {
-                            console.log(result);
-                            if (err) {
-                              console.log(err);
-                            } else if (result) {
-                              return setClubesDisponiveis(result);
-                            }
-                          })
-                        }
-                        onChange={handleChangeClubes}
-                        optionLabelProp="label"
-                      >
-                        {clubesDisponiveis.map((clube) => {
-                          return (
-                            <Select.Option
-                              value={clube}
-                              label={clube}
-                              key={"option_clube" + _.uniqueId()}
-                            >
-                              <div className="demo-option-label-item">
-                                {" "}
-                                {clube}{" "}
-                              </div>
-                            </Select.Option>
-                          );
-                        })}
-                      </Select>
-                    </label>
-
-                    <label className="labels" style={{ marginLeft: "5px" }}>
-                      Arbitros disponíveis:
-                    </label>
-                    <ul
-                      style={{
-                        marginTop: "0px",
-                        height: "auto",
-                      }}
-                    >
-                      {arbitrosDisponiveis.map((arb) => {
-                        if (currJogo === {}) {
-                          return "Clique num jogo para obter os Árbitros Disponíveis";
-                        } else if (arbitrosDisponiveis.length === 1) {
-                          return "SEM RESULTADOS";
-                        } else if (arb != " ")
-                          return (
-                            <li style={{ textAlign: "initial" }}>
-                              {" "}
-                              {arb + "; \n"}{" "}
-                            </li>
-                          );
-                      })}
-                    </ul>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      handleSubmissionConfirmation();
-                      message.success("Nomeações enviadas para os Árbitros.");
-                    }}
-                    type="primary"
+      {dataSource.length === 0 ? (
+        <>
+          <br></br>
+          <h2 className="blue">Não carregou ainda o ficheiro de jogos.</h2>
+          <div
+            className="botao"
+            onClick={() => {
+              navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
+            }}
+          >
+            Carregar Jogos Novos
+          </div>
+        </>
+      ) : (
+        <div
+          className="demo-app"
+          style={{ height: "10%", width: "auto", alignSelf: "center" }}
+        >
+          <div className="demo-app-sidebar"></div>
+          <div>
+            <div className="demo-app-main" style={{ overflow: "auto" }}>
+              <div className="container">
+                <div className="table-responsive" style={{ display: "flex" }}>
+                  <br />
+                  <div
                     style={{
-                      marginBottom: 16,
+                      backgroundColor: "white",
+                      alignSelf: "flex-start",
+                      marginTop: "5px",
                     }}
                   >
-                    Submeter e enviar nomeações
-                  </Button>
-                </div>
-
-                <StyledTable
-                  //bordered
-                  rowClassName={(record, index) =>
-                    index % 2 === 0 ? "table-row-light" : "table-row-dark"
-                  }
-                  dataSource={dataSource}
-                  columns={colunasNomeacoesPrivadas}
-                  pagination={false}
-                  style={{ marginLeft: "5px", marginTop: "5px" }}
-                  onRow={(record) => {
-                    return {
-                      onClick: (event) => {
-                        //console.log("event", event);
-                        //console.log("event.target.value", event.target.value);
-
-                        console.log("record eh:", record);
-
-                        if (event.target != "div.ant-select-selector") {
-                          Meteor.call(
-                            "arbitrosDisponiveis",
-                            record,
-                            temRecibo,
-                            naoTemRecibo,
-                            temTransporte,
-                            naoTemTransporte,
-                            clubesRelacionados,
-                            nivelDeArbitro,
-                            (err, result) => {
-                              console.log(
-                                "result arbitros disponiveis: ",
-                                result
+                    <h2 className="blue">
+                      {currJogo.Jogo != undefined
+                        ? "Selecionado: Jogo nº " + currJogo.Jogo
+                        : "Clique num jogo para o selecionar."}
+                    </h2>
+                    <div id="filtros">
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Tem Transporte próprio:
+                        <input
+                          className="inputt"
+                          type={"checkbox"}
+                          onChange={() => {
+                            if (naoTemTransporte) {
+                              message.warn(
+                                "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
                               );
-                              if (err) {
-                                console.log("ERRRRROOOOO", { err });
-                              } else if (result.length != 0) {
-                                return setArbitrosDisponiveis(result);
-                              }
+                            } else {
+                              setTemTransporte(!temTransporte);
                             }
-                          );
-                          currJogo = record;
-                        }
-                      },
-                    };
-                  }}
-                />
-                <br></br>
+                          }}
+                          style={{
+                            marginLeft: "46px",
+                            height: "30px",
+                            width: "30px",
+                          }}
+                          checked={temTransporte}
+                        ></input>
+                      </label>
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Não tem transporte próprio:
+                        <input
+                          className="inputt"
+                          type={"checkbox"}
+                          onChange={() => {
+                            if (temTransporte) {
+                              message.warn(
+                                "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                              );
+                            } else {
+                              setNaoTemTransporte(!naoTemTransporte);
+                            }
+                          }}
+                          style={{
+                            marginLeft: "15px",
+                            height: "30px",
+                            width: "30px",
+                          }}
+                          checked={naoTemTransporte}
+                        ></input>
+                      </label>
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Emite Recibo Verde:
+                        <input
+                          className="inputt"
+                          type={"checkbox"}
+                          onChange={() => {
+                            if (naoTemRecibo) {
+                              message.warn(
+                                "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                              );
+                            } else {
+                              setTemRecibo(!temRecibo);
+                            }
+                          }}
+                          style={{
+                            marginLeft: "85px",
+                            height: "30px",
+                            width: "30px",
+                          }}
+                          checked={temRecibo}
+                        ></input>
+                      </label>
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Não Emite Recibo Verde:
+                        <input
+                          className="inputt"
+                          type={"checkbox"}
+                          onChange={() => {
+                            if (temRecibo) {
+                              message.warn(
+                                "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                              );
+                            } else {
+                              setNaoTemRecibo(!naoTemRecibo);
+                            }
+                          }}
+                          style={{
+                            marginLeft: "54px",
+                            height: "30px",
+                            width: "30px",
+                          }}
+                          checked={naoTemRecibo}
+                        ></input>
+                      </label>
+
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Árbitro de Nível:
+                        <Select
+                          className="inputt"
+                          onChange={handleChangeNivel}
+                          style={{
+                            marginLeft: "60px",
+                            height: "30px",
+                            width: "70px",
+                            borderRadius: "5px",
+                            borderBlockColor: "rgba(255, 255, 255, 0.5)",
+                            boxSizing: "border-box",
+                            backgroundColor: "#f0f0f0",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                          }}
+                        >
+                          <Option
+                            className="inputt-option"
+                            value={"Todos"}
+                          ></Option>
+                          <Option className="inputt-option" value={"1"}>
+                            I
+                          </Option>
+                          <Option className="inputt-option" value={"2"}>
+                            II
+                          </Option>
+                          <Option className="inputt-option" value={"3"}>
+                            III
+                          </Option>
+                        </Select>
+                      </label>
+
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Relação com clubes:
+                      </label>
+                      <label className="labels">
+                        <br></br>
+                        <br></br>
+                        <Select
+                          mode="multiple"
+                          style={{
+                            marginLeft: "5px",
+                            width: "380px",
+                          }}
+                          defaultValue={[]}
+                          placeholder="Selecione clubes"
+                          onClick={() =>
+                            Meteor.call(
+                              "getClubesDisponiveis",
+                              (err, result) => {
+                                console.log(result);
+                                if (err) {
+                                  console.log(err);
+                                } else if (result) {
+                                  return setClubesDisponiveis(result);
+                                }
+                              }
+                            )
+                          }
+                          onChange={handleChangeClubes}
+                          optionLabelProp="label"
+                        >
+                          {clubesDisponiveis.map((clube) => {
+                            return (
+                              <Select.Option
+                                value={clube}
+                                label={clube}
+                                key={"option_clube" + _.uniqueId()}
+                              >
+                                <div className="demo-option-label-item">
+                                  {" "}
+                                  {clube}{" "}
+                                </div>
+                              </Select.Option>
+                            );
+                          })}
+                        </Select>
+                      </label>
+
+                      <label className="labels" style={{ marginLeft: "5px" }}>
+                        Arbitros disponíveis:
+                      </label>
+                      <ul
+                        style={{
+                          marginTop: "0px",
+                          height: "auto",
+                        }}
+                      >
+                        {arbitrosDisponiveis.map((arb) => {
+                          if (currJogo === {}) {
+                            return "Clique num jogo para obter os Árbitros Disponíveis";
+                          } else if (arbitrosDisponiveis.length === 1) {
+                            return "SEM RESULTADOS";
+                          } else if (arb != " ")
+                            return (
+                              <li style={{ textAlign: "initial" }}>
+                                {" "}
+                                {arb + "; \n"}{" "}
+                              </li>
+                            );
+                        })}
+                      </ul>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        handleSubmissionConfirmation();
+                        message.success("Nomeações enviadas para os Árbitros.");
+                      }}
+                      type="primary"
+                      style={{
+                        marginBottom: 16,
+                      }}
+                    >
+                      Submeter e enviar nomeações
+                    </Button>
+                  </div>
+
+                  <StyledTable
+                    //bordered
+                    rowClassName={(record, index) =>
+                      index % 2 === 0 ? "table-row-light" : "table-row-dark"
+                    }
+                    dataSource={dataSource}
+                    columns={colunasNomeacoesPrivadas}
+                    pagination={false}
+                    style={{ marginLeft: "5px", marginTop: "5px" }}
+                    onRow={(record) => {
+                      return {
+                        onClick: (event) => {
+                          //console.log("event", event);
+                          //console.log("event.target.value", event.target.value);
+
+                          console.log("record eh:", record);
+
+                          if (event.target != "div.ant-select-selector") {
+                            Meteor.call(
+                              "arbitrosDisponiveis",
+                              record,
+                              temRecibo,
+                              naoTemRecibo,
+                              temTransporte,
+                              naoTemTransporte,
+                              clubesRelacionados,
+                              nivelDeArbitro,
+                              (err, result) => {
+                                console.log(
+                                  "result arbitros disponiveis: ",
+                                  result
+                                );
+                                if (err) {
+                                  console.log("ERRRRROOOOO", { err });
+                                } else if (result.length != 0) {
+                                  return setArbitrosDisponiveis(result);
+                                }
+                              }
+                            );
+                            currJogo = record;
+                          }
+                        },
+                      };
+                    }}
+                  />
+                  <br></br>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

@@ -1,10 +1,9 @@
 import React from "react";
-import { Meteor } from "meteor/meteor";
-import SideBar from "./sidebar";
-import SideBarCA from "./sidebarCA";
+import SideBar from "../../../api/Arbitro/sidebar";
+import SideBarCA from "../../../api/CA/sidebarCA";
 import { Fragment } from "react/cjs/react.production.min";
-import { LogoHeader } from "./Pages/LogoHeader";
-import { LogoAVL } from "./Pages/LogoAVL";
+import { LogoHeader } from "./LogoHeader";
+import { LogoAVL } from "./LogoAVL";
 
 export const Header = ({ user }) => {
   return (

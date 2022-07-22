@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React from "react";
+
 import { Meteor } from "meteor/meteor";
 import { slide as Menu } from "react-burger-menu";
 import { useNavigate } from "react-router-dom";

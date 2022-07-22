@@ -1,13 +1,7 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
 import { Button, message } from "antd";
-import FullCalendar, {
-  CalendarApi,
-  EventSourceApi,
-  eventTupleToStore,
-  formatDate,
-  isValidDate,
-} from "@fullcalendar/react";
+import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -102,7 +96,7 @@ export class Indisponibilidades extends React.Component {
                 value="Instruções"
                 onClick={() =>
                   message.info(
-                    "Selecione as datas para criar uma nova Indisponibilidade. \nArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
+                    "Selecione as datas para criar uma nova Indisponibilidade. \n\rArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
                     10
                   )
                 }

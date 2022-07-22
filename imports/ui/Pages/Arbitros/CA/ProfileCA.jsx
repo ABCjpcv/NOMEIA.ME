@@ -1,15 +1,6 @@
 import React from "react";
 
-import "./app.css";
-
-import { Indisponibilidades } from "./Indisponibilidades";
-import { Restricoes } from "./Restricoes";
-import { ConsultaPrivada } from "./ConsultaPrivada";
-import { FileInput } from "./FileInput";
-import { ListaJogosSemArbitros } from "./ListaJogosSemArbitros";
-import { AtribuirJogos } from "./AtribuirJogos";
-import { UserSettings } from "./UserSettings";
-import { ContaNova } from "./ContaNova";
+import { ConsultaPrivada } from "../ConsultaPrivada";
 
 export function ProfileCA({ user }) {
   /**

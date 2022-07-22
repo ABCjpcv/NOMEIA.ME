@@ -15,7 +15,6 @@ export function Navbar() {
 
   return (
     <div>
-      {/* <h1 className="blue">Bem-vindo</h1> */}
       <div style={{ marginTop: "1%" }}>
         <div
           className="botao"

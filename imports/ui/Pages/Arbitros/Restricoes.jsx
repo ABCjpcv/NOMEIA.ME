@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Table, Input, Button, message } from "antd";
 import axios from "axios";
-import { useTableSearch } from "./useTableSearch";
+import { useTableSearch } from "../../../api/useTableSearch";
 
 import { Meteor } from "meteor/meteor";
 

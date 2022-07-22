@@ -1,27 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { Meteor } from "meteor/meteor";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate, Outlet } from "react-router";
 
-import "../ui/Pages/app.css";
+import "../../Pages/app.css";
 
-import { Navbar } from "./Pages/Navbar.jsx";
-import { Sobre } from "./Pages/Sobre.jsx";
-import { ConsultaNomeacoes } from "./Pages/ConsultaNomeacoes.jsx";
-import { Indisponibilidades } from "./Pages/Indisponibilidades.jsx";
-import { Restricoes } from "./Pages/Restricoes.jsx";
-import { ContaNova } from "./Pages/ContaNova.jsx";
-import { Autenticar } from "./Pages/Autenticar.jsx";
-import { Profile } from "./Pages/Profile.jsx";
-import { Clubes_da_AVL } from "./Pages/Clubes_da_AVL.jsx";
-import { ForgotPassword } from "./Pages/ForgotPassword.jsx";
-import { NotFoundPage } from "./Pages/NotFoundPage.jsx";
+import { Navbar } from "./Navbar.jsx";
+import { Sobre } from "./Sobre.jsx";
+import { ConsultaNomeacoes } from "../NaoAutenticado/ConsultaNomeacoes.jsx";
+import { Indisponibilidades } from "../Arbitros/Indisponibilidades.jsx";
+import { Restricoes } from "../Arbitros/Restricoes.jsx";
+import { ContaNova } from "../Arbitros/CA/ContaNova.jsx";
+import { Autenticar } from "../NaoAutenticado/Autenticar.jsx";
+import { Profile } from "../Arbitros/Profile.jsx";
+import { Clubes_da_AVL } from "../NaoAutenticado/Clubes_da_AVL.jsx";
+import { ForgotPassword } from "../NaoAutenticado/ForgotPassword.jsx";
+import { NotFoundPage } from "./NotFoundPage.jsx";
 import { Header } from "./Header";
-import { ProfileCA } from "./Pages/ProfileCA";
-import { ProtectedRoutes } from "./Pages/ProtectedRoutes";
-import { UserSettings } from "./Pages/UserSettings";
-import { FileInput } from "./Pages/FileInput";
-import { AtribuirJogos } from "./Pages/AtribuirJogos";
+import { ProfileCA } from "../Arbitros/CA/ProfileCA";
+import { ProtectedRoutes } from "./ProtectedRoutes";
+import { UserSettings } from "../Arbitros/UserSettings";
+import { FileInput } from "../Arbitros/CA/FileInput";
+import { AtribuirJogos } from "../Arbitros/CA/AtribuirJogos";
 
 import { useTracker } from "meteor/react-meteor-data";
 
