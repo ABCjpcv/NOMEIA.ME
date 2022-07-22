@@ -2,8 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Fragment } from "react/cjs/react.production.min";
 import { Meteor } from "meteor/meteor";
+import { Button } from "antd";
 
-export const LogoHeader = () => {
+export const LogoHeader = ({ user }) => {
   let navigate = useNavigate();
 
   function mostraTitulo() {
@@ -37,14 +38,37 @@ export const LogoHeader = () => {
 
   return (
     <Fragment>
-      <img
-        id="imgLogo"
-        src="logo.png"
-        style={{ width: "30%", cursor: "pointer" }}
+      <div
+        style={{ display: "flex", justifyContent: "center" }}
         onClick={() => {
           mostraTitulo(), navigate("/"), logout();
         }}
-      />
+      >
+        {user ? (
+          <>
+            <p
+              style={{
+                fontSize: "15px",
+                marginTop: "1%",
+                marginRight: "5%",
+              }}
+            >
+              Sair
+            </p>
+            <img
+              id="imgLogout"
+              src="logout.png"
+              style={{ width: "15%", cursor: "pointer", marginRight: "-100%" }}
+            />{" "}
+          </>
+        ) : (
+          <img
+            id="imgLogo"
+            src="logo.png"
+            style={{ width: "25%", cursor: "pointer" }}
+          />
+        )}
+      </div>
     </Fragment>
   );
 };

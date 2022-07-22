@@ -17,7 +17,7 @@ const props = {
         "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
       );
     } else {
-      message.success("Novos jogos semanais carregados");
+      message.success("Novos jogos semanais carregados!");
     }
 
     return isValidFyleType;

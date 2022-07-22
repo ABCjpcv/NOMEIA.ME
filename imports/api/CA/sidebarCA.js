@@ -120,7 +120,7 @@ export default (props) => {
 
   return (
     // Pass on our props
-    <Menu right={true} {...props}>
+    <Menu left={true} {...props}>
       <a className="menu-item">
         <p
           style={{ fontSize: "15px" }}

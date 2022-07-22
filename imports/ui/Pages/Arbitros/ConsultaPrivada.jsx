@@ -264,6 +264,15 @@ export function ConsultaPrivada({ user }) {
   };
 
   const handleAllConfirmation = () => {
+    // try {
+    //   if (document.getElementById("submissionConfirmationButton").disabled) {
+    //     message.warn(
+    //       "Já confirmou as suas nomeações " + Meteor.user().username + "!"
+    //     );
+    //     document.getElementById("confirmAllNominations").disabled = true;
+    //   }
+    // } catch (error) {}
+
     const newData = dataSource.filter((item) => {
       return (item.tags[0] = ["confirmado"]);
     });
@@ -287,7 +296,7 @@ export function ConsultaPrivada({ user }) {
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
-        return message.info("Tem jogos por confirmar, " + user.username);
+        return message.info("Ainda tem jogos por confirmar, " + user.username);
       } else {
         jogos.push(parseInt(data[index]));
         confirmacoes.push(data[index].tags[0]);
@@ -310,8 +319,7 @@ export function ConsultaPrivada({ user }) {
       }
     );
 
-    document.getElementById("submissionConfirmationButton").disabled = true;
-    document.getElementById("confirmAllNominations").disabled = true;
+    setSubmetido(true);
   }
 
   function loadData() {
@@ -422,7 +430,6 @@ export function ConsultaPrivada({ user }) {
                         dataSource={dataSource}
                         columns={colunasNomeacoesPrivadas}
                       />
-                      <br></br>
                       <Button
                         onClick={handleAllConfirmation}
                         style={{

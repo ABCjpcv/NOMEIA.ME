@@ -884,15 +884,15 @@ Meteor.methods({
     refs.forEach((arbitro) => {
       let nomeacoesAuxiliares = [];
 
+      // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
       games.forEach((jogo) => {
         if (
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_2 == arbitro.nome ||
-          jogo.juiz_linha_1 == arbitro.nome ||
-          jogo.juiz_linha_2 == arbitro.nome ||
-          jogo.juiz_linha_3 == arbitro.nome ||
-          jogo.juiz_linha_4 == arbitro.nome
+          jogo.arbitro_1 === arbitro.nome ||
+          jogo.arbitro_2 === arbitro.nome ||
+          jogo.juiz_linha_1 === arbitro.nome ||
+          jogo.juiz_linha_2 === arbitro.nome ||
+          jogo.juiz_linha_3 === arbitro.nome ||
+          jogo.juiz_linha_4 === arbitro.nome
         ) {
           nomeacoesAuxiliares.push({
             jogo: jogo,
@@ -1244,6 +1244,7 @@ Meteor.methods({
         preNomeacoes: newGames,
       });
     }
+
     return true;
   },
 
