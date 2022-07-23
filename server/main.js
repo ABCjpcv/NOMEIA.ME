@@ -319,10 +319,31 @@ Meteor.startup(() => {
 
   restricoes.rawCollection().drop();
 
+  let relacoesIniciais = [false, false, false, false];
+  let descricaoInicial = "";
+
+  let relacoesAuxiliares = [];
+  clubes.find().forEach((clube) => {
+    let nomeClube = clube[0];
+    if (nomeClube.length > 6) {
+      console.log("CLUBE[0]", nomeClube);
+      relacoesAuxiliares.push({
+        Clube: clube[0]
+          .split(" ")
+          .map(function (ele) {
+            return ele[0].toUpperCase() + ele.slice(1).toLowerCase();
+          })
+          .join(" "),
+        Restricao: relacoesIniciais,
+        Descricao: descricaoInicial,
+      });
+    }
+  });
+
   arb.forEach((arbitro) => {
     restricoes.insert({
       arbitro: arbitro,
-      relacoes: [],
+      relacoes: relacoesAuxiliares,
     });
     console.log("inserted: RESTRICAO ");
   });
@@ -683,6 +704,8 @@ Meteor.methods({
    */
 
   addRestricao: function addRestricao(username, restrictions) {
+    console.log("restricao", restrictions);
+
     try {
       const a = arbitros.findOne({ nome: username });
       restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } });

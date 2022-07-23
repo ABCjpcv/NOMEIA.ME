@@ -69,6 +69,8 @@ export function AtribuirJogos(props) {
       key: "Jogo",
       sorter: (a, b) => a.key - b.key,
       sortDirections: ["descend", "ascend"],
+      width: "4%",
+      fixed: "left",
     },
     {
       title: "Dia",
@@ -76,6 +78,8 @@ export function AtribuirJogos(props) {
       key: "Dia",
       sorter: (a, b) => comparaAminhaLindaData(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "6%",
     },
     {
       title: "Hora",
@@ -83,6 +87,8 @@ export function AtribuirJogos(props) {
       key: "Hora",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "4%",
     },
     {
       title: "Prova",
@@ -90,6 +96,8 @@ export function AtribuirJogos(props) {
       key: "Prova",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "6%",
     },
     {
       title: "Serie",
@@ -97,6 +105,8 @@ export function AtribuirJogos(props) {
       key: "Serie",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "4%",
     },
     {
       title: "Equipas",
@@ -104,6 +114,8 @@ export function AtribuirJogos(props) {
       key: "Equipas",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "6%",
     },
     {
       title: "Pavilhao",
@@ -111,18 +123,21 @@ export function AtribuirJogos(props) {
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      fixed: "left",
+      width: "7%",
     },
     {
       title: "Arbitro1",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
+      width: "11%",
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_arbitro1"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_arbitro1"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -148,13 +163,14 @@ export function AtribuirJogos(props) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      width: "11%",
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_arbitro2"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_arbitro2"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -180,13 +196,14 @@ export function AtribuirJogos(props) {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      width: "11%",
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl1"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_jl1"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -212,13 +229,14 @@ export function AtribuirJogos(props) {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
+      width: "11%",
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl2"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_jl2"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -242,6 +260,7 @@ export function AtribuirJogos(props) {
       title: "JL3",
       dataIndex: "JL3",
       key: "JL3",
+      width: "11%",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (text, record, index) => (
@@ -250,7 +269,7 @@ export function AtribuirJogos(props) {
             showSearch
             mode="single"
             name="select_jl3"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_jl3"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -274,6 +293,7 @@ export function AtribuirJogos(props) {
       title: "JL4",
       dataIndex: "JL4",
       key: "JL4",
+      width: "11%",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (text, record, index) => (
@@ -282,7 +302,7 @@ export function AtribuirJogos(props) {
             showSearch
             mode="single"
             name="select_jl4"
-            style={{ width: "180px" }}
+            style={{ width: "100%" }}
             key="select_jl4"
             type="select"
             onChange={handleChangeSelecaoArbitro}
@@ -313,8 +333,6 @@ export function AtribuirJogos(props) {
   const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
   const [dataSource, setDataSource] = useState([]);
-
-  let [numeroDaLinha, setNumeroDaLinha] = useState(0);
 
   let [temRecibo, setTemRecibo] = useState(false);
   let [naoTemRecibo, setNaoTemRecibo] = useState(false);
@@ -546,231 +564,221 @@ export function AtribuirJogos(props) {
           className="demo-app"
           style={{ height: "10%", width: "auto", alignSelf: "center" }}
         >
-          <div className="demo-app-sidebar"></div>
-          <div>
-            <div className="demo-app-main" style={{ overflow: "auto" }}>
-              <div className="container">
-                <div className="table-responsive" style={{ display: "flex" }}>
-                  <br />
-                  <div
+          <div className="demo-app-sidebar">
+            <div
+              style={{
+                backgroundColor: "white",
+                alignSelf: "flex-start",
+                marginTop: "0.2%",
+                marginLeft: "0.2%",
+                marginRight: "0.2%",
+              }}
+            >
+              <h2 className="blue">
+                {currJogo.Jogo != undefined
+                  ? "Jogo nº: " + currJogo.Jogo
+                  : "Clique num jogo para o selecionar."}
+              </h2>
+              <div id="filtros">
+                <div
+                  id="firstLineFilters"
+                  style={{ display: "flex", marginLeft: "0.5%" }}
+                >
+                  Tem Transporte próprio:
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (naoTemTransporte) {
+                        message.warn(
+                          "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                        );
+                      } else {
+                        setTemTransporte(!temTransporte);
+                      }
+                    }}
                     style={{
-                      backgroundColor: "white",
-                      alignSelf: "flex-start",
-                      marginTop: "5px",
+                      marginLeft: "1%",
+                      height: "30px",
+                      width: "30px",
+                    }}
+                    checked={temTransporte}
+                  ></input>
+                  Não tem transporte próprio:
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (temTransporte) {
+                        message.warn(
+                          "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                        );
+                      } else {
+                        setNaoTemTransporte(!naoTemTransporte);
+                      }
+                    }}
+                    style={{
+                      marginLeft: "1%",
+                      height: "30px",
+                      width: "30px",
+                    }}
+                    checked={naoTemTransporte}
+                  ></input>
+                  Emite Recibo Verde:
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (naoTemRecibo) {
+                        message.warn(
+                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        );
+                      } else {
+                        setTemRecibo(!temRecibo);
+                      }
+                    }}
+                    style={{
+                      marginLeft: "1%",
+                      height: "30px",
+                      width: "30px",
+                    }}
+                    checked={temRecibo}
+                  ></input>
+                  Não Emite Recibo Verde:
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (temRecibo) {
+                        message.warn(
+                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        );
+                      } else {
+                        setNaoTemRecibo(!naoTemRecibo);
+                      }
+                    }}
+                    style={{
+                      marginLeft: "1%",
+                      height: "30px",
+                      width: "30px",
+                    }}
+                    checked={naoTemRecibo}
+                  ></input>
+                  Árbitro de Nível:
+                  <Select
+                    className="inputt"
+                    onChange={handleChangeNivel}
+                    style={{
+                      marginLeft: "1%",
+                      height: "30px",
+                      width: "70px",
+                      borderRadius: "5px",
+                      borderBlockColor: "rgba(255, 255, 255, 0.5)",
+                      boxSizing: "border-box",
+                      backgroundColor: "#f0f0f0",
+                      fontWeight: "bold",
+                      fontSize: "15px",
                     }}
                   >
-                    <h2 className="blue">
-                      {currJogo.Jogo != undefined
-                        ? "Selecionado: Jogo nº " + currJogo.Jogo
-                        : "Clique num jogo para o selecionar."}
-                    </h2>
-                    <div id="filtros">
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Tem Transporte próprio:
-                        <input
-                          className="inputt"
-                          type={"checkbox"}
-                          onChange={() => {
-                            if (naoTemTransporte) {
-                              message.warn(
-                                "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                              );
-                            } else {
-                              setTemTransporte(!temTransporte);
-                            }
-                          }}
-                          style={{
-                            marginLeft: "46px",
-                            height: "30px",
-                            width: "30px",
-                          }}
-                          checked={temTransporte}
-                        ></input>
-                      </label>
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Não tem transporte próprio:
-                        <input
-                          className="inputt"
-                          type={"checkbox"}
-                          onChange={() => {
-                            if (temTransporte) {
-                              message.warn(
-                                "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                              );
-                            } else {
-                              setNaoTemTransporte(!naoTemTransporte);
-                            }
-                          }}
-                          style={{
-                            marginLeft: "15px",
-                            height: "30px",
-                            width: "30px",
-                          }}
-                          checked={naoTemTransporte}
-                        ></input>
-                      </label>
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Emite Recibo Verde:
-                        <input
-                          className="inputt"
-                          type={"checkbox"}
-                          onChange={() => {
-                            if (naoTemRecibo) {
-                              message.warn(
-                                "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                              );
-                            } else {
-                              setTemRecibo(!temRecibo);
-                            }
-                          }}
-                          style={{
-                            marginLeft: "85px",
-                            height: "30px",
-                            width: "30px",
-                          }}
-                          checked={temRecibo}
-                        ></input>
-                      </label>
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Não Emite Recibo Verde:
-                        <input
-                          className="inputt"
-                          type={"checkbox"}
-                          onChange={() => {
-                            if (temRecibo) {
-                              message.warn(
-                                "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                              );
-                            } else {
-                              setNaoTemRecibo(!naoTemRecibo);
-                            }
-                          }}
-                          style={{
-                            marginLeft: "54px",
-                            height: "30px",
-                            width: "30px",
-                          }}
-                          checked={naoTemRecibo}
-                        ></input>
-                      </label>
-
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Árbitro de Nível:
-                        <Select
-                          className="inputt"
-                          onChange={handleChangeNivel}
-                          style={{
-                            marginLeft: "60px",
-                            height: "30px",
-                            width: "70px",
-                            borderRadius: "5px",
-                            borderBlockColor: "rgba(255, 255, 255, 0.5)",
-                            boxSizing: "border-box",
-                            backgroundColor: "#f0f0f0",
-                            fontWeight: "bold",
-                            fontSize: "15px",
-                          }}
+                    <Option className="inputt-option" value={"Todos"}>
+                      {" "}
+                      Todos{" "}
+                    </Option>
+                    <Option className="inputt-option" value={"1"}>
+                      I
+                    </Option>
+                    <Option className="inputt-option" value={"2"}>
+                      II
+                    </Option>
+                    <Option className="inputt-option" value={"3"}>
+                      III
+                    </Option>
+                  </Select>
+                  Relação com clubes:
+                  <Select
+                    mode="multiple"
+                    style={{
+                      marginLeft: "5px",
+                      width: "380px",
+                    }}
+                    defaultValue={[]}
+                    placeholder="Selecione clubes"
+                    onClick={() =>
+                      Meteor.call("getClubesDisponiveis", (err, result) => {
+                        console.log(result);
+                        if (err) {
+                          console.log(err);
+                        } else if (result) {
+                          return setClubesDisponiveis(result);
+                        }
+                      })
+                    }
+                    onChange={handleChangeClubes}
+                    optionLabelProp="label"
+                  >
+                    {clubesDisponiveis.map((clube) => {
+                      return (
+                        <Select.Option
+                          value={clube}
+                          label={clube}
+                          key={"option_clube" + _.uniqueId()}
                         >
-                          <Option
-                            className="inputt-option"
-                            value={"Todos"}
-                          ></Option>
-                          <Option className="inputt-option" value={"1"}>
-                            I
-                          </Option>
-                          <Option className="inputt-option" value={"2"}>
-                            II
-                          </Option>
-                          <Option className="inputt-option" value={"3"}>
-                            III
-                          </Option>
-                        </Select>
-                      </label>
+                          <div className="demo-option-label-item">
+                            {" "}
+                            {clube}{" "}
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                  <></>
+                  <Button
+                    onClick={() => {
+                      handleSubmissionConfirmation();
+                      message.success("Nomeações enviadas para os Árbitros.");
+                    }}
+                    type="primary"
+                    style={{
+                      marginRight: "0.5%",
+                      marginBottom: "0.5%",
+                    }}
+                  >
+                    Enviar Nomeações para Árbitros
+                  </Button>
+                </div>
 
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Relação com clubes:
-                      </label>
-                      <label className="labels">
-                        <br></br>
-                        <br></br>
-                        <Select
-                          mode="multiple"
-                          style={{
-                            marginLeft: "5px",
-                            width: "380px",
-                          }}
-                          defaultValue={[]}
-                          placeholder="Selecione clubes"
-                          onClick={() =>
-                            Meteor.call(
-                              "getClubesDisponiveis",
-                              (err, result) => {
-                                console.log(result);
-                                if (err) {
-                                  console.log(err);
-                                } else if (result) {
-                                  return setClubesDisponiveis(result);
-                                }
-                              }
-                            )
-                          }
-                          onChange={handleChangeClubes}
-                          optionLabelProp="label"
-                        >
-                          {clubesDisponiveis.map((clube) => {
-                            return (
-                              <Select.Option
-                                value={clube}
-                                label={clube}
-                                key={"option_clube" + _.uniqueId()}
-                              >
-                                <div className="demo-option-label-item">
-                                  {" "}
-                                  {clube}{" "}
-                                </div>
-                              </Select.Option>
-                            );
-                          })}
-                        </Select>
-                      </label>
-
-                      <label className="labels" style={{ marginLeft: "5px" }}>
-                        Arbitros disponíveis:
-                      </label>
-                      <ul
-                        style={{
-                          marginTop: "0px",
-                          height: "auto",
-                        }}
-                      >
-                        {arbitrosDisponiveis.map((arb) => {
-                          if (currJogo === {}) {
-                            return "Clique num jogo para obter os Árbitros Disponíveis";
-                          } else if (arbitrosDisponiveis.length === 1) {
-                            return "SEM RESULTADOS";
-                          } else if (arb != " ")
-                            return (
-                              <li style={{ textAlign: "initial" }}>
-                                {" "}
-                                {arb + "; \n"}{" "}
-                              </li>
-                            );
-                        })}
-                      </ul>
-                    </div>
-                    <Button
-                      onClick={() => {
-                        handleSubmissionConfirmation();
-                        message.success("Nomeações enviadas para os Árbitros.");
-                      }}
-                      type="primary"
-                      style={{
-                        marginBottom: 16,
-                      }}
-                    >
-                      Submeter e enviar nomeações
-                    </Button>
-                  </div>
+                {/* <label className="labels" style={{ marginLeft: "5px" }}>
+                  Arbitros disponíveis:
+                </label>
+                <ul
+                  style={{
+                    marginTop: "0px",
+                    height: "auto",
+                  }}
+                >
+                  {arbitrosDisponiveis.map((arb) => {
+                    if (arbitrosDisponiveis.length === 0) {
+                      return "Clique num jogo para obter os Árbitros Disponíveis";
+                    } else if (arbitrosDisponiveis.length === 1) {
+                      return "SEM RESULTADOS";
+                    } else if (arb != " ")
+                      return (
+                        <li style={{ textAlign: "initial" }}>
+                          {" "}
+                          {arb + "; \n"}{" "}
+                        </li>
+                      );
+                  })}
+                </ul> */}
+              </div>
+            </div>
+            <div>
+              <div className="demo-app-main" style={{ overflow: "auto" }}>
+                <div className="container">
+                  <div
+                    className="table-responsive"
+                    style={{ display: "flex" }}
+                  ></div>
 
                   <StyledTable
                     //bordered
@@ -779,8 +787,15 @@ export function AtribuirJogos(props) {
                     }
                     dataSource={dataSource}
                     columns={colunasNomeacoesPrivadas}
-                    pagination={false}
-                    style={{ marginLeft: "5px", marginTop: "5px" }}
+                    pagination={true}
+                    style={{
+                      marginLeft: "0.2%",
+                      marginTop: "0.2%",
+                      marginRight: "0.2%",
+                    }}
+                    scroll={{
+                      x: 1800,
+                    }}
                     onRow={(record) => {
                       return {
                         onClick: (event) => {
@@ -817,7 +832,6 @@ export function AtribuirJogos(props) {
                       };
                     }}
                   />
-                  <br></br>
                 </div>
               </div>
             </div>

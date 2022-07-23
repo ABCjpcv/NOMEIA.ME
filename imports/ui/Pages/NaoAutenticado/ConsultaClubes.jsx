@@ -9,6 +9,7 @@ const { Search } = Input;
 
 const fetchUsers = async () => {
   const { data } = await axios.get("ClubesAVL_info.json");
+  console.log("data", data);
   return { data };
 };
 

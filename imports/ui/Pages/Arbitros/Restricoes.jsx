@@ -9,17 +9,31 @@ import { Meteor } from "meteor/meteor";
 const { Search } = Input;
 
 let dbInfo = "";
-const fetchData = async () => {
-  // Meteor.call("getClubesDisponiveis", (err, result) => {
-  //   console.log("result", result);
-  //   if (result) {
-  //     return { result };
-  //   }
-  // });
-  let { data } = await axios.get("ClubesAVLnomes.json");
-  if (dbInfo != "") {
-    data = dbInfo;
-  }
+const fetchData = () => {
+  let query = [];
+  Meteor.call("carregaRestricoes", Meteor.user?.()?.username, (err, result) => {
+    if (err) {
+      console.log("ERRRRROOOOO", { err });
+      reject(err);
+    } else if (result) {
+      let j = JSON.parse(JSON.stringify(result));
+      let dataFromDB = j.relacoes;
+
+      if (dataFromDB != undefined) {
+        query = dataFromDB;
+        return { query };
+      } else {
+        Meteor.call("getClubesDisponiveis", (err, result) => {
+          console.log("result", result);
+          if (result) {
+            query = result;
+            return { query };
+          }
+        });
+      }
+    }
+  });
+  console.log("query", query);
 };
 
 export const listaClubesColumns = [
@@ -46,7 +60,7 @@ export const listaClubesColumns = [
           <input
             type="checkbox"
             value="Atleta"
-            defaultChecked={Restricao[0]}
+            defaultChecked={Restricao != undefined ? Restricao[0] : false}
             style={{ height: "25px", width: "25px" }}
           />
         </div>
@@ -56,7 +70,7 @@ export const listaClubesColumns = [
           <input
             type="checkbox"
             value="Dirigente"
-            defaultChecked={Restricao[1]}
+            defaultChecked={Restricao != undefined ? Restricao[1] : false}
             style={{ height: "25px", width: "25px" }}
           />
         </div>
@@ -66,7 +80,7 @@ export const listaClubesColumns = [
           <input
             type="checkbox"
             value="Treinador"
-            defaultChecked={Restricao[2]}
+            defaultChecked={Restricao != undefined ? Restricao[2] : false}
             style={{ height: "25px", width: "25px" }}
           />
         </div>
@@ -76,7 +90,7 @@ export const listaClubesColumns = [
           <input
             type="checkbox"
             value="Outra"
-            defaultChecked={Restricao[3]}
+            defaultChecked={Restricao != undefined ? Restricao[3] : false}
             style={{ height: "25px", width: "25px" }}
           />
         </div>
@@ -97,174 +111,183 @@ export const listaClubesColumns = [
     ),
   },
 ];
-function loadData() {
-  // Verifica se o utilizador loggado tem restricoes guardadas na bd
-  return new Promise((resolve, reject) => {
+
+export function Restricoes() {
+  const [searchVal, setSearchVal] = useState(null);
+
+  let [data, setData] = useState([]);
+
+  // const { filteredData, loading } = useTableSearch({
+  //   searchVal,
+  //   retrieve: loadData,
+  // });
+
+  useEffect(() => {
+    console.log("NOVA DATA: ", data);
+  }, [data]);
+
+  function loadData() {
+    // Verifica se o utilizador loggado tem restricoes guardadas na bd
+    //return new Promise((resolve, reject) => {
     Meteor.call(
       "carregaRestricoes",
       Meteor.user?.()?.username,
       (err, result) => {
         if (err) {
           console.log("ERRRRROOOOO", { err });
-          reject(err);
+          // reject(err);
         } else if (result) {
           let j = JSON.parse(JSON.stringify(result));
           let dataFromDB = j.relacoes;
 
-          // Nao ha data na base de dados do
-          if (dataFromDB == undefined) {
-            resolve(fetchData());
+          console.log("data from db", dataFromDB);
+
+          if (dataFromDB.length != 0) {
+            setData(dataFromDB);
+          } else {
+            Meteor.call("getClubesDisponiveis", (err, result) => {
+              console.log("result", result);
+              if (result) {
+                setData(result);
+              }
+            });
           }
 
           // O PROBLEMA ESTÁ AQUI
-          else {
-            dbInfo = dataFromDB;
-            // ISTO NÃO ESTÁ A FUNCIONAR
-            resolve(fetchData());
 
-            //PK ACIMA TENHO: resolve(fetchData()) que me devolve ()=>Promise<{data}>
-            //AQUI TENHO {data: dataFromDB}, ou seja nao eh uma ()=>Promise<{data}>
-          }
+          // dbInfo = dataFromDB;
+          // // ISTO NÃO ESTÁ A FUNCIONAR
+          // resolve(fetchData());
+
+          //PK ACIMA TENHO: resolve(fetchData()) que me devolve ()=>Promise<{data}>
+          //AQUI TENHO {data: dataFromDB}, ou seja nao eh uma ()=>Promise<{data}>
         }
       }
     );
-  });
-}
-
-export function Restricoes() {
-  const [searchVal, setSearchVal] = useState(null);
-
-  let [data, setData] = useState(fetchData);
-
-  const { filteredData, loading } = useTableSearch({
-    searchVal,
-    retrieve: loadData,
-  });
-
-  useEffect(() => {
-    console.log("NOVA DATA: ");
-    console.log(data);
-  }, [data]);
-
-  function adicionaRestricao(key, valorRestricao, isChecked) {
-    let changedLine;
-
-    const analyzer = Promise.resolve(data);
-    analyzer.then((resultado) => {
-      if (resultado.data != undefined) {
-        let obj = resultado.data[key - 1];
-        let j = JSON.parse(JSON.stringify(obj));
-
-        j.Restricao[valorRestricao] = isChecked;
-        resultado.data[key - 1] = j;
-
-        changedLine = resultado.data[key - 1];
-
-        var d = Promise.resolve(data);
-        d.then(function (v) {
-          const newState = v.data.map((obj) => {
-            // 👇️ if id equals 2 replace object
-            if (obj.key === key) {
-              return changedLine;
-            }
-            // 👇️ otherwise return object as is
-            return obj;
-          });
-
-          setData(newState);
-        });
-      } else {
-        let obj = resultado[key - 1];
-        let j = JSON.parse(JSON.stringify(obj));
-
-        j.Restricao[valorRestricao] = isChecked;
-        resultado[key - 1] = j;
-
-        changedLine = resultado[key - 1];
-
-        var d = Promise.resolve(data);
-        d.then(function (v) {
-          const i = v.map((obj) => {
-            return obj;
-          });
-          console.log("iiiiiiiiii");
-          console.log(i);
-
-          const newState = v.map((obj) => {
-            // 👇️ if id equals 2 replace object
-            if (obj.key === key) {
-              return changedLine;
-            }
-            // 👇️ otherwise return object as is
-            return obj;
-          });
-
-          console.log("ATUALIZACAO DE DATA - adicionado Cargo:");
-          console.log(newState);
-
-          setData(newState);
-        });
-      }
-    });
   }
 
-  function adicionaDescricao(key, valorDescricao) {
-    let changedLine;
+  function adicionaRestricao(index, valorRestricao, isChecked) {
+    let newData = data;
 
-    const analyzer = Promise.resolve(data);
-    analyzer.then((resultado) => {
-      if (resultado.data != undefined) {
-        let obj = resultado.data[key - 1];
-        let j = JSON.parse(JSON.stringify(obj));
+    // const analyzer = Promise.resolve(data);
+    // analyzer.then((resultado) => {
+    //   if (resultado.data != undefined) {
 
-        j.Descricao = valorDescricao;
-        resultado.data[key - 1] = j;
+    console.log("index", index);
+    console.log("data[index]", data[index]);
 
-        changedLine = resultado.data[key - 1];
+    let obj = newData[index];
+    //let j = JSON.parse(JSON.stringify(obj));
 
-        var d = Promise.resolve(data);
-        d.then(function (v) {
-          const newState = v.data.map((obj) => {
-            // 👇️ if id equals 2 replace object
-            if (obj.key === key) {
-              return changedLine;
-            }
-            // 👇️ otherwise return object as is
-            return obj;
-          });
+    console.log("obj", obj);
 
-          console.log("ATUALIZACAO DE DATA - adicionada info:");
-          console.log(newState);
-          setData(newState);
-        });
-      } else {
-        let obj = resultado[key - 1];
-        let j = JSON.parse(JSON.stringify(obj));
+    obj.Restricao[valorRestricao] = isChecked;
+    //resultado.data[key - 1] = j;
+    newData[index] = obj;
 
-        j.Descricao = valorDescricao;
-        resultado[key - 1] = j;
+    //changedLine = resultado.data[key - 1];
 
-        changedLine = resultado[key - 1];
+    changedLine = newData[index];
 
-        var d = Promise.resolve(data);
-        d.then(function (v) {
-          const newState = v.map((obj) => {
-            // 👇️ if equals key replace object
-            if (obj.key === key) {
-              return changedLine;
-            }
-            // 👇️ otherwise return object as it is
-            return obj;
-          });
+    setData(newData);
 
-          setData(newState);
-        });
-      }
-    });
+    // } else {
+    //   let obj = resultado[key - 1];
+    //   let j = JSON.parse(JSON.stringify(obj));
+
+    //   j.Restricao[valorRestricao] = isChecked;
+    //   resultado[key - 1] = j;
+
+    //   changedLine = resultado[key - 1];
+
+    //   var d = Promise.resolve(data);
+    //   d.then(function (v) {
+    //     const i = v.map((obj) => {
+    //       return obj;
+    //     });
+    //     console.log("iiiiiiiiii");
+    //     console.log(i);
+
+    //     const newState = v.map((obj) => {
+    //       // 👇️ if id equals 2 replace object
+    //       if (obj.key === key) {
+    //         return changedLine;
+    //       }
+    //       // 👇️ otherwise return object as is
+    //       return obj;
+    //     });
+
+    //   console.log("ATUALIZACAO DE DATA - adicionado Cargo:");
+    //   console.log(newState);
+
+    //   setData(newState);
+    // });
+    // }
+    // });
+  }
+
+  function adicionaDescricao(index, valorDescricao) {
+    if (valorDescricao != "") {
+      let newData = data;
+
+      // const analyzer = Promise.resolve(data);
+      // analyzer.then((resultado) => {
+      //   if (resultado.data != undefined) {
+
+      let obj = newData[index];
+      //let j = JSON.parse(JSON.stringify(obj));
+
+      console.log("VALOR DA DESCRICAO ", valorDescricao);
+      obj.Descricao = valorDescricao;
+      newData[index] = obj;
+
+      changedLine = newData[index];
+
+      // var d = Promise.resolve(data);
+      // d.then(function (v) {
+      // const newState = data.map((obj) => {
+      //   // 👇️ if id equals 2 replace object
+      //   if (obj.key === key) {
+      //     return changedLine;
+      //   }
+      //   // 👇️ otherwise return object as is
+      //   return obj;
+      // });
+
+      console.log("ATUALIZACAO DE DATA - adicionada info:");
+      //console.log(newState);
+      setData(newData);
+
+      //   } else {
+      //     let obj = resultado[key - 1];
+      //     let j = JSON.parse(JSON.stringify(obj));
+
+      //     j.Descricao = valorDescricao;
+      //     resultado[key - 1] = j;
+
+      //     changedLine = resultado[key - 1];
+
+      //     var d = Promise.resolve(data);
+      //     d.then(function (v) {
+      //       const newState = v.map((obj) => {
+      //         // 👇️ if equals key replace object
+      //         if (obj.key === key) {
+      //           return changedLine;
+      //         }
+      //         // 👇️ otherwise return object as it is
+      //         return obj;
+      //       });
+
+      //       setData(newState);
+      //     });
+      //   }
+      // });
+    }
   }
 
   return (
     <div>
+      {data.length === 0 ? loadData() : null}
       <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
         <form>
           <div>
@@ -272,9 +295,9 @@ export function Restricoes() {
             <Table
               className="tableRestricoes"
               columns={listaClubesColumns}
-              dataSource={filteredData}
-              loading={loading}
-              onRow={(record) => {
+              dataSource={data}
+              // loading={loading}
+              onRow={(record, index) => {
                 let k = record.key;
 
                 return {
@@ -285,6 +308,8 @@ export function Restricoes() {
                   },
 
                   onChange: (event) => {
+                    console.log("record", record);
+                    console.log("index", index);
                     // save row data to state
 
                     if (event.target.value === undefined) {
@@ -292,23 +317,23 @@ export function Restricoes() {
                     }
 
                     if (event.target.type === "text") {
-                      adicionaDescricao(k, event.target.value);
+                      adicionaDescricao(index, event.target.value);
                     } else if (record.Descricao != "") {
-                      adicionaDescricao(k, record.Descricao);
+                      adicionaDescricao(index, record.Descricao);
                     }
 
                     if (event.target.type === "checkbox") {
                       if (event.target.value === "Atleta") {
-                        adicionaRestricao(k, 0, event.target.checked);
+                        adicionaRestricao(index, 0, event.target.checked);
                       }
                       if (event.target.value === "Dirigente") {
-                        adicionaRestricao(k, 1, event.target.checked);
+                        adicionaRestricao(index, 1, event.target.checked);
                       }
                       if (event.target.value === "Treinador") {
-                        adicionaRestricao(k, 2, event.target.checked);
+                        adicionaRestricao(index, 2, event.target.checked);
                       }
                       if (event.target.value === "Outra") {
-                        adicionaRestricao(k, 3, event.target.checked);
+                        adicionaRestricao(index, 3, event.target.checked);
                       }
                     }
                   },
@@ -331,7 +356,7 @@ export function Restricoes() {
             {" "}
             Instruções{" "}
           </Button>
-          <Search
+          {/* <Search
             onChange={(e) => setSearchVal(e.target.value)}
             placeholder="Pesquise aqui por um Clube"
             enterButton
@@ -341,7 +366,7 @@ export function Restricoes() {
               left: "0",
               width: "250px",
             }}
-          />
+          /> */}
 
           <Button
             onClick={() => {
