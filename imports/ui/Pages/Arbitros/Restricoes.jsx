@@ -5,6 +5,7 @@ import axios from "axios";
 import { useTableSearch } from "../../../api/useTableSearch";
 
 import { Meteor } from "meteor/meteor";
+import { Header } from "../Geral/Header";
 
 const { Search } = Input;
 
@@ -112,10 +113,16 @@ export const listaClubesColumns = [
   },
 ];
 
-export function Restricoes() {
+export function Restricoes({ user }) {
   const [searchVal, setSearchVal] = useState(null);
 
   let [data, setData] = useState([]);
+
+  let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
+    if (result) {
+      return result;
+    }
+  });
 
   // const { filteredData, loading } = useTableSearch({
   //   searchVal,
@@ -287,6 +294,19 @@ export function Restricoes() {
 
   return (
     <div>
+      <Header
+        user={user}
+        titulo={true}
+        consultaPrivada={true}
+        menuPrivado={isCA}
+        menuPrivadoCA={!isCA}
+        atribuirArbitros={true}
+        carregarJogos={false}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={false}
+        definicoes={true}
+      />
       {data.length === 0 ? loadData() : null}
       <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
         <form>

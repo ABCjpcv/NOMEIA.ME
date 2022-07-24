@@ -3,6 +3,7 @@ import { Button, message, Popconfirm, Table, Tag } from "antd";
 
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
+import { Header } from "../Geral/Header";
 
 function comparaAminhaLindaString(a, b) {
   let x = 0;
@@ -49,6 +50,8 @@ export function ConsultaPrivada({ user }) {
       key: "Jogo",
       sorter: (a, b) => a.Jogo - b.Jogo,
       sortDirections: ["descend", "ascend"],
+      width: "1%",
+      fixed: "left",
     },
     {
       title: "Dia",
@@ -56,6 +59,8 @@ export function ConsultaPrivada({ user }) {
       key: "Dia",
       sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
       sortDirections: ["descend", "ascend"],
+      width: "4%",
+      fixed: "left",
     },
     {
       title: "Hora",
@@ -63,6 +68,8 @@ export function ConsultaPrivada({ user }) {
       key: "Hora",
       sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
       sortDirections: ["descend", "ascend"],
+      width: "4%",
+      fixed: "left",
     },
     {
       title: "Prova",
@@ -70,6 +77,8 @@ export function ConsultaPrivada({ user }) {
       key: "Prova",
       sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
       sortDirections: ["descend", "ascend"],
+      width: "5%",
+      fixed: "left",
     },
     {
       title: "Serie",
@@ -77,6 +86,8 @@ export function ConsultaPrivada({ user }) {
       key: "Serie",
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
       sortDirections: ["descend", "ascend"],
+      width: "4%",
+      fixed: "left",
     },
     {
       title: "Equipas",
@@ -84,6 +95,8 @@ export function ConsultaPrivada({ user }) {
       key: "Equipas",
       sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
+      width: "5%",
+      fixed: "left",
     },
     {
       title: "Pavilhao",
@@ -91,6 +104,8 @@ export function ConsultaPrivada({ user }) {
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
+      width: "4%",
+      fixed: "left",
     },
     {
       title: "Arbitro1",
@@ -98,6 +113,7 @@ export function ConsultaPrivada({ user }) {
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "Arbitro2",
@@ -105,6 +121,7 @@ export function ConsultaPrivada({ user }) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "JL",
@@ -112,6 +129,7 @@ export function ConsultaPrivada({ user }) {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "JL",
@@ -119,6 +137,7 @@ export function ConsultaPrivada({ user }) {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "JL",
@@ -126,6 +145,7 @@ export function ConsultaPrivada({ user }) {
       key: "JL3",
       sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "JL",
@@ -133,11 +153,13 @@ export function ConsultaPrivada({ user }) {
       key: "JL4",
       sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
       sortDirections: ["descend", "ascend"],
+      width: "10%",
     },
     {
       title: "Confirmação",
       dataIndex: "confirmacao",
       key: "confirmacao",
+      width: "10%",
       render: (_, record) =>
         dataSource.length > 1 ? (
           <div>
@@ -251,6 +273,10 @@ export function ConsultaPrivada({ user }) {
   ]);
 
   let [submetido, setSubmetido] = useState(Boolean);
+
+  let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+    if (result) return result;
+  });
 
   const handleConfirmation = (record) => {
     const newData = dataSource.filter((item) => {
@@ -413,22 +439,31 @@ export function ConsultaPrivada({ user }) {
     return (
       <>
         {reloadData()}
-        <div
-          className="demo-app"
-          style={{ height: "10%", width: "auto", alignSelf: "center" }}
-        >
-          <div className="demo-app-sidebar"></div>
-          <div>
-            <div className="demo-app-main" style={{ overflow: "auto" }}>
-              <div className="container">
-                <div className="table-responsive">
+        <div className="demo-app" style={{ alignSelf: "center" }}>
+          <div style={{ width: "100%", height: "100%" }}>
+            <div className="demo-app-main" style={{ width: "100%" }}>
+              <div className="container" style={{ width: "100%" }}>
+                <div
+                  className="table-responsive"
+                  style={{
+                    marginLeft: "1%",
+                    marginRight: "1%",
+                    marginTop: "0%",
+                  }}
+                >
                   <br />
                   {dataSource.length > 1 ? (
-                    <>
+                    <div className="table-responsive">
                       <Table
+                        className="consultaPrivadaTabela"
                         bordered
                         dataSource={dataSource}
                         columns={colunasNomeacoesPrivadas}
+                        style={{
+                          width: "fit-content",
+                          blockSize: "fit-content",
+                        }}
+                        pagination={false}
                       />
                       <Button
                         onClick={handleAllConfirmation}
@@ -454,7 +489,7 @@ export function ConsultaPrivada({ user }) {
                       >
                         Submeter Confirmações
                       </Button>
-                    </>
+                    </div>
                   ) : (
                     <>
                       <h2 className="blue">Não tem nomeações de momento.</h2>

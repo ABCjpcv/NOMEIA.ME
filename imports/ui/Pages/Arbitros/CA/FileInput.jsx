@@ -3,6 +3,7 @@ import Papa from "papaparse";
 import { Meteor } from "meteor/meteor";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
+import { Header } from "../../Geral/Header";
 
 const { Dragger } = Upload;
 
@@ -47,22 +48,37 @@ const props = {
 
 export function FileInput() {
   return (
-    <div style={{ marginTop: "1%", marginLeft: "37%", width: "500px" }}>
-      {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
+    <>
+      <Header
+        user={Meteor.user()}
+        titulo={true}
+        consultaPrivada={true}
+        menuPrivado={true}
+        menuPrivadoCA={false}
+        atribuirArbitros={true}
+        carregarJogos={false}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={true}
+      />
+      <div style={{ marginTop: "1%", marginLeft: "37%", width: "500px" }}>
+        {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
 
-      <span>
-        <Dragger {...props} accept=".csv, .xlsx, .xls">
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">
-            Selecione ou arraste um ficheiro para esta área para o carregar
-          </p>
-          <p className="ant-upload-hint">
-            Formato do ficheiro {"("} .csv {")"}.
-          </p>
-        </Dragger>
-      </span>
-    </div>
+        <span>
+          <Dragger {...props} accept=".csv, .xlsx, .xls">
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Selecione ou arraste um ficheiro para esta área para o carregar
+            </p>
+            <p className="ant-upload-hint">
+              Formato do ficheiro {"("} .csv {")"}.
+            </p>
+          </Dragger>
+        </span>
+      </div>
+    </>
   );
 }

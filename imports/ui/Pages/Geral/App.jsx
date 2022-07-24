@@ -39,7 +39,6 @@ export const App = () => {
 
   return (
     <Router>
-      <Header user={user} />
       <div
         style={{ textAlign: "center", backgroundColor: "#b9b7b7" }}
         onClick={() => {
@@ -56,7 +55,10 @@ export const App = () => {
             path="/ConsultaNomeacoes"
             element={<ConsultaNomeacoes />}
           ></Route>
-          <Route path="/Autenticar" element={<Autenticar />}></Route>
+          <Route
+            path="/Autenticar"
+            element={<Autenticar user={user} />}
+          ></Route>
           <Route path="/Clubes_da_AVL" element={<Clubes_da_AVL />}></Route>
           <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
           <Route path="*" element={<NotFoundPage />}></Route>

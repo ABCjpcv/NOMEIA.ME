@@ -6,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import _ from "lodash.uniqueid";
+import { Header } from "../Geral/Header";
 
 export class Indisponibilidades extends React.Component {
   constructor(props) {
@@ -15,6 +16,11 @@ export class Indisponibilidades extends React.Component {
       loaded: false,
       resultado: [],
       show: false,
+      isCA: Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+        if (result) {
+          return result;
+        }
+      }),
     };
   }
 
@@ -49,6 +55,19 @@ export class Indisponibilidades extends React.Component {
     if (show) {
       return (
         <div>
+          <Header
+            user={Meteor.user()}
+            titulo={true}
+            consultaPrivada={true}
+            menuPrivado={this.state.isCA}
+            menuPrivadoCA={!this.state.isCA}
+            atribuirArbitros={true}
+            carregarJogos={true}
+            criarContaNova={true}
+            indisponibilidadePrivadas={false}
+            restricoesPrivadas={true}
+            definicoes={true}
+          />
           {/* <ul>
             <li>
               Selecione as datas e você será solicitado a criar um novo evento
@@ -58,7 +77,14 @@ export class Indisponibilidades extends React.Component {
           </ul> */}
           <div className="demo-app-main" style={{ overflow: "auto" }}>
             <form>
-              <div style={{ /*backgroundColor: "white",*/ marginTop: "10px" }}>
+              <div
+                style={{
+                  backgroundColor: "rgb(230, 230, 230)",
+                  marginTop: "1%",
+                  marginLeft: "1%",
+                  marginRight: "1%",
+                }}
+              >
                 <FullCalendar
                   plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                   locale="pt"

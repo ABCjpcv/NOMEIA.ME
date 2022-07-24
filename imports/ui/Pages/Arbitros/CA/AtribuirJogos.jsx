@@ -4,6 +4,7 @@ import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { Header } from "../../Geral/Header";
 
 const { Option } = Select;
 
@@ -544,6 +545,19 @@ export function AtribuirJogos(props) {
 
   return (
     <>
+      <Header
+        user={user}
+        titulo={true}
+        consultaPrivada={true}
+        menuPrivado={true}
+        menuPrivadoCA={false}
+        atribuirArbitros={false}
+        carregarJogos={true}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={true}
+      />
       {reloadData()}
 
       {dataSource.length === 0 ? (

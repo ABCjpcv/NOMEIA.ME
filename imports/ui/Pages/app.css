@@ -101,7 +101,6 @@
 
 /* Position and sizing of burger button */
 .bm-burger-button {
-  position: fixed;
   left: 1%;
   width: 2%;
   height: 3%;
@@ -179,4 +178,31 @@
 
 .demo-option-label-item > span {
   margin-right: 6px;
+}
+
+.fc-view-harness {
+  background-color: rgba(230, 230, 230, 0.6);
+}
+
+/**
+** PARA CONSULTA PRIVADA
+**/
+
+.consultaPrivadaTabela {
+  background-color: #eee;
+  width: 200px;
+  height: 100px;
+  border: 1px dotted black;
+  overflow-y: scroll; /* Add the ability to scroll */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.consultaPrivadaTabela::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.consultaPrivadaTabela {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

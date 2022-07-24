@@ -3,6 +3,7 @@ import { Table, Input } from "antd";
 import axios from "axios";
 import { useTableSearch } from "../../useTableSearch";
 import "antd/dist/antd.css";
+import { Header } from "../../Geral/Header";
 
 const { Search } = Input;
 
@@ -21,6 +22,7 @@ export function listaJogosSemArbitrosCA() {
 
   return (
     <>
+      <Header user={Meteor.user()} />
       <div>
         <h1 className="blue"> Jogos sem árbitro </h1>
         <Search

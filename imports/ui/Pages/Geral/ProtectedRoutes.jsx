@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, Outlet } from "react-router";
 import { Meteor } from "meteor/meteor";
 
 export const ProtectedRoutes = ({ user, allowed, redirectPath, children }) => {
+  let [currUser, setCurrUser] = useState(user);
+
   setTimeout(() => {
     //user = Meteor.user();
-
     if (user === null || user === undefined) {
-      user = Meteor.user();
+      setCurrUser(Meteor.user());
     }
+  }, 8000);
 
-    console.log("user in protected route: ", user);
-    if (user === null || user === undefined) {
+  {
+    setTimeout();
+    console.log("user in protected route: ", currUser);
+    if (currUser === null || currUser === undefined) {
       return <Navigate to={"/"} replace />;
     } else {
       if (allowed) {
@@ -19,10 +23,6 @@ export const ProtectedRoutes = ({ user, allowed, redirectPath, children }) => {
       }
     }
 
-    //console.log("WHAT THE FUCK ARE THE CHILDREN?", children);
-
-    //console.log("OUTLET", <Outlet />);
-
     return children ? children : <Outlet />;
-  }, 8000);
+  }
 };

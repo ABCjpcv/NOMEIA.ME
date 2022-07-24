@@ -54,58 +54,65 @@ export default (props) => {
 
   return (
     // Pass on our props
-    <Menu left={true} {...props}>
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (navigate("Conta/Profile"), mostraPaginaNomeacoes())}
-        >
-          Consultar Nomeações
-        </p>
-      </a>
+    <div id="outer-container">
+      <Menu
+        left={true}
+        {...props}
+        pageWrapId={"page-wrap"}
+        outerContainerId={"outer-container"}
+      >
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (navigate("Conta/Profile"), mostraPaginaNomeacoes())}
+          >
+            Consultar Nomeações
+          </p>
+        </a>
 
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (
-            mostraPaginaIndisponibilidades(),
-            navigate("Conta/Profile/Indisponibilidades")
-          )}
-        >
-          Marcar Indisponibilidades
-        </p>
-      </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (
+              mostraPaginaIndisponibilidades(),
+              navigate("Conta/Profile/Indisponibilidades")
+            )}
+          >
+            Marcar Indisponibilidades
+          </p>
+        </a>
 
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (
-            navigate("Conta/Profile/Relacoes"), mostraPaginaRestricoes()
-          )}
-        >
-          Indicar Restrições
-        </p>
-      </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (
+              navigate("Conta/Profile/Relacoes"), mostraPaginaRestricoes()
+            )}
+          >
+            Indicar Restrições
+          </p>
+        </a>
 
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (
-            navigate("Conta/Profile/Definicoes"), mostraPaginaDefinicoes()
-          )}
-        >
-          Definições
-        </p>
-      </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (
+              navigate("Conta/Profile/Definicoes"), mostraPaginaDefinicoes()
+            )}
+          >
+            Definições
+          </p>
+        </a>
 
-      <a className="menu-item">
-        <p
-          style={{ fontSize: "15px" }}
-          onClick={() => (mostraTitulo(), navigate("/"), Meteor.logout())}
-        >
-          Sair
-        </p>
-      </a>
-    </Menu>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px" }}
+            onClick={() => (mostraTitulo(), navigate("/"), Meteor.logout())}
+          >
+            Sair
+          </p>
+        </a>
+      </Menu>
+    </div>
   );
 };

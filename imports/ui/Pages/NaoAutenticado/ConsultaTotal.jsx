@@ -4,6 +4,7 @@ import axios from "axios";
 import { colunasNomeacoes } from "../../../api/NaoAutenticado/colunasNomeacoes";
 import { useTableSearch } from "../../../api/useTableSearch";
 import "antd/dist/antd.css";
+import { Header } from "../Geral/Header";
 
 const { Search } = Input;
 
@@ -22,6 +23,18 @@ export function ConsultaTotal() {
 
   return (
     <>
+      <Header
+        user={Meteor.user()}
+        consultaPrivada={true}
+        menuPrivado={true}
+        menuPrivadoCA={true}
+        atribuirArbitros={true}
+        carregarJogos={true}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={true}
+      />
       <div>
         <h1 className="blue">Nomeações Semanais</h1>
         <Search

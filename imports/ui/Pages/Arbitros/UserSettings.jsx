@@ -1,9 +1,13 @@
 import { message } from "antd";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
+import { Header } from "../Geral/Header";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);
+  let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
+    if (result) return result;
+  });
 
   /**
    * ATRIBUICAO DOS ESTADOS
@@ -108,6 +112,19 @@ export function UserSettings({ user }) {
 
   return (
     <div>
+      <Header
+        user={user}
+        titulo={true}
+        consultaPrivada={true}
+        menuPrivado={isCA}
+        menuPrivadoCA={!isCA}
+        atribuirArbitros={true}
+        carregarJogos={true}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={false}
+      />
       <h1 className="blue"> </h1>
       <div
         style={{

@@ -1,8 +1,22 @@
 import React from "react";
+import { Header } from "./Header";
 
 export const Sobre = () => {
   return (
     <div>
+      <Header
+        user={Meteor.user()}
+        titulo={false}
+        consultaPrivada={true}
+        menuPrivado={true}
+        menuPrivadoCA={true}
+        atribuirArbitros={true}
+        carregarJogos={true}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={true}
+      />
       <h1 className="blue"> Sobre mim: </h1>
       <div style={{ margin: "auto", display: "flex", maxWidth: "1200px" }}>
         <div style={{ width: "30%" }}>

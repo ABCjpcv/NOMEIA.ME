@@ -4,6 +4,7 @@ import axios from "axios";
 import { colunasClubesAfiliados } from "../../../api/NaoAutenticado/colunasClubesAfiliados";
 import { useTableSearch } from "../../../api/useTableSearch";
 import "antd/dist/antd.css";
+import { Header } from "../Geral/Header";
 
 const { Search } = Input;
 
@@ -23,6 +24,18 @@ export function ConsultaClubes() {
 
   return (
     <>
+      <Header
+        user={Meteor.user()}
+        consultaPrivada={true}
+        menuPrivado={true}
+        menuPrivadoCA={true}
+        atribuirArbitros={true}
+        carregarJogos={true}
+        criarContaNova={true}
+        indisponibilidadePrivadas={true}
+        restricoesPrivadas={true}
+        definicoes={true}
+      />
       <div>
         <h1 className="blue"> Clubes Afiliados à AVL </h1>
         <Search
