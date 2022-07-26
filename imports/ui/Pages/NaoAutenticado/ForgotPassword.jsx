@@ -58,6 +58,11 @@ export function ForgotPassword() {
 
                       navigate("/Autenticar");
                     }
+                    if (!result) {
+                      message.error(
+                        "Email não encontrado. Por favor contacte o Conselho de Arbitragem."
+                      );
+                    }
                   }
                 }
               )

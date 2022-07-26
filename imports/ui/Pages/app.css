@@ -9,10 +9,10 @@
   color: #363131;
   white-space: nowrap;
   font-size: 2em;
-  font-family: "Roboto Flex", sans-serif;
+  /* font-family: "Roboto Flex", sans-serif; */
   letter-spacing: 0.1em;
   color: #303380;
-  text-shadow: 1px 1px 0 rgb(45, 45, 45), 5px 13px 15px #303380;
+  /* text-shadow: 1px 1px 0 rgb(45, 45, 45), 5px 13px 15px #303380; */
 }
 
 .blue {
@@ -52,7 +52,7 @@
 .labels {
   display: flex;
   justify-content: flex-start;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-size: 13px;
 }
 
@@ -205,4 +205,16 @@
 .consultaPrivadaTabela {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.ant-spin-nested-loading {
+  width: fit-content;
+}
+
+.ant-table-container {
+  width: fit-content;
+}
+
+.tableRestricoes {
+  width: inherit;
 }

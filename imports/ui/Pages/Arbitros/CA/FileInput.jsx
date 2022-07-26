@@ -62,11 +62,21 @@ export function FileInput() {
         restricoesPrivadas={true}
         definicoes={true}
       />
-      <div style={{ marginTop: "1%", marginLeft: "37%", width: "500px" }}>
+      <div
+        style={{
+          marginTop: "1%",
+          display: "flex",
+          justifyContent: "space-evenly",
+        }}
+      >
         {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
 
         <span>
-          <Dragger {...props} accept=".csv, .xlsx, .xls">
+          <Dragger
+            {...props}
+            accept=".csv, .xlsx, .xls"
+            style={{ width: "500px" }}
+          >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>

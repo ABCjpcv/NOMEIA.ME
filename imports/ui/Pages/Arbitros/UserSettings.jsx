@@ -25,20 +25,7 @@ export function UserSettings({ user }) {
 
   let [nivel, setNivel] = useState(() => getNivel(user));
 
-  function submeterAlteracaoPassword(user, newPassword) {
-    Meteor.call("alteraPassword", user, newPassword, (err, result) => {
-      if (result === 1) {
-        message.success(
-          "Password alterada com sucesso! Faça a autenticação novamente."
-        );
-        Meteor.logout();
-        document.getElementById("definicoes").hidden = true;
-        document.getElementById("titulo").hidden = false;
-      } else {
-        message.error("ERRO");
-      }
-    });
-  }
+  function submeterAlteracaoPassword(user, newPassword) {}
 
   function getNivel(user) {
     Meteor.call("getNivel", user, (err, result) => {
@@ -190,7 +177,7 @@ export function UserSettings({ user }) {
           </label>
         </div>
 
-        <p></p>
+        {/* <p></p>
         <div className="input">
           <label className="labels">
             Não tenho Transporte próprio:
@@ -209,7 +196,7 @@ export function UserSettings({ user }) {
               checked={naoTemTransporte}
             ></input>
           </label>
-        </div>
+        </div> */}
 
         <p></p>
         <div className="input">
@@ -231,7 +218,7 @@ export function UserSettings({ user }) {
             ></input>
           </label>
         </div>
-        <p></p>
+        {/* <p></p>
         <div className="input">
           <label className="labels">
             Não emito recibo verde:
@@ -250,21 +237,44 @@ export function UserSettings({ user }) {
               checked={naoTemRecibo}
             ></input>
           </label>
-        </div>
+        </div> */}
         <p></p>
+        <div
+          className="input"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.5)",
+          }}
+        >
+          <label className="labels" style={{ alignSelf: "center" }}>
+            Mudar Password
+          </label>
+        </div>
+
+        <p></p>
+
         <div className="input">
-          <label className="labels">Mudar a Password*</label>
+          <label className="labels">Password atual: </label>
           <input
             className="inputt"
             type={"password"}
-            id="passwordUserSettings"
+            id="currentPasswordUserSettings"
           ></input>
         </div>
 
         <p></p>
 
         <div className="input">
-          <label className="labels">Confirmar a nova password*</label>
+          <label className="labels">Nova password:</label>
+          <input
+            className="inputt"
+            type={"password"}
+            id="passwordUserSettings"
+          ></input>
+        </div>
+        <p></p>
+
+        <div className="input">
+          <label className="labels">Confirmar a nova password</label>
           <input
             className="inputt"
             type={"password"}
@@ -278,6 +288,9 @@ export function UserSettings({ user }) {
         <button
           className="botao"
           onClick={() => {
+            let currentPasswordUserSettings = document.getElementById(
+              "currentPasswordUserSettings"
+            ).value;
             let passwordUserSettings = document.getElementById(
               "passwordUserSettings"
             ).value;
@@ -285,12 +298,54 @@ export function UserSettings({ user }) {
               "password2UserSettings"
             ).value;
 
-            if (passwordUserSettings === "" || password2UserSettings === "") {
+            if (
+              currentPasswordUserSettings === "" ||
+              passwordUserSettings === "" ||
+              password2UserSettings === ""
+            ) {
               message.warn("Por favor coloque valores nos campos");
-            } else if (passwordUserSettings != password2UserSettings) {
-              message.error("As passwords não correspondem.");
             } else {
-              submeterAlteracaoPassword(user, passwordUserSettings);
+              Meteor.call(
+                "authenticateUser",
+                user.emails[0].address,
+                currentPasswordUserSettings,
+                (err, result) => {
+                  console.log("result", result);
+                  console.log("err", err);
+                  if (err) {
+                    //Fazer aparecer mensagem de texto de credenciais erradas.
+                    message.error(
+                      "Credenciais erradas ou utilizador inexistente."
+                    );
+                  } else if (result) {
+                    if (
+                      result != "Invalid credentials / user does not exist."
+                    ) {
+                      if (passwordUserSettings != password2UserSettings) {
+                        message.error("As passwords não correspondem.");
+                      } else {
+                        Meteor.call(
+                          "alteraPassword",
+                          user.emails[0].address,
+                          password2UserSettings,
+                          (err, result) => {
+                            if (result === 1) {
+                              message.success(
+                                "Password alterada com sucesso! Faça a autenticação novamente."
+                              );
+                              Meteor.logout();
+                            } else {
+                              message.error("ERRO");
+                            }
+                          }
+                        );
+                      }
+                    } else {
+                      message.error("Password errada");
+                    }
+                  }
+                }
+              );
             }
           }}
         >

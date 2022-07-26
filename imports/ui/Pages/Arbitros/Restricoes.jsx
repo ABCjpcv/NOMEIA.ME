@@ -42,17 +42,19 @@ export const listaClubesColumns = [
     title: "Clube",
     dataIndex: "Clube",
     key: "Clube",
+    width: "30%",
   },
   {
     title: "Cargo",
     dataIndex: "Cargo",
     key: "Cargo",
+    width: "60%",
     render: (_, { Restricao }) => (
       <div
         style={{
-          width: "auto",
           display: "flex",
           justifyContent: "space-between",
+          width: "100%",
         }}
       >
         <div>
@@ -102,21 +104,31 @@ export const listaClubesColumns = [
     title: "Informação adicional",
     dataIndex: "InformacaoAdicional",
     key: "InformacaoAdicional",
+    width: "30%",
     render: (_, { Descricao }) => (
-      <input
-        type="text"
-        name="descricao"
-        style={{ width: "auto" }}
-        defaultValue={Descricao}
-      ></input>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <input
+          type="text"
+          name="descricao"
+          defaultValue={Descricao}
+          style={{ width: "100%" }}
+        ></input>
+      </div>
     ),
   },
 ];
 
 export function Restricoes({ user }) {
-  const [searchVal, setSearchVal] = useState(null);
+  const [searchVal, setSearchVal] = useState("");
 
   let [data, setData] = useState([]);
+
+  let [filteredData, setFilteredData] = useState([]);
 
   let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
     if (result) {
@@ -130,12 +142,28 @@ export function Restricoes({ user }) {
   // });
 
   useEffect(() => {
-    console.log("NOVA DATA: ", data);
-  }, [data]);
+    if (searchVal.length > 0) {
+      let newData = [];
+      for (let index = 0; index < data.length; index++) {
+        if (
+          data[index].Clube.toString()
+            .toUpperCase()
+            .includes(searchVal.toUpperCase())
+        ) {
+          newData.push(data[index]);
+        }
+      }
+      setFilteredData(newData);
+    } else {
+      setFilteredData(data);
+    }
+    console.log("Search value", searchVal);
+    console.log("data", data);
+  }, [searchVal, data]);
 
   function loadData() {
     // Verifica se o utilizador loggado tem restricoes guardadas na bd
-    //return new Promise((resolve, reject) => {
+
     Meteor.call(
       "carregaRestricoes",
       Meteor.user?.()?.username,
@@ -151,39 +179,39 @@ export function Restricoes({ user }) {
 
           if (dataFromDB.length != 0) {
             setData(dataFromDB);
+            setFilteredData(dataFromDB);
           } else {
             Meteor.call("getClubesDisponiveis", (err, result) => {
               console.log("result", result);
               if (result) {
                 setData(result);
+                setFilteredData(result);
               }
             });
           }
-
-          // O PROBLEMA ESTÁ AQUI
-
-          // dbInfo = dataFromDB;
-          // // ISTO NÃO ESTÁ A FUNCIONAR
-          // resolve(fetchData());
-
-          //PK ACIMA TENHO: resolve(fetchData()) que me devolve ()=>Promise<{data}>
-          //AQUI TENHO {data: dataFromDB}, ou seja nao eh uma ()=>Promise<{data}>
         }
       }
     );
   }
 
-  function adicionaRestricao(index, valorRestricao, isChecked) {
+  function adicionaRestricao(clube, valorRestricao, isChecked) {
     let newData = data;
 
     // const analyzer = Promise.resolve(data);
     // analyzer.then((resultado) => {
     //   if (resultado.data != undefined) {
 
-    console.log("index", index);
-    console.log("data[index]", data[index]);
+    console.log("clube", clube);
 
-    let obj = newData[index];
+    let obj = "";
+    let index = 0;
+    for (; index < newData.length; index++) {
+      if (newData[index].Clube === clube) {
+        obj = newData[index];
+        break;
+      }
+    }
+
     //let j = JSON.parse(JSON.stringify(obj));
 
     console.log("obj", obj);
@@ -197,6 +225,7 @@ export function Restricoes({ user }) {
     changedLine = newData[index];
 
     setData(newData);
+    setFilteredData(newData);
 
     // } else {
     //   let obj = resultado[key - 1];
@@ -301,127 +330,137 @@ export function Restricoes({ user }) {
         menuPrivado={isCA}
         menuPrivadoCA={!isCA}
         atribuirArbitros={true}
-        carregarJogos={false}
+        carregarJogos={true}
         criarContaNova={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={false}
         definicoes={true}
       />
       {data.length === 0 ? loadData() : null}
-      <div className="demo-a  pp-main" style={{ overflow: "auto" }}>
-        <form>
-          <div>
-            <br></br>
-            <Table
-              className="tableRestricoes"
-              columns={listaClubesColumns}
-              dataSource={data}
-              // loading={loading}
-              onRow={(record, index) => {
-                let k = record.key;
+      <div
+        className="demo-app-main"
+        style={{
+          marginTop: "1%",
+          marginLeft: "1%",
+          marginRight: "1%",
+          width: "99%",
+          height: "100%",
+        }}
+      >
+        <Table
+          className="tableRestricoes"
+          columns={listaClubesColumns}
+          dataSource={filteredData}
+          pagination={false}
+          scroll={{
+            y: "66vh",
+          }}
+          // loading={loading}
+          onRow={(record, index) => {
+            let k = record.key;
 
-                return {
-                  onClick: (event) => {
-                    if (event.target.type === "text") {
-                      adicionaDescricao(k, event.target.value);
-                    }
-                  },
+            return {
+              onClick: (event) => {
+                if (event.target.type === "text") {
+                  adicionaDescricao(k, event.target.value);
+                }
+              },
 
-                  onChange: (event) => {
-                    console.log("record", record);
-                    console.log("index", index);
-                    // save row data to state
+              onChange: (event) => {
+                console.log("record", record);
+                console.log("index", index);
+                console.log("filteredData", filteredData);
+                // save row data to state
 
-                    if (event.target.value === undefined) {
-                      // nothing to do
-                    }
+                console.log("clube eh??", record.Clube);
 
-                    if (event.target.type === "text") {
-                      adicionaDescricao(index, event.target.value);
-                    } else if (record.Descricao != "") {
-                      adicionaDescricao(index, record.Descricao);
-                    }
+                if (event.target.value === undefined) {
+                  // nothing to do
+                }
 
-                    if (event.target.type === "checkbox") {
-                      if (event.target.value === "Atleta") {
-                        adicionaRestricao(index, 0, event.target.checked);
-                      }
-                      if (event.target.value === "Dirigente") {
-                        adicionaRestricao(index, 1, event.target.checked);
-                      }
-                      if (event.target.value === "Treinador") {
-                        adicionaRestricao(index, 2, event.target.checked);
-                      }
-                      if (event.target.value === "Outra") {
-                        adicionaRestricao(index, 3, event.target.checked);
-                      }
-                    }
-                  },
-                };
-              }}
-            />
-          </div>
-          <Button
-            style={{
-              marginBottom: 16,
-            }}
-            value="Instruções"
-            onClick={() =>
-              message.info(
-                "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'.",
-                10
-              )
-            }
-          >
-            {" "}
-            Instruções{" "}
-          </Button>
-          {/* <Search
-            onChange={(e) => setSearchVal(e.target.value)}
-            placeholder="Pesquise aqui por um Clube"
-            enterButton
-            style={{
-              position: "sticky",
-              top: "0",
-              left: "0",
-              width: "250px",
-            }}
-          /> */}
+                if (event.target.type === "text") {
+                  adicionaDescricao(index, event.target.value);
+                } else if (record.Descricao != "") {
+                  adicionaDescricao(index, record.Descricao);
+                }
 
-          <Button
-            onClick={() => {
-              if (data[0] === undefined) {
-                message.warn(
-                  "Nenhuma alteração detetada " + Meteor.user().username
-                );
-              } else {
-                Meteor.call(
-                  "addRestricao",
-                  Meteor.user().username,
-                  data,
-                  (err, result) => {
-                    if (err) {
-                      //Fazer aparecer mensagem de texto de credenciais erradas.
-                      console.log(err);
-                    } else if (result) {
-                      message.success(
-                        "Relações com clubes guardadas " +
-                          Meteor.user().username +
-                          "!"
-                      );
-                    }
+                if (event.target.type === "checkbox") {
+                  if (event.target.value === "Atleta") {
+                    adicionaRestricao(record.Clube, 0, event.target.checked);
                   }
-                );
-              }
-            }}
-            type="primary"
-            style={{
-              marginBottom: 16,
-            }}
-          >
-            Submeter relações com clubes
-          </Button>
-        </form>
+                  if (event.target.value === "Dirigente") {
+                    adicionaRestricao(record.Clube, 1, event.target.checked);
+                  }
+                  if (event.target.value === "Treinador") {
+                    adicionaRestricao(record.Clube, 2, event.target.checked);
+                  }
+                  if (event.target.value === "Outra") {
+                    adicionaRestricao(record.Clube, 3, event.target.checked);
+                  }
+                }
+              },
+            };
+          }}
+        />
+        <Button
+          style={{
+            marginTop: "1%",
+          }}
+          value="Instruções"
+          onClick={() =>
+            message.info(
+              "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'.",
+              10
+            )
+          }
+        >
+          {" "}
+          Instruções{" "}
+        </Button>
+        <Search
+          onChange={(e) => setSearchVal(e.target.value)}
+          placeholder="Pesquise aqui por um Clube"
+          enterButton
+          style={{
+            position: "sticky",
+            width: "250px",
+            marginTop: "1%",
+          }}
+        />
+
+        <Button
+          onClick={() => {
+            if (data[0] === undefined) {
+              message.warn(
+                "Nenhuma alteração detetada " + Meteor.user().username
+              );
+            } else {
+              Meteor.call(
+                "addRestricao",
+                Meteor.user().username,
+                data,
+                (err, result) => {
+                  if (err) {
+                    //Fazer aparecer mensagem de texto de credenciais erradas.
+                    console.log(err);
+                  } else if (result) {
+                    message.success(
+                      "Relações com clubes guardadas " +
+                        Meteor.user().username +
+                        "!"
+                    );
+                  }
+                }
+              );
+            }
+          }}
+          type="primary"
+          style={{
+            marginBottom: 16,
+          }}
+        >
+          Submeter relações com clubes
+        </Button>
       </div>
     </div>
   );

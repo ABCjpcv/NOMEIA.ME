@@ -33,7 +33,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 3000);
+    }, 2000);
   }
 
   componentDidUpdate() {
@@ -41,7 +41,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 3000);
+    }, 2000);
   }
 
   render() {
@@ -79,7 +79,7 @@ export class Indisponibilidades extends React.Component {
             <form>
               <div
                 style={{
-                  backgroundColor: "rgb(230, 230, 230)",
+                  backgroundColor: "rgba(230, 230, 230, 0.1)",
                   marginTop: "1%",
                   marginLeft: "1%",
                   marginRight: "1%",
@@ -120,12 +120,13 @@ export class Indisponibilidades extends React.Component {
                   marginBottom: 16,
                 }}
                 value="Instruções"
-                onClick={() =>
-                  message.info(
+                onClick={() => {
+                  console.log("CLIQUEI");
+                  return message.info(
                     "Selecione as datas para criar uma nova Indisponibilidade. \n\rArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
                     10
-                  )
-                }
+                  );
+                }}
               >
                 {" "}
                 Instruções{" "}
@@ -147,11 +148,12 @@ export class Indisponibilidades extends React.Component {
                     Meteor.user().username,
                     eventos,
                     (err, result) => {
+                      console.log("result", result);
                       if (err) {
                         //Fazer aparecer mensagem de texto de credenciais erradas.
                         console.log(err);
                       } else if (result) {
-                        message.success(
+                        return message.success(
                           "Indisponibilidades registadas " +
                             Meteor.user().username +
                             "!"

@@ -555,6 +555,11 @@ Meteor.methods({
 
   esqueceuPassword: function esqueceuPassword(email) {
     let u = Accounts.findUserByEmail(email);
+
+    if (u === undefined) {
+      return false;
+    }
+
     let newDefaultPassword = randomPassword(8);
 
     Accounts.setPassword(u._id, newDefaultPassword);

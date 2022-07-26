@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { Button, message, Popconfirm, Table, Tag } from "antd";
-
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
-import { Header } from "../Geral/Header";
 
 function comparaAminhaLindaString(a, b) {
   let x = 0;
@@ -36,11 +34,6 @@ function comparaAminhaLindaData(a, b) {
   }
   return 0;
 }
-
-// const fetchData = async () => {
-//   const { data } = await axios.get("Livro.json");
-//   return { data };
-// };
 
 export function ConsultaPrivada({ user }) {
   const colunasNomeacoesPrivadas = [
@@ -156,10 +149,11 @@ export function ConsultaPrivada({ user }) {
       width: "10%",
     },
     {
-      title: "Confirmação",
-      dataIndex: "confirmacao",
-      key: "confirmacao",
-      width: "10%",
+      title: "Ação",
+      dataIndex: "acao",
+      key: "acao",
+      width: "14%",
+      fixed: "right",
       render: (_, record) =>
         dataSource.length > 1 ? (
           <div>
@@ -167,7 +161,7 @@ export function ConsultaPrivada({ user }) {
               title="Confirmar jogo?"
               onConfirm={() => handleConfirmation(record)}
             >
-              <a>Confirmar</a>
+              <a>Confirmo</a>
             </Popconfirm>
             <br></br>
             <br></br>
@@ -175,7 +169,7 @@ export function ConsultaPrivada({ user }) {
               title="Recusar jogo?"
               onConfirm={() => handleRefuse(record)}
             >
-              <a> Recusar </a>
+              <a> Recuso </a>
             </Popconfirm>
           </div>
         ) : null,
@@ -185,6 +179,7 @@ export function ConsultaPrivada({ user }) {
       dataIndex: "estado",
       key: "estado",
       width: "15%",
+      fixed: "right",
       render: (_, { tags }) =>
         dataSource.length > 1 ? (
           <>
@@ -290,14 +285,14 @@ export function ConsultaPrivada({ user }) {
   };
 
   const handleAllConfirmation = () => {
-    // try {
-    //   if (document.getElementById("submissionConfirmationButton").disabled) {
-    //     message.warn(
-    //       "Já confirmou as suas nomeações " + Meteor.user().username + "!"
-    //     );
-    //     document.getElementById("confirmAllNominations").disabled = true;
-    //   }
-    // } catch (error) {}
+    try {
+      if (document.getElementById("submissionConfirmationButton").disabled) {
+        message.warn(
+          "Já confirmou as suas nomeações " + Meteor.user().username + "!"
+        );
+        document.getElementById("confirmAllNominations").disabled = true;
+      }
+    } catch (error) {}
 
     const newData = dataSource.filter((item) => {
       return (item.tags[0] = ["confirmado"]);
@@ -443,59 +438,59 @@ export function ConsultaPrivada({ user }) {
           <div style={{ width: "100%", height: "100%" }}>
             <div className="demo-app-main" style={{ width: "100%" }}>
               <div className="container" style={{ width: "100%" }}>
-                <div
-                  className="table-responsive"
-                  style={{
-                    marginLeft: "1%",
-                    marginRight: "1%",
-                    marginTop: "0%",
-                  }}
-                >
-                  <br />
-                  {dataSource.length > 1 ? (
-                    <div className="table-responsive">
-                      <Table
-                        className="consultaPrivadaTabela"
-                        bordered
-                        dataSource={dataSource}
-                        columns={colunasNomeacoesPrivadas}
-                        style={{
-                          width: "fit-content",
-                          blockSize: "fit-content",
-                        }}
-                        pagination={false}
-                      />
-                      <Button
-                        onClick={handleAllConfirmation}
-                        style={{
-                          marginBottom: 16,
-                        }}
-                        id="confirmAllNominations"
-                        disabled={submetido ? true : false}
-                      >
-                        Confirmar todos
-                      </Button>
+                <br />
+                {dataSource.length > 1 ? (
+                  <div
+                    className="table-responsive"
+                    style={{
+                      marginLeft: "1%",
+                      marginRight: "2%",
+                      width: "98%",
+                    }}
+                  >
+                    <Table
+                      className="consultaPrivadaTabela"
+                      bordered
+                      dataSource={dataSource}
+                      columns={colunasNomeacoesPrivadas}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        boxSizing: "border-box",
+                      }}
+                      pagination={false}
+                      // scroll={{
+                      //   x: 1400,
+                      // }}
+                    />
+                    <Button
+                      onClick={handleAllConfirmation}
+                      style={{
+                        marginTop: "1%",
+                      }}
+                      id="confirmAllNominations"
+                    >
+                      Confirmar todos
+                    </Button>
 
-                      <Button
-                        onClick={() => {
-                          handleSubmissionConfirmation(dataSource);
-                        }}
-                        type="primary"
-                        style={{
-                          marginBottom: 16,
-                        }}
-                        id="submissionConfirmationButton"
-                        disabled={submetido ? true : false}
-                      >
-                        Submeter Confirmações
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <h2 className="blue">Não tem nomeações de momento.</h2>
-                    </>
-                  )}
-                </div>
+                    <Button
+                      onClick={() => {
+                        handleSubmissionConfirmation(dataSource);
+                      }}
+                      type="primary"
+                      style={{
+                        marginBottom: 16,
+                      }}
+                      id="submissionConfirmationButton"
+                    >
+                      Submeter Confirmações
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="blue">Não tem nomeações de momento.</h2>
+                  </>
+                )}
               </div>
             </div>
           </div>

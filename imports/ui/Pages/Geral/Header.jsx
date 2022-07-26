@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import SideBar from "../../../api/Arbitro/sidebar";
-import SideBarCA from "../../../api/CA/sidebarCA";
+import { Meteor } from "meteor/meteor";
 import { Fragment } from "react/cjs/react.production.min";
-import { LogoHeader } from "./LogoHeader";
 import { LogoAVL } from "./LogoAVL";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -20,68 +18,51 @@ export const Header = ({
   restricoesPrivadas,
   definicoes,
 }) => {
+  let navigate = useNavigate();
+  let location = useLocation();
+
   return (
     <>
       {user ? (
         <div className="div_header">
           <div
             id="divEsquerdo"
-            style={{ display: "flex", justifyContent: "center", width: "15%" }}
+            style={{
+              display: "flex",
+              width: "20%",
+              marginLeft: "1%",
+            }}
           >
-            <Fragment>
-              {/* <div id="page-wrap"> */}
-              <div
-                id="menuPrivado"
+            <div hidden={menuPrivado}>
+              <Button
+                onClick={() => (
+                  (location.pathname = "/Conta/Profile/Definicoes"),
+                  navigate("/Conta/Profile/Definicoes")
+                )}
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginRight: "30px",
+                  fontSize: "14px",
+                  verticalAlign: "text-bottom",
                 }}
-                hidden={menuPrivado}
               >
-                {/* <SideBar
-                    pageWrapId={"page-wrap"}
-                    outerContainerId={"menuPrivado"}
-                    style={{ marginTop: "20px" }}
-                  > */}
-                <MenuPrivado />
-                <p
-                  id="usernameStatus"
-                  style={{
-                    marginLeft: "10px",
-                    fontSize: "small",
-                    marginTop: "4%",
-                  }}
-                >
-                  {" Árbitro : " + user.username}
-                </p>
-                {/* </SideBar> */}
-              </div>
-              {/* </div> */}
-
-              <div
-                id="menuPrivadoCA"
-                style={{ display: "flex", justifyContent: "space-between" }}
-                hidden={menuPrivadoCA}
+                🙍‍♂️
+              </Button>
+              <MenuPrivado />
+            </div>
+            <div hidden={menuPrivadoCA}>
+              <Button
+                onClick={() => (
+                  (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                  navigate("/Conta/ProfileCA/Definicoes")
+                )}
+                style={{
+                  fontSize: "14px",
+                  verticalAlign: "text-bottom",
+                }}
               >
-                {/* <SideBarCA
-                  pageWrapId={"page-wrap-ca"}
-                  outerContainerId={"menuPrivadoCA"}
-                /> */}
-                {/* <div id="page-wrap-ca"></div> */}
-                <MenuPrivado />
-                <p
-                  id="usernameStatusCA"
-                  style={{
-                    marginLeft: "-20%",
-                    fontSize: "16px",
-                    marginTop: "4%",
-                  }}
-                >
-                  {" CA : " + user.username}
-                </p>
-              </div>
-            </Fragment>
+                🙍‍♂️
+              </Button>
+              <MenuPrivadoCA />
+            </div>
           </div>
 
           <div
@@ -134,7 +115,7 @@ export const Header = ({
               style={{ marginTop: "1%", fontSize: "smaller" }}
               hidden={indisponibilidadePrivadas}
             >
-              📅 Calendário 📅
+              📅 Calendário
             </p>
             <p
               id="restricoesPrivadas"
@@ -149,40 +130,133 @@ export const Header = ({
               style={{ marginTop: "1%", fontSize: "smaller" }}
               hidden={definicoes}
             >
-              ⚙️ Definições ⚙️
+              🙍‍♂️ Perfil
             </p>
           </div>
 
           <div
             id="divDireito"
-            style={{ display: "flex", justifyContent: "center", width: "15%" }}
+            style={{
+              display: "flex",
+              width: "fit-content",
+              marginRight: "1%",
+            }}
           >
-            <LogoHeader user={user}></LogoHeader>
+            <div
+              hidden={menuPrivado}
+              style={{ width: "inherit", marginTop: "4%" }}
+            >
+              <p
+                id="usernameStatus"
+                style={{
+                  fontSize: "16px",
+                  backgroundColor: "rgba(255,255,255,0.8)",
+                }}
+                onClick={() => (
+                  (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                  navigate("/Conta/ProfileCA/Definicoes")
+                )}
+              >
+                {user.username}
+                <Button
+                  onClick={() => (
+                    (location.pathname = "/"), navigate("/"), Meteor.logout()
+                  )}
+                  style={{
+                    fontSize: "16px",
+                    verticalAlign: "middle",
+                    width: "fit-content",
+                    height: "100%",
+                  }}
+                >
+                  Logout
+                </Button>
+              </p>
+            </div>
+            <div
+              hidden={menuPrivadoCA}
+              style={{ width: "inherit", marginTop: "4%" }}
+            >
+              <p
+                id="usernameStatusCA"
+                style={{
+                  fontSize: "16px",
+                  backgroundColor: "rgba(255,255,255,0.8)",
+                }}
+              >
+                {user.username}
+                <Button
+                  onClick={() => (
+                    (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                    navigate("/Conta/ProfileCA/Definicoes")
+                  )}
+                  style={{
+                    fontSize: "16px",
+                    verticalAlign: "middle",
+                    width: "fit-content",
+                    height: "100%",
+                  }}
+                >
+                  ⚙️{" "}
+                </Button>
+                <Button
+                  onClick={() => (
+                    (location.pathname = "/"), navigate("/"), Meteor.logout()
+                  )}
+                  style={{
+                    fontSize: "16px",
+                    verticalAlign: "middle",
+                    width: "fit-content",
+                    height: "100%",
+                  }}
+                >
+                  Logout
+                </Button>
+              </p>
+            </div>
           </div>
         </div>
       ) : (
         <div className="div_header">
           <div
             id="divEsquerdo"
-            style={{ display: "flex", justifyContent: "center", width: "15%" }}
+            style={{
+              display: "flex",
+              width: "20%",
+            }}
           >
-            <LogoAVL></LogoAVL>
+            <img
+              id="logo"
+              src="logo.png"
+              style={{ width: "20%", cursor: "pointer", marginLeft: "30%" }}
+            />
           </div>
 
           <div
             id="divCentral"
             style={{ display: "flex", justifyContent: "center", width: "60%" }}
           >
-            <p id="titulo" style={{ marginTop: "1%", fontSize: "smaller" }}>
+            <p
+              id="titulo"
+              style={{
+                marginTop: "1%",
+                fontSize: "smaller",
+                marginRight: "10%",
+              }}
+              hidden={titulo}
+            >
               Plataforma Online de Nomeações de Árbitros de Voleibol
             </p>
           </div>
 
           <div
             id="divDireito"
-            style={{ display: "flex", justifyContent: "center", width: "15%" }}
+            style={{
+              display: "flex",
+              width: "fit-content",
+            }}
           >
-            <LogoHeader></LogoHeader>
+            <LogoAVL></LogoAVL>
           </div>
         </div>
       )}
@@ -190,11 +264,10 @@ export const Header = ({
   );
 };
 
-import { Button, Drawer, Radio, Space } from "antd";
+import { Button, Drawer, Space } from "antd";
 
 const MenuPrivado = () => {
   const [visible, setVisible] = useState(false);
-  const [placement, setPlacement] = useState("left");
 
   const showDrawer = () => {
     setVisible(true);
@@ -204,22 +277,12 @@ const MenuPrivado = () => {
     setVisible(false);
   };
 
-  const onChange = (e) => {
-    setPlacement(e.target.value);
-  };
-
   let navigate = useNavigate();
   let location = useLocation();
 
   return (
     <>
       <Space>
-        {/* <Radio.Group value={placement} onChange={onChange}>
-          <Radio value="top">top</Radio>
-          <Radio value="right">right</Radio>
-          <Radio value="bottom">bottom</Radio>
-          <Radio value="left">left</Radio>
-        </Radio.Group> */}
         <Button
           type="primary"
           style={{
@@ -233,20 +296,21 @@ const MenuPrivado = () => {
       </Space>
       <Drawer
         title="Menu"
-        placement={placement}
+        placement={"left"}
         closable={false}
         onClose={onClose}
         visible={visible}
-        key={placement}
+        key={"left"}
       >
+        <p>
+          {" "}
+          <b> Árbitro: </b>{" "}
+        </p>
         <a className="menu-item">
           <p
-            style={{ fontSize: "15px" }}
+            style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              console.log("location.pathname", location.pathname),
-              (location.pathname = "/Conta/Profile"),
-              console.log("location.pathname", location.pathname),
-              navigate("/Conta/Profile")
+              (location.pathname = "/Conta/Profile"), navigate("/Conta/Profile")
             )}
           >
             Consultar Nomeações
@@ -255,59 +319,166 @@ const MenuPrivado = () => {
 
         <a className="menu-item">
           <p
-            style={{ fontSize: "15px" }}
+            style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              console.log("location.pathname", location.pathname),
               (location.pathname = "/Conta/Profile/"),
-              console.log("location.pathname", location.pathname),
               navigate("/Conta/Profile/Indisponibilidades")
             )}
           >
-            Marcar Indisponibilidades
+            Indicar Indisponibilidades
           </p>
         </a>
 
         <a className="menu-item">
           <p
-            style={{ fontSize: "15px" }}
+            style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              console.log("location.pathname", location.pathname),
               (location.pathname = "/Conta/Profile/"),
-              console.log("location.pathname", location.pathname),
               navigate("/Conta/Profile/Relacoes")
             )}
           >
             Indicar Restrições
           </p>
         </a>
+      </Drawer>
+    </>
+  );
+};
+
+const MenuPrivadoCA = () => {
+  const [visible, setVisible] = useState(false);
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
+
+  const onClose = () => {
+    setVisible(false);
+  };
+
+  let navigate = useNavigate();
+  let location = useLocation();
+
+  return (
+    <>
+      <Space>
+        <Button
+          type="primary"
+          style={{
+            verticalAlign: "text-bottom",
+            width: "fit-content",
+          }}
+          onClick={showDrawer}
+        >
+          ☰
+        </Button>
+      </Space>
+      <Drawer
+        title="Menu"
+        placement={"left"}
+        closable={false}
+        onClose={onClose}
+        visible={visible}
+        key={"left"}
+      >
+        <p>
+          {" "}
+          <b> Árbitro: </b>
+        </p>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA"),
+              navigate("/Conta/ProfileCA")
+            )}
+          >
+            Consultar Nomeações
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Indisponibilidades"),
+              navigate("/Conta/ProfileCA/Indisponibilidades")
+            )}
+          >
+            Marcar Indisponibilidades
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Relacoes"),
+              navigate("/Conta/ProfileCA/Relacoes")
+            )}
+          >
+            Indicar Restrições
+          </p>
+        </a>
+        <p>
+          {" "}
+          <b> Conselho de Arbitragem: </b>{" "}
+        </p>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            id="clickOptionMenuAtribuirArbitros"
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros"),
+              navigate("/Conta/ProfileCA/Atribuir_Arbitros")
+            )}
+          >
+            Atribuir Árbitros a Jogos
+          </p>
+        </a>
 
         <a className="menu-item">
           <p
-            style={{ fontSize: "15px" }}
+            style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              console.log("location.pathname", location.pathname),
-              (location.pathname = "/Conta/Profile/"),
-              console.log("location.pathname", location.pathname),
-              navigate("/Conta/Profile/Definicoes")
+              (location.pathname = "/Conta/ProfileCA/Carregar_Novos_Jogos"),
+              navigate("/Conta/ProfileCA/Carregar_Novos_Jogos")
+            )}
+          >
+            Carregar Jogos Novos
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Criar_Arbitro"),
+              navigate("/Conta/ProfileCA/Criar_Arbitro")
+            )}
+          >
+            Criar Conta Nova
+          </p>
+        </a>
+
+        {/* <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Definicoes"),
+              navigate("/Conta/ProfileCA/Definicoes")
             )}
           >
             Definições
           </p>
-        </a>
-
-        <a className="menu-item">
+        </a> */}
+        {/* <a className="menu-item">
           <p
             style={{ fontSize: "15px" }}
-            onClick={() => {
-              console.log("location.pathname", location.pathname),
-                ((location.pathname = "/"), navigate("/")),
-                console.log("location.pathname", location.pathname),
-                Meteor.logout();
-            }}
+            onClick={() => (
+              (location.pathname = "/"), navigate("/"), Meteor.logout()
+            )}
           >
-            Sair
+            Terminar Sessão
           </p>
-        </a>
+        </a> */}
       </Drawer>
     </>
   );

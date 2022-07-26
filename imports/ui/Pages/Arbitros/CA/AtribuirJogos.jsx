@@ -60,7 +60,7 @@ let currJogo = {};
 
 let currNomeArbitro = "";
 
-export function AtribuirJogos(props) {
+export function AtribuirJogos({ user }) {
   let navigate = useNavigate();
 
   const colunasNomeacoesPrivadas = [
@@ -583,9 +583,9 @@ export function AtribuirJogos(props) {
               style={{
                 backgroundColor: "white",
                 alignSelf: "flex-start",
-                marginTop: "0.2%",
-                marginLeft: "0.2%",
-                marginRight: "0.2%",
+                marginTop: "0.5%",
+                marginLeft: "1%",
+                marginRight: "1%",
               }}
             >
               <h2 className="blue">
@@ -694,7 +694,7 @@ export function AtribuirJogos(props) {
                       fontSize: "15px",
                     }}
                   >
-                    <Option className="inputt-option" value={"Todos"}>
+                    <Option className="inputt-option" value={"Todos"} selected>
                       {" "}
                       Todos{" "}
                     </Option>
@@ -803,9 +803,9 @@ export function AtribuirJogos(props) {
                     columns={colunasNomeacoesPrivadas}
                     pagination={true}
                     style={{
-                      marginLeft: "0.2%",
-                      marginTop: "0.2%",
-                      marginRight: "0.2%",
+                      marginLeft: "1%",
+                      marginTop: "0.5%",
+                      marginRight: "1%",
                     }}
                     scroll={{
                       x: 1800,

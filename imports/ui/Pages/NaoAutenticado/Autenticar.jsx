@@ -7,47 +7,6 @@ import { Header } from "../Geral/Header";
 export function Autenticar({ user }) {
   let navigate = useNavigate();
 
-  function mostraPerfil() {
-    try {
-      //document.getElementById("titulo").hidden = true;
-      // document.getElementById("carregarJogos").hidden = true;
-      // document.getElementById("atribuirArbitros").hidden = true;
-      //document.getElementById("nomeacoesPrivadas").hidden = false;
-      //document.getElementById("indisponibilidadePrivadas").hidden = true;
-      //document.getElementById("restricoesPrivadas").hidden = true;
-      //document.getElementById("menuPrivado").hidden = false;
-      //document.getElementById("menuPrivadoCA").hidden = true;
-      // document.getElementById("carregarFicheiroJogos").hidden = true;
-      // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-      // document.getElementById("indisponibilidadesCA").hidden = true;
-      //document.getElementById("restricoesCA").hidden = true;
-      //document.getElementById("consultaPrivadaCA").hidden = true;
-      //  document.getElementById("indisponibilidades").hidden = true;
-      //  document.getElementById("restricoes").hidden = true;
-      //  document.getElementById("consultaPrivada").hidden = false;
-    } catch (error) {}
-  }
-
-  function mostraPerfilCA() {
-    try {
-      document.getElementById("titulo").hidden = true;
-      document.getElementById("atribuirArbitros").hidden = true;
-      document.getElementById("nomeacoesPrivadas").hidden = false;
-      document.getElementById("indisponibilidadePrivadas").hidden = true;
-      document.getElementById("restricoesPrivadas").hidden = true;
-      document.getElementById("menuPrivado").hidden = true;
-      document.getElementById("menuPrivadoCA").hidden = false;
-      // document.getElementById("carregarFicheiroJogos").hidden = false;
-      // document.getElementById("atribuirArbitrosAjogos").hidden = true;
-      // document.getElementById("indisponibilidadesCA").hidden = true;
-      // document.getElementById("restricoesCA").hidden = true;
-      // document.getElementById("consultaPrivadaCA").hidden = true;
-      // document.getElementById("indisponibilidades").hidden = true;
-      // document.getElementById("restricoes").hidden = true;
-      // document.getElementById("consultaPrivada").hidden = true;
-    } catch (error) {}
-  }
-
   function login(user, pass) {
     if (Meteor.user() != undefined) {
       //console.log("current user: " + Meteor.user().username);
@@ -57,14 +16,10 @@ export function Autenticar({ user }) {
       if (user != "Invalid credentials / user does not exist.") {
         let utilizador = JSON.parse(JSON.stringify(user));
 
-        //console.log("utilizador: ", utilizador);
-        // TENHO O USER CERTO AQUI
-
         Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
           if (err) {
             //message.error("Credenciais erradas ou utilizador inexistente.");
           }
-
           Meteor.call("isAdmin", utilizador, Meteor.user(), (err, result) => {
             console.log("result", result);
 
@@ -74,12 +29,10 @@ export function Autenticar({ user }) {
               //console.log("vou mostrar Perfil do CA");
               message.success("Bem vindo " + utilizador.username + "!");
               navigate("/Conta/ProfileCA");
-              mostraPerfilCA();
             } else if (result === 0) {
               //console.log("vou mostrar Perfil do Arbitro");
               message.success("Bem vindo " + utilizador.username + "!");
               navigate("/Conta/Profile");
-              mostraPerfil();
             }
           });
         });
@@ -119,7 +72,7 @@ export function Autenticar({ user }) {
           </div>
           <p></p>
           <div className="input">
-            <label className="labels">Password*</label>
+            <label className="labels">Password</label>
             <input className="inputt" type={"password"} id="ppass"></input>
           </div>
           <p></p>

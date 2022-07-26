@@ -4,16 +4,6 @@ import { Header } from "./Header";
 
 export function Navbar() {
   let navigate = useNavigate();
-
-  // function mostraTitulo() {
-  //   try {
-  //     document.getElementById("titulo").hidden = false;
-  //     document.getElementById("nomeacoesPrivadas").hidden = true;
-  //     document.getElementById("indisponibilidadePrivadas").hidden = true;
-  //     document.getElementById("restricoesPrivadas").hidden = true;
-  //   } catch (error) {}
-  // }
-
   return (
     <div>
       <Header
