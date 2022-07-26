@@ -1,4 +1,4 @@
-import { message } from "antd";
+import { Button, message } from "antd";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Header } from "../Geral/Header";
@@ -158,7 +158,10 @@ export function UserSettings({ user }) {
         <p></p>
 
         <div className="input">
-          <label className="labels">
+          <label
+            className="labels"
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
             Tenho Transporte próprio:
             <input
               className="inputt"
@@ -171,7 +174,7 @@ export function UserSettings({ user }) {
                   adicionaTransporteProprioUserSettings(user);
                 }
               }}
-              style={{ marginLeft: "135px", height: "30px", width: "30px" }}
+              style={{ height: "30px", width: "30px" }}
               checked={temTransporte}
             ></input>
           </label>
@@ -200,7 +203,10 @@ export function UserSettings({ user }) {
 
         <p></p>
         <div className="input">
-          <label className="labels">
+          <label
+            className="labels"
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
             Emito recibo verde:
             <input
               className="inputt"
@@ -213,7 +219,7 @@ export function UserSettings({ user }) {
                   adicionaEmissaoReciboUserSettings(user);
                 }
               }}
-              style={{ marginLeft: "190px", height: "30px", width: "30px" }}
+              style={{ height: "30px", width: "30px" }}
               checked={temRecibo}
             ></input>
           </label>
@@ -246,111 +252,113 @@ export function UserSettings({ user }) {
           }}
         >
           <label className="labels" style={{ alignSelf: "center" }}>
-            Mudar Password
+            🔑 Mudar Password
           </label>
         </div>
-
-        <p></p>
 
         <div className="input">
           <label className="labels">Password atual: </label>
           <input
             className="inputt"
             type={"password"}
+            placeholder="*****"
             id="currentPasswordUserSettings"
           ></input>
         </div>
-
-        <p></p>
 
         <div className="input">
           <label className="labels">Nova password:</label>
           <input
             className="inputt"
             type={"password"}
+            placeholder="*****"
             id="passwordUserSettings"
           ></input>
         </div>
-        <p></p>
 
         <div className="input">
           <label className="labels">Confirmar a nova password</label>
           <input
             className="inputt"
             type={"password"}
+            placeholder="*****"
             id="password2UserSettings"
           ></input>
         </div>
 
-        <p></p>
-        <p></p>
+        <div className="input" style={{ marginTop: "1%" }}>
+          <label
+            className="labels"
+            style={{ display: "flex", justifyContent: "flex-end" }}
+          >
+            <Button
+              size="small"
+              shape="round"
+              type="primary"
+              onClick={() => {
+                let currentPasswordUserSettings = document.getElementById(
+                  "currentPasswordUserSettings"
+                ).value;
+                let passwordUserSettings = document.getElementById(
+                  "passwordUserSettings"
+                ).value;
+                let password2UserSettings = document.getElementById(
+                  "password2UserSettings"
+                ).value;
 
-        <button
-          className="botao"
-          onClick={() => {
-            let currentPasswordUserSettings = document.getElementById(
-              "currentPasswordUserSettings"
-            ).value;
-            let passwordUserSettings = document.getElementById(
-              "passwordUserSettings"
-            ).value;
-            let password2UserSettings = document.getElementById(
-              "password2UserSettings"
-            ).value;
-
-            if (
-              currentPasswordUserSettings === "" ||
-              passwordUserSettings === "" ||
-              password2UserSettings === ""
-            ) {
-              message.warn("Por favor coloque valores nos campos");
-            } else {
-              Meteor.call(
-                "authenticateUser",
-                user.emails[0].address,
-                currentPasswordUserSettings,
-                (err, result) => {
-                  console.log("result", result);
-                  console.log("err", err);
-                  if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas.
-                    message.error(
-                      "Credenciais erradas ou utilizador inexistente."
-                    );
-                  } else if (result) {
-                    if (
-                      result != "Invalid credentials / user does not exist."
-                    ) {
-                      if (passwordUserSettings != password2UserSettings) {
-                        message.error("As passwords não correspondem.");
+                if (
+                  currentPasswordUserSettings === "" &&
+                  passwordUserSettings === "" &&
+                  password2UserSettings === ""
+                ) {
+                  message.warn("Por favor coloque valores nos campos");
+                } else if (currentPasswordUserSettings === "") {
+                  message.error("É necessário a sua password atual.");
+                } else if (passwordUserSettings === "") {
+                  message.error("Não colocou password nova.");
+                } else if (password2UserSettings === "") {
+                  message.error(
+                    "Não colocou a confirmação da password nova.  "
+                  );
+                } else {
+                  Meteor.loginWithPassword(
+                    user,
+                    currentPasswordUserSettings,
+                    (err, result) => {
+                      console.log("result", result);
+                      if (result === undefined) {
+                        //Fazer aparecer mensagem de texto de credenciais erradas.
+                        message.error("Password atual errada");
                       } else {
-                        Meteor.call(
-                          "alteraPassword",
-                          user.emails[0].address,
-                          password2UserSettings,
-                          (err, result) => {
-                            if (result === 1) {
-                              message.success(
-                                "Password alterada com sucesso! Faça a autenticação novamente."
-                              );
-                              Meteor.logout();
-                            } else {
-                              message.error("ERRO");
+                        if (passwordUserSettings != password2UserSettings) {
+                          message.error("As passwords novas não correspondem.");
+                        } else {
+                          Meteor.call(
+                            "alteraPassword",
+                            user.emails[0].address,
+                            password2UserSettings,
+                            (err, result) => {
+                              if (result === 1) {
+                                message.success(
+                                  "Password alterada com sucesso! Faça a autenticação novamente."
+                                );
+                                Meteor.logout();
+                              } else {
+                                message.error("ERRO");
+                              }
                             }
-                          }
-                        );
+                          );
+                        }
                       }
-                    } else {
-                      message.error("Password errada");
                     }
-                  }
+                  );
                 }
-              );
-            }
-          }}
-        >
-          Alterar Password
-        </button>
+              }}
+            >
+              Alterar Password
+            </Button>
+          </label>
+        </div>
       </div>
     </div>
   );

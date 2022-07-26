@@ -13,6 +13,7 @@ export function ForgotPassword() {
       {" "}
       <Header
         user={Meteor.user()}
+        titulo={true}
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
@@ -22,6 +23,10 @@ export function ForgotPassword() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        clubesAfiliadosAVL={true}
+        consultaNomeacoesSemanais={true}
+        forgotPasswordHeader={false}
+        sobreHeader={true}
       />
       <div>
         <h1 className="blue"> Definir password nova:</h1>

@@ -476,18 +476,21 @@ Meteor.methods({
     if (password.length == 0) throw new Meteor.Error("Must insert a password.");
     var user = Accounts.findUserByEmail(user_email);
     if (user == undefined) {
-      return "Invalid credentials / user does not exist.";
+      return "User does not exist.";
+    } else {
+      console.log("User found by email.");
+      return user;
     }
 
-    console.log("User found by email.");
+    // //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
+    // var result = Accounts._checkPassword(user, {
+    //   digest: password,
+    //   algorithm: "sha-256",
+    // });
 
-    //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
-    var result = Accounts._checkPassword(user, {
-      digest: password,
-      algorithm: "sha-256",
-    });
-    if (result) return user;
-    else return "Passwords do not match";
+    // console.log("RESULT", result.error);
+    // if (result.error) return user;
+    // else return "Passwords do not match";
   },
 
   registerUser: function registerUser(

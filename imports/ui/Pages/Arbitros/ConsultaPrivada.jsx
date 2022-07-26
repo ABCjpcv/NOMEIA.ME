@@ -443,9 +443,10 @@ export function ConsultaPrivada({ user }) {
                   <div
                     className="table-responsive"
                     style={{
-                      marginLeft: "1%",
-                      marginRight: "2%",
-                      width: "98%",
+                      marginLeft: "0.5%",
+                      marginRight: "0%",
+                      width: "99%",
+                      marginTop: "-1%",
                     }}
                   >
                     <Table
@@ -455,18 +456,19 @@ export function ConsultaPrivada({ user }) {
                       columns={colunasNomeacoesPrivadas}
                       style={{
                         width: "100%",
-                        height: "100%",
+                        height: "37vw",
                         boxSizing: "border-box",
                       }}
+                      size="middle"
                       pagination={false}
                       // scroll={{
-                      //   x: 1400,
+                      //   y: 800,
                       // }}
                     />
                     <Button
                       onClick={handleAllConfirmation}
                       style={{
-                        marginTop: "1%",
+                        marginTop: "0.5%",
                       }}
                       id="confirmAllNominations"
                     >

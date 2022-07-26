@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "./Header";
@@ -18,43 +19,59 @@ export function Navbar() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        clubesAfiliadosAVL={true}
+        consultaNomeacoesSemanais={true}
+        forgotPasswordHeader={true}
+        sobreHeader={true}
       />
       <div style={{ marginTop: "1%" }}>
-        <div
+        <Button
+          style={{ display: "flex" }}
+          shape="round"
+          size="large"
           className="botao"
           onClick={() => {
             navigate("/ConsultaNomeacoes");
           }}
         >
           Consulta de Nomeações
-        </div>
+        </Button>
         <p></p>
-        <div
+        <Button
+          style={{ display: "flex" }}
+          shape="round"
+          size="large"
           className="botao"
           onClick={() => {
             navigate("/Clubes_da_AVL");
           }}
         >
           Clubes Afiliados à AVL
-        </div>
+        </Button>
         <p></p>
-        <div
+        <Button
+          style={{ display: "flex" }}
+          shape="round"
+          size="large"
           className="botao"
           onClick={() => {
             navigate("/Autenticar");
           }}
         >
           Autenticar
-        </div>
+        </Button>
         <p></p>
-        <div
+        <Button
+          style={{ display: "flex" }}
+          shape="round"
+          size="large"
           className="botao"
           onClick={() => {
             navigate("/Sobre");
           }}
         >
           Sobre
-        </div>
+        </Button>
       </div>
     </div>
   );

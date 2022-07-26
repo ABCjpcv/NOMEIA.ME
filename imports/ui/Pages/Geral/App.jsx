@@ -6,7 +6,7 @@ import { Navigate, Outlet } from "react-router";
 import "../../Pages/app.css";
 
 import { Navbar } from "./Navbar.jsx";
-import { Sobre } from "./Sobre.jsx";
+import { Sobre } from "../NaoAutenticado/Sobre.jsx";
 import { ConsultaNomeacoes } from "../NaoAutenticado/ConsultaNomeacoes.jsx";
 import { Indisponibilidades } from "../Arbitros/Indisponibilidades.jsx";
 import { Restricoes } from "../Arbitros/Restricoes.jsx";
@@ -40,7 +40,7 @@ export const App = () => {
   return (
     <Router>
       <div
-        style={{ textAlign: "center", backgroundColor: "#b9b7b7" }}
+        style={{ textAlign: "center" }}
         onClick={() => {
           try {
             document.getElementById("react-burger-cross-btn").tabIndex = -1;

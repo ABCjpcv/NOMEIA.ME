@@ -1,5 +1,5 @@
 import React from "react";
-import { Header } from "./Header";
+import { Header } from "../Geral/Header";
 
 export const Sobre = () => {
   return (
@@ -16,6 +16,10 @@ export const Sobre = () => {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        clubesAfiliadosAVL={true}
+        consultaNomeacoesSemanais={true}
+        forgotPasswordHeader={true}
+        sobreHeader={false}
       />
       <h1 className="blue"> Sobre mim: </h1>
       <div style={{ margin: "auto", display: "flex", maxWidth: "1200px" }}>

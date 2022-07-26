@@ -26,6 +26,7 @@ export function ConsultaClubes() {
     <>
       <Header
         user={Meteor.user()}
+        titulo={true}
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
@@ -35,29 +36,53 @@ export function ConsultaClubes() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        clubesAfiliadosAVL={false}
+        consultaNomeacoesSemanais={true}
+        forgotPasswordHeader={true}
+        sobreHeader={true}
       />
       <div>
-        <h1 className="blue"> Clubes Afiliados à AVL </h1>
-        <Search
-          onChange={(e) => setSearchVal(e.target.value)}
-          placeholder="Search"
-          enterButton
+        <div
           style={{
-            position: "sticky",
-            top: "0",
-            left: "0",
-            width: "200px",
-            marginTop: "2vh",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
-        />
-        <br /> <br />
-        <Table
-          rowKey="name"
-          dataSource={filteredData}
-          columns={colunasClubesAfiliados}
-          loading={loading}
-          pagination={false}
-        />
+        >
+          <div className="input" style={{ marginTop: "0.5%" }}>
+            <label className="labels">
+              <Search
+                onChange={(e) => setSearchVal(e.target.value)}
+                placeholder="Clube / Email / Contacto... "
+                enterButton
+                style={{
+                  position: "sticky",
+                  top: "0",
+                  left: "0",
+                  width: "300px",
+                  marginTop: "0.5%",
+                  flexDirection: "none",
+                  justifyContent: "space-evenly",
+                }}
+              />
+            </label>
+          </div>
+        </div>
+        <div
+          style={{ marginTop: "0.5%", marginLeft: "0.5%", marginRight: "0.5%" }}
+        >
+          <Table
+            rowKey="name"
+            dataSource={filteredData}
+            columns={colunasClubesAfiliados}
+            loading={loading}
+            pagination={false}
+            scroll={{
+              y: "70vh",
+            }}
+          />
+        </div>
       </div>
     </>
   );

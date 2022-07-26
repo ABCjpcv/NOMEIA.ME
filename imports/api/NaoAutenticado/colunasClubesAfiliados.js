@@ -5,6 +5,7 @@ export const colunasClubesAfiliados = [
     key: "Clube",
     sorter: (a, b) => comparaAminhaLindaString(a.Clube, b.Clube),
     sortDirections: ["descend", "ascend"],
+    width: "53%",
   },
   // {
   //   title: "Localização",
@@ -19,6 +20,7 @@ export const colunasClubesAfiliados = [
     key: "Email",
     sorter: (a, b) => comparaAminhaLindaString(a.Email, b.Email),
     sortDirections: ["descend", "ascend"],
+    width: "25%",
   },
   {
     title: "Telemóvel",
@@ -26,6 +28,7 @@ export const colunasClubesAfiliados = [
     key: "Telemovel",
     sorter: (a, b) => comparaAminhaLindaString(a.Telemovel, b.Telemovel),
     sortDirections: ["descend", "ascend"],
+    width: "10%",
   },
 
   {
@@ -34,6 +37,7 @@ export const colunasClubesAfiliados = [
     key: "Telefone",
     sorter: (a, b) => comparaAminhaLindaString(a.Telefone, b.Telefone),
     sortDirections: ["descend", "ascend"],
+    width: "10%",
   },
 ];
 

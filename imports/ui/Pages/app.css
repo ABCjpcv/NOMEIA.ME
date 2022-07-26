@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap");
 
+html {
+  background-color: rgb(232, 228, 201);
+  overflow: hidden;
+}
+
 .div_header {
   background-color: #efc244;
   height: 60px;
@@ -46,7 +51,6 @@
 .input {
   display: flex;
   flex-direction: column;
-  width: 350px;
 }
 
 .labels {
