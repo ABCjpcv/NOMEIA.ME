@@ -1,7 +1,8 @@
-import { Button, message } from "antd";
+import { Button, Input, InputNumber, message, Space } from "antd";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Header } from "../Geral/Header";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);
@@ -25,11 +26,19 @@ export function UserSettings({ user }) {
 
   let [nivel, setNivel] = useState(() => getNivel(user));
 
+  let [licenca, setLicenca] = useState(() => getLicenca(user));
+
   function submeterAlteracaoPassword(user, newPassword) {}
 
   function getNivel(user) {
     Meteor.call("getNivel", user, (err, result) => {
       setNivel(result);
+    });
+  }
+
+  function getLicenca(user) {
+    Meteor.call("getLicenca", user, (err, result) => {
+      setLicenca(result);
     });
   }
 
@@ -112,7 +121,6 @@ export function UserSettings({ user }) {
         restricoesPrivadas={true}
         definicoes={false}
       />
-      <h1 className="blue"> </h1>
       <div
         style={{
           margin: "auto",
@@ -121,243 +129,259 @@ export function UserSettings({ user }) {
           alignItems: "center",
         }}
       >
-        <div className="input">
-          <label className="labels">Nome</label>
-          <input
-            className="inputt"
-            type={"text"}
-            id="nomeUserSettings"
-            value={user.username}
-            disabled
-          ></input>
-        </div>
-        <p></p>
-        <div className="input">
-          <label className="labels">Email</label>
-          <input
-            className="inputt"
-            type={"email"}
-            id="emailUserSettings"
-            value={user.emails[0].address}
-            disabled
-          ></input>
-        </div>
-        <p></p>
-        <div className="input">
-          <label className="labels">Nivel</label>
-          <input
-            className="inputt"
-            type={"text"}
-            id="nivelUserSettings"
-            value={nivel}
-            disabled
-          ></input>
-        </div>
-        <p></p>
-
-        <p></p>
-
-        <div className="input">
-          <label
-            className="labels"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            Tenho Transporte próprio:
-            <input
-              className="inputt"
-              type={"checkbox"}
-              onChange={() => {
-                if (temTransporte) {
-                  removeTransporteProprioUserSettings(user);
-                }
-                if (!temTransporte) {
-                  adicionaTransporteProprioUserSettings(user);
-                }
-              }}
-              style={{ height: "30px", width: "30px" }}
-              checked={temTransporte}
-            ></input>
-          </label>
-        </div>
-
-        {/* <p></p>
-        <div className="input">
-          <label className="labels">
-            Não tenho Transporte próprio:
-            <input
-              className="inputt"
-              type={"checkbox"}
-              onChange={() => {
-                if (!naoTemTransporte) {
-                  removeTransporteProprioUserSettings(user);
-                }
-                if (naoTemTransporte) {
-                  adicionaTransporteProprioUserSettings(user);
-                }
-              }}
-              style={{ marginLeft: "105px", height: "30px", width: "30px" }}
-              checked={naoTemTransporte}
-            ></input>
-          </label>
-        </div> */}
-
-        <p></p>
-        <div className="input">
-          <label
-            className="labels"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            Emito recibo verde:
-            <input
-              className="inputt"
-              type={"checkbox"}
-              onChange={() => {
-                if (temRecibo) {
-                  removeEmissaoReciboUserSettings(user);
-                }
-                if (!temRecibo) {
-                  adicionaEmissaoReciboUserSettings(user);
-                }
-              }}
-              style={{ height: "30px", width: "30px" }}
-              checked={temRecibo}
-            ></input>
-          </label>
-        </div>
-        {/* <p></p>
-        <div className="input">
-          <label className="labels">
-            Não emito recibo verde:
-            <input
-              className="inputt"
-              type={"checkbox"}
-              onChange={() => {
-                if (!naoTemRecibo) {
-                  removeEmissaoReciboUserSettings(user);
-                }
-                if (naoTemRecibo) {
-                  adicionaEmissaoReciboUserSettings(user);
-                }
-              }}
-              style={{ marginLeft: "159px", height: "30px", width: "30px" }}
-              checked={naoTemRecibo}
-            ></input>
-          </label>
-        </div> */}
-        <p></p>
         <div
-          className="input"
           style={{
-            backgroundColor: "rgba(255,255,255,0.5)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "space-evenly",
+            width: "30%",
+            marginTop: "1%",
           }}
         >
-          <label className="labels" style={{ alignSelf: "center" }}>
-            🔑 Mudar Password
-          </label>
-        </div>
+          <div className="input" style={{ justifyContent: "flex-start" }}>
+            <label className="labels">Nome</label>
 
-        <div className="input">
-          <label className="labels">Password atual: </label>
-          <input
-            className="inputt"
-            type={"password"}
-            placeholder="*****"
-            id="currentPasswordUserSettings"
-          ></input>
-        </div>
+            <Input
+              type={"text"}
+              value={user.username}
+              id="nomeUserSettings"
+              style={{ borderRadius: "10px" }}
+              disabled
+            ></Input>
+          </div>
+          <p></p>
+          <div className="input" style={{ justifyContent: "flex-start" }}>
+            <label className="labels">Email</label>
+            <Input
+              type={"email"}
+              id="emailUserSettings"
+              style={{ borderRadius: "10px" }}
+              value={user.emails[0].address}
+              disabled
+            ></Input>
+          </div>
+          <p></p>
 
-        <div className="input">
-          <label className="labels">Nova password:</label>
-          <input
-            className="inputt"
-            type={"password"}
-            placeholder="*****"
-            id="passwordUserSettings"
-          ></input>
-        </div>
-
-        <div className="input">
-          <label className="labels">Confirmar a nova password</label>
-          <input
-            className="inputt"
-            type={"password"}
-            placeholder="*****"
-            id="password2UserSettings"
-          ></input>
-        </div>
-
-        <div className="input" style={{ marginTop: "1%" }}>
-          <label
-            className="labels"
-            style={{ display: "flex", justifyContent: "flex-end" }}
-          >
-            <Button
-              size="small"
-              shape="round"
-              type="primary"
-              onClick={() => {
-                let currentPasswordUserSettings = document.getElementById(
-                  "currentPasswordUserSettings"
-                ).value;
-                let passwordUserSettings = document.getElementById(
-                  "passwordUserSettings"
-                ).value;
-                let password2UserSettings = document.getElementById(
-                  "password2UserSettings"
-                ).value;
-
-                if (
-                  currentPasswordUserSettings === "" &&
-                  passwordUserSettings === "" &&
-                  password2UserSettings === ""
-                ) {
-                  message.warn("Por favor coloque valores nos campos");
-                } else if (currentPasswordUserSettings === "") {
-                  message.error("É necessário a sua password atual.");
-                } else if (passwordUserSettings === "") {
-                  message.error("Não colocou password nova.");
-                } else if (password2UserSettings === "") {
-                  message.error(
-                    "Não colocou a confirmação da password nova.  "
-                  );
-                } else {
-                  Meteor.loginWithPassword(
-                    user,
-                    currentPasswordUserSettings,
-                    (err, result) => {
-                      console.log("result", result);
-                      if (result === undefined) {
-                        //Fazer aparecer mensagem de texto de credenciais erradas.
-                        message.error("Password atual errada");
-                      } else {
-                        if (passwordUserSettings != password2UserSettings) {
-                          message.error("As passwords novas não correspondem.");
-                        } else {
-                          Meteor.call(
-                            "alteraPassword",
-                            user.emails[0].address,
-                            password2UserSettings,
-                            (err, result) => {
-                              if (result === 1) {
-                                message.success(
-                                  "Password alterada com sucesso! Faça a autenticação novamente."
-                                );
-                                Meteor.logout();
-                              } else {
-                                message.error("ERRO");
-                              }
-                            }
-                          );
-                        }
-                      }
-                    }
-                  );
-                }
+          <div className="input">
+            <div style={{ display: "flex" }}>
+              <label className="labels">Nivel</label>
+              <label className="labels" style={{ marginLeft: "44%" }}>
+                Licença
+              </label>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
               }}
             >
-              Alterar Password
-            </Button>
-          </label>
+              <InputNumber
+                type="number"
+                id="nivelUserSettings"
+                value={nivel}
+                disabled
+                style={{ width: "49%" }}
+              ></InputNumber>
+              <InputNumber
+                type="number"
+                id="licencaArbitroUserSettings"
+                value={licenca}
+                disabled
+                style={{
+                  width: "50%",
+                  marginLeft: "1%",
+                  borderRadius: "10px",
+                }}
+              ></InputNumber>
+            </div>
+          </div>
+
+          <p></p>
+
+          <div className="input" style={{ display: "flex" }}>
+            <label className="labels">
+              Tenho Transporte próprio:
+              <Input
+                type={"checkbox"}
+                onChange={() => {
+                  if (temTransporte) {
+                    removeTransporteProprioUserSettings(user);
+                  }
+                  if (!temTransporte) {
+                    adicionaTransporteProprioUserSettings(user);
+                  }
+                }}
+                style={{
+                  display: "flex",
+                  marginLeft: "20%",
+                  height: "30px",
+                  width: "30px",
+                  borderRadius: "10px",
+                }}
+                checked={temTransporte}
+              ></Input>
+            </label>
+          </div>
+          <p></p>
+          <div className="input" style={{ display: "flex" }}>
+            <label className="labels">
+              Emito recibo verde:
+              <Input
+                type={"checkbox"}
+                onChange={() => {
+                  if (temRecibo) {
+                    removeEmissaoReciboUserSettings(user);
+                  }
+                  if (!temRecibo) {
+                    adicionaEmissaoReciboUserSettings(user);
+                  }
+                }}
+                style={{
+                  display: "flex",
+                  marginLeft: "20%",
+                  height: "30px",
+                  width: "30px",
+                  borderRadius: "10px",
+                }}
+                checked={temRecibo}
+              ></Input>
+            </label>
+          </div>
+          <p></p>
+          <div
+            className="input"
+            style={{
+              backgroundColor: "rgba(255,255,255,0.5)",
+            }}
+          >
+            <label className="labels" style={{ alignSelf: "center" }}>
+              🔑 Mudar Password
+            </label>
+          </div>
+
+          <div className="input">
+            <label className="labels">Password atual: </label>
+            <Space
+              direction="vertical"
+              style={{ width: "100%", shapeMargin: "round" }}
+            >
+              <Input.Password
+                id="currentPasswordUserSettings"
+                style={{ width: "100%", borderRadius: "10px" }}
+                placeholder="*****"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+                status={undefined}
+                onChange={handleChangePasswordAuth}
+              />
+            </Space>
+          </div>
+
+          <div className="input">
+            <label className="labels">Nova password:</label>
+
+            <Space
+              direction="vertical"
+              style={{ width: "100%", shapeMargin: "round" }}
+            >
+              <Input.Password
+                id="passwordUserSettings"
+                style={{ width: "100%", borderRadius: "10px" }}
+                placeholder="*****"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+                status={undefined}
+                onChange={handleChangePassword2Auth}
+              />
+            </Space>
+          </div>
+
+          <div className="input">
+            <label className="labels">Confirmar a nova password</label>
+            <Space
+              direction="vertical"
+              style={{ width: "100%", shapeMargin: "round" }}
+            >
+              <Input.Password
+                id="password2UserSettings"
+                style={{ width: "100%", borderRadius: "10px" }}
+                placeholder="*****"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
+                status={undefined}
+                onChange={handleChangePassword2Auth}
+              />
+            </Space>
+          </div>
+
+          <p></p>
+          <Button
+            size="small"
+            shape="round"
+            type="primary"
+            onClick={() => {
+              let currentPasswordUserSettings = document.getElementById(
+                "currentPasswordUserSettings"
+              ).value;
+              let passwordUserSettings = document.getElementById(
+                "passwordUserSettings"
+              ).value;
+              let password2UserSettings = document.getElementById(
+                "password2UserSettings"
+              ).value;
+
+              if (
+                currentPasswordUserSettings === "" &&
+                passwordUserSettings === "" &&
+                password2UserSettings === ""
+              ) {
+                message.warn("Por favor coloque valores nos campos");
+              } else if (currentPasswordUserSettings === "") {
+                message.error("É necessário a sua password atual.");
+              } else if (passwordUserSettings === "") {
+                message.error("Não colocou password nova.");
+              } else if (password2UserSettings === "") {
+                message.error("Não colocou a confirmação da password nova.  ");
+              } else {
+                Meteor.loginWithPassword(
+                  user,
+                  currentPasswordUserSettings,
+                  (err, result) => {
+                    console.log("result", result);
+                    if (result === undefined) {
+                      //Fazer aparecer mensagem de texto de credenciais erradas.
+                      message.error("Password atual errada");
+                    } else {
+                      if (passwordUserSettings != password2UserSettings) {
+                        message.error("As passwords novas não correspondem.");
+                      } else {
+                        Meteor.call(
+                          "alteraPassword",
+                          user.emails[0].address,
+                          password2UserSettings,
+                          (err, result) => {
+                            if (result === 1) {
+                              message.success(
+                                "Password alterada com sucesso! Faça a autenticação novamente."
+                              );
+                              Meteor.logout();
+                            } else {
+                              message.error("ERRO");
+                            }
+                          }
+                        );
+                      }
+                    }
+                  }
+                );
+              }
+            }}
+          >
+            Alterar Password
+          </Button>
         </div>
       </div>
     </div>

@@ -47,7 +47,6 @@ export function ConsultaTotal() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            marginTop,
           }}
         >
           <div className="input">

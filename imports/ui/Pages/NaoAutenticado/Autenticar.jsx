@@ -116,7 +116,7 @@ export function Autenticar({ user }) {
             <div className="input">
               <Input
                 type={"email"}
-                placeholder="exemplo@gmail.com"
+                placeholder="exemplo@email.com"
                 id="eemail"
                 style={{ borderRadius: "10px" }}
                 status={undefined}

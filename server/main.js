@@ -841,6 +841,15 @@ Meteor.methods({
     return result;
   },
 
+  getLicenca: function getLicenca(user) {
+    let utilizador = Meteor.users.findOne(user);
+    let email = utilizador.emails[0].address;
+    var arb = arbitros.findOne({ email: email });
+    var result = arb.licenca;
+    //  console.log("NIVEL DE ARBITRO NA BD?", result);
+    return result;
+  },
+
   /*****************************************************************
    **************** METODOS DO CONSELHO DE ARBITRAGEM *************
    *****************************************************************
@@ -1280,8 +1289,11 @@ Meteor.methods({
   },
 
   carregaJogosSemanais: function carregaJogosSemanais(email) {
+    console.log("email", email);
     const a = arbitros.findOne({ email: email });
+    console.log("a", a);
     const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
+    console.log("ca", ca);
     return ca.preNomeacoes;
   },
 

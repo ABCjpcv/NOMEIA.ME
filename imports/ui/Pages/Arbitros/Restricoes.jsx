@@ -336,14 +336,24 @@ export function Restricoes({ user }) {
         restricoesPrivadas={false}
         definicoes={true}
       />
+      <Search
+        onChange={(e) => setSearchVal(e.target.value)}
+        placeholder="Pesquise aqui por um Clube"
+        enterButton
+        style={{
+          position: "sticky",
+          width: "250px",
+          marginTop: "0.5%",
+        }}
+      />
       {data.length === 0 ? loadData() : null}
       <div
         className="demo-app-main"
         style={{
-          marginTop: "1%",
-          marginLeft: "1%",
-          marginRight: "1%",
-          width: "99%",
+          marginTop: "0.5%",
+          marginLeft: "0.5%",
+          marginRight: "0.5%",
+          width: "99.5%",
           height: "100%",
         }}
       >
@@ -417,16 +427,6 @@ export function Restricoes({ user }) {
           {" "}
           Instruções{" "}
         </Button>
-        <Search
-          onChange={(e) => setSearchVal(e.target.value)}
-          placeholder="Pesquise aqui por um Clube"
-          enterButton
-          style={{
-            position: "sticky",
-            width: "250px",
-            marginTop: "1%",
-          }}
-        />
 
         <Button
           onClick={() => {

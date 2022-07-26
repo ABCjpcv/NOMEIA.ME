@@ -24,54 +24,82 @@ export function Navbar() {
         forgotPasswordHeader={true}
         sobreHeader={true}
       />
-      <div style={{ marginTop: "1%" }}>
-        <Button
-          style={{ display: "flex" }}
-          shape="round"
-          size="large"
-          className="botao"
-          onClick={() => {
-            navigate("/ConsultaNomeacoes");
+      <div>
+        <div
+          style={{
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          Consulta de Nomeações
-        </Button>
-        <p></p>
-        <Button
-          style={{ display: "flex" }}
-          shape="round"
-          size="large"
-          className="botao"
-          onClick={() => {
-            navigate("/Clubes_da_AVL");
-          }}
-        >
-          Clubes Afiliados à AVL
-        </Button>
-        <p></p>
-        <Button
-          style={{ display: "flex" }}
-          shape="round"
-          size="large"
-          className="botao"
-          onClick={() => {
-            navigate("/Autenticar");
-          }}
-        >
-          Autenticar
-        </Button>
-        <p></p>
-        <Button
-          style={{ display: "flex" }}
-          shape="round"
-          size="large"
-          className="botao"
-          onClick={() => {
-            navigate("/Sobre");
-          }}
-        >
-          Sobre
-        </Button>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "space-evenly",
+              width: "30%",
+              marginTop: "1%",
+            }}
+          >
+            <div className="input" style={{ justifyContent: "center" }}>
+              <Button
+                style={{ display: "flex", width: "100%" }}
+                shape="round"
+                size="large"
+                className="botao"
+                onClick={() => {
+                  navigate("/ConsultaNomeacoes");
+                }}
+              >
+                Consulta de Nomeações
+              </Button>
+            </div>
+
+            <p></p>
+            <div className="input" style={{ justifyContent: "flex-start" }}>
+              <Button
+                style={{ display: "flex", width: "100%" }}
+                shape="round"
+                size="large"
+                className="botao"
+                onClick={() => {
+                  navigate("/Clubes_da_AVL");
+                }}
+              >
+                Clubes Afiliados à AVL
+              </Button>
+            </div>
+            <p></p>
+            <div className="input" style={{ justifyContent: "flex-start" }}>
+              <Button
+                style={{ display: "flex", width: "100%" }}
+                shape="round"
+                size="large"
+                className="botao"
+                onClick={() => {
+                  navigate("/Autenticar");
+                }}
+              >
+                Autenticar
+              </Button>
+            </div>
+            <p></p>
+            <div className="input" style={{ justifyContent: "flex-start" }}>
+              <Button
+                style={{ display: "flex", width: "100%" }}
+                shape="round"
+                size="large"
+                className="botao"
+                onClick={() => {
+                  navigate("/Sobre");
+                }}
+              >
+                Sobre
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
