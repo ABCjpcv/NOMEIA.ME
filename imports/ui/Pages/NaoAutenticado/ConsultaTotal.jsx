@@ -25,6 +25,7 @@ export function ConsultaTotal() {
     <>
       <Header
         user={Meteor.user()}
+        titulo={true}
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
@@ -34,29 +35,52 @@ export function ConsultaTotal() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        clubesAfiliadosAVL={true}
+        consultaNomeacoesSemanais={false}
+        forgotPasswordHeader={true}
+        sobreHeader={true}
       />
       <div>
-        <h1 className="blue">Nomeações Semanais</h1>
-        <Search
-          onChange={(e) => setSearchVal(e.target.value)}
-          placeholder="Search"
-          enterButton
+        <div
           style={{
-            position: "sticky",
-            top: "0",
-            left: "0",
-            width: "200px",
-            marginTop: "2vh",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop,
           }}
-        />
-        <br /> <br />
-        <Table
-          rowKey="name"
-          dataSource={filteredData}
-          columns={colunasNomeacoes}
-          loading={loading}
-          pagination={false}
-        />
+        >
+          <div className="input">
+            <label
+              className="labels"
+              style={{ display: "flex", alignSelf: "space-evenly" }}
+            >
+              <Search
+                onChange={(e) => setSearchVal(e.target.value)}
+                placeholder="Pesquisa"
+                enterButton
+                style={{
+                  position: "sticky",
+                  width: "100%",
+                }}
+              />
+            </label>
+          </div>
+        </div>
+        <div
+          style={{ marginTop: "0.5%", marginLeft: "0.5%", marginRight: "0.5%" }}
+        >
+          <Table
+            rowKey="name"
+            dataSource={filteredData}
+            columns={colunasNomeacoes}
+            loading={loading}
+            pagination={false}
+            scroll={{
+              y: "70vh",
+            }}
+          />
+        </div>
       </div>
     </>
   );
