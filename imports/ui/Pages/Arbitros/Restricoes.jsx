@@ -136,11 +136,6 @@ export function Restricoes({ user }) {
     }
   });
 
-  // const { filteredData, loading } = useTableSearch({
-  //   searchVal,
-  //   retrieve: loadData,
-  // });
-
   useEffect(() => {
     if (searchVal.length > 0) {
       let newData = [];
@@ -153,12 +148,11 @@ export function Restricoes({ user }) {
           newData.push(data[index]);
         }
       }
+      console.log("newData: ", newData);
       setFilteredData(newData);
     } else {
       setFilteredData(data);
     }
-    console.log("Search value", searchVal);
-    console.log("data", data);
   }, [searchVal, data]);
 
   function loadData() {
@@ -196,128 +190,50 @@ export function Restricoes({ user }) {
 
   function adicionaRestricao(clube, valorRestricao, isChecked) {
     let newData = data;
-
-    // const analyzer = Promise.resolve(data);
-    // analyzer.then((resultado) => {
-    //   if (resultado.data != undefined) {
-
-    console.log("clube", clube);
+    //console.log("clube", clube);
 
     let obj = "";
     let index = 0;
-    for (; index < newData.length; index++) {
+    let stop = false;
+    for (; index < newData.length && !stop; index++) {
       if (newData[index].Clube === clube) {
         obj = newData[index];
-        break;
+        stop = true;
       }
     }
 
-    //let j = JSON.parse(JSON.stringify(obj));
-
-    console.log("obj", obj);
-
     obj.Restricao[valorRestricao] = isChecked;
-    //resultado.data[key - 1] = j;
-    newData[index] = obj;
 
-    //changedLine = resultado.data[key - 1];
+    // console.log("newData", newData);
+    // console.log("newData[index -1]", newData[index - 1]);
 
-    changedLine = newData[index];
+    newData[index - 1] = obj;
+
+    // console.log("newData[index -1]", newData[index - 1]);
 
     setData(newData);
-    setFilteredData(newData);
-
-    // } else {
-    //   let obj = resultado[key - 1];
-    //   let j = JSON.parse(JSON.stringify(obj));
-
-    //   j.Restricao[valorRestricao] = isChecked;
-    //   resultado[key - 1] = j;
-
-    //   changedLine = resultado[key - 1];
-
-    //   var d = Promise.resolve(data);
-    //   d.then(function (v) {
-    //     const i = v.map((obj) => {
-    //       return obj;
-    //     });
-    //     console.log("iiiiiiiiii");
-    //     console.log(i);
-
-    //     const newState = v.map((obj) => {
-    //       // 👇️ if id equals 2 replace object
-    //       if (obj.key === key) {
-    //         return changedLine;
-    //       }
-    //       // 👇️ otherwise return object as is
-    //       return obj;
-    //     });
-
-    //   console.log("ATUALIZACAO DE DATA - adicionado Cargo:");
-    //   console.log(newState);
-
-    //   setData(newState);
-    // });
-    // }
-    // });
   }
 
-  function adicionaDescricao(index, valorDescricao) {
+  function adicionaDescricao(clube, valorDescricao) {
     if (valorDescricao != "") {
       let newData = data;
 
-      // const analyzer = Promise.resolve(data);
-      // analyzer.then((resultado) => {
-      //   if (resultado.data != undefined) {
-
-      let obj = newData[index];
-      //let j = JSON.parse(JSON.stringify(obj));
+      let obj = "";
+      let index = 0;
+      let stop = false;
+      for (; index < newData.length && !stop; index++) {
+        if (newData[index].Clube === clube) {
+          obj = newData[index];
+          stop = true;
+        }
+      }
 
       console.log("VALOR DA DESCRICAO ", valorDescricao);
       obj.Descricao = valorDescricao;
-      newData[index] = obj;
+      console.log("newData[index - 1]", newData[index - 1]);
+      newData[index - 1] = obj;
 
-      changedLine = newData[index];
-
-      // var d = Promise.resolve(data);
-      // d.then(function (v) {
-      // const newState = data.map((obj) => {
-      //   // 👇️ if id equals 2 replace object
-      //   if (obj.key === key) {
-      //     return changedLine;
-      //   }
-      //   // 👇️ otherwise return object as is
-      //   return obj;
-      // });
-
-      console.log("ATUALIZACAO DE DATA - adicionada info:");
-      //console.log(newState);
       setData(newData);
-
-      //   } else {
-      //     let obj = resultado[key - 1];
-      //     let j = JSON.parse(JSON.stringify(obj));
-
-      //     j.Descricao = valorDescricao;
-      //     resultado[key - 1] = j;
-
-      //     changedLine = resultado[key - 1];
-
-      //     var d = Promise.resolve(data);
-      //     d.then(function (v) {
-      //       const newState = v.map((obj) => {
-      //         // 👇️ if equals key replace object
-      //         if (obj.key === key) {
-      //           return changedLine;
-      //         }
-      //         // 👇️ otherwise return object as it is
-      //         return obj;
-      //       });
-
-      //       setData(newState);
-      //     });
-      //   }
-      // });
     }
   }
 
@@ -367,15 +283,7 @@ export function Restricoes({ user }) {
           }}
           // loading={loading}
           onRow={(record, index) => {
-            let k = record.key;
-
             return {
-              onClick: (event) => {
-                if (event.target.type === "text") {
-                  adicionaDescricao(k, event.target.value);
-                }
-              },
-
               onChange: (event) => {
                 console.log("record", record);
                 console.log("index", index);
@@ -389,9 +297,9 @@ export function Restricoes({ user }) {
                 }
 
                 if (event.target.type === "text") {
-                  adicionaDescricao(index, event.target.value);
+                  adicionaDescricao(record.Clube, event.target.value);
                 } else if (record.Descricao != "") {
-                  adicionaDescricao(index, record.Descricao);
+                  adicionaDescricao(record.Clube, record.Descricao);
                 }
 
                 if (event.target.type === "checkbox") {

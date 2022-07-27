@@ -580,7 +580,6 @@ Meteor.methods({
       to: email,
       subject: "Recuperacao de password de " + u.username + "",
       text:
-        "Boas " +
         u.username +
         ", \n\n A sua password foi alterada para: " +
         newDefaultPassword +

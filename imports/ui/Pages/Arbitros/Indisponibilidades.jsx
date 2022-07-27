@@ -1,12 +1,28 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import { Button, message } from "antd";
+import { Button, message, Spin } from "antd";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import _ from "lodash.uniqueid";
 import { Header } from "../Geral/Header";
+
+import "antd/dist/antd.css";
+import { LoadingOutlined } from "@ant-design/icons";
+
+const antIcon = (
+  <div style={{ width: "fit-content" }}>
+    <LoadingOutlined
+      style={{
+        fontSize: "24px",
+      }}
+      spin
+    />
+    <br></br>
+    Loading page...
+  </div>
+);
 
 export class Indisponibilidades extends React.Component {
   constructor(props) {
@@ -33,7 +49,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 2000);
+    }, 3500);
   }
 
   componentDidUpdate() {
@@ -41,7 +57,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 2000);
+    }, 35000);
   }
 
   render() {
@@ -50,7 +66,38 @@ export class Indisponibilidades extends React.Component {
     const { loaded, resultado, show } = this.state;
 
     if (!loaded) {
-      return "";
+      return (
+        <Spin
+          style={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            marginTop: "13%",
+            marginLeft: "13%",
+            marginRight: "13%",
+          }}
+          indicator={antIcon}
+        />
+      );
+    }
+    if (!show) {
+      return (
+        <Spin
+          style={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            marginTop: "13%",
+            marginLeft: "13%",
+            marginRight: "13%",
+          }}
+          indicator={antIcon}
+        />
+      );
     }
     if (show) {
       return (
