@@ -10,17 +10,15 @@ export const ProtectedRoutes = ({ user, allowed, redirectPath, children }) => {
     if (user === null || user === undefined) {
       setCurrUser(Meteor.user());
     }
-  }, 8000);
+  }, 15000);
 
-  {
-    setTimeout();
-    console.log("user in protected route: ", currUser);
-    if (currUser === null || currUser === undefined) {
-      return <Navigate to={"/"} replace />;
-    } else {
-      if (allowed) {
-        return <Navigate to={redirectPath} replace />;
-      }
+  setTimeout();
+  console.log("user in protected route: ", currUser);
+  if (currUser === null || currUser === undefined) {
+    return <Navigate to={"/"} replace />;
+  } else {
+    if (allowed) {
+      return <Navigate to={redirectPath} replace />;
     }
 
     return children ? children : <Outlet />;

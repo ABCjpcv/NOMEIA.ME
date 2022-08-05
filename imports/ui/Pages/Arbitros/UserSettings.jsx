@@ -3,6 +3,7 @@ import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Header } from "../Geral/Header";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { Accounts } from "meteor/accounts-base";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);
@@ -27,6 +28,10 @@ export function UserSettings({ user }) {
   let [nivel, setNivel] = useState(() => getNivel(user));
 
   let [licenca, setLicenca] = useState(() => getLicenca(user));
+
+  let [passAtual, setPassAtual] = useState("");
+  let [passNova, setPassNova] = useState("");
+  let [passNovaConfirma, setPassNovaConfirma] = useState("");
 
   function submeterAlteracaoPassword(user, newPassword) {}
 
@@ -106,6 +111,60 @@ export function UserSettings({ user }) {
     });
   }
 
+  const handleChangePasswordAuth = (e) => {
+    if (e.target.value.length === 0) {
+      document.getElementById(
+        "currentPasswordUserSettings"
+      ).style.backgroundColor = "";
+    } else if (!validatePassword(e.target.value)) {
+      document.getElementById(
+        "currentPasswordUserSettings"
+      ).style.backgroundColor = "rgba(255, 153, 0, 0.3)";
+      document
+        .getElementById("currentPasswordUserSettings")
+        .setAttribute("status", "warning");
+    } else {
+      document.getElementById(
+        "currentPasswordUserSettings"
+      ).style.backgroundColor = "";
+      setPassAtual(e.target.value);
+    }
+  };
+
+  const handleChangePasswordAuth2 = (e) => {
+    if (e.target.value.length === 0) {
+      document.getElementById("passwordUserSettings").style.backgroundColor =
+        "";
+    } else if (!validatePassword(e.target.value)) {
+      document.getElementById("passwordUserSettings").style.backgroundColor =
+        "rgba(255, 153, 0, 0.3)";
+      document
+        .getElementById("passwordUserSettings")
+        .setAttribute("status", "warning");
+    } else {
+      document.getElementById("passwordUserSettings").style.backgroundColor =
+        "";
+      setPassNova(e.target.value);
+    }
+  };
+
+  const handleChangePasswordAuth3 = (e) => {
+    if (e.target.value.length === 0) {
+      document.getElementById("password2UserSettings").style.backgroundColor =
+        "";
+    } else if (!validatePassword(e.target.value)) {
+      document.getElementById("password2UserSettings").style.backgroundColor =
+        "rgba(255, 153, 0, 0.3)";
+      document
+        .getElementById("password2UserSettings")
+        .setAttribute("status", "warning");
+    } else {
+      document.getElementById("password2UserSettings").style.backgroundColor =
+        "";
+      setPassNovaConfirma(e.target.value);
+    }
+  };
+
   return (
     <div>
       <Header
@@ -180,7 +239,7 @@ export function UserSettings({ user }) {
                 id="nivelUserSettings"
                 value={nivel}
                 disabled
-                style={{ width: "49%" }}
+                style={{ width: "49%", borderRadius: "10px" }}
               ></InputNumber>
               <InputNumber
                 type="number"
@@ -199,53 +258,62 @@ export function UserSettings({ user }) {
           <p></p>
 
           <div className="input" style={{ display: "flex" }}>
-            <label className="labels">
-              Tenho Transporte próprio:
-              <Input
-                type={"checkbox"}
-                onChange={() => {
-                  if (temTransporte) {
-                    removeTransporteProprioUserSettings(user);
-                  }
-                  if (!temTransporte) {
-                    adicionaTransporteProprioUserSettings(user);
-                  }
-                }}
+            <div style={{ display: "flex" }}>
+              <label
+                className="labels"
+                style={{ width: "49%", justifyContent: "space-between" }}
+              >
+                Tenho Transporte próprio:
+                <Input
+                  type={"checkbox"}
+                  onChange={() => {
+                    if (temTransporte) {
+                      removeTransporteProprioUserSettings(user);
+                    }
+                    if (!temTransporte) {
+                      adicionaTransporteProprioUserSettings(user);
+                    }
+                  }}
+                  style={{
+                    display: "flex",
+                    marginLeft: "20%",
+                    height: "30px",
+                    width: "30px",
+                    borderRadius: "10px",
+                  }}
+                  checked={temTransporte}
+                ></Input>
+              </label>
+              <label
+                className="labels"
                 style={{
-                  display: "flex",
-                  marginLeft: "20%",
-                  height: "30px",
-                  width: "30px",
-                  borderRadius: "10px",
+                  width: "50%",
+                  justifyContent: "space-between",
+                  marginLeft: "1%",
                 }}
-                checked={temTransporte}
-              ></Input>
-            </label>
-          </div>
-          <p></p>
-          <div className="input" style={{ display: "flex" }}>
-            <label className="labels">
-              Emito recibo verde:
-              <Input
-                type={"checkbox"}
-                onChange={() => {
-                  if (temRecibo) {
-                    removeEmissaoReciboUserSettings(user);
-                  }
-                  if (!temRecibo) {
-                    adicionaEmissaoReciboUserSettings(user);
-                  }
-                }}
-                style={{
-                  display: "flex",
-                  marginLeft: "20%",
-                  height: "30px",
-                  width: "30px",
-                  borderRadius: "10px",
-                }}
-                checked={temRecibo}
-              ></Input>
-            </label>
+              >
+                Emito recibo verde:
+                <Input
+                  type={"checkbox"}
+                  onChange={() => {
+                    if (temRecibo) {
+                      removeEmissaoReciboUserSettings(user);
+                    }
+                    if (!temRecibo) {
+                      adicionaEmissaoReciboUserSettings(user);
+                    }
+                  }}
+                  style={{
+                    display: "flex",
+                    marginLeft: "20%",
+                    height: "30px",
+                    width: "30px",
+                    borderRadius: "10px",
+                  }}
+                  checked={temRecibo}
+                ></Input>
+              </label>
+            </div>
           </div>
           <p></p>
           <div
@@ -254,8 +322,8 @@ export function UserSettings({ user }) {
               backgroundColor: "rgba(255,255,255,0.5)",
             }}
           >
-            <label className="labels" style={{ alignSelf: "center" }}>
-              🔑 Mudar Password
+            <label className="labels" style={{ alignSelf: "flex-start" }}>
+              <b> 🔑Mudar Password: </b>
             </label>
           </div>
 
@@ -293,7 +361,8 @@ export function UserSettings({ user }) {
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
                 status={undefined}
-                onChange={handleChangePassword2Auth}
+                onChange={handleChangePasswordAuth2}
+                disabled={passAtual.length > 4 ? false : true}
               />
             </Space>
           </div>
@@ -312,7 +381,8 @@ export function UserSettings({ user }) {
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
                 status={undefined}
-                onChange={handleChangePassword2Auth}
+                onChange={handleChangePasswordAuth3}
+                disabled={passNova.length > 4 ? false : true}
               />
             </Space>
           </div>
@@ -346,37 +416,45 @@ export function UserSettings({ user }) {
               } else if (password2UserSettings === "") {
                 message.error("Não colocou a confirmação da password nova.  ");
               } else {
-                Meteor.loginWithPassword(
-                  user,
-                  currentPasswordUserSettings,
-                  (err, result) => {
-                    console.log("result", result);
-                    if (result === undefined) {
-                      //Fazer aparecer mensagem de texto de credenciais erradas.
-                      message.error("Password atual errada");
-                    } else {
-                      if (passwordUserSettings != password2UserSettings) {
-                        message.error("As passwords novas não correspondem.");
-                      } else {
-                        Meteor.call(
-                          "alteraPassword",
-                          user.emails[0].address,
-                          password2UserSettings,
-                          (err, result) => {
-                            if (result === 1) {
-                              message.success(
-                                "Password alterada com sucesso! Faça a autenticação novamente."
-                              );
-                              Meteor.logout();
-                            } else {
-                              message.error("ERRO");
-                            }
-                          }
-                        );
+                try {
+                  Meteor.loginWithPassword(
+                    Meteor.user().emails[0].address,
+                    currentPasswordUserSettings
+                  );
+                  if (passwordUserSettings != password2UserSettings) {
+                    message.error("As passwords novas não correspondem.");
+                  } else {
+                    console.log("CHEGASTE???????????????????????????");
+                    Meteor.call(
+                      "alteraPassword",
+                      user,
+                      password2UserSettings,
+                      (err, result) => {
+                        if (result === 1) {
+                          message.success(
+                            "Password alterada com sucesso! Faça a autenticação novamente."
+                          );
+                          Meteor.logout();
+                        }
                       }
-                    }
+                    );
                   }
-                );
+                } catch (error) {
+                  message.error("Password atual errada");
+                }
+                // Meteor.loginWithPassword(
+                //   Meteor.user(),
+                //   currentPasswordUserSettings,
+                //   (err, result) => {
+                //     console.log("result", result);
+                //     if (result === undefined) {
+                //       Fazer aparecer mensagem de texto de credenciais erradas.
+
+                //     } else {
+
+                //     }
+                //   }
+                // );
               }
             }}
           >
@@ -386,4 +464,8 @@ export function UserSettings({ user }) {
       </div>
     </div>
   );
+}
+
+function validatePassword(password) {
+  return password.length > 4 ? true : false;
 }

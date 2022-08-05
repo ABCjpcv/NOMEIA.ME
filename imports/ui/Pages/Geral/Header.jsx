@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { Fragment } from "react/cjs/react.production.min";
-import { LogoAVL } from "./LogoAVL";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
@@ -27,78 +26,103 @@ export const Header = ({
 
   return (
     <>
-      {user ? (
+      {user != null ? (
         /**
          * CASO EXISTA UTILIZADOR
          */
-        <div
-          className="div_header"
-          style={{
-            display: "flex",
-            marginLeft: "0.5%",
-            marginTop: "0.5%",
-            marginRight: "0.5%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
+        <>
           <div
-            id="divEsquerdo"
+            className="div_header"
             style={{
               display: "flex",
-              width: "30%",
               marginLeft: "0.5%",
-              height: "100%",
-              alignItems: "center",
+              marginTop: "0.5%",
+              marginRight: "0.5%",
+              flexDirection: "row",
+              justifyContent: "flex-start",
             }}
           >
-            <div hidden={menuPrivado}>
-              <MenuPrivado />
-              <Button
-                onClick={() => (
-                  (location.pathname = "/Conta/Profile/Definicoes"),
-                  navigate("/Conta/Profile/Definicoes")
-                )}
-                style={{
-                  fontSize: "14px",
-                  verticalAlign: "text-bottom",
-                }}
-              >
-                🙍‍♂️ {user.username}
-              </Button>
-            </div>
-            <div hidden={menuPrivadoCA}>
-              <MenuPrivadoCA />
-              <Button
-                onClick={() => (
-                  (location.pathname = "/Conta/ProfileCA/Definicoes"),
-                  navigate("/Conta/ProfileCA/Definicoes")
-                )}
-                style={{
-                  fontSize: "14px",
-                  verticalAlign: "text-bottom",
-                }}
-              >
-                🙍‍♂️ {user.username}
-              </Button>
-            </div>
-          </div>
-
-          <div
-            id="divCentral"
-            style={{ display: "flex", justifyContent: "center", width: "40%" }}
-          >
             <div
+              id="divEsquerdo"
+              style={{
+                display: "flex",
+                width: "20%",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+                hidden={menuPrivado}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    height: "50%",
+                    justifyContent: "flex-start",
+                    marginTop: "3.75%",
+                    marginLeft: "3%",
+                  }}
+                >
+                  <MenuPrivado />
+                  <Button
+                    onClick={() => (
+                      (location.pathname = "/Conta/Profile/Definicoes"),
+                      navigate("/Conta/Profile/Definicoes")
+                    )}
+                    style={{
+                      fontSize: "14px",
+                    }}
+                  >
+                    🙍‍♂️ {user.username}
+                  </Button>
+                </div>
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "space-evenly",
+                }}
+                hidden={menuPrivadoCA}
+              >
+                <MenuPrivadoCA />
+                <Button
+                  onClick={() => (
+                    (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                    navigate("/Conta/ProfileCA/Definicoes")
+                  )}
+                  style={{
+                    fontSize: "14px",
+                    verticalAlign: "text-bottom",
+                  }}
+                >
+                  🙍‍♂️ {user.username}
+                </Button>
+              </div>
+            </div>
+
+            <div
+              id="divCentral"
               style={{
                 display: "flex",
                 justifyContent: "center",
-                width: "100%",
+                width: "60%",
+                height: "100%",
               }}
             >
               <h1
                 className="blue"
                 id="titulo"
-                style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
                 hidden={titulo}
               >
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
@@ -107,7 +131,11 @@ export const Header = ({
               {/* AQUI ESTAO OS HEADERS DOS CONSELHO DE ARBITRAGEM */}
               <p
                 id="atribuirArbitros"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={atribuirArbitros}
               >
                 Atribuição de Árbitros
@@ -115,7 +143,11 @@ export const Header = ({
 
               <p
                 id="carregarJogos"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={carregarJogos}
               >
                 Carregar Jogos Novos:
@@ -123,7 +155,11 @@ export const Header = ({
 
               <p
                 id="criarContaNova"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={criarContaNova}
               >
                 Criar Conta Nova:
@@ -132,21 +168,33 @@ export const Header = ({
               {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
               <p
                 id="nomeacoesPrivadas"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={consultaPrivada}
               >
                 As minhas nomeações:
               </p>
               <p
                 id="indisponibilidadePrivadas"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={indisponibilidadePrivadas}
               >
                 📅 Calendário
               </p>
               <p
                 id="restricoesPrivadas"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={restricoesPrivadas}
               >
                 Relações com clubes:
@@ -154,154 +202,227 @@ export const Header = ({
 
               <p
                 id="definicoes"
-                style={{ marginTop: "1%", fontSize: "smaller" }}
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
                 hidden={definicoes}
               >
                 🙍‍♂️ Perfil
               </p>
             </div>
-          </div>
-          <div
-            id="divDireito"
-            style={{
-              display: "flex",
-              width: "30%",
-              height: "100%",
-              marginRight: "0.5%",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
             <div
-              hidden={menuPrivado}
+              id="divDireito"
               style={{
-                width: "inherit",
                 display: "flex",
-                justifyItems: "flex-end",
-                flexDirection: "row",
-                justifyContent: "flex-end",
+                width: "20%",
+                height: "100%",
               }}
             >
-              <Button
-                onClick={() => (
-                  (location.pathname = "/"), navigate("/"), Meteor.logout()
-                )}
+              <div
                 style={{
-                  fontSize: "14px",
-                  verticalAlign: "text-bottom",
-                  /* width: fit-content; */
+                  width: "100%",
                   height: "100%",
                 }}
+                hidden={menuPrivado}
               >
-                Sair 🏃🚪
-              </Button>
-            </div>
-            <div
-              hidden={menuPrivadoCA}
-              style={{
-                width: "inherit",
-                display: "flex",
-                justifyItems: "flex-end",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-              }}
-            >
-              <Button
-                onClick={() => (
-                  (location.pathname = "/"), navigate("/"), Meteor.logout()
-                )}
+                <div
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    height: "50%",
+                    justifyContent: "flex-end",
+                    marginTop: "3.75%",
+                  }}
+                >
+                  <Button
+                    onClick={() => (
+                      (location.pathname = "/"), navigate("/"), Meteor.logout()
+                    )}
+                    style={{
+                      fontSize: "14px",
+
+                      height: "100%",
+                      marginRight: "3%",
+                    }}
+                  >
+                    Sair 🏃🚪
+                  </Button>
+                </div>
+              </div>
+              <div
+                hidden={menuPrivadoCA}
                 style={{
-                  fontSize: "16px",
-                  verticalAlign: "middle",
-                  width: "fit-content",
-                  height: "100%",
+                  width: "inherit",
+                  display: "flex",
+                  justifyItems: "flex-end",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
                 }}
               >
-                Sair
-              </Button>
+                <Button
+                  onClick={() => (
+                    (location.pathname = "/"), navigate("/"), Meteor.logout()
+                  )}
+                  style={{
+                    fontSize: "16px",
+                    verticalAlign: "middle",
+                    width: "fit-content",
+                    height: "100%",
+                  }}
+                >
+                  Sair
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         /**
          * CASO NAO EXISTA UTILIZADOR
          */
-        <div className="div_header" style={{ display: "flex" }}>
+        <>
           <div
-            id="divEsquerdo"
+            className="div_header"
             style={{
               display: "flex",
-              width: "20%",
+              marginLeft: "0.5%",
+              marginTop: "0.5%",
+              marginRight: "0.5%",
+              flexDirection: "row",
+              justifyContent: "flex-start",
             }}
           >
-            <img
-              id="logo"
-              src="logo.png"
-              style={{ width: "20%", cursor: "pointer", marginLeft: "30%" }}
-            />
+            <div
+              id="divEsquerdo"
+              style={{
+                display: "flex",
+                width: "20%",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <img
+                  id="logo"
+                  src="logo.png"
+                  style={{ height: "100%", cursor: "pointer" }}
+                />
+              </div>
+            </div>
+
+            <div
+              id="divCentral"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                width: "60%",
+                height: "100%",
+              }}
+            >
+              <h1
+                className="blue"
+                id="titulo"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={titulo}
+              >
+                <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
+              </h1>
+
+              <h1
+                className="blue"
+                id="clubesAfiliadosAVL"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={clubesAfiliadosAVL}
+              >
+                <b>Clubes Afiliados à AVL</b>
+              </h1>
+
+              <h1
+                className="blue"
+                id="consultaNomeacoesSemanais"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={consultaNomeacoesSemanais}
+              >
+                <b>Nomeações Semanais</b>
+              </h1>
+
+              <h1
+                className="blue"
+                id="forgotPasswordHeader"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={forgotPasswordHeader}
+              >
+                <b>Redefinir Password</b>
+              </h1>
+
+              <h1
+                className="blue"
+                id="sobreHeader"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={sobreHeader}
+              >
+                <b>Sobre o Nomeia.Me</b>
+              </h1>
+            </div>
+            <div
+              id="divDireito"
+              style={{
+                display: "flex",
+                width: "20%",
+                height: "100%",
+                alignContent: "space-evenly",
+              }}
+            >
+              <a
+                href="https://www.avlisboa.pt/"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  id="avlLogo"
+                  src="avllogo.png"
+                  style={{ heigth: "100%", cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                />
+              </a>
+            </div>
           </div>
-
-          <div
-            id="divCentral"
-            style={{ display: "flex", justifyContent: "center", width: "60%" }}
-          >
-            <h1
-              className="blue"
-              id="titulo"
-              style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
-              hidden={titulo}
-            >
-              <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
-            </h1>
-
-            <h1
-              className="blue"
-              id="clubesAfiliadosAVL"
-              style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
-              hidden={clubesAfiliadosAVL}
-            >
-              <b>Clubes Afiliados à AVL</b>
-            </h1>
-
-            <h1
-              className="blue"
-              id="consultaNomeacoesSemanais"
-              style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
-              hidden={consultaNomeacoesSemanais}
-            >
-              <b>Nomeações Semanais</b>
-            </h1>
-
-            <h1
-              className="blue"
-              id="forgotPasswordHeader"
-              style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
-              hidden={forgotPasswordHeader}
-            >
-              <b>Redefinir Password</b>
-            </h1>
-
-            <h1
-              className="blue"
-              id="sobreHeader"
-              style={{ fontWeight: "100", marginTop: "1%", fontSize: "22px" }}
-              hidden={sobreHeader}
-            >
-              <b>Sobre</b>
-            </h1>
-          </div>
-
-          <div
-            id="divDireito"
-            style={{
-              display: "flex",
-              width: "fit-content",
-            }}
-          >
-            <LogoAVL></LogoAVL>
-          </div>
-        </div>
+          <br></br>
+        </>
       )}
     </>
   );
@@ -329,8 +450,8 @@ const MenuPrivado = () => {
         <Button
           type="primary"
           style={{
-            verticalAlign: "text-bottom",
-            width: "fit-content",
+            display: "flex",
+            width: "100%",
           }}
           onClick={showDrawer}
         >

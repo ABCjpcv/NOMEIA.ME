@@ -319,31 +319,31 @@ Meteor.startup(() => {
 
   restricoes.rawCollection().drop();
 
-  let relacoesIniciais = [false, false, false, false];
-  let descricaoInicial = "";
+  // let relacoesIniciais = [false, false, false, false];
+  // let descricaoInicial = "";
 
-  let relacoesAuxiliares = [];
-  clubes.find().forEach((clube) => {
-    let nomeClube = clube[0];
-    if (nomeClube.length > 6) {
-      console.log("CLUBE[0]", nomeClube);
-      relacoesAuxiliares.push({
-        Clube: clube[0]
-          .split(" ")
-          .map(function (ele) {
-            return ele[0].toUpperCase() + ele.slice(1).toLowerCase();
-          })
-          .join(" "),
-        Restricao: relacoesIniciais,
-        Descricao: descricaoInicial,
-      });
-    }
-  });
+  // let relacoesAuxiliares = [];
+  // clubes.find().forEach((clube) => {
+  //   let nomeClube = clube[0];
+  //   if (nomeClube.length > 6) {
+  //     console.log("CLUBE[0]", nomeClube);
+  //     relacoesAuxiliares.push({
+  //       Clube: clube[0]
+  //         .split(" ")
+  //         .map(function (ele) {
+  //           return ele[0].toUpperCase() + ele.slice(1).toLowerCase();
+  //         })
+  //         .join(" "),
+  //       Restricao: relacoesIniciais,
+  //       Descricao: descricaoInicial,
+  //     });
+  //   }
+  // });
 
   arb.forEach((arbitro) => {
     restricoes.insert({
       arbitro: arbitro,
-      relacoes: relacoesAuxiliares,
+      relacoes: [],
     });
     console.log("inserted: RESTRICAO ");
   });
@@ -493,6 +493,14 @@ Meteor.methods({
     // else return "Passwords do not match";
   },
 
+  checkPassword: function (user, password) {
+    console.log("user", user);
+    console.log("password", password);
+    var result = Accounts.changePassword(password, password);
+    console.log("result", result);
+    return result == null;
+  },
+
   registerUser: function registerUser(
     user_name,
     user_email,
@@ -591,9 +599,9 @@ Meteor.methods({
 
   alteraPassword: function alteraPassword(user, novaPass) {
     let utilizador = Meteor.users.findOne({ username: user.username });
-    //console.log("utilizador", utilizador);
+    console.log("utilizador", utilizador);
     let result = Accounts.setPassword(utilizador._id, novaPass);
-    //console.log("result", result);
+    console.log("result", result);
     return 1;
   },
 

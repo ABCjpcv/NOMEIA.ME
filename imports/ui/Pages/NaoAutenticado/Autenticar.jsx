@@ -240,5 +240,5 @@ function validateEmail(mail) {
 }
 
 function validatePassword(password) {
-  return password.length > 5 ? true : false;
+  return password.length > 4 ? true : false;
 }

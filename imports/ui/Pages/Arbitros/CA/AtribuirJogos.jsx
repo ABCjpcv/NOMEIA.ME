@@ -131,7 +131,7 @@ export function AtribuirJogos({ user }) {
       title: "Arbitro1",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
-      width: "11%",
+      width: "10%",
       render: (text, record, index) => (
         <>
           <Select
@@ -564,14 +564,15 @@ export function AtribuirJogos({ user }) {
         <>
           <br></br>
           <h2 className="blue">Não carregou ainda o ficheiro de jogos.</h2>
-          <div
-            className="botao"
+          <Button
+            type="primary"
+            shape="round"
             onClick={() => {
               navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
             }}
           >
             Carregar Jogos Novos
-          </div>
+          </Button>
         </>
       ) : (
         <div
@@ -802,6 +803,7 @@ export function AtribuirJogos({ user }) {
                     dataSource={dataSource}
                     columns={colunasNomeacoesPrivadas}
                     pagination={true}
+                    size="middle"
                     style={{
                       marginLeft: "1%",
                       marginTop: "0.5%",

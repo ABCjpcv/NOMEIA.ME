@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "antd/dist/antd.css";
-import { Table, Input, Button, message } from "antd";
-import axios from "axios";
-import { useTableSearch } from "../../../api/useTableSearch";
+import {
+  Table,
+  Input,
+  Button,
+  message,
+  Select,
+  Form,
+  Popconfirm,
+  Checkbox,
+} from "antd";
 
 import { Meteor } from "meteor/meteor";
 import { Header } from "../Geral/Header";
 
 const { Search } = Input;
+// Requiring the lodash library
+const _ = require("lodash");
 
 let dbInfo = "";
 const fetchData = () => {
@@ -37,94 +46,125 @@ const fetchData = () => {
   console.log("query", query);
 };
 
-export const listaClubesColumns = [
+/**
+ * PRIMEIRO TRATAR DAS CHECKBOXES
+ */
+
+const { Option } = Select;
+
+const onChange = (checkedValues) => {
+  console.log("checked = ", checkedValues);
+};
+
+const options = [
   {
-    title: "Clube",
-    dataIndex: "Clube",
-    key: "Clube",
-    width: "30%",
+    label: "Atleta",
+    value: "Atleta",
   },
   {
-    title: "Cargo",
-    dataIndex: "Cargo",
-    key: "Cargo",
-    width: "60%",
-    render: (_, { Restricao }) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-      >
-        <div>
-          Atleta
-          {"            "}
-          <input
-            type="checkbox"
-            value="Atleta"
-            defaultChecked={Restricao != undefined ? Restricao[0] : false}
-            style={{ height: "25px", width: "25px" }}
-          />
-        </div>
-        <div>
-          Dirigente
-          {"            "}
-          <input
-            type="checkbox"
-            value="Dirigente"
-            defaultChecked={Restricao != undefined ? Restricao[1] : false}
-            style={{ height: "25px", width: "25px" }}
-          />
-        </div>
-        <div>
-          Treinador
-          {"            "}
-          <input
-            type="checkbox"
-            value="Treinador"
-            defaultChecked={Restricao != undefined ? Restricao[2] : false}
-            style={{ height: "25px", width: "25px" }}
-          />
-        </div>
-        <div>
-          Outro
-          {"            "}
-          <input
-            type="checkbox"
-            value="Outra"
-            defaultChecked={Restricao != undefined ? Restricao[3] : false}
-            style={{ height: "25px", width: "25px" }}
-          />
-        </div>
-      </div>
-    ),
+    label: "Treinador",
+    value: "Treinador",
   },
   {
-    title: "Informação adicional",
-    dataIndex: "InformacaoAdicional",
-    key: "InformacaoAdicional",
-    width: "30%",
-    render: (_, { Descricao }) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <input
-          type="text"
-          name="descricao"
-          defaultValue={Descricao}
-          style={{ width: "100%" }}
-        ></input>
-      </div>
-    ),
+    label: "Dirigente",
+    value: "Dirigente",
+  },
+  {
+    label: "Outro",
+    value: "Outro",
   },
 ];
 
+/**
+ * SEGUNDO TRATAR DA TABELA
+ */
+
+const EditableContext = React.createContext(null);
+
+const EditableRow = ({ index, ...props }) => {
+  const [form] = Form.useForm();
+  return (
+    <Form form={form} component={false}>
+      <EditableContext.Provider value={form}>
+        <tr {...props} />
+      </EditableContext.Provider>
+    </Form>
+  );
+};
+
+const EditableCell = ({
+  title,
+  editable,
+  children,
+  dataIndex,
+  record,
+  handleSave,
+  ...restProps
+}) => {
+  const [editing, setEditing] = useState(false);
+  const inputRef = useRef(null);
+  const form = useContext(EditableContext);
+  useEffect(() => {
+    if (editing) {
+      inputRef.current.focus();
+    }
+  }, [editing]);
+
+  const toggleEdit = () => {
+    setEditing(!editing);
+    form.setFieldsValue({
+      [dataIndex]: record[dataIndex],
+    });
+  };
+
+  const save = async () => {
+    try {
+      const values = await form.validateFields();
+      toggleEdit();
+      handleSave({ ...record, ...values });
+    } catch (errInfo) {
+      console.log("Save failed:", errInfo);
+    }
+  };
+
+  let childNode = children;
+
+  if (editable) {
+    childNode = editing ? (
+      <Form.Item
+        style={{
+          margin: 0,
+        }}
+        name={dataIndex}
+        rules={[
+          {
+            required: true,
+            message: `${title} é obrigatório.`,
+          },
+        ]}
+      >
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{
+          paddingRight: 24,
+        }}
+        onClick={toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return <td {...restProps}>{childNode}</td>;
+};
+
 export function Restricoes({ user }) {
   const [searchVal, setSearchVal] = useState("");
+
+  const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
   let [data, setData] = useState([]);
 
@@ -174,18 +214,25 @@ export function Restricoes({ user }) {
           if (dataFromDB.length != 0) {
             setData(dataFromDB);
             setFilteredData(dataFromDB);
-          } else {
-            Meteor.call("getClubesDisponiveis", (err, result) => {
-              console.log("result", result);
-              if (result) {
-                setData(result);
-                setFilteredData(result);
-              }
-            });
           }
+
+          // else {
+          //   Meteor.call("getClubesDisponiveis", (err, result) => {
+          //     console.log("result", result);
+          //     if (result) {
+          //       setData(result);
+          //       setFilteredData(result);
+          //     }
+          //   });
+          // }
         }
       }
     );
+  }
+
+  function adicionaClube(value) {
+    console.log("value", value);
+    //console.log("data[index]", data[index]);
   }
 
   function adicionaRestricao(clube, valorRestricao, isChecked) {
@@ -230,12 +277,240 @@ export function Restricoes({ user }) {
 
       console.log("VALOR DA DESCRICAO ", valorDescricao);
       obj.Descricao = valorDescricao;
-      console.log("newData[index - 1]", newData[index - 1]);
+      console.log("data", newData);
       newData[index - 1] = obj;
 
       setData(newData);
     }
   }
+
+  const listaClubesColumns = [
+    {
+      title: "Clube",
+      dataIndex: "Clube",
+      key: "Clube",
+      width: "30%",
+      render: (record) =>
+        data.length >= 1 ? (
+          <>
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: `Clube obrigatório.`,
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                style={{
+                  width: "100%",
+                }}
+                defaultValue={[]}
+                placeholder="Selecione clube"
+                onClick={() =>
+                  Meteor.call("getClubesDisponiveis", (err, result) => {
+                    console.log(result);
+                    if (err) {
+                      console.log(err);
+                    } else if (result) {
+                      return setClubesDisponiveis(result);
+                    }
+                  })
+                }
+                onChange={adicionaClube()}
+                optionLabelProp="label"
+              >
+                {clubesDisponiveis.map((clube) => {
+                  return (
+                    <Select.Option
+                      value={clube}
+                      label={clube}
+                      key={"option_clube" + _.uniqueId()}
+                    >
+                      <div className="demo-option-label-item"> {clube} </div>
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </>
+        ) : null,
+    },
+    {
+      title: "Cargo",
+      dataIndex: "Cargo",
+      key: "Cargo",
+      width: "10%",
+      render: (_, record, { Restricao }) =>
+        data.length >= 1 ? (
+          <Checkbox.Group
+            options={options}
+            defaultValue={[]}
+            onChange={onChange}
+          />
+        ) : // <div
+        //   style={{
+        //     display: "flex",
+        //     justifyContent: "space-between",
+        //     width: "100%",
+        //   }}
+        // >
+        //   <div>
+        //     Atleta
+        //     {"            "}
+        //     <input
+        //       type="checkbox"
+        //       value="Atleta"
+        //       defaultChecked={Restricao != undefined ? Restricao[0] : false}
+        //       style={{ height: "25px", width: "25px" }}
+        //     />
+        //   </div>
+        //   <div>
+        //     Dirigente
+        //     {"            "}
+        //     <input
+        //       type="checkbox"
+        //       value="Dirigente"
+        //       defaultChecked={Restricao != undefined ? Restricao[1] : false}
+        //       style={{ height: "25px", width: "25px" }}
+        //     />
+        //   </div>
+        //   <div>
+        //     Treinador
+        //     {"            "}
+        //     <input
+        //       type="checkbox"
+        //       value="Treinador"
+        //       defaultChecked={Restricao != undefined ? Restricao[2] : false}
+        //       style={{ height: "25px", width: "25px" }}
+        //     />
+        //   </div>
+        //   <div>
+        //     Outro
+        //     {"            "}
+        //     <input
+        //       type="checkbox"
+        //       value="Outra"
+        //       defaultChecked={Restricao != undefined ? Restricao[3] : false}
+        //       style={{ height: "25px", width: "25px" }}
+        //     />
+        //   </div>
+        // </div>
+        null,
+    },
+    {
+      title: "Informação adicional",
+      dataIndex: "Descricao",
+      key: "Descricao",
+      width: "30%",
+      editable: true,
+    },
+    {
+      title: "Ação",
+      dataIndex: "acao",
+      key: "acao",
+      width: "fit-content",
+      render: (_, record) =>
+        data.length >= 1 ? (
+          <>
+            <a
+              style={{ display: "flex", flexDirection: "row" }}
+              onClick={handleClean}
+            >
+              🧹Limpar
+            </a>
+
+            <a style={{ display: "flex", flexDirection: "row" }}>✏️Editar</a>
+
+            <a style={{ display: "flex", flexDirection: "row" }}>💾Guardar</a>
+
+            <Popconfirm
+              title="Tem a certeza que quer eliminar?"
+              onConfirm={() => handleDelete(record.key)}
+            >
+              <br></br>
+              <a style={{ display: "flex", flexDirection: "row" }}>
+                🗑️Eliminar
+              </a>
+            </Popconfirm>
+          </>
+        ) : null,
+    },
+  ];
+
+  const components = {
+    body: {
+      row: EditableRow,
+      cell: EditableCell,
+    },
+  };
+  const columns = listaClubesColumns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+
+    return {
+      ...col,
+      onCell: (record) => ({
+        record,
+        editable: col.editable,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        handleSave,
+      }),
+    };
+  });
+
+  /**
+   * HANDLERS PARA LINHA
+   */
+
+  const handleChangeClubes = (key, value) => {
+    // console.log(
+    //   "selected",
+    //   data.filter((item) => item.key !== key)
+    // );
+    // let indexOfRow = data.indexOf(data.filter((item) => item.key == key));
+    // data[indexOfRow].Clube = value.value;
+    // console.log("data", data);
+  };
+
+  const handleAdd = () => {
+    const newData = {
+      Clube: "",
+      Restricao: [false, false, false, false],
+      Descricao: `Clique para adicionar informação `,
+      key: _.uniqueId(),
+    };
+    setData([...data, newData]);
+  };
+
+  const handleSave = (row) => {
+    const newData = [...data];
+    const index = newData.findIndex((item) => row.key === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, { ...item, ...row });
+    setData(newData);
+  };
+  const handleDelete = (key) => {
+    const newData = data.filter((item) => item.key !== key);
+    setData(newData);
+  };
+
+  const handleClean = (key) => {
+    let indexOfRow = data.indexOf(data.filter((item) => item.key == key));
+    let item = {
+      Clube: "",
+      Restricao: [],
+      Descricao: "Clique para adicionar informação",
+    };
+    console.log("data", data);
+    data[indexOfRow] = item;
+    console.log("data", data);
+    const newData = data;
+    setData(newData);
+  };
 
   return (
     <div>
@@ -252,6 +527,16 @@ export function Restricoes({ user }) {
         restricoesPrivadas={false}
         definicoes={true}
       />
+      <Button
+        onClick={handleAdd}
+        type="primary"
+        style={{
+          marginTop: "0.5%",
+          height: "32px",
+        }}
+      >
+        Adicionar Relação com Clube
+      </Button>
       <Search
         onChange={(e) => setSearchVal(e.target.value)}
         placeholder="Pesquise aqui por um Clube"
@@ -260,6 +545,7 @@ export function Restricoes({ user }) {
           position: "sticky",
           width: "250px",
           marginTop: "0.5%",
+          height: "32px",
         }}
       />
       {data.length === 0 ? loadData() : null}
@@ -274,17 +560,27 @@ export function Restricoes({ user }) {
         }}
       >
         <Table
+          components={components}
+          rowClassName={() => "editable-row"}
+          bordered
           className="tableRestricoes"
-          columns={listaClubesColumns}
+          columns={columns}
           dataSource={filteredData}
           pagination={false}
           scroll={{
             y: "66vh",
           }}
           // loading={loading}
-          onRow={(record, index) => {
+          onRow={(record, index, key) => {
             return {
+              onClick: (event) => {
+                if (event.target === "search") {
+                  // CLUBE SELECIONADO:
+                }
+                console.log("event", event.target.type);
+              },
               onChange: (event) => {
+                console.log("event", event);
                 console.log("record", record);
                 console.log("index", index);
                 console.log("filteredData", filteredData);
@@ -292,8 +588,8 @@ export function Restricoes({ user }) {
 
                 console.log("clube eh??", record.Clube);
 
-                if (event.target.value === undefined) {
-                  // nothing to do
+                if (event === undefined) {
+                  adicionaClube(index);
                 }
 
                 if (event.target.type === "text") {

@@ -1,9 +1,20 @@
-import { mergeEventStores } from "@fullcalendar/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
-import { message } from "antd";
 import { Header } from "../Geral/Header";
+import { Input, Button, message } from "antd";
+
+const handleChangeEmailPasswordRedefined = (e) => {
+  if (e.target.value.length === 0) {
+    document.getElementById("emailPerdido").style.backgroundColor = "";
+  } else if (!validateEmail(e.target.value)) {
+    document.getElementById("emailPerdido").style.backgroundColor =
+      "rgba(255, 153, 0, 0.3)";
+    document.getElementById("emailPerdido").setAttribute("status", "warning");
+  } else {
+    document.getElementById("emailPerdido").style.backgroundColor = "";
+  }
+};
 
 export function ForgotPassword() {
   let navigate = useNavigate();
@@ -29,8 +40,6 @@ export function ForgotPassword() {
         sobreHeader={true}
       />
       <div>
-        <h1 className="blue"> Definir password nova:</h1>
-
         <div
           style={{
             margin: "auto",
@@ -39,46 +48,77 @@ export function ForgotPassword() {
             alignItems: "center",
           }}
         >
-          <div className="input">
-            <label className="labels">Email</label>
-            <input className="inputt" type={"email"} id="emailPerdido"></input>
-          </div>
-          <br></br>
-          <button
-            className="botao"
-            onClick={() =>
-              Meteor.call(
-                "esqueceuPassword",
-                document.getElementById("emailPerdido").value,
+          <h1
+            className="blue"
+            style={{ fontWeight: "100", marginBottom: "0%" }}
+          >
+            {" "}
+            Definir password nova:
+          </h1>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "space-evenly",
+              width: "30%",
+            }}
+          >
+            <div className="input" style={{ justifyContent: "flex-start" }}>
+              <label className="labels">Email</label>
+            </div>
+            <div className="input">
+              <Input
+                type={"email"}
+                placeholder="exemplo@email.com"
+                id="emailPerdido"
+                style={{ borderRadius: "10px" }}
+                status={undefined}
+                onChange={handleChangeEmailPasswordRedefined}
+              ></Input>
+            </div>
+            <p></p>
+            <Button
+              type="primary"
+              shape="round"
+              className="botao"
+              onClick={() =>
+                Meteor.call(
+                  "esqueceuPassword",
+                  document.getElementById("emailPerdido").value,
 
-                (err, result) => {
-                  console.log("ENTRASTE pota ????");
-                  if (!err) {
-                    console.log("ENTRASTE????");
-                    if (result) {
-                      message.success("Email enviado com sucesso!");
-                      message.info(
-                        "Verifique a sua nova password na sua conta de email."
-                      );
+                  (err, result) => {
+                    console.log("ENTRASTE pota ????");
+                    if (!err) {
+                      console.log("ENTRASTE????");
+                      if (result) {
+                        message.success("Email enviado com sucesso!");
+                        message.info(
+                          "Verifique a sua nova password na sua conta de email."
+                        );
 
-                      navigate("/Autenticar");
-                    }
-                    if (!result) {
-                      message.error(
-                        "Email não encontrado. Por favor contacte o Conselho de Arbitragem."
-                      );
+                        navigate("/Autenticar");
+                      }
+                      if (!result) {
+                        message.error(
+                          "Email não encontrado. Por favor contacte o Conselho de Arbitragem."
+                        );
+                      }
                     }
                   }
-                }
-              )
-            }
-          >
-            Enviar mail
-          </button>
-          Já tem conta?
-          <button className="botao" onClick={() => navigate("/Autenticar")}>
-            Autenticar
-          </button>
+                )
+              }
+            >
+              Enviar mail
+            </Button>
+            Já tem conta?
+            <Button
+              className="botao"
+              shape="round"
+              onClick={() => navigate("/Autenticar")}
+            >
+              Autenticar
+            </Button>
+          </div>
         </div>
       </div>
     </>
