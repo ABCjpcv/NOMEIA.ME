@@ -12,15 +12,38 @@ import "antd/dist/antd.css";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const antIcon = (
-  <div style={{ width: "fit-content" }}>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      width: "fit-content",
+    }}
+  >
     <LoadingOutlined
       style={{
         fontSize: "24px",
+        width: "fit-content",
+        justifyContent: "center",
       }}
       spin
     />
     <br></br>
-    Loading page...
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        width: "fit-content",
+      }}
+    >
+      <span
+        style={{ display: "flex", width: "fit-content", whiteSpace: "nowrap" }}
+      >
+        {" "}
+        A carregar página...{" "}
+      </span>
+    </div>
   </div>
 );
 
@@ -49,7 +72,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 3500);
+    }, 243500);
   }
 
   componentDidUpdate() {
@@ -57,7 +80,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 35000);
+    }, 2435000);
   }
 
   render() {
@@ -70,13 +93,8 @@ export class Indisponibilidades extends React.Component {
         <Spin
           style={{
             display: "flex",
-            width: "100%",
-            height: "100%",
             justifyContent: "center",
-            alignItems: "flex-end",
-            marginTop: "13%",
-            marginLeft: "13%",
-            marginRight: "13%",
+            marginTop: "15%",
           }}
           indicator={antIcon}
         />
@@ -87,13 +105,9 @@ export class Indisponibilidades extends React.Component {
         <Spin
           style={{
             display: "flex",
-            width: "100%",
-            height: "100%",
+
             justifyContent: "center",
-            alignItems: "flex-end",
-            marginTop: "13%",
-            marginLeft: "13%",
-            marginRight: "13%",
+            marginTop: "15%",
           }}
           indicator={antIcon}
         />
