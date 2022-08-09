@@ -39,6 +39,7 @@ export const App = () => {
 
   return (
     <Router>
+      <div style={{ width: "100%", height: "1%" }}></div>
       <div
         style={{ textAlign: "center" }}
         onClick={() => {

@@ -585,8 +585,8 @@ export function AtribuirJogos({ user }) {
                 backgroundColor: "white",
                 alignSelf: "flex-start",
                 marginTop: "0.5%",
-                marginLeft: "1%",
-                marginRight: "1%",
+                marginLeft: "0.5%",
+                marginRight: "0.5%",
               }}
             >
               <h2 className="blue">
@@ -599,167 +599,177 @@ export function AtribuirJogos({ user }) {
                   id="firstLineFilters"
                   style={{ display: "flex", marginLeft: "0.5%" }}
                 >
-                  Tem Transporte próprio:
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (naoTemTransporte) {
-                        message.warn(
-                          "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                        );
-                      } else {
-                        setTemTransporte(!temTransporte);
-                      }
-                    }}
-                    style={{
-                      marginLeft: "1%",
-                      height: "30px",
-                      width: "30px",
-                    }}
-                    checked={temTransporte}
-                  ></input>
-                  Não tem transporte próprio:
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (temTransporte) {
-                        message.warn(
-                          "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                        );
-                      } else {
-                        setNaoTemTransporte(!naoTemTransporte);
-                      }
-                    }}
-                    style={{
-                      marginLeft: "1%",
-                      height: "30px",
-                      width: "30px",
-                    }}
-                    checked={naoTemTransporte}
-                  ></input>
-                  Emite Recibo Verde:
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (naoTemRecibo) {
-                        message.warn(
-                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                        );
-                      } else {
-                        setTemRecibo(!temRecibo);
-                      }
-                    }}
-                    style={{
-                      marginLeft: "1%",
-                      height: "30px",
-                      width: "30px",
-                    }}
-                    checked={temRecibo}
-                  ></input>
-                  Não Emite Recibo Verde:
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (temRecibo) {
-                        message.warn(
-                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                        );
-                      } else {
-                        setNaoTemRecibo(!naoTemRecibo);
-                      }
-                    }}
-                    style={{
-                      marginLeft: "1%",
-                      height: "30px",
-                      width: "30px",
-                    }}
-                    checked={naoTemRecibo}
-                  ></input>
-                  Árbitro de Nível:
-                  <Select
-                    className="inputt"
-                    onChange={handleChangeNivel}
-                    style={{
-                      marginLeft: "1%",
-                      height: "30px",
-                      width: "70px",
-                      borderRadius: "5px",
-                      borderBlockColor: "rgba(255, 255, 255, 0.5)",
-                      boxSizing: "border-box",
-                      backgroundColor: "#f0f0f0",
-                      fontWeight: "bold",
-                      fontSize: "15px",
-                    }}
-                  >
-                    <Option className="inputt-option" value={"Todos"} selected>
-                      {" "}
-                      Todos{" "}
-                    </Option>
-                    <Option className="inputt-option" value={"1"}>
-                      I
-                    </Option>
-                    <Option className="inputt-option" value={"2"}>
-                      II
-                    </Option>
-                    <Option className="inputt-option" value={"3"}>
-                      III
-                    </Option>
-                  </Select>
-                  Relação com clubes:
-                  <Select
-                    mode="multiple"
-                    style={{
-                      marginLeft: "5px",
-                      width: "380px",
-                    }}
-                    defaultValue={[]}
-                    placeholder="Selecione clubes"
-                    onClick={() =>
-                      Meteor.call("getClubesDisponiveis", (err, result) => {
-                        console.log(result);
-                        if (err) {
-                          console.log(err);
-                        } else if (result) {
-                          return setClubesDisponiveis(result);
+                  {/* PRIMEIRA OPCAO FILTRO */}
+                  <div>
+                    <input
+                      className="inputt"
+                      type={"checkbox"}
+                      onChange={() => {
+                        if (naoTemTransporte) {
+                          message.warn(
+                            "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                          );
+                        } else {
+                          setTemTransporte(!temTransporte);
                         }
-                      })
-                    }
-                    onChange={handleChangeClubes}
-                    optionLabelProp="label"
-                  >
-                    {clubesDisponiveis.map((clube) => {
-                      return (
-                        <Select.Option
-                          value={clube}
-                          label={clube}
-                          key={"option_clube" + _.uniqueId()}
-                        >
-                          <div className="demo-option-label-item">
-                            {" "}
-                            {clube}{" "}
-                          </div>
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                  <></>
-                  <Button
-                    onClick={() => {
-                      handleSubmissionConfirmation();
-                      message.success("Nomeações enviadas para os Árbitros.");
-                    }}
-                    type="primary"
-                    style={{
-                      marginRight: "0.5%",
-                      marginBottom: "0.5%",
-                    }}
-                  >
-                    Enviar Nomeações para Árbitros
-                  </Button>
+                      }}
+                      style={{
+                        width: "30px",
+                      }}
+                      checked={temTransporte}
+                    ></input>
+                    <span> Com Transporte próprio </span>
+                  </div>
+                  {/* SEGUNDA OPCAO FILTRO */}
+                  <div>
+                    <input
+                      className="inputt"
+                      type={"checkbox"}
+                      onChange={() => {
+                        if (temTransporte) {
+                          message.warn(
+                            "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                          );
+                        } else {
+                          setNaoTemTransporte(!naoTemTransporte);
+                        }
+                      }}
+                      style={{
+                        width: "30px",
+                      }}
+                      checked={naoTemTransporte}
+                    ></input>
+                    <span> Sem transporte próprio </span>
+                  </div>
+                  {/* TERCEIRA OPCAO FILTRO */}
+                  <div>
+                    <input
+                      className="inputt"
+                      type={"checkbox"}
+                      onChange={() => {
+                        if (naoTemRecibo) {
+                          message.warn(
+                            "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                          );
+                        } else {
+                          setTemRecibo(!temRecibo);
+                        }
+                      }}
+                      style={{
+                        width: "30px",
+                      }}
+                      checked={temRecibo}
+                    ></input>
+                    <span> Emite Recibo Verde</span>
+                  </div>
+                  {/* QUARTA OPCAO FILTRO */}
+                  <div>
+                    <input
+                      className="inputt"
+                      type={"checkbox"}
+                      onChange={() => {
+                        if (temRecibo) {
+                          message.warn(
+                            "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                          );
+                        } else {
+                          setNaoTemRecibo(!naoTemRecibo);
+                        }
+                      }}
+                      style={{
+                        width: "30px",
+                      }}
+                      checked={naoTemRecibo}
+                    ></input>
+                    <span> Não Emite Recibo Verde </span>
+                  </div>
+                  {/* QUINTA OPCAO FILTRO*/}
+                  <div>
+                    <span>Árbitro de Nível </span>
+                    <Select
+                      className="inputt"
+                      onChange={handleChangeNivel}
+                      style={{
+                        width: "fit-content",
+                        borderRadius: "5px",
+                        borderBlockColor: "rgba(255, 255, 255, 0.5)",
+                        boxSizing: "border-box",
+                        backgroundColor: "#f0f0f0",
+                        fontWeight: "bold",
+                        fontSize: "14px",
+                      }}
+                      defaultValue="Todos"
+                    >
+                      <Option className="inputt-option" value={"Todos"}>
+                        {" "}
+                        Todos{" "}
+                      </Option>
+                      <Option className="inputt-option" value={"1"}>
+                        I
+                      </Option>
+                      <Option className="inputt-option" value={"2"}>
+                        II
+                      </Option>
+                      <Option className="inputt-option" value={"3"}>
+                        III
+                      </Option>
+                    </Select>
+                  </div>
+
+                  <div>
+                    Sem relação com:
+                    <Select
+                      mode="multiple"
+                      style={{
+                        marginLeft: "5px",
+                        width: "380px",
+                      }}
+                      defaultValue={[]}
+                      placeholder="Selecione clubes"
+                      onClick={() =>
+                        Meteor.call("getClubesDisponiveis", (err, result) => {
+                          console.log(result);
+                          if (err) {
+                            console.log(err);
+                          } else if (result) {
+                            return setClubesDisponiveis(result);
+                          }
+                        })
+                      }
+                      onChange={handleChangeClubes}
+                      optionLabelProp="label"
+                    >
+                      {clubesDisponiveis.map((clube) => {
+                        return (
+                          <Select.Option
+                            value={clube}
+                            label={clube}
+                            key={"option_clube" + _.uniqueId()}
+                          >
+                            <div className="demo-option-label-item">
+                              {" "}
+                              {clube}{" "}
+                            </div>
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                  <div>
+                    <Button
+                      onClick={() => {
+                        handleSubmissionConfirmation();
+                        message.success("Nomeações enviadas para os Árbitros.");
+                      }}
+                      type="primary"
+                      style={{
+                        marginRight: "0.5%",
+                        marginBottom: "0.5%",
+                      }}
+                    >
+                      Enviar Nomeações para Árbitros
+                    </Button>
+                  </div>
                 </div>
 
                 {/* <label className="labels" style={{ marginLeft: "5px" }}>
@@ -805,9 +815,9 @@ export function AtribuirJogos({ user }) {
                     pagination={true}
                     size="middle"
                     style={{
-                      marginLeft: "1%",
+                      marginLeft: "0.5%",
                       marginTop: "0.5%",
-                      marginRight: "1%",
+                      marginRight: "0.5%",
                     }}
                     scroll={{
                       x: 1800,

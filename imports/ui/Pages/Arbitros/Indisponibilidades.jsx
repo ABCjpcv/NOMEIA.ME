@@ -72,7 +72,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 243500);
+    }, 3500);
   }
 
   componentDidUpdate() {
@@ -80,7 +80,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 2435000);
+    }, 35000);
   }
 
   render() {

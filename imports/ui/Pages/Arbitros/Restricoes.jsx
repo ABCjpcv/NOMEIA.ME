@@ -14,37 +14,8 @@ import {
 import { Meteor } from "meteor/meteor";
 import { Header } from "../Geral/Header";
 
-const { Search } = Input;
 // Requiring the lodash library
 const _ = require("lodash");
-
-let dbInfo = "";
-const fetchData = () => {
-  let query = [];
-  Meteor.call("carregaRestricoes", Meteor.user?.()?.username, (err, result) => {
-    if (err) {
-      console.log("ERRRRROOOOO", { err });
-      reject(err);
-    } else if (result) {
-      let j = JSON.parse(JSON.stringify(result));
-      let dataFromDB = j.relacoes;
-
-      if (dataFromDB != undefined) {
-        query = dataFromDB;
-        return { query };
-      } else {
-        Meteor.call("getClubesDisponiveis", (err, result) => {
-          console.log("result", result);
-          if (result) {
-            query = result;
-            return { query };
-          }
-        });
-      }
-    }
-  });
-  console.log("query", query);
-};
 
 /**
  * PRIMEIRO TRATAR DAS CHECKBOXES
@@ -62,12 +33,12 @@ const options = [
     value: "Atleta",
   },
   {
-    label: "Treinador",
-    value: "Treinador",
-  },
-  {
     label: "Dirigente",
     value: "Dirigente",
+  },
+  {
+    label: "Treinador",
+    value: "Treinador",
   },
   {
     label: "Outro",
@@ -162,13 +133,9 @@ const EditableCell = ({
 };
 
 export function Restricoes({ user }) {
-  const [searchVal, setSearchVal] = useState("");
-
   const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
   let [data, setData] = useState([]);
-
-  let [filteredData, setFilteredData] = useState([]);
 
   let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
     if (result) {
@@ -177,23 +144,8 @@ export function Restricoes({ user }) {
   });
 
   useEffect(() => {
-    if (searchVal.length > 0) {
-      let newData = [];
-      for (let index = 0; index < data.length; index++) {
-        if (
-          data[index].Clube.toString()
-            .toUpperCase()
-            .includes(searchVal.toUpperCase())
-        ) {
-          newData.push(data[index]);
-        }
-      }
-      console.log("newData: ", newData);
-      setFilteredData(newData);
-    } else {
-      setFilteredData(data);
-    }
-  }, [searchVal, data]);
+    console.log("data", data);
+  }, [data]);
 
   function loadData() {
     // Verifica se o utilizador loggado tem restricoes guardadas na bd
@@ -209,78 +161,83 @@ export function Restricoes({ user }) {
           let j = JSON.parse(JSON.stringify(result));
           let dataFromDB = j.relacoes;
 
-          console.log("data from db", dataFromDB);
+          console.log("data from db ????", dataFromDB.length);
 
           if (dataFromDB.length != 0) {
             setData(dataFromDB);
-            setFilteredData(dataFromDB);
           }
-
-          // else {
-          //   Meteor.call("getClubesDisponiveis", (err, result) => {
-          //     console.log("result", result);
-          //     if (result) {
-          //       setData(result);
-          //       setFilteredData(result);
-          //     }
-          //   });
-          // }
         }
       }
     );
   }
 
   function adicionaClube(value) {
-    console.log("value", value);
-    //console.log("data[index]", data[index]);
+    let clube = value;
+    console.log("clube", clube);
+    let newData = data;
+    console.log("newData", newData);
+    let index = 0;
+    let stop = false;
+
+    console.log("newData.length", newData.length);
+
+    if (newData.length == 1) {
+      newData[0].Clube = clube;
+    } else {
+      for (; index < newData.length && !stop; index++) {
+        if (newData[index].Clube != clube) {
+          newData[index].Clube = clube;
+          stop = true;
+        }
+      }
+    }
+
+    setData(newData);
   }
 
   function adicionaRestricao(clube, valorRestricao, isChecked) {
     let newData = data;
-    //console.log("clube", clube);
+
+    console.log("newData", newData);
 
     let obj = "";
     let index = 0;
     let stop = false;
+
     for (; index < newData.length && !stop; index++) {
+      console.log("index", index);
+      console.log("newData[index]", newData[index]);
+      console.log("newData[index].Clube", newData[index].Clube);
       if (newData[index].Clube === clube) {
         obj = newData[index];
+        console.log("obj", obj);
         stop = true;
+        obj.Restricao[valorRestricao] = isChecked;
+        newData[index] = obj;
       }
     }
-
-    obj.Restricao[valorRestricao] = isChecked;
-
-    // console.log("newData", newData);
-    // console.log("newData[index -1]", newData[index - 1]);
-
-    newData[index - 1] = obj;
-
-    // console.log("newData[index -1]", newData[index - 1]);
 
     setData(newData);
   }
 
   function adicionaDescricao(clube, valorDescricao) {
-    if (valorDescricao != "") {
-      let newData = data;
+    if (clube === "") {
+      message.warn("Selecione Clube");
+    } else {
+      if (valorDescricao != "") {
+        let newData = data;
 
-      let obj = "";
-      let index = 0;
-      let stop = false;
-      for (; index < newData.length && !stop; index++) {
-        if (newData[index].Clube === clube) {
-          obj = newData[index];
-          stop = true;
+        let index = 0;
+        let stop = false;
+        for (; index < newData.length && !stop; index++) {
+          if (newData[index].Clube === clube) {
+            newData[index].Descricao = valorDescricao;
+            stop = true;
+          }
         }
+
+        setData(newData);
       }
-
-      console.log("VALOR DA DESCRICAO ", valorDescricao);
-      obj.Descricao = valorDescricao;
-      console.log("data", newData);
-      newData[index - 1] = obj;
-
-      setData(newData);
     }
   }
 
@@ -306,11 +263,9 @@ export function Restricoes({ user }) {
                 style={{
                   width: "100%",
                 }}
-                defaultValue={[]}
                 placeholder="Selecione clube"
                 onClick={() =>
                   Meteor.call("getClubesDisponiveis", (err, result) => {
-                    console.log(result);
                     if (err) {
                       console.log(err);
                     } else if (result) {
@@ -318,7 +273,7 @@ export function Restricoes({ user }) {
                     }
                   })
                 }
-                onChange={adicionaClube()}
+                onChange={adicionaClube}
                 optionLabelProp="label"
               >
                 {clubesDisponiveis.map((clube) => {
@@ -413,28 +368,36 @@ export function Restricoes({ user }) {
       width: "fit-content",
       render: (_, record) =>
         data.length >= 1 ? (
-          <>
-            <a
+          <div style={{ display: "flex" }}>
+            <Button
+              shape="round"
               style={{ display: "flex", flexDirection: "row" }}
-              onClick={handleClean}
+              hidden
             >
-              🧹Limpar
-            </a>
+              ✏️ Editar
+            </Button>
 
-            <a style={{ display: "flex", flexDirection: "row" }}>✏️Editar</a>
-
-            <a style={{ display: "flex", flexDirection: "row" }}>💾Guardar</a>
+            <Button
+              type="primary"
+              shape="round"
+              style={{ display: "flex", flexDirection: "row" }}
+              onClick={(() => handleSave(record), (this.disabled = true))}
+            >
+              💾Guardar
+            </Button>
 
             <Popconfirm
               title="Tem a certeza que quer eliminar?"
               onConfirm={() => handleDelete(record.key)}
             >
-              <br></br>
-              <a style={{ display: "flex", flexDirection: "row" }}>
-                🗑️Eliminar
-              </a>
+              <Button
+                shape="round"
+                style={{ display: "flex", flexDirection: "row" }}
+              >
+                🗑️ Eliminar
+              </Button>
             </Popconfirm>
-          </>
+          </div>
         ) : null,
     },
   ];
@@ -466,16 +429,6 @@ export function Restricoes({ user }) {
    * HANDLERS PARA LINHA
    */
 
-  const handleChangeClubes = (key, value) => {
-    // console.log(
-    //   "selected",
-    //   data.filter((item) => item.key !== key)
-    // );
-    // let indexOfRow = data.indexOf(data.filter((item) => item.key == key));
-    // data[indexOfRow].Clube = value.value;
-    // console.log("data", data);
-  };
-
   const handleAdd = () => {
     const newData = {
       Clube: "",
@@ -498,19 +451,21 @@ export function Restricoes({ user }) {
     setData(newData);
   };
 
-  const handleClean = (key) => {
-    let indexOfRow = data.indexOf(data.filter((item) => item.key == key));
-    let item = {
-      Clube: "",
-      Restricao: [],
-      Descricao: "Clique para adicionar informação",
-    };
-    console.log("data", data);
-    data[indexOfRow] = item;
-    console.log("data", data);
-    const newData = data;
+  function handleClean(key) {
+    console.log("key", key);
+
+    let newData = data;
+
+    for (let index = 0; index < newData.length; index++) {
+      if (newData[index].key === key) {
+        newData[index].Clube = "";
+        newData[index].Restricao = [false, false, false, false];
+        newData[index].Descricao = "Clique para adicionar informação ";
+      }
+    }
+
     setData(newData);
-  };
+  }
 
   return (
     <div>
@@ -537,17 +492,7 @@ export function Restricoes({ user }) {
       >
         Adicionar Relação com Clube
       </Button>
-      <Search
-        onChange={(e) => setSearchVal(e.target.value)}
-        placeholder="Pesquise aqui por um Clube"
-        enterButton
-        style={{
-          position: "sticky",
-          width: "250px",
-          marginTop: "0.5%",
-          height: "32px",
-        }}
-      />
+
       {data.length === 0 ? loadData() : null}
       <div
         className="demo-app-main"
@@ -565,7 +510,7 @@ export function Restricoes({ user }) {
           bordered
           className="tableRestricoes"
           columns={columns}
-          dataSource={filteredData}
+          dataSource={data}
           pagination={false}
           scroll={{
             y: "66vh",
@@ -573,45 +518,39 @@ export function Restricoes({ user }) {
           // loading={loading}
           onRow={(record, index, key) => {
             return {
-              onClick: (event) => {
-                if (event.target === "search") {
-                  // CLUBE SELECIONADO:
-                }
-                console.log("event", event.target.type);
-              },
               onChange: (event) => {
                 console.log("event", event);
                 console.log("record", record);
                 console.log("index", index);
-                console.log("filteredData", filteredData);
+                console.log("data", data);
                 // save row data to state
 
-                console.log("clube eh??", record.Clube);
-
-                if (event === undefined) {
-                  adicionaClube(index);
+                if (record.Clube.length != 0) {
+                  if (event.target.type === "checkbox") {
+                    if (event.target.value === "Atleta") {
+                      adicionaRestricao(record.Clube, 0, event.target.checked);
+                    }
+                    if (event.target.value === "Dirigente") {
+                      adicionaRestricao(record.Clube, 1, event.target.checked);
+                    }
+                    if (event.target.value === "Treinador") {
+                      adicionaRestricao(record.Clube, 2, event.target.checked);
+                    }
+                    if (event.target.value === "Outra") {
+                      adicionaRestricao(record.Clube, 3, event.target.checked);
+                    }
+                  } else if (event.target.type === "text") {
+                    adicionaDescricao(record.Clube, event.target.value);
+                  } else if (
+                    record.Descricao != "Clique para adicionar informação "
+                  ) {
+                    adicionaDescricao(record.Clube, record.Descricao);
+                  }
+                } else {
+                  message.warn("Selecione Clube!");
                 }
 
-                if (event.target.type === "text") {
-                  adicionaDescricao(record.Clube, event.target.value);
-                } else if (record.Descricao != "") {
-                  adicionaDescricao(record.Clube, record.Descricao);
-                }
-
-                if (event.target.type === "checkbox") {
-                  if (event.target.value === "Atleta") {
-                    adicionaRestricao(record.Clube, 0, event.target.checked);
-                  }
-                  if (event.target.value === "Dirigente") {
-                    adicionaRestricao(record.Clube, 1, event.target.checked);
-                  }
-                  if (event.target.value === "Treinador") {
-                    adicionaRestricao(record.Clube, 2, event.target.checked);
-                  }
-                  if (event.target.value === "Outra") {
-                    adicionaRestricao(record.Clube, 3, event.target.checked);
-                  }
-                }
+                console.log("data depois de row changes", data);
               },
             };
           }}

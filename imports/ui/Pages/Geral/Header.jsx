@@ -36,7 +36,6 @@ export const Header = ({
             style={{
               display: "flex",
               marginLeft: "0.5%",
-              marginTop: "0.5%",
               marginRight: "0.5%",
               flexDirection: "row",
               justifyContent: "flex-start",
@@ -85,23 +84,33 @@ export const Header = ({
                 style={{
                   width: "100%",
                   height: "100%",
-                  justifyContent: "space-evenly",
                 }}
                 hidden={menuPrivadoCA}
               >
-                <MenuPrivadoCA />
-                <Button
-                  onClick={() => (
-                    (location.pathname = "/Conta/ProfileCA/Definicoes"),
-                    navigate("/Conta/ProfileCA/Definicoes")
-                  )}
+                <div
                   style={{
-                    fontSize: "14px",
-                    verticalAlign: "text-bottom",
+                    display: "flex",
+                    width: "100%",
+                    height: "50%",
+                    justifyContent: "flex-start",
+                    marginTop: "3.75%",
+                    marginLeft: "3%",
                   }}
                 >
-                  🙍‍♂️ {user.username}
-                </Button>
+                  <MenuPrivadoCA />
+                  <Button
+                    onClick={() => (
+                      (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                      navigate("/Conta/ProfileCA/Definicoes")
+                    )}
+                    style={{
+                      fontSize: "14px",
+                      verticalAlign: "text-bottom",
+                    }}
+                  >
+                    🙍‍♂️ {user.username}
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -254,26 +263,33 @@ export const Header = ({
               <div
                 hidden={menuPrivadoCA}
                 style={{
-                  width: "inherit",
-                  display: "flex",
-                  justifyItems: "flex-end",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
+                  width: "100%",
+                  height: "100%",
                 }}
               >
-                <Button
-                  onClick={() => (
-                    (location.pathname = "/"), navigate("/"), Meteor.logout()
-                  )}
+                <div
                   style={{
-                    fontSize: "16px",
-                    verticalAlign: "middle",
-                    width: "fit-content",
-                    height: "100%",
+                    display: "flex",
+                    width: "100%",
+                    height: "50%",
+                    justifyContent: "flex-end",
+                    marginTop: "3.75%",
                   }}
                 >
-                  Sair
-                </Button>
+                  <Button
+                    onClick={() => (
+                      (location.pathname = "/"), navigate("/"), Meteor.logout()
+                    )}
+                    style={{
+                      fontSize: "14px",
+
+                      height: "100%",
+                      marginRight: "3%",
+                    }}
+                  >
+                    Sair 🏃🚪
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -288,7 +304,6 @@ export const Header = ({
             style={{
               display: "flex",
               marginLeft: "0.5%",
-              marginTop: "0.5%",
               marginRight: "0.5%",
               flexDirection: "row",
               justifyContent: "flex-start",
