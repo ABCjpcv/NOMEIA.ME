@@ -55,24 +55,30 @@ export class Indisponibilidades extends React.Component {
       loaded: false,
       resultado: [],
       show: false,
-      isCA: Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-        if (result) {
-          return result;
-        }
-      }),
+      isCA: false,
     };
   }
 
   componentDidMount() {
+    let admin;
+
+    setTimeout(() => {
+      admin = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+        console.log("result", result);
+        return result === 1 ? true : false;
+      });
+    }, 3000);
+
     if (!this.state.loaded) {
       this.loadData();
     }
 
     setTimeout(() => {
       const { state: currentState } = this;
-      const newState = { ...currentState, show: true };
+      const newState = { ...currentState, show: true, isCA: admin };
+      console.log("is CA????????????", admin);
       this.setState(newState);
-    }, 3500);
+    }, 4000);
   }
 
   componentDidUpdate() {
@@ -80,7 +86,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 35000);
+    }, 4000);
   }
 
   render() {
@@ -182,7 +188,6 @@ export class Indisponibilidades extends React.Component {
                 }}
                 value="Instruções"
                 onClick={() => {
-                  console.log("CLIQUEI");
                   return message.info(
                     "Selecione as datas para criar uma nova Indisponibilidade. \n\rArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
                     10
@@ -259,8 +264,8 @@ export class Indisponibilidades extends React.Component {
 
     let hoje = new Date();
 
-    console.log("selectInfo.start", selectInfo.startStr);
-    console.log("selectInfo.end", selectInfo.endStr);
+    // console.log("selectInfo.start", selectInfo.startStr);
+    // console.log("selectInfo.end", selectInfo.endStr);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -289,8 +294,8 @@ export class Indisponibilidades extends React.Component {
   };
 
   validDate(eventsArray, newStart, newEnd, hoje) {
-    console.log("newStart: ", newStart);
-    console.log("newEnd: ", newEnd);
+    // console.log("newStart: ", newStart);
+    // console.log("newEnd: ", newEnd);
 
     let resultado = true;
     for (var element of eventsArray) {
