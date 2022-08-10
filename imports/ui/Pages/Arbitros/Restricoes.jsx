@@ -137,10 +137,10 @@ export function Restricoes({ user }) {
 
   let [data, setData] = useState([]);
 
-  let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
-    if (result) {
-      return result;
-    }
+  let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+    console.log("result", result);
+    if (result === 1) return true;
+    else return false;
   });
 
   useEffect(() => {
@@ -451,24 +451,9 @@ export function Restricoes({ user }) {
     setData(newData);
   };
 
-  function handleClean(key) {
-    console.log("key", key);
-
-    let newData = data;
-
-    for (let index = 0; index < newData.length; index++) {
-      if (newData[index].key === key) {
-        newData[index].Clube = "";
-        newData[index].Restricao = [false, false, false, false];
-        newData[index].Descricao = "Clique para adicionar informação ";
-      }
-    }
-
-    setData(newData);
-  }
-
   return (
     <div>
+      {console.log("user?", user)}
       <Header
         user={user}
         titulo={true}

@@ -500,7 +500,7 @@ const MenuPrivado = () => {
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              (location.pathname = "/Conta/Profile/"),
+              (location.pathname = "/Conta/Profile/Indisponibilidades"),
               navigate("/Conta/Profile/Indisponibilidades")
             )}
           >
@@ -512,7 +512,7 @@ const MenuPrivado = () => {
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => (
-              (location.pathname = "/Conta/Profile/"),
+              (location.pathname = "/Conta/Profile/Relacoes"),
               navigate("/Conta/Profile/Relacoes")
             )}
           >
