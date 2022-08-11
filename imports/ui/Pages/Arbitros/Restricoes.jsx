@@ -138,9 +138,8 @@ export function Restricoes({ user }) {
   let [data, setData] = useState([]);
 
   let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-    console.log("result", result);
-    if (result === 1) return true;
-    else return false;
+    console.log("result::::::::::::", result);
+    return result === 1;
   });
 
   useEffect(() => {

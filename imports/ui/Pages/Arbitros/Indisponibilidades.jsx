@@ -60,25 +60,39 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidMount() {
-    let admin;
-
-    setTimeout(() => {
-      admin = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+    let myPromise = new Promise((resolve, reject) => {
+      Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
         console.log("result", result);
-        return result === 1 ? true : false;
+
+        if (result == 1) {
+          resolve(this.state);
+        } else {
+          reject();
+        }
+
+        return result === 1;
       });
-    }, 3000);
+    });
 
-    if (!this.state.loaded) {
-      this.loadData();
-    }
+    var that = this;
 
-    setTimeout(() => {
-      const { state: currentState } = this;
-      const newState = { ...currentState, show: true, isCA: admin };
-      console.log("is CA????????????", admin);
-      this.setState(newState);
-    }, 4000);
+    myPromise.then(function (state) {
+      console.log("state", state);
+      const { state: currentState } = state;
+      const newState = { ...currentState, isCA: true };
+      console.log("is CA????????????");
+      that.setState(newState);
+
+      if (!that.state.loaded) {
+        that.loadData();
+      }
+
+      setTimeout(() => {
+        const { state: currentState } = that;
+        const newState = { ...currentState, show: true };
+        that.setState(newState);
+      }, 2000);
+    });
   }
 
   componentDidUpdate() {
@@ -86,7 +100,7 @@ export class Indisponibilidades extends React.Component {
       const { state: currentState } = this;
       const newState = { ...currentState, show: true };
       this.setState(newState);
-    }, 4000);
+    }, 2000);
   }
 
   render() {
