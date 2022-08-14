@@ -451,13 +451,11 @@ export function ConsultaPrivada({ user }) {
                   >
                     <Table
                       className="consultaPrivadaTabela"
-                      bordered
                       dataSource={dataSource}
                       columns={colunasNomeacoesPrivadas}
                       style={{
                         width: "100%",
                         height: "37vw",
-                        boxSizing: "border-box",
                       }}
                       size="middle"
                       pagination={false}

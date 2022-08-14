@@ -32,8 +32,8 @@ const relacoesSchema = new SimpleSchema({
   key: { type: Number, optional: false },
   // key = linha da Tabela
   clube: { type: String, optional: false },
-  restricao: { type: Array, optional: true },
-  "restricao.$": { type: Boolean },
+  cargo: { type: Array, optional: true },
+  "cargo.$": { type: Boolean },
   descricao: { type: String, optional: true },
 });
 
@@ -718,12 +718,50 @@ Meteor.methods({
    *****************************************************************
    */
 
-  addRestricao: function addRestricao(username, restrictions) {
-    console.log("restricao", restrictions);
+  addRestricao: function addRestricao(username, novaRestricao) {
+    console.log("restricao", novaRestricao);
 
     try {
       const a = arbitros.findOne({ nome: username });
-      restricoes.update({ arbitro: a }, { $set: { relacoes: restrictions } });
+      console.log("a", a);
+      const r = restricoes.findOne({ arbitro: a });
+      console.log("r", r);
+      let restricoesDoArbitro = r.relacoes;
+      console.log("restricoesDoArbitro", restricoesDoArbitro);
+      restricoesDoArbitro.push(novaRestricao);
+      console.log("restricoesDoArbitro", restricoesDoArbitro);
+
+      restricoes.update(
+        { arbitro: a },
+        { $set: { relacoes: restricoesDoArbitro } }
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  updateRestricoes: function updateRestricoes(username, key) {
+    try {
+      const a = arbitros.findOne({ nome: username });
+      console.log("a", a);
+      const r = restricoes.findOne({ arbitro: a });
+      console.log("r", r);
+      let restricoesDoArbitro = r.relacoes;
+      console.log("restricoesDoArbitro", restricoesDoArbitro);
+
+      let restricoesNovas = [];
+
+      restricoesDoArbitro.forEach((element) => {
+        if (element.key != key) {
+          restricoesNovas.push(element);
+        }
+      });
+
+      restricoes.update(
+        { arbitro: a },
+        { $set: { relacoes: restricoesNovas } }
+      );
       return true;
     } catch (error) {
       return false;
@@ -1001,8 +1039,8 @@ Meteor.methods({
             clube: clubeAnalisar,
           });
         }
-        for (let index = 0; index < element.Restricao.length; index++) {
-          if (element.Restricao[index]) {
+        for (let index = 0; index < element.Cargo.length; index++) {
+          if (element.Cargo[index]) {
             if (index === 0) {
               auxiliarRelacaoes.push({ cargo: "Atleta", clube: clubeAnalisar });
             } else if (index === 1) {
@@ -1532,7 +1570,7 @@ Meteor.methods({
           if (clubesRelacionados.includes(currentRelacao.Clube.toUpperCase())) {
             let temRelacao = false;
             for (let index = 0; index < 3 && !temRelacao; index++) {
-              if (currentRelacao.Restricao[index]) {
+              if (currentRelacao.Cargo[index]) {
                 // TEM RELACOES COM O CLUBE
                 relacoes[i] = true;
                 temRelacao = true;

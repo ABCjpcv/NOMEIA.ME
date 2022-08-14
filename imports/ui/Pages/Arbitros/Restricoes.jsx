@@ -11,6 +11,8 @@ import {
   Checkbox,
 } from "antd";
 
+import $ from "jquery";
+
 import { Meteor } from "meteor/meteor";
 import { Header } from "../Geral/Header";
 
@@ -21,11 +23,21 @@ const _ = require("lodash");
  * PRIMEIRO TRATAR DAS CHECKBOXES
  */
 
-const { Option } = Select;
-
 const onChange = (checkedValues) => {
   console.log("checked = ", checkedValues);
 };
+
+function readCargos(cargos) {
+  console.log("readCargos = ", cargos);
+  let cargosLidos = [];
+
+  if (cargos[0]) cargosLidos.push("Atleta");
+  if (cargos[1]) cargosLidos.push("Dirigente");
+  if (cargos[2]) cargosLidos.push("Treinador");
+  if (cargos[3]) cargosLidos.push("Outro");
+
+  return cargosLidos;
+}
 
 const options = [
   {
@@ -184,7 +196,7 @@ export function Restricoes({ user }) {
       newData[0].Clube = clube;
     } else {
       for (; index < newData.length && !stop; index++) {
-        if (newData[index].Clube != clube) {
+        if (newData[index].Clube === "") {
           newData[index].Clube = clube;
           stop = true;
         }
@@ -211,7 +223,7 @@ export function Restricoes({ user }) {
         obj = newData[index];
         console.log("obj", obj);
         stop = true;
-        obj.Restricao[valorRestricao] = isChecked;
+        obj.Cargo[valorRestricao] = isChecked;
         newData[index] = obj;
       }
     }
@@ -245,7 +257,7 @@ export function Restricoes({ user }) {
       title: "Clube",
       dataIndex: "Clube",
       key: "Clube",
-      width: "30%",
+      width: "25%",
       render: (record) =>
         data.length >= 1 ? (
           <>
@@ -259,6 +271,7 @@ export function Restricoes({ user }) {
             >
               <Select
                 showSearch
+                aria-autocomplete="both"
                 style={{
                   width: "100%",
                 }}
@@ -274,6 +287,7 @@ export function Restricoes({ user }) {
                 }
                 onChange={adicionaClube}
                 optionLabelProp="label"
+                defaultValue={record != "" ? record : null}
               >
                 {clubesDisponiveis.map((clube) => {
                   return (
@@ -296,106 +310,95 @@ export function Restricoes({ user }) {
       dataIndex: "Cargo",
       key: "Cargo",
       width: "10%",
-      render: (_, record, { Restricao }) =>
+      render: (_, record, { Cargo }) =>
         data.length >= 1 ? (
-          <Checkbox.Group
-            options={options}
-            defaultValue={[]}
-            onChange={onChange}
-          />
-        ) : // <div
-        //   style={{
-        //     display: "flex",
-        //     justifyContent: "space-between",
-        //     width: "100%",
-        //   }}
-        // >
-        //   <div>
-        //     Atleta
-        //     {"            "}
-        //     <input
-        //       type="checkbox"
-        //       value="Atleta"
-        //       defaultChecked={Restricao != undefined ? Restricao[0] : false}
-        //       style={{ height: "25px", width: "25px" }}
-        //     />
-        //   </div>
-        //   <div>
-        //     Dirigente
-        //     {"            "}
-        //     <input
-        //       type="checkbox"
-        //       value="Dirigente"
-        //       defaultChecked={Restricao != undefined ? Restricao[1] : false}
-        //       style={{ height: "25px", width: "25px" }}
-        //     />
-        //   </div>
-        //   <div>
-        //     Treinador
-        //     {"            "}
-        //     <input
-        //       type="checkbox"
-        //       value="Treinador"
-        //       defaultChecked={Restricao != undefined ? Restricao[2] : false}
-        //       style={{ height: "25px", width: "25px" }}
-        //     />
-        //   </div>
-        //   <div>
-        //     Outro
-        //     {"            "}
-        //     <input
-        //       type="checkbox"
-        //       value="Outra"
-        //       defaultChecked={Restricao != undefined ? Restricao[3] : false}
-        //       style={{ height: "25px", width: "25px" }}
-        //     />
-        //   </div>
-        // </div>
-        null,
+          <>
+            <Checkbox.Group
+              options={options}
+              className="checkbox-group"
+              defaultValue={readCargos(record.Cargo)}
+              onChange={onChange}
+              disabled={false}
+            />
+          </>
+        ) : null,
     },
     {
       title: "Informação adicional",
       dataIndex: "Descricao",
       key: "Descricao",
-      width: "30%",
+      width: "25%",
       editable: true,
+      className: "informacao-adicional",
     },
     {
       title: "Ação",
       dataIndex: "acao",
       key: "acao",
-      width: "fit-content",
-      render: (_, record) =>
+      width: "14%",
+
+      render: (_, record, key) =>
         data.length >= 1 ? (
-          <div style={{ display: "flex" }}>
-            <Button
-              shape="round"
-              style={{ display: "flex", flexDirection: "row" }}
-              hidden
-            >
-              ✏️ Editar
-            </Button>
-
-            <Button
-              type="primary"
-              shape="round"
-              style={{ display: "flex", flexDirection: "row" }}
-              onClick={(() => handleSave(record), (this.disabled = true))}
-            >
-              💾Guardar
-            </Button>
-
-            <Popconfirm
-              title="Tem a certeza que quer eliminar?"
-              onConfirm={() => handleDelete(record.key)}
-            >
+          <div style={{ display: "flex", width: "10px" }}>
+            <div>
               <Button
                 shape="round"
+                className="edit-button"
                 style={{ display: "flex", flexDirection: "row" }}
+                hidden
+                onClick={() => {
+                  $(".save-button")[key].toggleAttribute("hidden");
+                  $(".edit-button")[key].toggleAttribute("hidden");
+                }}
               >
-                🗑️ Eliminar
+                ✏️ Editar
               </Button>
-            </Popconfirm>
+            </div>
+            <div>
+              <Button
+                type="primary"
+                className="save-button"
+                shape="round"
+                style={{ display: "flex", flexDirection: "row" }}
+                onClick={() => {
+                  $(".save-button")[key].toggleAttribute("hidden");
+                  $(".edit-button")[key].toggleAttribute("hidden");
+
+                  // DISABLE ROW INPUTS:
+
+                  // console.log($(".editable-cell-value-wrap")[key]);
+
+                  $(".editable-cell-value-wrap")[key].toggleAttribute(
+                    "disabled"
+                  );
+
+                  console.log($(".ant-select")[key]);
+
+                  $(".ant-select")[key].attr("disabled", "true");
+
+                  console.log($(".ant-checkbox-group")[key]);
+
+                  $(".ant-checkbox-input")[key].attr("disabled", "true");
+                  $(".informacao-adicional")[key].toggleAttribute("disabled");
+                }}
+              >
+                💾 Guardar
+              </Button>
+            </div>
+
+            <div>
+              <Popconfirm
+                title="Tem a certeza que quer eliminar?"
+                onConfirm={() => handleDelete(record.key)}
+              >
+                <Button
+                  shape="round"
+                  style={{ display: "flex", flexDirection: "row" }}
+                >
+                  🗑️ Eliminar
+                </Button>
+              </Popconfirm>
+            </div>
           </div>
         ) : null,
     },
@@ -431,28 +434,70 @@ export function Restricoes({ user }) {
   const handleAdd = () => {
     const newData = {
       Clube: "",
-      Restricao: [false, false, false, false],
+      Cargo: [false, false, false, false],
       Descricao: `Clique para adicionar informação `,
       key: _.uniqueId(),
     };
     setData([...data, newData]);
   };
 
-  const handleSave = (row) => {
+  function handleSave(row) {
     const newData = [...data];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
+    console.log("Saved", newData);
     setData(newData);
-  };
+  }
+
+  function handleSubmission(record) {
+    Meteor.call(
+      "addRestricao",
+      Meteor.user().username,
+      record,
+      (err, result) => {
+        if (err) {
+          //Fazer aparecer mensagem de texto de credenciais erradas.
+          console.log(err);
+        } else if (result) {
+          message.success(
+            "Relação com clube " +
+              record.Clube +
+              " guardada, " +
+              Meteor.user().username +
+              "!"
+          );
+        }
+      }
+    );
+  }
+
   const handleDelete = (key) => {
     const newData = data.filter((item) => item.key !== key);
+
+    Meteor.call(
+      "updateRestricoes",
+      Meteor.user().username,
+      key,
+      (err, result) => {
+        if (err) {
+          //Fazer aparecer mensagem de texto de credenciais erradas.
+          console.log(err);
+        } else if (result) {
+          message.success("Relação removida!");
+        }
+      }
+    );
     setData(newData);
   };
 
+  function hide(button) {
+    console.log("button: ", button);
+    button.style.hidden = true;
+  }
+
   return (
     <div>
-      {console.log("user?", user)}
       <Header
         user={user}
         titulo={true}
@@ -466,16 +511,6 @@ export function Restricoes({ user }) {
         restricoesPrivadas={false}
         definicoes={true}
       />
-      <Button
-        onClick={handleAdd}
-        type="primary"
-        style={{
-          marginTop: "0.5%",
-          height: "32px",
-        }}
-      >
-        Adicionar Relação com Clube
-      </Button>
 
       {data.length === 0 ? loadData() : null}
       <div
@@ -502,6 +537,14 @@ export function Restricoes({ user }) {
           // loading={loading}
           onRow={(record, index, key) => {
             return {
+              onClick: (event) => {
+                console.log("event", event);
+                console.log("event.target.innerText", event.target.innerText);
+                if (event.target.innerText.toString() === "💾 Guardar") {
+                  console.log("record", record);
+                  handleSubmission(record);
+                }
+              },
               onChange: (event) => {
                 console.log("event", event);
                 console.log("record", record);
@@ -554,39 +597,15 @@ export function Restricoes({ user }) {
           {" "}
           Instruções{" "}
         </Button>
-
         <Button
-          onClick={() => {
-            if (data[0] === undefined) {
-              message.warn(
-                "Nenhuma alteração detetada " + Meteor.user().username
-              );
-            } else {
-              Meteor.call(
-                "addRestricao",
-                Meteor.user().username,
-                data,
-                (err, result) => {
-                  if (err) {
-                    //Fazer aparecer mensagem de texto de credenciais erradas.
-                    console.log(err);
-                  } else if (result) {
-                    message.success(
-                      "Relações com clubes guardadas " +
-                        Meteor.user().username +
-                        "!"
-                    );
-                  }
-                }
-              );
-            }
-          }}
+          onClick={handleAdd}
           type="primary"
           style={{
-            marginBottom: 16,
+            marginTop: "0.5%",
+            height: "32px",
           }}
         >
-          Submeter relações com clubes
+          Adicionar Relação com Clube
         </Button>
       </div>
     </div>
