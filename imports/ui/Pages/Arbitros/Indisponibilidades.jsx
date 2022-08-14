@@ -60,12 +60,15 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidMount() {
+    console.log("componentDidMount");
     let myPromise = new Promise((resolve, reject) => {
       Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
         console.log("result", result);
 
-        if (result == 1) {
-          resolve(this.state);
+        console.log("state", this.state);
+
+        if (result == 1 || result == 0) {
+          resolve(this.state, result);
         } else {
           reject();
         }
@@ -76,11 +79,11 @@ export class Indisponibilidades extends React.Component {
 
     var that = this;
 
-    myPromise.then(function (state) {
+    myPromise.then(function (state, resultado) {
       console.log("state", state);
       const { state: currentState } = state;
-      const newState = { ...currentState, isCA: true };
-      console.log("is CA????????????");
+      const admin = resultado === 1;
+      const newState = { ...currentState, isCA: admin };
       that.setState(newState);
 
       if (!that.state.loaded) {
@@ -125,7 +128,6 @@ export class Indisponibilidades extends React.Component {
         <Spin
           style={{
             display: "flex",
-
             justifyContent: "center",
             marginTop: "15%",
           }}
