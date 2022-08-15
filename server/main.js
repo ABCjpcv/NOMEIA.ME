@@ -599,22 +599,14 @@ Meteor.methods({
 
   alteraPassword: function alteraPassword(user, novaPass) {
     let utilizador = Meteor.users.findOne({ username: user.username });
-    console.log("utilizador", utilizador);
-    let result = Accounts.setPassword(utilizador._id, novaPass);
-    console.log("result", result);
+    Accounts.setPassword(utilizador._id, novaPass);
     return 1;
   },
 
   isAdmin: function isAdmin(user, loggado) {
-    console.log("USER: ", user);
-
     user === null ? (user = Meteor.user()) : (user = user);
 
     if (user === null) loggado = !loggado;
-
-    console.log("USER DPS DA MAROSCA ", user);
-
-    console.log("LOGGADO", loggado);
 
     if (loggado != null) {
       var arbitro = arbitros.findOne({ email: user.emails[0].address });
@@ -719,8 +711,6 @@ Meteor.methods({
    */
 
   addRestricao: function addRestricao(username, novaRestricao) {
-    console.log("restricao", novaRestricao);
-
     try {
       const a = arbitros.findOne({ nome: username });
       console.log("a", a);
@@ -735,9 +725,7 @@ Meteor.methods({
         }
       }
 
-      console.log("restricoesDoArbitro", restricoesDoArbitro);
       restricoesDoArbitro.push(novaRestricao);
-      console.log("restricoesDoArbitro", restricoesDoArbitro);
 
       restricoes.update(
         { arbitro: a },
@@ -752,11 +740,8 @@ Meteor.methods({
   updateRestricoes: function updateRestricoes(username, key) {
     try {
       const a = arbitros.findOne({ nome: username });
-      console.log("a", a);
       const r = restricoes.findOne({ arbitro: a });
-      console.log("r", r);
       let restricoesDoArbitro = r.relacoes;
-      console.log("restricoesDoArbitro", restricoesDoArbitro);
 
       let restricoesNovas = [];
 
@@ -851,27 +836,11 @@ Meteor.methods({
   },
 
   getRecibo: function getRecibo(user) {
-    //console.log("user in getRecibo", user);
-
     let utilizador = Meteor.users.findOne({ username: user.username });
-
-    //console.log("utilizador", utilizador);
-
     let email = utilizador.emails[0].address;
-
-    //console.log("email", email);
-
     var arb = arbitros.findOne({ email: email });
-
-    // console.log("arb", arb);
-
     var def = definicoesPessoais.findOne({ arbitro: arb });
-
-    //console.log("def", def);
-
     var result = def.emiteRecibo;
-
-    //console.log("TEM RECIBO NA BD?", result);
     return result;
   },
 
@@ -881,7 +850,6 @@ Meteor.methods({
     var arb = arbitros.findOne({ email: email });
     var def = definicoesPessoais.findOne({ arbitro: arb });
     var result = def.temCarro;
-    //console.log("TEM CARRO NA BD?", result);
     return result;
   },
 
@@ -899,7 +867,6 @@ Meteor.methods({
     let email = utilizador.emails[0].address;
     var arb = arbitros.findOne({ email: email });
     var result = arb.licenca;
-    //  console.log("NIVEL DE ARBITRO NA BD?", result);
     return result;
   },
 
@@ -910,15 +877,8 @@ Meteor.methods({
 
   jogosForamUpdated: function jogosForamUpdated(user, data) {
     let arb = arbitros.findOne({ email: user.emails[0].address });
-    // console.log("arbitro CA", arb);
     let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-    // console.log("ca", ca);
     let atuaisPreNomeacoes = ca.preNomeacoes;
-    // console.log("data[0]", data[0]);
-    // console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
-
-    // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
-
     if (data.length != atuaisPreNomeacoes.length) {
       return true;
     } else {

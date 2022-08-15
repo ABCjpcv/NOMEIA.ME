@@ -488,9 +488,12 @@ const MenuPrivado = () => {
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/Profile"), navigate("/Conta/Profile")
-            )}
+            onClick={() => {
+              if (location.pathname != "/Conta/Profile") {
+                (location.pathname = "/Conta/Profile"),
+                  navigate("/Conta/Profile");
+              }
+            }}
           >
             Consultar Nomeações
           </p>
@@ -499,10 +502,11 @@ const MenuPrivado = () => {
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/Profile/Indisponibilidades"),
-              navigate("/Conta/Profile/Indisponibilidades")
-            )}
+            onClick={() => {
+              if (location.pathname != "/Conta/Profile/Indisponibilidades")
+                (location.pathname = "/Conta/Profile/Indisponibilidades"),
+                  navigate("/Conta/Profile/Indisponibilidades");
+            }}
           >
             Indicar Indisponibilidades
           </p>
@@ -511,10 +515,12 @@ const MenuPrivado = () => {
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/Profile/Relacoes"),
-              navigate("/Conta/Profile/Relacoes")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/Profile/Relacoes") {
+                (location.pathname = "/Conta/Profile/Relacoes"),
+                  navigate("/Conta/Profile/Relacoes");
+              }
+            }}
           >
             Indicar Restrições
           </p>

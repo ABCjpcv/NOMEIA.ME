@@ -25,12 +25,7 @@ const _ = require("lodash");
  * PRIMEIRO TRATAR DAS CHECKBOXES
  */
 
-const onChange = (checkedValues) => {
-  console.log("checked = ", checkedValues);
-};
-
 function readCargos(cargos) {
-  console.log("readCargos = ", cargos);
   let cargosLidos = [];
 
   if (cargos[0]) cargosLidos.push("Atleta");
@@ -116,26 +111,28 @@ const EditableCell = ({
 
   if (editable) {
     childNode = editing ? (
-      <Form.Item
-        className="form-info-adicional"
-        style={{
-          margin: 0,
-        }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} é obrigatório.`,
-          },
-        ]}
-      >
-        <Input
-          className="input-adicional"
-          ref={inputRef}
-          onPressEnter={save}
-          onBlur={save}
-        />
-      </Form.Item>
+      <>
+        <Form.Item
+          className="form-info-adicional"
+          style={{
+            margin: 0,
+          }}
+          name={dataIndex}
+          rules={[
+            {
+              required: true,
+              message: `${title} é obrigatório.`,
+            },
+          ]}
+        >
+          <Input
+            className="input-adicional"
+            ref={inputRef}
+            onPressEnter={save}
+            onBlur={save}
+          />
+        </Form.Item>
+      </>
     ) : (
       <div>
         <div
@@ -166,6 +163,8 @@ export function Restricoes({ user }) {
 
   let [data, setData] = useState([]);
 
+  let [isDisabled, setIsDisabled] = useState([]);
+
   let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
     console.log("result::::::::::::", result);
     return result === 1;
@@ -173,7 +172,8 @@ export function Restricoes({ user }) {
 
   useEffect(() => {
     console.log("data", data);
-  }, [data]);
+    console.log("isDisabled", isDisabled);
+  }, [data, isDisabled]);
 
   function loadData() {
     // Verifica se o utilizador loggado tem restricoes guardadas na bd
@@ -193,6 +193,14 @@ export function Restricoes({ user }) {
 
           if (dataFromDB.length != 0) {
             setData(dataFromDB);
+
+            let isDisabledFromDB = [];
+            for (let index = 0; index < dataFromDB.length; index++) {
+              const element = dataFromDB[index];
+              let k = element.key;
+              isDisabledFromDB.push(k);
+            }
+            setIsDisabled(isDisabledFromDB);
           }
         }
       }
@@ -275,7 +283,7 @@ export function Restricoes({ user }) {
       dataIndex: "Clube",
       key: "Clube",
       width: "25%",
-      render: (record) =>
+      render: (_, record, key) =>
         data.length >= 1 ? (
           <>
             <Form.Item
@@ -287,12 +295,13 @@ export function Restricoes({ user }) {
               ]}
             >
               <Select
-                className="select-clubes"
+                className={"select-clubes"}
                 showSearch
                 aria-autocomplete="both"
                 style={{
                   width: "100%",
                 }}
+                disabled={isDisabled.some((item) => item.key != record.key)}
                 placeholder="Selecione clube"
                 onClick={() =>
                   Meteor.call("getClubesDisponiveis", (err, result) => {
@@ -305,14 +314,14 @@ export function Restricoes({ user }) {
                 }
                 onChange={adicionaClube}
                 optionLabelProp="label"
-                defaultValue={record != "" ? record : null}
+                defaultValue={record.Clube != "" ? record.Clube : null}
               >
                 {clubesDisponiveis.map((clube) => {
                   return (
                     <Select.Option
                       value={clube}
                       label={clube}
-                      key={"option_clube" + _.uniqueId()}
+                      key={"option_clube" + require("lodash").uniqueId()}
                     >
                       <div className="demo-option-label-item"> {clube} </div>
                     </Select.Option>
@@ -329,14 +338,14 @@ export function Restricoes({ user }) {
       key: "Cargo",
       width: "10%",
       fixed: "left",
-      render: (_, record, { Cargo }) =>
+      render: (_, record) =>
         data.length >= 1 ? (
           <>
             <Checkbox.Group
               options={options}
-              className="checkbox-group"
+              disabled={isDisabled.some((item) => item.key != record.key)}
+              className={"checkbox-group"}
               defaultValue={readCargos(record.Cargo)}
-              onChange={onChange}
               style={{ display: "flex", flexDirection: "column" }}
             />
           </>
@@ -348,7 +357,6 @@ export function Restricoes({ user }) {
       key: "Descricao",
       width: "25%",
       editable: true,
-      className: "informacao-adicional",
     },
     {
       title: "Ação",
@@ -358,13 +366,15 @@ export function Restricoes({ user }) {
 
       render: (_, record, key) =>
         data.length >= 1 ? (
-          <div style={{ display: "flex", width: "10px" }}>
+          <div style={{ display: "flex" }}>
+            {/* {console.log("Cucu", record)}
+            {console.log(isDisabled.some((item) => item.key != record.key))} */}
             <div>
               <Button
                 shape="round"
                 className="edit-button"
                 style={{ display: "flex", flexDirection: "row" }}
-                hidden
+                hidden={!isDisabled.some((item) => item.key != record.key)}
                 onClick={() => {
                   $(".save-button")[key].toggleAttribute("hidden");
                   $(".edit-button")[key].toggleAttribute("hidden");
@@ -386,6 +396,8 @@ export function Restricoes({ user }) {
                   $(".editable-cell-value-wrap")[key].toggleAttribute("hidden");
 
                   $(".copia")[key].toggleAttribute("hidden");
+
+                  setIsDisabled([...isDisabled, key]);
                 }}
               >
                 Editar ✏️
@@ -396,6 +408,7 @@ export function Restricoes({ user }) {
                 type="primary"
                 className="save-button"
                 shape="round"
+                hidden={isDisabled.some((item) => item.key != record.key)}
                 style={{ display: "flex", flexDirection: "row" }}
                 onClick={() => {
                   $(".save-button")[key].toggleAttribute("hidden");
@@ -416,8 +429,15 @@ export function Restricoes({ user }) {
                   }
 
                   $(".editable-cell-value-wrap")[key].toggleAttribute("hidden");
-
                   $(".copia")[key].toggleAttribute("hidden");
+
+                  let newDisabled = isDisabled;
+
+                  newDisabled.push(record.key);
+
+                  setIsDisabled(newDisabled);
+
+                  handleSubmission(record);
                 }}
               >
                 Guardar 💾
@@ -461,6 +481,7 @@ export function Restricoes({ user }) {
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave,
+        isDisabled,
       }),
     };
   });
@@ -515,6 +536,10 @@ export function Restricoes({ user }) {
   const handleDelete = (key) => {
     const newData = data.filter((item) => item.key !== key);
 
+    console.log("isDisabled", isDisabled);
+
+    const newDisabled = isDisabled.filter((item) => item !== key);
+
     Meteor.call(
       "updateRestricoes",
       Meteor.user().username,
@@ -528,7 +553,9 @@ export function Restricoes({ user }) {
         }
       }
     );
+
     setData(newData);
+    setIsDisabled(newDisabled);
   };
 
   const info = () => {
@@ -590,17 +617,8 @@ export function Restricoes({ user }) {
           scroll={{
             y: "66vh",
           }}
-          // loading={loading}
           onRow={(record, index, key) => {
             return {
-              onClick: (event) => {
-                console.log("event", event);
-                console.log("event.target.innerText", event.target.innerText);
-                if (event.target.innerText.toString() === "💾 Guardar") {
-                  console.log("record", record);
-                  handleSubmission(record);
-                }
-              },
               onChange: (event) => {
                 console.log("event", event);
                 console.log("record", record);
@@ -663,6 +681,23 @@ export function Restricoes({ user }) {
           </Button>
         </Space>
       </div>
+      {handleDisableInfo(isDisabled, data)}
     </div>
   );
+}
+
+function handleDisableInfo(isDisabled, data) {
+  let indexes = [];
+
+  console.log("data", data);
+  console.log("isDisabled", isDisabled);
+
+  for (let index = 0; index < data.length; index++) {
+    if (isDisabled.some((item) => data[index].key === item)) {
+      indexes.push(index);
+    }
+  }
+
+  let copia = $(".copia");
+  console.log("copia", copia);
 }
