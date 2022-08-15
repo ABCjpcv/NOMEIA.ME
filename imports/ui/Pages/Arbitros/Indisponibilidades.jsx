@@ -1,6 +1,6 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import { Button, message, Spin } from "antd";
+import { Button, message, Modal, Space, Spin } from "antd";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -136,6 +136,30 @@ export class Indisponibilidades extends React.Component {
       );
     }
     if (show) {
+      const info = () => {
+        Modal.info({
+          title: "Instruções",
+          content: (
+            <div>
+              <p>Selecione as datas para criar uma nova Indisponibilidade.</p>
+              <p>
+                Arraste, solte ou redimensione a Indisponibilidade como quiser.
+              </p>
+              <p>
+                {" "}
+                Para eliminar uma Indisponibilidade basta clicar na mesma.{" "}
+              </p>
+              <p>
+                Quando terminar carregue no botão 'Submeter Indisponibilidades'
+                .
+              </p>
+            </div>
+          ),
+
+          onOk() {},
+        });
+      };
+
       return (
         <div>
           <Header
@@ -198,21 +222,7 @@ export class Indisponibilidades extends React.Component {
                 />
               </div>
               <br></br>
-              <Button
-                style={{
-                  marginBottom: 16,
-                }}
-                value="Instruções"
-                onClick={() => {
-                  return message.info(
-                    "Selecione as datas para criar uma nova Indisponibilidade. \n\rArraste, solte ou redimensione a Indisponibilidade como quiser. \nPara eliminar uma Indisponibilidade basta clicar na mesma. \nQuando terminar carregue no botão 'Submeter Indisponibilidades'.",
-                    10
-                  );
-                }}
-              >
-                {" "}
-                Instruções{" "}
-              </Button>
+
               <Button
                 onClick={() => {
                   let curr = this.state.currentEvents;
@@ -251,6 +261,19 @@ export class Indisponibilidades extends React.Component {
               >
                 Submeter Indisponibilidades
               </Button>
+              <Space wrap>
+                <Button
+                  shape="circle"
+                  style={{
+                    marginBottom: 16,
+                  }}
+                  value="Instruções"
+                  onClick={info}
+                >
+                  {" "}
+                  ❓{" "}
+                </Button>
+              </Space>
             </form>
           </div>
         </div>

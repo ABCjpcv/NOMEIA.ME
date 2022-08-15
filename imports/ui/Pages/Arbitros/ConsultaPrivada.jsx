@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, message, Popconfirm, Table, Tag } from "antd";
+import { Button, message, Modal, Popconfirm, Space, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 
@@ -161,7 +161,9 @@ export function ConsultaPrivada({ user }) {
               title="Confirmar jogo?"
               onConfirm={() => handleConfirmation(record)}
             >
-              <a>Confirmo</a>
+              <Button type="primary" shape="round" style={{ width: "100%" }}>
+                Confirmo ✔️
+              </Button>
             </Popconfirm>
             <br></br>
             <br></br>
@@ -169,7 +171,9 @@ export function ConsultaPrivada({ user }) {
               title="Recusar jogo?"
               onConfirm={() => handleRefuse(record)}
             >
-              <a> Recuso </a>
+              <Button shape="round" style={{ width: "100%" }}>
+                Recuso ❌
+              </Button>
             </Popconfirm>
           </div>
         ) : null,
@@ -347,7 +351,7 @@ export function ConsultaPrivada({ user }) {
     user = Meteor.user();
     let email = user.emails[0].address;
 
-    //console.log("email", email);
+    console.log("email", email);
     Meteor.call("carregaNomeacoes", email, (err, result) => {
       console.log("resultado de carregaNomeacoes da BD:", result);
       if (err) {
@@ -431,6 +435,27 @@ export function ConsultaPrivada({ user }) {
   if (dataSource.length === 0) {
     loadData();
   } else {
+    const info = () => {
+      Modal.info({
+        title: "Instruções",
+        content: (
+          <div>
+            <p>Verifique as nomeações dos dias indicados.</p>
+            <p>
+              Confirme ou recuse Jogos sendo que terá de justificar recusas ao
+              Conselho de Arbitragem.
+            </p>
+            <p>
+              Clique em 'Submeter Confirmações' para conhecimento do Conselho.
+            </p>
+            <p> Indique o resultado do Jogo quando disponível. </p>
+          </div>
+        ),
+
+        onOk() {},
+      });
+    };
+
     return (
       <>
         {reloadData()}
@@ -485,6 +510,19 @@ export function ConsultaPrivada({ user }) {
                     >
                       Submeter Confirmações
                     </Button>
+                    <Space wrap>
+                      <Button
+                        shape="circle"
+                        style={{
+                          marginBottom: 16,
+                        }}
+                        value="Instruções"
+                        onClick={info}
+                      >
+                        {" "}
+                        ❓{" "}
+                      </Button>
+                    </Space>
                   </div>
                 ) : (
                   <>

@@ -9,6 +9,8 @@ import {
   Form,
   Popconfirm,
   Checkbox,
+  Space,
+  Modal,
 } from "antd";
 
 import $ from "jquery";
@@ -326,6 +328,7 @@ export function Restricoes({ user }) {
       dataIndex: "Cargo",
       key: "Cargo",
       width: "10%",
+      fixed: "left",
       render: (_, record, { Cargo }) =>
         data.length >= 1 ? (
           <>
@@ -334,6 +337,7 @@ export function Restricoes({ user }) {
               className="checkbox-group"
               defaultValue={readCargos(record.Cargo)}
               onChange={onChange}
+              style={{ display: "flex", flexDirection: "column" }}
             />
           </>
         ) : null,
@@ -384,7 +388,7 @@ export function Restricoes({ user }) {
                   $(".copia")[key].toggleAttribute("hidden");
                 }}
               >
-                ✏️ Editar
+                Editar ✏️
               </Button>
             </div>
             <div>
@@ -416,7 +420,7 @@ export function Restricoes({ user }) {
                   $(".copia")[key].toggleAttribute("hidden");
                 }}
               >
-                💾 Guardar
+                Guardar 💾
               </Button>
             </div>
 
@@ -429,7 +433,7 @@ export function Restricoes({ user }) {
                   shape="round"
                   style={{ display: "flex", flexDirection: "row" }}
                 >
-                  🗑️ Eliminar
+                  Eliminar 🗑️
                 </Button>
               </Popconfirm>
             </div>
@@ -527,6 +531,27 @@ export function Restricoes({ user }) {
     setData(newData);
   };
 
+  const info = () => {
+    Modal.info({
+      title: "Instruções",
+      content: (
+        <div>
+          <p>
+            Indique se possui algum cargo num clube ou adicione informação
+            relativo às suas restrições como árbitro num clube.
+          </p>
+          <p>
+            Se quiser procurar por um clube em específico pode fazê-lo na barra
+            de pesquisa.
+          </p>
+          <p> Quando terminar carregue no botão 'Guardar'.</p>
+        </div>
+      ),
+
+      onOk() {},
+    });
+  };
+
   return (
     <div>
       <Header
@@ -613,21 +638,7 @@ export function Restricoes({ user }) {
             };
           }}
         />
-        <Button
-          style={{
-            marginTop: "1%",
-          }}
-          value="Instruções"
-          onClick={() =>
-            message.info(
-              "Indique se possui algum cargo num clube ou adicione informação relativo às suas restrições como árbitro num clube. \n Se quiser procurar por um clube em específico pode fazê-lo na barra de pesquisa.  \nQuando terminar carregue no botão 'Submeter relacoões com clubes'.",
-              10
-            )
-          }
-        >
-          {" "}
-          Instruções{" "}
-        </Button>
+
         <Button
           onClick={handleAdd}
           type="primary"
@@ -638,6 +649,19 @@ export function Restricoes({ user }) {
         >
           Adicionar Relação com Clube
         </Button>
+        <Space wrap>
+          <Button
+            style={{
+              marginTop: "1%",
+            }}
+            shape="circle"
+            value="Instruções"
+            onClick={info}
+          >
+            {" "}
+            ❓{" "}
+          </Button>
+        </Space>
       </div>
     </div>
   );
