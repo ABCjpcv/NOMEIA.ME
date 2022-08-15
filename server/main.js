@@ -727,6 +727,14 @@ Meteor.methods({
       const r = restricoes.findOne({ arbitro: a });
       console.log("r", r);
       let restricoesDoArbitro = r.relacoes;
+
+      for (let index = 0; index < restricoesDoArbitro.length; index++) {
+        const element = restricoesDoArbitro[index];
+        if (element.key === novaRestricao.key) {
+          return -1;
+        }
+      }
+
       console.log("restricoesDoArbitro", restricoesDoArbitro);
       restricoesDoArbitro.push(novaRestricao);
       console.log("restricoesDoArbitro", restricoesDoArbitro);
@@ -735,9 +743,9 @@ Meteor.methods({
         { arbitro: a },
         { $set: { relacoes: restricoesDoArbitro } }
       );
-      return true;
+      return 1;
     } catch (error) {
-      return false;
+      return 0;
     }
   },
 

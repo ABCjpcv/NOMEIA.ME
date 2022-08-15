@@ -115,6 +115,7 @@ const EditableCell = ({
   if (editable) {
     childNode = editing ? (
       <Form.Item
+        className="form-info-adicional"
         style={{
           margin: 0,
         }}
@@ -126,17 +127,31 @@ const EditableCell = ({
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input
+          className="input-adicional"
+          ref={inputRef}
+          onPressEnter={save}
+          onBlur={save}
+        />
       </Form.Item>
     ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{
-          paddingRight: 24,
-        }}
-        onClick={toggleEdit}
-      >
-        {children}
+      <div>
+        <div
+          className="editable-cell-value-wrap"
+          style={{
+            paddingRight: 24,
+          }}
+          onClick={toggleEdit}
+        >
+          {children}
+        </div>
+        <div
+          style={{
+            paddingRight: 24,
+          }}
+        >
+          <Input className="copia" value={children} disabled hidden />
+        </div>
       </div>
     );
   }
@@ -270,6 +285,7 @@ export function Restricoes({ user }) {
               ]}
             >
               <Select
+                className="select-clubes"
                 showSearch
                 aria-autocomplete="both"
                 style={{
@@ -318,7 +334,6 @@ export function Restricoes({ user }) {
               className="checkbox-group"
               defaultValue={readCargos(record.Cargo)}
               onChange={onChange}
-              disabled={false}
             />
           </>
         ) : null,
@@ -349,6 +364,24 @@ export function Restricoes({ user }) {
                 onClick={() => {
                   $(".save-button")[key].toggleAttribute("hidden");
                   $(".edit-button")[key].toggleAttribute("hidden");
+
+                  // ENABLE ROW INPUTS:
+
+                  $($(".select-clubes")[key]).toggleClass(
+                    "ant-select-disabled"
+                  );
+
+                  let start = key * 4;
+                  let end = start + 4;
+                  for (let index = start; index < end; index++) {
+                    $($(".ant-checkbox")[index]).toggleClass(
+                      "ant-checkbox-disabled"
+                    );
+                  }
+
+                  $(".editable-cell-value-wrap")[key].toggleAttribute("hidden");
+
+                  $(".copia")[key].toggleAttribute("hidden");
                 }}
               >
                 ✏️ Editar
@@ -366,20 +399,21 @@ export function Restricoes({ user }) {
 
                   // DISABLE ROW INPUTS:
 
-                  // console.log($(".editable-cell-value-wrap")[key]);
-
-                  $(".editable-cell-value-wrap")[key].toggleAttribute(
-                    "disabled"
+                  $($(".select-clubes")[key]).toggleClass(
+                    "ant-select-disabled"
                   );
 
-                  console.log($(".ant-select")[key]);
+                  let start = key * 4;
+                  let end = start + 4;
+                  for (let index = start; index < end; index++) {
+                    $($(".ant-checkbox")[index]).toggleClass(
+                      "ant-checkbox-disabled"
+                    );
+                  }
 
-                  $(".ant-select")[key].attr("disabled", "true");
+                  $(".editable-cell-value-wrap")[key].toggleAttribute("hidden");
 
-                  console.log($(".ant-checkbox-group")[key]);
-
-                  $(".ant-checkbox-input")[key].attr("disabled", "true");
-                  $(".informacao-adicional")[key].toggleAttribute("disabled");
+                  $(".copia")[key].toggleAttribute("hidden");
                 }}
               >
                 💾 Guardar
@@ -459,7 +493,7 @@ export function Restricoes({ user }) {
         if (err) {
           //Fazer aparecer mensagem de texto de credenciais erradas.
           console.log(err);
-        } else if (result) {
+        } else if (result === 1) {
           message.success(
             "Relação com clube " +
               record.Clube +
@@ -467,6 +501,8 @@ export function Restricoes({ user }) {
               Meteor.user().username +
               "!"
           );
+        } else if (result === -1) {
+          message.warn("Não foi detetada alteração!");
         }
       }
     );
@@ -490,11 +526,6 @@ export function Restricoes({ user }) {
     );
     setData(newData);
   };
-
-  function hide(button) {
-    console.log("button: ", button);
-    button.style.hidden = true;
-  }
 
   return (
     <div>
