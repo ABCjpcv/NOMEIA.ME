@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Input, Button, message, Space } from "antd";
@@ -30,38 +30,39 @@ const handleChangePasswordAuth = (e) => {
 };
 
 export function Autenticar({ user }) {
+  let [entrou, setEntrou] = useState(false);
+
+  if (user != null && entrou) {
+    Meteor.logout();
+  }
+
   let navigate = useNavigate();
 
   function login(user, pass) {
-    if (Meteor.user() != undefined) {
-      //console.log("current user: " + Meteor.user().username);
-      Meteor.logout();
-    } else {
-      // console.log("Não há user");
-      if (user != "Invalid credentials / user does not exist.") {
-        let utilizador = JSON.parse(JSON.stringify(user));
+    // console.log("Não há user");
+    if (user != "Invalid credentials / user does not exist.") {
+      let utilizador = JSON.parse(JSON.stringify(user));
 
-        Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
-          if (err) {
-            //message.error("Credenciais erradas ou utilizador inexistente.");
+      Meteor.loginWithPassword(utilizador.username, pass, (err, result) => {
+        if (err) {
+          //message.error("Credenciais erradas ou utilizador inexistente.");
+        }
+        Meteor.call("isAdmin", utilizador, Meteor.user(), (err, result) => {
+          if (result === -1) {
+            message.error("Password incorreta");
+          } else if (result === 1) {
+            //console.log("vou mostrar Perfil do CA");
+            message.success("Bem vindo " + utilizador.username + "!");
+            setEntrou(true);
+            navigate("/Conta/ProfileCA");
+          } else if (result === 0) {
+            //console.log("vou mostrar Perfil do Arbitro");
+            message.success("Bem vindo " + utilizador.username + "!");
+            setEntrou(true);
+            navigate("/Conta/Profile");
           }
-          Meteor.call("isAdmin", utilizador, Meteor.user(), (err, result) => {
-            console.log("result", result);
-
-            if (result === -1) {
-              message.error("Password incorreta");
-            } else if (result === 1) {
-              //console.log("vou mostrar Perfil do CA");
-              message.success("Bem vindo " + utilizador.username + "!");
-              navigate("/Conta/ProfileCA");
-            } else if (result === 0) {
-              //console.log("vou mostrar Perfil do Arbitro");
-              message.success("Bem vindo " + utilizador.username + "!");
-              navigate("/Conta/Profile");
-            }
-          });
         });
-      }
+      });
     }
   }
 

@@ -4,49 +4,56 @@ import { Meteor } from "meteor/meteor";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 import { Header } from "../../Geral/Header";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const { Dragger } = Upload;
 
-const props = {
-  beforeUpload: (file) => {
-    let isValidFyleType = file.type === "text/csv";
-    isValidFyleType = isValidFyleType || file.type === ".xlsx";
-    isValidFyleType = isValidFyleType || file.type === ".xls";
-
-    if (!isValidFyleType) {
-      message.error(
-        "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
-      );
-    } else {
-      message.success("Novos jogos semanais carregados!");
-    }
-
-    return isValidFyleType;
-  },
-  Upload: {},
-  onChange: (event) => {
-    if (event.file) {
-      // Aceita ficheiros csv, xls, xlsx
-      Papa.parse(event.file.originFileObj, {
-        complete: function (results) {
-          let newGames = results.data;
-
-          Meteor.call("addJogosSemanais", newGames, (err, result) => {
-            if (err) {
-              //console.log("Error: " + err);
-            } else if (result) {
-              document
-                .getElementById("clickOptionMenuAtribuirArbitros")
-                .click();
-            }
-          });
-        },
-      });
-    }
-  },
-};
-
 export function FileInput() {
+  let navigate = useNavigate();
+  let location = useLocation();
+  const props = {
+    beforeUpload: (file) => {
+      let isValidFyleType = file.type === "text/csv";
+      isValidFyleType = isValidFyleType || file.type === ".xlsx";
+      isValidFyleType = isValidFyleType || file.type === ".xls";
+
+      if (!isValidFyleType) {
+        message.error(
+          "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
+        );
+      } else {
+        message.success("Novos jogos semanais carregados!");
+      }
+
+      return isValidFyleType;
+    },
+    onChange: (event) => {
+      let go = false;
+      if (event.file) {
+        // Aceita ficheiros csv, xls, xlsx
+        Papa.parse(event.file.originFileObj, {
+          complete: function (results) {
+            let newGames = results.data;
+
+            Meteor.call("addJogosSemanais", newGames, (err, result) => {
+              if (err) {
+                //console.log("Error: " + err);
+              } else if (result) {
+                go = true;
+              }
+            });
+          },
+        });
+      }
+
+      setTimeout(() => {
+        if (go) {
+          navigate("/Conta/ProfileCA/Atribuir_Arbitros");
+        }
+      }, 100);
+    },
+  };
   return (
     <>
       <Header

@@ -5,6 +5,10 @@ import { Header } from "./Header";
 
 export function Navbar() {
   let navigate = useNavigate();
+  let user = Meteor.user();
+  if (user != null) {
+    Meteor.logout();
+  }
   return (
     <div>
       <Header

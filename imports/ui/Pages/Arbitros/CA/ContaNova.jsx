@@ -84,7 +84,7 @@ export function ContaNova() {
                   onChange={handleChangeNivelArbitroContaNova}
                   min="1"
                   max="4"
-                  style={{ width: "49%" }}
+                  style={{ width: "49%", borderRadius: "10px" }}
                 ></InputNumber>
                 <InputNumber
                   type="number"
@@ -101,7 +101,7 @@ export function ContaNova() {
             </div>
             <p></p>
             <div className="input" style={{ display: "flex" }}>
-              <label className="labels">
+              <label className="labels" style={{ alignItems: "center" }}>
                 Pertence ao Conselho de Arbitragem da Associação de Voleibol de
                 Lisboa?
                 <Input
@@ -162,14 +162,48 @@ export function ContaNova() {
               type="primary"
               onClick={() => {
                 let nome = document.getElementById("nome").value;
+                if (nome.split(" ").length < 2) {
+                  message.warn("Nome incorreto");
+                  return;
+                }
                 let email = document.getElementById("email").value;
+
+                if (
+                  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+                ) {
+                } else {
+                  message.warn("Email inválido!");
+                  return;
+                }
+
                 let nivelArbitro =
                   document.getElementById("nivelArbitro").value;
+
+                if (
+                  nivelArbitro != 1 ||
+                  nivelArbitro != 2 ||
+                  nivelArbitro != 3 ||
+                  nivelArbitro != 4
+                ) {
+                  message.warn("Nivel de arbitro inválido!");
+                  return;
+                }
                 let licencaArbitro =
                   document.getElementById("licencaArbitro").value;
+
+                if (licencaArbitro.length === 0) {
+                  message.warn("Licença de arbitro inválida!");
+                  return;
+                }
                 let pass = document.getElementById("pass").value;
                 let pass2 = document.getElementById("pass2").value;
+
+                if (pass != pass2) {
+                  message.warn("Passwords não correspondem entre si!");
+                  return;
+                }
                 let isCA = document.getElementById("isCA").checked;
+
                 Meteor.call(
                   "registerUser",
                   nome,

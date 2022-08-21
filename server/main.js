@@ -712,16 +712,37 @@ Meteor.methods({
 
   addRestricao: function addRestricao(username, novaRestricao) {
     try {
+      //console.log("novaR", novaRestricao);
+
       const a = arbitros.findOne({ nome: username });
-      console.log("a", a);
+      //console.log("a", a);
       const r = restricoes.findOne({ arbitro: a });
-      console.log("r", r);
+      //console.log("r", r);
       let restricoesDoArbitro = r.relacoes;
+
+      //console.log("restricoesDoArbitro", restricoesDoArbitro);
 
       for (let index = 0; index < restricoesDoArbitro.length; index++) {
         const element = restricoesDoArbitro[index];
+        let cargos = element.Cargo;
+
         if (element.key === novaRestricao.key) {
-          return -1;
+          //console.log("chaves iguais");
+          if (element.Clube === novaRestricao.Clube) {
+            //console.log("clubes iguais");
+            if (
+              cargos[0] === novaRestricao.Cargo[0] &&
+              cargos[1] === novaRestricao.Cargo[1] &&
+              cargos[2] === novaRestricao.Cargo[2] &&
+              cargos[3] === novaRestricao.Cargo[3]
+            ) {
+              // console.log("cargos iguais");
+              if (element.Descricao === novaRestricao.Descricao) {
+                //  console.log("descricao igual");
+                return -1;
+              }
+            }
+          }
         }
       }
 
@@ -1174,7 +1195,10 @@ Meteor.methods({
     currJogo,
     funcao
   ) {
-    //console.log("nomeArbitro", nomeArbitro);
+    console.log("nomeArbitro", nomeArbitro);
+    console.log("tituloJogo", tituloJogo);
+    console.log("currJogo", currJogo);
+    console.log("funcao", funcao);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
     console.log("a", a);
@@ -1182,6 +1206,7 @@ Meteor.methods({
     console.log("i", i);
 
     let events = i.disponibilidades;
+
     console.log("events", events);
 
     if (events === "") {
@@ -1211,6 +1236,8 @@ Meteor.methods({
         novosEvents.push(events[index]);
       }
     }
+
+    console.log("novosEvents", novosEvents);
 
     indisponibilidades.update(
       { arbitro: a },
@@ -1246,13 +1273,14 @@ Meteor.methods({
     }
     let newGames = atuaisPreNomeacoes;
 
-    conselhoDeArbitragem.rawCollection().drop();
-
     for (let index = 0; index < arbCAs.length; index++) {
-      conselhoDeArbitragem.insert({
-        arbitrosCA: arbCAs[index],
-        preNomeacoes: newGames,
-      });
+      let arbitroCA = arbCAs[index];
+      conselhoDeArbitragem.update(
+        {
+          arbitrosCA: arbitroCA,
+        },
+        { $set: { preNomeacoes: newGames } }
+      );
     }
     return true;
   },
@@ -1289,20 +1317,22 @@ Meteor.methods({
       }
     }
 
-    conselhoDeArbitragem.rawCollection().drop();
-
     for (let index = 0; index < arbCAs.length; index++) {
-      conselhoDeArbitragem.insert({
-        arbitrosCA: arbCAs[index],
-        preNomeacoes: newGames,
-      });
+      let arbitroCA = arbCAs[index];
+
+      conselhoDeArbitragem.update(
+        {
+          arbitrosCA: arbitroCA,
+        },
+        { $set: { preNomeacoes: newGames } }
+      );
     }
 
     return true;
   },
 
   carregaJogosSemanais: function carregaJogosSemanais(email) {
-    console.log("email", email);
+    // console.log("email", email);
     const a = arbitros.findOne({ email: email });
     console.log("a", a);
     const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
@@ -1319,7 +1349,7 @@ Meteor.methods({
     clubesRelacionados,
     nivel
   ) {
-    // ESTA DISPONIVEL PARA AQUELE HORARIO???
+    // ESTA DISPONIVEL PARA AQUELE HORARIO?
 
     let todasIndisponibilidades = [];
 

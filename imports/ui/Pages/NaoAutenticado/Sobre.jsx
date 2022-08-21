@@ -6,7 +6,7 @@ export const Sobre = () => {
     <div>
       <Header
         user={Meteor.user()}
-        titulo={false}
+        titulo={true}
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}

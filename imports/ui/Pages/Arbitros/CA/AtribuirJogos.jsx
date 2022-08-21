@@ -6,9 +6,18 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../Geral/Header";
 
+import $ from "jquery";
+
 const { Option } = Select;
 
-const StyledTable = styled((props) => <Table {...props} />)`
+const StyledTable = styled((props) => (
+  <Table
+    {...props}
+    scroll={{
+      x: 1600,
+    }}
+  />
+))`
   && tbody > tr:hover > td {
     background: rgba(224, 248, 232, 1);
   }
@@ -70,7 +79,6 @@ export function AtribuirJogos({ user }) {
       key: "Jogo",
       sorter: (a, b) => a.key - b.key,
       sortDirections: ["descend", "ascend"],
-      width: "4%",
       fixed: "left",
     },
     {
@@ -80,7 +88,6 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaData(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "6%",
     },
     {
       title: "Hora",
@@ -89,7 +96,6 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "4%",
     },
     {
       title: "Prova",
@@ -98,7 +104,6 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "6%",
     },
     {
       title: "Serie",
@@ -107,7 +112,6 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "4%",
     },
     {
       title: "Equipas",
@@ -116,7 +120,6 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "6%",
     },
     {
       title: "Pavilhao",
@@ -125,21 +128,20 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "7%",
     },
     {
       title: "Arbitro1",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
-      width: "10%",
       render: (text, record, index) => (
         <>
           <Select
+            bordered
             showSearch
             mode="single"
             name="select_arbitro1"
-            style={{ width: "100%" }}
-            key="select_arbitro1"
+            style={{ width: "150px", backgroundColor: "F7CB73 !important" }}
+            key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro1 != "" ? record.Arbitro1 : null}
@@ -147,8 +149,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_1_arbitro" + _.uniqueId()}
+                  key={"option_1_arbitro_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -164,15 +167,15 @@ export function AtribuirJogos({ user }) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      width: "11%",
+
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_arbitro2"
-            style={{ width: "100%" }}
-            key="select_arbitro2"
+            style={{ width: "150px" }}
+            key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro2 != "" ? record.Arbitro2 : null}
@@ -180,8 +183,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_2_arbitro" + _.uniqueId()}
+                  key={"option_2_arbitro_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -197,15 +201,15 @@ export function AtribuirJogos({ user }) {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      width: "11%",
+
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl1"
-            style={{ width: "100%" }}
-            key="select_jl1"
+            style={{ width: "150px" }}
+            key={"select_jl1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl1 != "" ? record.JL1 : null}
@@ -213,8 +217,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_1_jl" + _.uniqueId()}
+                  key={"option_1_jl_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -230,15 +235,15 @@ export function AtribuirJogos({ user }) {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
-      width: "11%",
+
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl2"
-            style={{ width: "100%" }}
-            key="select_jl2"
+            style={{ width: "150px" }}
+            key={"select_jl2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl2 != "" ? record.JL2 : null}
@@ -246,8 +251,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_2_jl" + _.uniqueId()}
+                  key={"option_2_jl_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -261,7 +267,6 @@ export function AtribuirJogos({ user }) {
       title: "JL3",
       dataIndex: "JL3",
       key: "JL3",
-      width: "11%",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (text, record, index) => (
@@ -270,8 +275,8 @@ export function AtribuirJogos({ user }) {
             showSearch
             mode="single"
             name="select_jl3"
-            style={{ width: "100%" }}
-            key="select_jl3"
+            style={{ width: "150px" }}
+            key={"select_jl3_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl3 != "" ? record.JL3 : null}
@@ -279,8 +284,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_3_jl" + _.uniqueId()}
+                  key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -294,7 +300,6 @@ export function AtribuirJogos({ user }) {
       title: "JL4",
       dataIndex: "JL4",
       key: "JL4",
-      width: "11%",
       sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
       sortDirections: ["descend", "ascend"],
       render: (text, record, index) => (
@@ -303,8 +308,8 @@ export function AtribuirJogos({ user }) {
             showSearch
             mode="single"
             name="select_jl4"
-            style={{ width: "100%" }}
-            key="select_jl4"
+            style={{ width: "150px" }}
+            key={"select_jl4_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl4 != "" ? record.JL4 : null}
@@ -312,8 +317,9 @@ export function AtribuirJogos({ user }) {
             {arbitrosDisponiveis.map((arb) => {
               return (
                 <Select.Option
+                  className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_4_jl" + _.uniqueId()}
+                  key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -321,6 +327,27 @@ export function AtribuirJogos({ user }) {
             })}
           </Select>
         </>
+      ),
+    },
+    {
+      title: "Ação",
+      dataIndex: "acao",
+      key: "acao",
+      width: "14%",
+      fixed: "right",
+      render: (_, record, key) => (
+        <div style={{ display: "flex" }}>
+          <div>
+            <Button
+              shape="round"
+              className="edit-button"
+              style={{ display: "flex", flexDirection: "row" }}
+              onClick={() => {}}
+            >
+              Editar ✏️
+            </Button>
+          </div>
+        </div>
       ),
     },
   ];
@@ -369,8 +396,18 @@ export function AtribuirJogos({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    console.log("value", value);
     console.log("key", key);
+
+    let indexAux = key.key.split("_");
+    let rowIndex = 0;
+    let TODO;
+
+    for (let i = 0; i < indexAux.length; i++) {
+      const element = indexAux[i];
+      if (element === "index") {
+        index = parseInt(indexAux[i + 1]);
+      }
+    }
 
     let titulo =
       "Jogo nº " +
@@ -386,8 +423,6 @@ export function AtribuirJogos({ user }) {
 
     //console.log("currNomeArbitro", currNomeArbitro);
 
-    //console.log("value.length", value.length);
-
     if (value.length === 1) {
       // remover a nomeacao anterior
       Meteor.call(
@@ -397,7 +432,7 @@ export function AtribuirJogos({ user }) {
         currJogo,
         key.key,
         (err, result) => {
-          //console.log("RESULTADO", result);
+          console.log("RESULTADO", result);
 
           if (err) {
             console.error(err);
@@ -416,13 +451,13 @@ export function AtribuirJogos({ user }) {
         let emiteRecibo = condicoesArbitro.emiteRecibo;
         let relacoes = condicoesArbitro.relacaoComEquipas;
 
-        let mensagemRestricoes =
-          currNomeArbitro +
-          (!temCarro ? " não tem carro." : " tem carro.") +
-          "\n" +
-          currNomeArbitro +
-          (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-          "\n";
+        // let mensagemRestricoes =
+        //   currNomeArbitro +
+        //   (!temCarro ? " não tem carro." : " tem carro.") +
+        //   "\n" +
+        //   currNomeArbitro +
+        //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+        //   "\n";
 
         let mensagemRelacoesClubes = currNomeArbitro;
         if (relacoes.length > 0) {
@@ -437,14 +472,12 @@ export function AtribuirJogos({ user }) {
               clube +
               ".";
           }
-        } else {
-          mensagemRelacoesClubes =
-            mensagemRelacoesClubes + " não tem relações com clubes.";
         }
 
-        let mensagemTotal = mensagemRestricoes + mensagemRelacoesClubes;
+        // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
 
-        message.warn(mensagemTotal);
+        if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+          message.warn(mensagemTotal);
       });
 
       //console.log("key", key);
@@ -465,6 +498,11 @@ export function AtribuirJogos({ user }) {
         }
       );
     }
+
+    console.log("index", index);
+    console.log("indexAux", indexAux);
+
+    $(".ant-select-selector").eq(index).css("background-color", "F7CB73");
 
     loadData();
   }
@@ -499,7 +537,7 @@ export function AtribuirJogos({ user }) {
 
           dataFromDB.push(obj);
         }
-        //console.log("dataFromDB: ", dataFromDB);
+        console.log("dataFromDB: ", dataFromDB);
         return setDataSource(dataFromDB);
       } else {
         return setDataSource([]);
@@ -587,192 +625,272 @@ export function AtribuirJogos({ user }) {
                 marginTop: "0.5%",
                 marginLeft: "0.5%",
                 marginRight: "0.5%",
+                height: "78px",
               }}
             >
-              <h2 className="blue">
+              <div
+                style={{
+                  display: "flex",
+                  marginLeft: "0.5%",
+                  marginBottom: "0.05%",
+                  height: "26px",
+                  alignItems: "flex-start",
+                }}
+              >
+                <h3 className="blue">Filtros:</h3>
+              </div>
+              {/* <h2 className="blue">
                 {currJogo.Jogo != undefined
                   ? "Jogo nº: " + currJogo.Jogo
                   : "Clique num jogo para o selecionar."}
-              </h2>
-              <div id="filtros">
+              </h2> */}
+              <div
+                id="filtros"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginLeft: "0.5%",
+                  marginTop: "-0.5%",
+                  whiteSpace: "nowrap",
+                  justifyContent: "flex-start",
+                  marginBottom: "0.5%",
+                }}
+              >
+                {/* PRIMEIRA OPCAO FILTRO */}
                 <div
-                  id="firstLineFilters"
-                  style={{ display: "flex", marginLeft: "0.5%" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
                 >
-                  {/* PRIMEIRA OPCAO FILTRO */}
-                  <div>
-                    <input
-                      className="inputt"
-                      type={"checkbox"}
-                      onChange={() => {
-                        if (naoTemTransporte) {
-                          message.warn(
-                            "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                          );
-                        } else {
-                          setTemTransporte(!temTransporte);
-                        }
-                      }}
-                      style={{
-                        width: "30px",
-                      }}
-                      checked={temTransporte}
-                    ></input>
-                    <span> Com Transporte próprio </span>
-                  </div>
-                  {/* SEGUNDA OPCAO FILTRO */}
-                  <div>
-                    <input
-                      className="inputt"
-                      type={"checkbox"}
-                      onChange={() => {
-                        if (temTransporte) {
-                          message.warn(
-                            "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
-                          );
-                        } else {
-                          setNaoTemTransporte(!naoTemTransporte);
-                        }
-                      }}
-                      style={{
-                        width: "30px",
-                      }}
-                      checked={naoTemTransporte}
-                    ></input>
-                    <span> Sem transporte próprio </span>
-                  </div>
-                  {/* TERCEIRA OPCAO FILTRO */}
-                  <div>
-                    <input
-                      className="inputt"
-                      type={"checkbox"}
-                      onChange={() => {
-                        if (naoTemRecibo) {
-                          message.warn(
-                            "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                          );
-                        } else {
-                          setTemRecibo(!temRecibo);
-                        }
-                      }}
-                      style={{
-                        width: "30px",
-                      }}
-                      checked={temRecibo}
-                    ></input>
-                    <span> Emite Recibo Verde</span>
-                  </div>
-                  {/* QUARTA OPCAO FILTRO */}
-                  <div>
-                    <input
-                      className="inputt"
-                      type={"checkbox"}
-                      onChange={() => {
-                        if (temRecibo) {
-                          message.warn(
-                            "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                          );
-                        } else {
-                          setNaoTemRecibo(!naoTemRecibo);
-                        }
-                      }}
-                      style={{
-                        width: "30px",
-                      }}
-                      checked={naoTemRecibo}
-                    ></input>
-                    <span> Não Emite Recibo Verde </span>
-                  </div>
-                  {/* QUINTA OPCAO FILTRO*/}
-                  <div>
-                    <span>Árbitro de Nível </span>
-                    <Select
-                      className="inputt"
-                      onChange={handleChangeNivel}
-                      style={{
-                        width: "fit-content",
-                        borderRadius: "5px",
-                        borderBlockColor: "rgba(255, 255, 255, 0.5)",
-                        boxSizing: "border-box",
-                        backgroundColor: "#f0f0f0",
-                        fontWeight: "bold",
-                        fontSize: "14px",
-                      }}
-                      defaultValue="Todos"
-                    >
-                      <Option className="inputt-option" value={"Todos"}>
-                        {" "}
-                        Todos{" "}
-                      </Option>
-                      <Option className="inputt-option" value={"1"}>
-                        I
-                      </Option>
-                      <Option className="inputt-option" value={"2"}>
-                        II
-                      </Option>
-                      <Option className="inputt-option" value={"3"}>
-                        III
-                      </Option>
-                    </Select>
-                  </div>
-
-                  <div>
-                    Sem relação com:
-                    <Select
-                      mode="multiple"
-                      style={{
-                        marginLeft: "5px",
-                        width: "380px",
-                      }}
-                      defaultValue={[]}
-                      placeholder="Selecione clubes"
-                      onClick={() =>
-                        Meteor.call("getClubesDisponiveis", (err, result) => {
-                          console.log(result);
-                          if (err) {
-                            console.log(err);
-                          } else if (result) {
-                            return setClubesDisponiveis(result);
-                          }
-                        })
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (naoTemTransporte) {
+                        setTemTransporte(!temTransporte);
+                        setNaoTemTransporte(!naoTemTransporte);
+                        // message.warn(
+                        //   "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                        // );
+                      } else {
+                        setTemTransporte(!temTransporte);
                       }
-                      onChange={handleChangeClubes}
-                      optionLabelProp="label"
-                    >
-                      {clubesDisponiveis.map((clube) => {
-                        return (
-                          <Select.Option
-                            value={clube}
-                            label={clube}
-                            key={"option_clube" + _.uniqueId()}
-                          >
-                            <div className="demo-option-label-item">
-                              {" "}
-                              {clube}{" "}
-                            </div>
-                          </Select.Option>
-                        );
-                      })}
-                    </Select>
-                  </div>
-                  <div>
-                    <Button
-                      onClick={() => {
-                        handleSubmissionConfirmation();
-                        message.success("Nomeações enviadas para os Árbitros.");
-                      }}
-                      type="primary"
-                      style={{
-                        marginRight: "0.5%",
-                        marginBottom: "0.5%",
-                      }}
-                    >
-                      Enviar Nomeações para Árbitros
-                    </Button>
-                  </div>
+                    }}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      marginRight: "2%",
+                    }}
+                    checked={temTransporte}
+                  ></input>
+                  <span> Com transporte próprio </span>
+                </div>
+                {/* SEGUNDA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "0.5%",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (temTransporte) {
+                        setNaoTemTransporte(!naoTemTransporte);
+                        setTemTransporte(!temTransporte);
+                        // message.warn(
+                        //   "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                        // );
+                      } else {
+                        setNaoTemTransporte(!naoTemTransporte);
+                      }
+                    }}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      marginRight: "2%",
+                    }}
+                    checked={naoTemTransporte}
+                  ></input>
+                  <span> Sem transporte próprio </span>
                 </div>
 
-                {/* <label className="labels" style={{ marginLeft: "5px" }}>
+                {/* QUINTA OPCAO FILTRO*/}
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "2%",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <span style={{ marginRight: "2.5%" }}>
+                    Árbitro de Nível:{" "}
+                  </span>
+                  <Select
+                    className="inputt"
+                    onChange={handleChangeNivel}
+                    style={{
+                      width: "85px",
+                      height: "100%",
+                      borderRadius: "5px",
+                      borderBlockColor: "rgba(255, 255, 255, 0.5)",
+                      boxSizing: "border-box",
+                      backgroundColor: "#f0f0f0",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                    }}
+                    defaultValue="Todos"
+                  >
+                    <Option className="inputt-option" value={"Todos"}>
+                      {" "}
+                      Todos{" "}
+                    </Option>
+                    <Option className="inputt-option" value={"1"}>
+                      I
+                    </Option>
+                    <Option className="inputt-option" value={"2"}>
+                      II
+                    </Option>
+                    <Option className="inputt-option" value={"3"}>
+                      III
+                    </Option>
+                  </Select>
+                </div>
+
+                {/* SEXTA OPCAO FILTRO*/}
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "2%",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <span style={{ marginRight: "0.5%" }}>Sem relação com:</span>
+                  <Select
+                    mode="multiple"
+                    style={{
+                      marginLeft: "5px",
+                      width: "380px",
+                      maxHeight: "min-content",
+                    }}
+                    allowClear
+                    defaultValue={[]}
+                    placeholder="Selecione clubes"
+                    onClick={() =>
+                      Meteor.call("getClubesDisponiveis", (err, result) => {
+                        console.log(result);
+                        if (err) {
+                          console.log(err);
+                        } else if (result) {
+                          return setClubesDisponiveis(result);
+                        }
+                      })
+                    }
+                    onChange={handleChangeClubes}
+                    optionLabelProp="label"
+                  >
+                    {clubesDisponiveis.map((clube) => {
+                      return (
+                        <Select.Option
+                          value={clube}
+                          label={clube}
+                          key={"option_clube" + _.uniqueId()}
+                        >
+                          <div className="demo-option-label-item">
+                            {" "}
+                            {clube}{" "}
+                          </div>
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginTop: "-1%",
+                  whiteSpace: "nowrap",
+                  justifyContent: "flex-start",
+                  marginBottom: "0.5%",
+                  marginLeft: "0.5%",
+                }}
+              >
+                {/* TERCEIRA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (naoTemRecibo) {
+                        setTemRecibo(!temRecibo);
+                        setNaoTemRecibo(!naoTemRecibo);
+                        message.info(
+                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        );
+                      } else {
+                        setTemRecibo(!temRecibo);
+                      }
+                    }}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      marginRight: "2%",
+                    }}
+                    checked={temRecibo}
+                  ></input>
+                  <span> Emite recibo verde</span>
+                </div>
+                {/* QUARTA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "38px",
+                    alignItems: "center",
+
+                    height: "30px",
+                  }}
+                >
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (temRecibo) {
+                        setNaoTemRecibo(!naoTemRecibo);
+                        setTemRecibo(!temRecibo);
+                        // message.info(
+                        //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        // );
+                      } else {
+                        setNaoTemRecibo(!naoTemRecibo);
+                      }
+                    }}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      marginRight: "2%",
+                    }}
+                    checked={naoTemRecibo}
+                  ></input>
+                  <span> Não emite recibo verde </span>
+                </div>
+              </div>
+
+              {/* <label className="labels" style={{ marginLeft: "5px" }}>
                   Arbitros disponíveis:
                 </label>
                 <ul
@@ -795,69 +913,75 @@ export function AtribuirJogos({ user }) {
                       );
                   })}
                 </ul> */}
-              </div>
             </div>
             <div>
               <div className="demo-app-main" style={{ overflow: "auto" }}>
                 <div className="container">
                   <div
                     className="table-responsive"
-                    style={{ display: "flex" }}
-                  ></div>
+                    style={{ display: "flex", marginRight: "100px" }}
+                  >
+                    <Table
+                      //bordered
+                      rowClassName={(index) =>
+                        index % 2 === 0 ? "table-row-light" : "table-row-dark"
+                      }
+                      dataSource={dataSource}
+                      columns={colunasNomeacoesPrivadas}
+                      pagination={false}
+                      size="middle"
+                      style={{
+                        marginLeft: "0.5%",
+                        marginTop: "0.5%",
+                        marginRight: "0.5%",
+                      }}
+                      onRow={(record) => {
+                        return {
+                          onClick: (event) => {
+                            //console.log("event", event);
+                            //console.log("event.target.value", event.target.value);
 
-                  <StyledTable
-                    //bordered
-                    rowClassName={(record, index) =>
-                      index % 2 === 0 ? "table-row-light" : "table-row-dark"
-                    }
-                    dataSource={dataSource}
-                    columns={colunasNomeacoesPrivadas}
-                    pagination={true}
-                    size="middle"
+                            if (event.target != "div.ant-select-selector") {
+                              Meteor.call(
+                                "arbitrosDisponiveis",
+                                record,
+                                temRecibo,
+                                naoTemRecibo,
+                                temTransporte,
+                                naoTemTransporte,
+                                clubesRelacionados,
+                                nivelDeArbitro,
+                                (err, result) => {
+                                  console.log(
+                                    "result arbitros disponiveis: ",
+                                    result
+                                  );
+                                  if (err) {
+                                    console.log("ERRRRROOOOO", { err });
+                                  } else if (result.length != 0) {
+                                    return setArbitrosDisponiveis(result);
+                                  }
+                                }
+                              );
+                              currJogo = record;
+                            }
+                          },
+                        };
+                      }}
+                    />
+                  </div>
+                  <Button
+                    onClick={() => {
+                      handleSubmissionConfirmation();
+                      message.success("Nomeações enviadas para os Árbitros.");
+                    }}
+                    type="primary"
                     style={{
-                      marginLeft: "0.5%",
-                      marginTop: "0.5%",
                       marginRight: "0.5%",
                     }}
-                    scroll={{
-                      x: 1800,
-                    }}
-                    onRow={(record) => {
-                      return {
-                        onClick: (event) => {
-                          //console.log("event", event);
-                          //console.log("event.target.value", event.target.value);
-
-                          console.log("record eh:", record);
-
-                          if (event.target != "div.ant-select-selector") {
-                            Meteor.call(
-                              "arbitrosDisponiveis",
-                              record,
-                              temRecibo,
-                              naoTemRecibo,
-                              temTransporte,
-                              naoTemTransporte,
-                              clubesRelacionados,
-                              nivelDeArbitro,
-                              (err, result) => {
-                                console.log(
-                                  "result arbitros disponiveis: ",
-                                  result
-                                );
-                                if (err) {
-                                  console.log("ERRRRROOOOO", { err });
-                                } else if (result.length != 0) {
-                                  return setArbitrosDisponiveis(result);
-                                }
-                              }
-                            );
-                            currJogo = record;
-                          }
-                        },
-                      };
-                    }}
-                  />
+                  >
+                    Enviar Nomeações para Árbitros
+                  </Button>
                 </div>
               </div>
             </div>
