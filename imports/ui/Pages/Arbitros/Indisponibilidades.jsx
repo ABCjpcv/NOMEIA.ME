@@ -60,19 +60,13 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
     let myPromise = new Promise((resolve, reject) => {
       Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-        console.log("result", result);
-
-        console.log("state", this.state);
-
         if (result == 1 || result == 0) {
           resolve(this.state, result);
         } else {
           reject();
         }
-
         return result === 1;
       });
     });
@@ -99,11 +93,29 @@ export class Indisponibilidades extends React.Component {
   }
 
   componentDidUpdate() {
-    setTimeout(() => {
-      const { state: currentState } = this;
-      const newState = { ...currentState, show: true };
-      this.setState(newState);
-    }, 2000);
+    let r;
+    let myPromise = new Promise((resolve, reject) => {
+      Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+        if (result == 1 || result == 0) {
+          r = result;
+          resolve(this.state);
+        } else {
+          reject();
+        }
+        return result === 1;
+      });
+    });
+
+    setTimeout(() => {}, 100);
+
+    var that = this;
+
+    myPromise.then(function (state) {
+      const { state: currentState } = state;
+      const admin = r === 1;
+      const newState = { ...currentState, show: true, isCA: admin };
+      that.setState(newState);
+    });
   }
 
   render() {
