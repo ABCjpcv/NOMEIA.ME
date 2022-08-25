@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, message, Modal, Popconfirm, Space, Table, Tag } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
@@ -155,7 +155,7 @@ export function ConsultaPrivada({ user }) {
       width: "14%",
       fixed: "right",
       render: (_, record) =>
-        dataSource.length > 1 ? (
+        dataSource.length > 0 ? (
           <div>
             <Popconfirm
               title="Confirmar jogo?"
@@ -185,7 +185,7 @@ export function ConsultaPrivada({ user }) {
       width: "15%",
       fixed: "right",
       render: (_, { tags }) =>
-        dataSource.length > 1 ? (
+        dataSource.length > 0 ? (
           <>
             {tags.map((tag) => {
               let color;
@@ -217,64 +217,12 @@ export function ConsultaPrivada({ user }) {
    *
    */
 
-  const [dataSource, setDataSource] = useState([
-    // {
-    //   Jogo: "2059",
-    //   Dia: "01/05/2022",
-    //   Hora: "17:00",
-    //   Prova: "CNMJuv",
-    //   Serie: "D",
-    //   Equipas: "SCPORT. - CNGINAS",
-    //   Pavilhao: "PAV. MULTID. SPORTING CP",
-    //   Arbitro1: "André Carvalho",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "5",
-    //   tags: ['pendente']
-    // },
-    // {
-    //   Jogo: "2178",
-    //   Dia: "30/04/2022",
-    //   Hora: "15:00",
-    //   Prova: "CNFJuv",
-    //   Serie: "D",
-    //   Equipas: "SCPORT. - SLBENFI",
-    //   Pavilhao: "PAV. MULTID. SPORTING CP",
-    //   Arbitro1: "André Correia",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "6",
-    //   tags: ['pendente']
-    // },
-    // {
-    //   Jogo: "1526",
-    //   Dia: "01/05/2022",
-    //   Hora: "18:00",
-    //   Prova: "JUV F",
-    //   Serie: "TPAP",
-    //   Equipas: "CFB B - EFL",
-    //   Pavilhao: "PAV. ACACIO ROSA- RESTELO",
-    //   Arbitro1: "André Correia",
-    //   Arbitro2: "",
-    //   JL1: "",
-    //   JL2: "",
-    //   JL3: "",
-    //   JL4: "",
-    //   key: "7",
-    //   tags: ['pendente']
-    // },
-  ]);
+  const [dataSource, setDataSource] = useState([]);
 
   let [submetido, setSubmetido] = useState(Boolean);
 
   let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-    if (result) return result;
+    return result;
   });
 
   const handleConfirmation = (record) => {
@@ -351,12 +299,14 @@ export function ConsultaPrivada({ user }) {
     user = Meteor.user();
     let email = user.emails[0].address;
 
-    console.log("email", email);
+    //console.log("email", email);
     Meteor.call("carregaNomeacoes", email, (err, result) => {
-      console.log("resultado de carregaNomeacoes da BD:", result);
+      //console.log("resultado de carregaNomeacoes da BD:", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result.nomeacoesPrivadas.length > 0) {
+        console.log("RESULTADO AQUI", result);
+
         let dataFromDB = [];
 
         let confirmado = true;
@@ -390,150 +340,148 @@ export function ConsultaPrivada({ user }) {
         setSubmetido(confirmado);
         setDataSource(dataFromDB);
       } else {
-        setDataSource([""]);
+        setDataSource([]);
       }
     });
   }
 
-  // NAO ESTOU A CONSEGUIR FAZER RELOAD DA DATA QUANDO ENTRA NA PÁGINA
-  function reloadData() {
-    //console.log("Entrei no metodo!! ");
+  // // NAO ESTOU A CONSEGUIR FAZER RELOAD DA DATA QUANDO ENTRA NA PÁGINA
+  // function reloadData() {
+  //   console.log("Entrei no metodo!! ");
 
-    // Carrega pela primeira vez
-    if (dataSource.length === 0) {
-      loadData();
-    }
-    // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
-    else {
-      Meteor.call(
-        "nomeacoesForamUpdated",
-        Meteor.user(),
-        dataSource,
-        (err, result) => {
-          console.log("nomeacoes atualizados???", result);
-          if (result === true) {
-            loadData();
-          } else {
-            console.log("DATA SOURCE MUAH MUAH MUAH", dataSource);
-            let confirmado = true;
-            for (
-              let index = 0;
-              index < dataSource.length && confirmado;
-              index++
-            ) {
-              if (dataSource[index].tags[0] != "confirmado") {
-                confirmado = false;
-              }
-            }
-            setSubmetido(confirmado);
-          }
-        }
-      );
-    }
-  }
+  //   // Carrega pela primeira vez
+  //   if (dataSource.length === 0) {
+  //     loadData();
+  //   }
+  //   // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
+  //   else {
+  //     Meteor.call(
+  //       "nomeacoesForamUpdated",
+  //       Meteor.user(),
+  //       dataSource,
+  //       (err, result) => {
+  //         console.log("nomeacoes atualizadas???", result);
+  //         if (result === true) {
+  //           loadData();
+  //         } else {
+  //           //console.log("DATA SOURCE MUAH MUAH MUAH", dataSource);
+  //           let confirmado = true;
+  //           for (
+  //             let index = 0;
+  //             index < dataSource.length && confirmado;
+  //             index++
+  //           ) {
+  //             if (dataSource[index].tags[0] != "confirmado") {
+  //               confirmado = false;
+  //             }
+  //           }
+  //           setSubmetido(confirmado);
+  //         }
+  //       }
+  //     );
+  //   }
+  // }
+
+  const info = () => {
+    Modal.info({
+      title: "Instruções",
+      content: (
+        <div>
+          <p>Verifique as nomeações dos dias indicados.</p>
+          <p>
+            Confirme ou recuse Jogos sendo que terá de justificar recusas ao
+            Conselho de Arbitragem.
+          </p>
+          <p>
+            Clique em 'Submeter Confirmações' para conhecimento do Conselho.
+          </p>
+          <p> Indique o resultado do Jogo quando disponível. </p>
+        </div>
+      ),
+
+      onOk() {},
+    });
+  };
 
   if (dataSource.length === 0) {
     loadData();
-  } else {
-    const info = () => {
-      Modal.info({
-        title: "Instruções",
-        content: (
-          <div>
-            <p>Verifique as nomeações dos dias indicados.</p>
-            <p>
-              Confirme ou recuse Jogos sendo que terá de justificar recusas ao
-              Conselho de Arbitragem.
-            </p>
-            <p>
-              Clique em 'Submeter Confirmações' para conhecimento do Conselho.
-            </p>
-            <p> Indique o resultado do Jogo quando disponível. </p>
-          </div>
-        ),
+  }
 
-        onOk() {},
-      });
-    };
+  return (
+    <>
+      <div className="demo-app" style={{ alignSelf: "center" }}>
+        <div style={{ width: "100%", height: "100%" }}>
+          <div className="demo-app-main" style={{ width: "100%" }}>
+            <div className="container" style={{ width: "100%" }}>
+              <br />
 
-    return (
-      <>
-        {reloadData()}
-        <div className="demo-app" style={{ alignSelf: "center" }}>
-          <div style={{ width: "100%", height: "100%" }}>
-            <div className="demo-app-main" style={{ width: "100%" }}>
-              <div className="container" style={{ width: "100%" }}>
-                <br />
-                {dataSource.length > 1 ? (
-                  <div
-                    className="table-responsive"
+              {dataSource.length != 0 ? (
+                <div
+                  className="table-responsive"
+                  style={{
+                    marginLeft: "0.5%",
+                    marginRight: "0%",
+                    width: "99%",
+                    marginTop: "-1%",
+                  }}
+                >
+                  <Table
+                    className="consultaPrivadaTabela"
+                    dataSource={dataSource}
+                    columns={colunasNomeacoesPrivadas}
                     style={{
-                      marginLeft: "0.5%",
-                      marginRight: "0%",
-                      width: "99%",
-                      marginTop: "-1%",
+                      width: "100%",
+                      height: "37vw",
                     }}
+                    size="middle"
+                    pagination={false}
+                    // scroll={{
+                    //   y: 800,
+                    // }}
+                  />
+                  <Button
+                    onClick={handleAllConfirmation}
+                    style={{
+                      marginTop: "0.5%",
+                    }}
+                    id="confirmAllNominations"
                   >
-                    <Table
-                      className="consultaPrivadaTabela"
-                      dataSource={dataSource}
-                      columns={colunasNomeacoesPrivadas}
-                      style={{
-                        width: "100%",
-                        height: "37vw",
-                      }}
-                      size="middle"
-                      pagination={false}
-                      // scroll={{
-                      //   y: 800,
-                      // }}
-                    />
-                    <Button
-                      onClick={handleAllConfirmation}
-                      style={{
-                        marginTop: "0.5%",
-                      }}
-                      id="confirmAllNominations"
-                    >
-                      Confirmar todos
-                    </Button>
+                    Confirmar todos
+                  </Button>
 
+                  <Button
+                    onClick={() => {
+                      handleSubmissionConfirmation(dataSource);
+                    }}
+                    type="primary"
+                    style={{
+                      marginBottom: 16,
+                    }}
+                    id="submissionConfirmationButton"
+                  >
+                    Submeter Confirmações
+                  </Button>
+                  <Space wrap>
                     <Button
-                      onClick={() => {
-                        handleSubmissionConfirmation(dataSource);
-                      }}
-                      type="primary"
+                      shape="circle"
                       style={{
                         marginBottom: 16,
                       }}
-                      id="submissionConfirmationButton"
+                      value="Instruções"
+                      onClick={info}
                     >
-                      Submeter Confirmações
+                      {" "}
+                      ❓{" "}
                     </Button>
-                    <Space wrap>
-                      <Button
-                        shape="circle"
-                        style={{
-                          marginBottom: 16,
-                        }}
-                        value="Instruções"
-                        onClick={info}
-                      >
-                        {" "}
-                        ❓{" "}
-                      </Button>
-                    </Space>
-                  </div>
-                ) : (
-                  <>
-                    <h2 className="blue">Não tem nomeações de momento.</h2>
-                  </>
-                )}
-              </div>
+                  </Space>
+                </div>
+              ) : (
+                <h2 className="blue">Não tem nomeações de momento.</h2>
+              )}
             </div>
           </div>
         </div>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
 }

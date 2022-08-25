@@ -22,10 +22,7 @@ export function FileInput() {
         message.error(
           "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
         );
-      } else {
-        message.success("Novos jogos semanais carregados!");
       }
-
       return isValidFyleType;
     },
     onChange: (event) => {
@@ -35,13 +32,12 @@ export function FileInput() {
         Papa.parse(event.file.originFileObj, {
           complete: function (results) {
             let newGames = results.data;
-
             Meteor.call("addJogosSemanais", newGames, (err, result) => {
               if (err) {
                 //console.log("Error: " + err);
-              } else if (result) {
-                go = true;
+                return;
               }
+              go = true;
             });
           },
         });
@@ -49,9 +45,11 @@ export function FileInput() {
 
       setTimeout(() => {
         if (go) {
+          go = false;
+          message.success("Novos jogos semanais carregados!");
           navigate("/Conta/ProfileCA/Atribuir_Arbitros");
         }
-      }, 100);
+      }, 300);
     },
   };
   return (

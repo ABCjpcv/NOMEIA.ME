@@ -611,7 +611,6 @@ Meteor.methods({
     if (loggado != null) {
       var arbitro = arbitros.findOne({ email: user.emails[0].address });
       var admin = arbitro.isAdmin;
-      console.log(arbitro.nome + " is admin? " + admin);
       return admin ? 1 : 0;
     }
     return -1;
@@ -636,7 +635,7 @@ Meteor.methods({
       console.log("Arbitro " + arb.nome + " ficou com o jogo " + jogo.id);
     }
 
-    //console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
+    console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
 
     nomeacoes.update(
       { arbitro: arb },
@@ -647,6 +646,7 @@ Meteor.methods({
   carregaNomeacoes: function carregaNomeacoes(email) {
     var arb = arbitros.findOne({ email: email });
     var result = nomeacoes.findOne({ arbitro: arb });
+    console.log("resultado desta merda:", result);
     return result;
   },
 
@@ -1334,9 +1334,9 @@ Meteor.methods({
   carregaJogosSemanais: function carregaJogosSemanais(email) {
     // console.log("email", email);
     const a = arbitros.findOne({ email: email });
-    console.log("a", a);
+    //console.log("a", a);
     const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
-    console.log("ca", ca);
+    //console.log("ca", ca);
     return ca.preNomeacoes;
   },
 
@@ -1349,7 +1349,7 @@ Meteor.methods({
     clubesRelacionados,
     nivel
   ) {
-    // ESTA DISPONIVEL PARA AQUELE HORARIO?
+    // ESTA DISPONIVEL NAQUELE HORARIO?
 
     let todasIndisponibilidades = [];
 
@@ -1398,8 +1398,6 @@ Meteor.methods({
     let nomesArbitrosDisponiveis = [];
 
     todasIndisponibilidades.forEach((indisponibilidade) => {
-      //console.log("ENTREI NO CICLO");
-
       // console.log("ESTOU NA INDISPONIBILIDADE", indisponibilidade);
 
       let disponibilidades = indisponibilidade.disponibilidades; //Vai buscar o array de disponibilidades

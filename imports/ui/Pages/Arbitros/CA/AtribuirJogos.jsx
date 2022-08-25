@@ -68,6 +68,7 @@ function comparaAminhaLindaData(a, b) {
 let currJogo = {};
 
 let currNomeArbitro = "";
+let prevNomeArbitro = "";
 
 export function AtribuirJogos({ user }) {
   let navigate = useNavigate();
@@ -145,6 +146,7 @@ export function AtribuirJogos({ user }) {
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro1 != "" ? record.Arbitro1 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -179,6 +181,7 @@ export function AtribuirJogos({ user }) {
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro2 != "" ? record.Arbitro2 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -213,6 +216,7 @@ export function AtribuirJogos({ user }) {
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl1 != "" ? record.JL1 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -247,6 +251,7 @@ export function AtribuirJogos({ user }) {
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl2 != "" ? record.JL2 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -278,8 +283,10 @@ export function AtribuirJogos({ user }) {
             style={{ width: "150px" }}
             key={"select_jl3_" + index}
             type="select"
-            onChange={handleChangeSelecaoArbitro}
+            // onChange={handleChangeSelecaoArbitro}
+            onSelect={handleChangeSelecaoArbitro}
             value={record.Jl3 != "" ? record.JL3 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -313,6 +320,7 @@ export function AtribuirJogos({ user }) {
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl4 != "" ? record.JL4 : null}
+            disabled={disabledDataSource.includes(record)}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -342,9 +350,65 @@ export function AtribuirJogos({ user }) {
               shape="round"
               className="edit-button"
               style={{ display: "flex", flexDirection: "row" }}
-              onClick={() => {}}
+              onClick={() => {
+                $(".save-button")[key].toggleAttribute("hidden");
+                $(".edit-button")[key].toggleAttribute("hidden");
+
+                $($(".ant-select")[key * 6 + 2]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 3]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 4]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 5]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 6]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 7]).toggleClass(
+                  "ant-select-disabled"
+                );
+              }}
+              disabled={!disabledDataSource.includes(record)}
             >
               Editar ✏️
+            </Button>
+            <Button
+              shape="round"
+              className="save-button"
+              style={{ display: "flex", flexDirection: "row" }}
+              hidden
+              onClick={() => {
+                $(".save-button")[key].toggleAttribute("hidden");
+                $(".edit-button")[key].toggleAttribute("hidden");
+
+                $($(".ant-select")[key * 6 + 2]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 3]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 4]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 5]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 6]).toggleClass(
+                  "ant-select-disabled"
+                );
+                $($(".ant-select")[key * 6 + 7]).toggleClass(
+                  "ant-select-disabled"
+                );
+
+                console.log(record);
+              }}
+            >
+              Guardar 💾
             </Button>
           </div>
         </div>
@@ -356,11 +420,13 @@ export function AtribuirJogos({ user }) {
    * ATRIBUICAO DOS ESTADOS (STATES)
    */
 
-  const [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
+  let [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
-  const [clubesDisponiveis, setClubesDisponiveis] = useState([]);
+  let [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
-  const [dataSource, setDataSource] = useState([]);
+  let [dataSource, setDataSource] = useState([]);
+
+  let [disabledDataSource, setDisabledDataSource] = useState([]);
 
   let [temRecibo, setTemRecibo] = useState(false);
   let [naoTemRecibo, setNaoTemRecibo] = useState(false);
@@ -369,6 +435,10 @@ export function AtribuirJogos({ user }) {
   let [clubesRelacionados, setClubesRelacionados] = useState([]);
 
   let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
+
+  useEffect(() => {
+    console.log("disabledDataSource", disabledDataSource);
+  }, [disabledDataSource]);
 
   function handleSubmissionConfirmation() {
     Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
@@ -393,9 +463,13 @@ export function AtribuirJogos({ user }) {
         );
       }
     });
+    let disabledData = dataSource;
+
+    setDisabledDataSource(disabledData);
   }
 
   function handleChangeSelecaoArbitro(value, key) {
+    console.log("value", value);
     console.log("key", key);
 
     let indexAux = key.key.split("_");
@@ -421,7 +495,7 @@ export function AtribuirJogos({ user }) {
       " " +
       currJogo.Pavilhao;
 
-    //console.log("currNomeArbitro", currNomeArbitro);
+    console.log("prevNomeArbitro", prevNomeArbitro);
 
     if (value.length === 1) {
       // remover a nomeacao anterior
@@ -438,6 +512,79 @@ export function AtribuirJogos({ user }) {
             console.error(err);
           } else if (result) {
             // console.log(result);
+          }
+        }
+      );
+    } else if (prevNomeArbitro.length > 0) {
+      Meteor.call(
+        "removeNomeacaoCalendarioArbitro",
+        prevNomeArbitro,
+        titulo,
+        currJogo,
+        key.key,
+        (err, result) => {
+          console.log("RESULTADO", result);
+
+          if (err) {
+            console.error(err);
+          } else if (result) {
+            // console.log(result);
+          }
+        }
+      );
+
+      currNomeArbitro = value;
+      // console.log("nomeArbitro: ", currNomeArbitro);
+
+      Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
+        let condicoesArbitro = JSON.parse(JSON.stringify(result));
+        let temCarro = condicoesArbitro.temCarro;
+        let emiteRecibo = condicoesArbitro.emiteRecibo;
+        let relacoes = condicoesArbitro.relacaoComEquipas;
+
+        // let mensagemRestricoes =
+        //   currNomeArbitro +
+        //   (!temCarro ? " não tem carro." : " tem carro.") +
+        //   "\n" +
+        //   currNomeArbitro +
+        //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+        //   "\n";
+
+        let mensagemRelacoesClubes = currNomeArbitro;
+        if (relacoes.length > 0) {
+          for (let index = 0; index < relacoes.length; index++) {
+            let cargo = relacoes[index].cargo;
+            let clube = relacoes[index].clube;
+            mensagemRelacoesClubes =
+              mensagemRelacoesClubes +
+              " é " +
+              cargo +
+              " do clube " +
+              clube +
+              ".";
+          }
+        }
+
+        // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
+
+        if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+          message.warn(mensagemTotal);
+      });
+
+      //console.log("key", key);
+
+      Meteor.call(
+        "addNomeacaoCalendarioArbitro",
+        currNomeArbitro,
+        currJogo,
+        key.key,
+        (err, result) => {
+          //console.log("RESULTADO", result);
+
+          if (err) {
+            console.error(err);
+          } else if (result) {
+            //console.log(result);
           }
         }
       );
@@ -538,9 +685,9 @@ export function AtribuirJogos({ user }) {
           dataFromDB.push(obj);
         }
         console.log("dataFromDB: ", dataFromDB);
-        return setDataSource(dataFromDB);
+        setDataSource(dataFromDB);
       } else {
-        return setDataSource([]);
+        setDataSource([]);
       }
     });
   }
@@ -889,30 +1036,6 @@ export function AtribuirJogos({ user }) {
                   <span> Não emite recibo verde </span>
                 </div>
               </div>
-
-              {/* <label className="labels" style={{ marginLeft: "5px" }}>
-                  Arbitros disponíveis:
-                </label>
-                <ul
-                  style={{
-                    marginTop: "0px",
-                    height: "auto",
-                  }}
-                >
-                  {arbitrosDisponiveis.map((arb) => {
-                    if (arbitrosDisponiveis.length === 0) {
-                      return "Clique num jogo para obter os Árbitros Disponíveis";
-                    } else if (arbitrosDisponiveis.length === 1) {
-                      return "SEM RESULTADOS";
-                    } else if (arb != " ")
-                      return (
-                        <li style={{ textAlign: "initial" }}>
-                          {" "}
-                          {arb + "; \n"}{" "}
-                        </li>
-                      );
-                  })}
-                </ul> */}
             </div>
             <div>
               <div className="demo-app-main" style={{ overflow: "auto" }}>
@@ -952,10 +1075,10 @@ export function AtribuirJogos({ user }) {
                                 clubesRelacionados,
                                 nivelDeArbitro,
                                 (err, result) => {
-                                  console.log(
-                                    "result arbitros disponiveis: ",
-                                    result
-                                  );
+                                  // console.log(
+                                  //   "result arbitros disponiveis: ",
+                                  //   result
+                                  // );
                                   if (err) {
                                     console.log("ERRRRROOOOO", { err });
                                   } else if (result.length != 0) {
@@ -964,6 +1087,7 @@ export function AtribuirJogos({ user }) {
                                 }
                               );
                               currJogo = record;
+                              prevNomeArbitro = event.target.title;
                             }
                           },
                         };
@@ -971,9 +1095,13 @@ export function AtribuirJogos({ user }) {
                     />
                   </div>
                   <Button
+                    id="enviaNomeacoes"
                     onClick={() => {
                       handleSubmissionConfirmation();
-                      message.success("Nomeações enviadas para os Árbitros.");
+                      setTimeout(() => {
+                        message.success("Nomeações enviadas para os Árbitros.");
+                      }, 200);
+                      document.getElementById("enviaNomeacoes").disabled = true;
                     }}
                     type="primary"
                     style={{
