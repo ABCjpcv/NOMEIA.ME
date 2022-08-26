@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Button, message, Modal, Popconfirm, Space, Table, Tag } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+} from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 
@@ -122,7 +132,6 @@ export function ConsultaPrivada({ user }) {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "JL",
@@ -130,7 +139,6 @@ export function ConsultaPrivada({ user }) {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "JL",
@@ -138,7 +146,6 @@ export function ConsultaPrivada({ user }) {
       key: "JL3",
       sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "JL",
@@ -146,7 +153,6 @@ export function ConsultaPrivada({ user }) {
       key: "JL4",
       sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "Ação",
@@ -155,7 +161,120 @@ export function ConsultaPrivada({ user }) {
       width: "14%",
       fixed: "right",
       render: (_, record) =>
-        dataSource.length > 0 ? (
+        dataSource.length > 0 && handleJogoPassou(record) ? (
+          <div>
+            Resultado:
+            <br></br>
+            <InputNumber
+              defaultValue={0}
+              max={3}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            X{" "}
+            <InputNumber
+              defaultValue={0}
+              max={3}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+              // status={"warning"}
+            />
+            <br></br>
+            Sets:
+            <br></br>
+            {"("}{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            -{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            {")"}
+            <br></br>
+            {"("}{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            -{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            {")"}
+            <br></br>
+            {"("}{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            -{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            {")"}
+            <br></br>
+            {"("}{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            -{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            {")"}
+            <br></br>
+            {"("}{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            -{" "}
+            <InputNumber
+              defaultValue={0}
+              max={25}
+              min={0}
+              size={"small"}
+              style={{ height: "22px", width: "44px" }}
+            />{" "}
+            {")"}
+          </div>
+        ) : dataSource.length > 0 ? (
           <div>
             <Popconfirm
               title="Confirmar jogo?"
@@ -225,6 +344,30 @@ export function ConsultaPrivada({ user }) {
     return result;
   });
 
+  function handleJogoPassou(record) {
+    let horario = addHours(
+      1,
+      new Date(
+        record.Dia.split("/")[2] +
+          "-" +
+          record.Dia.split("/")[1] +
+          "-" +
+          record.Dia.split("/")[0] +
+          " " +
+          record.Hora.split(":")[0] +
+          ":" +
+          record.Hora.split(":")[1] +
+          ":00"
+      )
+    );
+
+    console.log("horario", horario);
+    console.log("hoje", new Date());
+    console.log("horario < new Date()", horario < new Date());
+
+    return horario < new Date();
+  }
+
   const handleConfirmation = (record) => {
     const newData = dataSource.filter((item) => {
       if (item.key == record.key) {
@@ -271,7 +414,7 @@ export function ConsultaPrivada({ user }) {
       if (data[index].tags[0].includes("pendente")) {
         return message.info("Ainda tem jogos por confirmar, " + user.username);
       } else {
-        jogos.push(parseInt(data[index]));
+        jogos.push(data[index]);
         confirmacoes.push(data[index].tags[0]);
       }
     }
@@ -305,7 +448,7 @@ export function ConsultaPrivada({ user }) {
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result.nomeacoesPrivadas.length > 0) {
-        console.log("RESULTADO AQUI", result);
+        //console.log("RESULTADO AQUI", result);
 
         let dataFromDB = [];
 
@@ -344,43 +487,6 @@ export function ConsultaPrivada({ user }) {
       }
     });
   }
-
-  // // NAO ESTOU A CONSEGUIR FAZER RELOAD DA DATA QUANDO ENTRA NA PÁGINA
-  // function reloadData() {
-  //   console.log("Entrei no metodo!! ");
-
-  //   // Carrega pela primeira vez
-  //   if (dataSource.length === 0) {
-  //     loadData();
-  //   }
-  //   // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
-  //   else {
-  //     Meteor.call(
-  //       "nomeacoesForamUpdated",
-  //       Meteor.user(),
-  //       dataSource,
-  //       (err, result) => {
-  //         console.log("nomeacoes atualizadas???", result);
-  //         if (result === true) {
-  //           loadData();
-  //         } else {
-  //           //console.log("DATA SOURCE MUAH MUAH MUAH", dataSource);
-  //           let confirmado = true;
-  //           for (
-  //             let index = 0;
-  //             index < dataSource.length && confirmado;
-  //             index++
-  //           ) {
-  //             if (dataSource[index].tags[0] != "confirmado") {
-  //               confirmado = false;
-  //             }
-  //           }
-  //           setSubmetido(confirmado);
-  //         }
-  //       }
-  //     );
-  //   }
-  // }
 
   const info = () => {
     Modal.info({
@@ -484,4 +590,9 @@ export function ConsultaPrivada({ user }) {
       </div>
     </>
   );
+}
+
+function addHours(numOfHours, date = new Date()) {
+  date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
+  return date;
 }
