@@ -416,45 +416,40 @@ export function UserSettings({ user }) {
               } else if (password2UserSettings === "") {
                 message.error("Não colocou a confirmação da password nova.  ");
               } else {
-                try {
-                  Meteor.loginWithPassword(
-                    Meteor.user().emails[0].address,
-                    currentPasswordUserSettings
-                  );
-                  if (passwordUserSettings != password2UserSettings) {
-                    message.error("As passwords novas não correspondem.");
-                  } else {
-                    console.log("CHEGASTE???????????????????????????");
-                    Meteor.call(
-                      "alteraPassword",
-                      user,
-                      password2UserSettings,
-                      (err, result) => {
-                        if (result === 1) {
-                          message.success(
-                            "Password alterada com sucesso! Faça a autenticação novamente."
-                          );
-                          Meteor.logout();
-                        }
-                      }
-                    );
+                let erro = false;
+                Meteor.loginWithPassword(
+                  Meteor.user().emails[0].address,
+                  currentPasswordUserSettings,
+                  function (err) {
+                    if (err) {
+                      erro = true;
+                      message.error("Password atual errada");
+                      return;
+                    }
                   }
-                } catch (error) {
-                  message.error("Password atual errada");
-                }
-                // Meteor.loginWithPassword(
-                //   Meteor.user(),
-                //   currentPasswordUserSettings,
-                //   (err, result) => {
-                //     console.log("result", result);
-                //     if (result === undefined) {
-                //       Fazer aparecer mensagem de texto de credenciais erradas.
+                );
 
-                //     } else {
-
-                //     }
-                //   }
-                // );
+                setTimeout(() => {
+                  if (!erro) {
+                    if (passwordUserSettings != password2UserSettings) {
+                      message.error("As passwords novas não correspondem.");
+                    } else {
+                      Meteor.call(
+                        "alteraPassword",
+                        user,
+                        password2UserSettings,
+                        (err, result) => {
+                          if (result === 1) {
+                            message.success(
+                              "Password alterada com sucesso! Faça a autenticação novamente."
+                            );
+                            Meteor.logout();
+                          }
+                        }
+                      );
+                    }
+                  }
+                }, 320);
               }
             }}
           >
