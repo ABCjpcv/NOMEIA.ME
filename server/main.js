@@ -4,12 +4,6 @@ import { Papa } from "meteor/harrison:papa-parse";
 import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
 import _ from "lodash.uniqueid";
-import { Roles } from "meteor/alanning:roles";
-
-try {
-  Roles.createRole("arbitro");
-  Roles.createRole("admin");
-} catch (error) {}
 
 let usersCollection = Meteor.users; //Stores the Meteor Users Collection in a single Variable.
 let jogos = new Mongo.Collection("jogos");
@@ -121,18 +115,8 @@ clubes.schema = new SimpleSchema({
 });
 
 Meteor.startup(() => {
-  //if (Meteor.user() != null) Meteor.logout();
-
   process.env.MAIL_URL =
     "smtp://nomeiame_ponav@hotmail.com:ElChefinho8@smtp.live.com:587/";
-
-  let transporter = nodemailer.createTransport({
-    service: "Hotmail", // no need to set host or port etc.
-    auth: {
-      user: "nomeiame_ponav@hotmail.com",
-      pass: "ElChefinho8",
-    },
-  });
 
   clubes.rawCollection().drop();
 
@@ -231,8 +215,6 @@ Meteor.startup(() => {
       isAdmin: false,
     });
     console.log("inserted: " + user.username);
-
-    Roles.addUsersToRoles(user._id, ["arbitro"]);
   });
 
   console.log(
@@ -271,9 +253,6 @@ Meteor.startup(() => {
       });
       arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
     }
-
-    let u = Meteor.users.findOne({ username: a.nome });
-    Roles.addUsersToRoles(u._id, [isAdmin ? "admin" : "arbitro"]);
   }
 
   var ca = conselhoDeArbitragem.find();
@@ -493,14 +472,6 @@ Meteor.methods({
     // else return "Passwords do not match";
   },
 
-  checkPassword: function (user, password) {
-    console.log("user", user);
-    console.log("password", password);
-    var result = Accounts.changePassword(password, password);
-    console.log("result", result);
-    return result == null;
-  },
-
   registerUser: function registerUser(
     user_name,
     user_email,
@@ -516,12 +487,12 @@ Meteor.methods({
         user_password.length == 0,
       password_repeat.length == 0)
     ) {
-      console.log("Must insert fields");
+      // console.log("Must insert fields");
       throw new Meteor.Error("Fields Missing");
     }
     if (user_password != password_repeat)
       throw new Meteor.Error("Passwords do not match.");
-    console.log("Passwords match.");
+    // console.log("Passwords match.");
 
     //Accounts.verifyEmail(user_email, (error) => {
     //  if (!error) {
@@ -543,11 +514,6 @@ Meteor.methods({
       nivel: parseInt(nivelArbitro),
       isAdmin: isAdmin,
     };
-
-    let u = Meteor.users.findOne({ emails: user_email });
-
-    Roles.addUsersToRoles(u._id, [isAdmin ? "admin" : "arbitro"]);
-
     arbitros.insert(a);
 
     console.log("inserted: " + user_name);
@@ -616,17 +582,24 @@ Meteor.methods({
     return -1;
   },
 
+  // REVER
   addConfirmacaoNomeacao: function addConfirmacaoNomeacao(
     email,
     games,
     confirmacoes
   ) {
+    // console.log("email", email);
+    // console.log("games", games);
+    // console.log("confirmacoes", confirmacoes);
+
     var arb = arbitros.findOne({ email: email });
+
     let nomeacoesAuxiliares = [];
 
     for (let index = 0; index < games.length; index++) {
       let jogo = jogos.findOne({ key: games[index].key });
-      console.log("jogo", jogo);
+
+      // console.log("jogo", jogo);
 
       let confirmacaoAtual = confirmacoes[index];
 
@@ -635,7 +608,7 @@ Meteor.methods({
       console.log("Arbitro " + arb.nome + " ficou com o jogo " + jogo.id);
     }
 
-    console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
+    // console.log("nomeacoesAuxiliares: ", nomeacoesAuxiliares);
 
     nomeacoes.update(
       { arbitro: arb },
@@ -646,7 +619,7 @@ Meteor.methods({
   carregaNomeacoes: function carregaNomeacoes(email) {
     var arb = arbitros.findOne({ email: email });
     var result = nomeacoes.findOne({ arbitro: arb });
-    console.log("resultado desta merda:", result);
+    // console.log("resultado desta merda:", result);
     return result;
   },
 
@@ -654,7 +627,7 @@ Meteor.methods({
     let arb = arbitros.findOne({ email: user.emails[0].address });
     let nomeacoesArbitro = nomeacoes.findOne({ arbitro: arb });
 
-    console.log("data", data);
+    // console.log("data", data);
     // console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
 
     // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
@@ -1073,7 +1046,7 @@ Meteor.methods({
       currJogo.Equipas +
       " " +
       currJogo.Pavilhao;
-    console.log("titulo: ", titulo);
+    // console.log("titulo: ", titulo);
 
     // FORMAT -> 2022-07-17T11:00:00+01:00
 
@@ -1124,12 +1097,12 @@ Meteor.methods({
     // console.log("novoEvento", novoEvento);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
-    console.log("a", a);
+    // console.log("a", a);
     let i = indisponibilidades.findOne({ arbitro: a });
-    console.log("i", i);
+    // console.log("i", i);
 
     let events = i.disponibilidades;
-    console.log("events", events);
+    // console.log("events", events);
 
     if (events === "") {
       events = [];
@@ -1195,19 +1168,19 @@ Meteor.methods({
     currJogo,
     funcao
   ) {
-    console.log("nomeArbitro", nomeArbitro);
-    console.log("tituloJogo", tituloJogo);
-    console.log("currJogo", currJogo);
-    console.log("funcao", funcao);
+    // console.log("nomeArbitro", nomeArbitro);
+    // console.log("tituloJogo", tituloJogo);
+    // console.log("currJogo", currJogo);
+    // console.log("funcao", funcao);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
-    console.log("a", a);
+    // console.log("a", a);
     const i = indisponibilidades.findOne({ arbitro: a });
-    console.log("i", i);
+    // console.log("i", i);
 
     let events = i.disponibilidades;
 
-    console.log("events", events);
+    // console.log("events", events);
 
     if (events === "") {
       events = [];
@@ -1237,7 +1210,7 @@ Meteor.methods({
       }
     }
 
-    console.log("novosEvents", novosEvents);
+    // console.log("novosEvents", novosEvents);
 
     indisponibilidades.update(
       { arbitro: a },
