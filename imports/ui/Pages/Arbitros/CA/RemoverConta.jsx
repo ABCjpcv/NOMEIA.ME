@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
-import { Button, Input, InputNumber, message, Select, Space } from "antd";
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Select,
+  Space,
+} from "antd";
 import { Header } from "../../Geral/Header";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
@@ -10,7 +18,7 @@ const _ = require("lodash");
 export function RemoverConta() {
   let [todosArbitros, setTodosArbitros] = useState([]);
 
-  let [stateSelected, setStateSelected] = useState("");
+  let [stateSelected, setStateSelected] = useState("Escolha o nome do árbitro");
 
   const stateChange = (e) => {
     // console.log("e", e);
@@ -30,6 +38,57 @@ export function RemoverConta() {
       $("#licencaArbitro").val(arbitro.licenca);
       $("#isCA").attr("checked", arbitro.isAdmin);
     }, 200);
+  };
+
+  const handleConfirmation = () => {
+    if (stateSelected.length != 0) {
+      let pass = document.getElementById("pass").value;
+      let pass2 = document.getElementById("pass2").value;
+
+      if (pass.length == 0 || pass2.length == 0) {
+        message.warn("Não inseriu a sua passwords!");
+        return;
+      }
+      if (pass != pass2) {
+        message.warn("Passwords não correspondem entre si!");
+        return;
+      }
+      let erro = false;
+      Meteor.loginWithPassword(
+        Meteor.user().emails[0].address,
+        pass,
+        function (err) {
+          if (err) {
+            erro = true;
+            message.error("Password atual errada");
+            return;
+          }
+        }
+      );
+
+      setTimeout(() => {
+        if (!erro) {
+          Meteor.call(
+            "deleteUser",
+            stateSelected,
+
+            (err, result) => {
+              if (result === 1) {
+                message.success(
+                  "Árbitro " + stateSelected + ", removido com sucesso!"
+                );
+              }
+            }
+          );
+          setStateSelected("Escolha o nome do árbitro");
+          $("#pass").removeAttr("value");
+          $("#pass2").removeAttr("value");
+        }
+      }, 300);
+    } else {
+      message.warn("Não indicou o Árbitro a remover!");
+      return;
+    }
   };
 
   useEffect(() => {}, [stateSelected]);
@@ -81,7 +140,11 @@ export function RemoverConta() {
                 mode="single"
                 style={{ borderRadius: "10px" }}
                 onChange={stateChange}
-                value={stateSelected != "" ? stateSelected : ""}
+                value={
+                  stateSelected != "Escolha o nome do árbitro"
+                    ? stateSelected
+                    : "Escolha o nome do árbitro"
+                }
                 onSelect={stateChange}
               >
                 {todosArbitros.map((arb) => {
@@ -204,37 +267,14 @@ export function RemoverConta() {
               </Space>
             </div>
             <p></p>
-            <Button
-              size="small"
-              shape="round"
-              type="primary"
-              onClick={() => {
-                let pass = document.getElementById("pass").value;
-                let pass2 = document.getElementById("pass2").value;
-
-                if (pass != pass2) {
-                  message.warn("Passwords não correspondem entre si!");
-                  return;
-                }
-
-                Meteor.call(
-                  "deleteUser",
-                  stateSelected,
-
-                  (err, result) => {
-                    if (result === 1) {
-                      message.success(
-                        "Árbitro " +
-                          document.getElementById("nome").value +
-                          ", removido com sucesso!"
-                      );
-                    }
-                  }
-                );
-              }}
+            <Popconfirm
+              title={"Tem a certeza que quer eliminar " + stateSelected + " ?"}
+              onConfirm={() => handleConfirmation()}
             >
-              Eliminar árbitro
-            </Button>
+              <Button size="small" shape="round" type="primary">
+                Eliminar árbitro
+              </Button>
+            </Popconfirm>
           </div>
         </div>
       </div>

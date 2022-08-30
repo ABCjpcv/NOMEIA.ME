@@ -578,6 +578,7 @@ Meteor.methods({
     restricoes.remove({ arbitro: a });
     definicoesPessoais.remove({ arbitro: a });
     nomeacoes.remove({ arbitro: a });
+    if (a.isAdmin) conselhoDeArbitragem.remove({ arbitrosCA: a });
     arbitros.remove({ nome: username });
     return 1;
   },
