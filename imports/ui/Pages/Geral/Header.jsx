@@ -13,6 +13,7 @@ export const Header = ({
   atribuirArbitros,
   carregarJogos,
   criarContaNova,
+  removerConta,
   indisponibilidadePrivadas,
   restricoesPrivadas,
   definicoes,
@@ -172,6 +173,18 @@ export const Header = ({
                 hidden={criarContaNova}
               >
                 Criar Conta Nova:
+              </p>
+
+              <p
+                id="removerConta"
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
+                hidden={removerConta}
+              >
+                Remover Árbitro:
               </p>
 
               {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
@@ -640,6 +653,17 @@ const MenuPrivadoCA = () => {
             )}
           >
             Criar Conta Nova
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Remover_Arbitro"),
+              navigate("/Conta/ProfileCA/Remover_Arbitro")
+            )}
+          >
+            Remover Conta Árbitro
           </p>
         </a>
 

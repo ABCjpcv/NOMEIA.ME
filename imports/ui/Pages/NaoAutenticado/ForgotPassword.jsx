@@ -31,6 +31,7 @@ export function ForgotPassword() {
         atribuirArbitros={true}
         carregarJogos={true}
         criarContaNova={true}
+        removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}

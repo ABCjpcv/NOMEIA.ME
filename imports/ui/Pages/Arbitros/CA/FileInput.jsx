@@ -63,6 +63,7 @@ export function FileInput() {
         atribuirArbitros={true}
         carregarJogos={false}
         criarContaNova={true}
+        removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}

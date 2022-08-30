@@ -3,13 +3,29 @@ import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Header } from "../Geral/Header";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Accounts } from "meteor/accounts-base";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);
-  let isCA = Meteor.call("isAdmin", user, true, (err, result) => {
-    if (result) return result;
+  let [isCA, setIsCA] = useState(null);
+
+  let myPromise = new Promise((resolve, reject) => {
+    Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+      if (result == 1 || result == 0) {
+        resolve(result);
+      } else {
+        reject();
+      }
+
+      return result === 1;
+    });
   });
+
+  setTimeout(() => {
+    myPromise.then(function (result) {
+      const admin = result === 1;
+      setIsCA(admin);
+    });
+  }, 200);
 
   /**
    * ATRIBUICAO DOS ESTADOS
@@ -32,8 +48,6 @@ export function UserSettings({ user }) {
   let [passAtual, setPassAtual] = useState("");
   let [passNova, setPassNova] = useState("");
   let [passNovaConfirma, setPassNovaConfirma] = useState("");
-
-  function submeterAlteracaoPassword(user, newPassword) {}
 
   function getNivel(user) {
     Meteor.call("getNivel", user, (err, result) => {
@@ -176,6 +190,7 @@ export function UserSettings({ user }) {
         atribuirArbitros={true}
         carregarJogos={true}
         criarContaNova={true}
+        removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={false}

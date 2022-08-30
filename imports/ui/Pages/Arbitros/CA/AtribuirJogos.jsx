@@ -739,6 +739,7 @@ export function AtribuirJogos({ user }) {
         atribuirArbitros={false}
         carregarJogos={true}
         criarContaNova={true}
+        removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}

@@ -627,6 +627,7 @@ export function Restricoes({ user }) {
         atribuirArbitros={true}
         carregarJogos={true}
         criarContaNova={true}
+        removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={false}
         definicoes={true}

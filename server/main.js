@@ -472,7 +472,7 @@ Meteor.methods({
     // else return "Passwords do not match";
   },
 
-  registerUser: function registerUser(
+  registerArbitro: function registerArbitro(
     user_name,
     user_email,
     nivelArbitro,
@@ -527,7 +527,73 @@ Meteor.methods({
       });
     }
 
+    indisponibilidades.insert({
+      arbitro: a,
+      disponibilidades: "",
+    });
+
+    restricoes.insert({
+      arbitro: a,
+      relacoes: [],
+    });
+
+    definicoesPessoais.insert({
+      arbitro: a,
+      temCarro: false,
+      emiteRecibo: false,
+      naoTemCarro: false,
+      naoTemRecibo: false,
+    });
+
+    let nomeacoesAuxiliares = [];
+
+    // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
+    games.forEach((jogo) => {
+      if (
+        jogo.arbitro_1 === a.nome ||
+        jogo.arbitro_2 === a.nome ||
+        jogo.juiz_linha_1 === a.nome ||
+        jogo.juiz_linha_2 === a.nome ||
+        jogo.juiz_linha_3 === a.nome ||
+        jogo.juiz_linha_4 === a.nome
+      ) {
+        nomeacoesAuxiliares.push({
+          jogo: jogo,
+          confirmacaoAtual: ["pendente"],
+        });
+      }
+    });
+    nomeacoes.insert({
+      arbitro: a,
+      nomeacoesPrivadas: nomeacoesAuxiliares,
+    });
+
     return true;
+  },
+
+  deleteUser: function deleteUser(username) {
+    Meteor.users.remove({ username: username });
+    let a = arbitros.findOne({ nome: username });
+    indisponibilidades.remove({ arbitro: a });
+    restricoes.remove({ arbitro: a });
+    definicoesPessoais.remove({ arbitro: a });
+    nomeacoes.remove({ arbitro: a });
+    arbitros.remove({ nome: username });
+    return 1;
+  },
+
+  getArbitros: function getArbitros() {
+    let todosArbitros = [];
+    let arb = arbitros.find();
+    arb.forEach((element) => {
+      todosArbitros.push(element.nome);
+    });
+    return todosArbitros.sort();
+  },
+
+  getArbitroFromUsername: function getArbitroFromUsername(username) {
+    let user = arbitros.findOne({ nome: username });
+    return user;
   },
 
   esqueceuPassword: function esqueceuPassword(email) {

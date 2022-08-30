@@ -183,6 +183,7 @@ export class Indisponibilidades extends React.Component {
             atribuirArbitros={true}
             carregarJogos={true}
             criarContaNova={true}
+            removerConta={true}
             indisponibilidadePrivadas={false}
             restricoesPrivadas={true}
             definicoes={true}

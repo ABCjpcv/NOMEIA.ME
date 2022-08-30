@@ -1,10 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
-import { Button, Input, InputNumber, message, Space } from "antd";
+import { Button, Input, InputNumber, message, Select, Space } from "antd";
 import { Header } from "../../Geral/Header";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-export function ContaNova() {
+// Requiring the lodash library
+const _ = require("lodash");
+
+export function RemoverConta() {
+  let [todosArbitros, setTodosArbitros] = useState([]);
+
+  let [stateSelected, setStateSelected] = useState("");
+
+  const stateChange = (e) => {
+    // console.log("e", e);
+    setStateSelected(e);
+
+    let arbitro = "";
+
+    Meteor.call("getArbitroFromUsername", e, (err, result) => {
+      if (result) {
+        arbitro = result;
+      }
+    });
+
+    setTimeout(() => {
+      $("#email").val(arbitro.email);
+      $("#nivelArbitro").val(arbitro.nivel);
+      $("#licencaArbitro").val(arbitro.licenca);
+      $("#isCA").attr("checked", arbitro.isAdmin);
+    }, 200);
+  };
+
+  useEffect(() => {}, [stateSelected]);
+
+  if (todosArbitros.length == 0) loadArbitros();
+
   return (
     <>
       <Header
@@ -15,8 +46,8 @@ export function ContaNova() {
         menuPrivadoCA={false}
         atribuirArbitros={true}
         carregarJogos={true}
-        criarContaNova={false}
-        removerConta={true}
+        criarContaNova={true}
+        removerConta={false}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
@@ -43,14 +74,28 @@ export function ContaNova() {
           >
             <div className="input" style={{ justifyContent: "flex-start" }}>
               <label className="labels">Nome</label>
-              <Input
-                type={"text"}
-                placeholder="Primeiro Último"
-                id="nome"
+              <Select
+                id="nome_arbitro"
+                showSearch
+                type="select"
+                mode="single"
                 style={{ borderRadius: "10px" }}
-                status={undefined}
-                onChange={handleChangeNomeContaNova}
-              ></Input>
+                onChange={stateChange}
+                value={stateSelected != "" ? stateSelected : ""}
+                onSelect={stateChange}
+              >
+                {todosArbitros.map((arb) => {
+                  return (
+                    <Select.Option
+                      className="select-ref-choice"
+                      value={arb + ""}
+                      key={"arbitro_" + _.uniqueId()}
+                    >
+                      {arb + ""}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </div>
             <p></p>
             <div className="input" style={{ justifyContent: "flex-start" }}>
@@ -60,8 +105,7 @@ export function ContaNova() {
                 placeholder="exemplo@email.com"
                 id="email"
                 style={{ borderRadius: "10px" }}
-                status={undefined}
-                onChange={handleChangeEmailContaNova}
+                disabled
               ></Input>
             </div>
             <p></p>
@@ -82,21 +126,22 @@ export function ContaNova() {
                   type="number"
                   placeholder="1"
                   id="nivelArbitro"
-                  onChange={handleChangeNivelArbitroContaNova}
                   min="1"
                   max="4"
                   style={{ width: "49%", borderRadius: "10px" }}
+                  disabled
                 ></InputNumber>
                 <InputNumber
                   type="number"
                   placeholder="xxxx"
                   id="licencaArbitro"
-                  onChange={handleChangeLicencaContaNova}
                   style={{
                     width: "50%",
                     marginLeft: "1%",
                     borderRadius: "10px",
                   }}
+                  disabled
+                  // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
                 ></InputNumber>
               </div>
             </div>
@@ -119,12 +164,13 @@ export function ContaNova() {
                     width: "30px",
                     borderRadius: "10px",
                   }}
+                  disabled
                 ></Input>
               </label>
             </div>
             <p></p>
             <div className="input">
-              <label className="labels">Password</label>
+              <label className="labels">Insira a sua password:</label>
               <Space
                 direction="vertical"
                 style={{ width: "100%", shapeMargin: "round" }}
@@ -136,8 +182,6 @@ export function ContaNova() {
                   iconRender={(visible) =>
                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                   }
-                  status={undefined}
-                  onChange={handleChangePasswordAuth}
                 />
               </Space>
             </div>
@@ -156,7 +200,6 @@ export function ContaNova() {
                     visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                   }
                   status={undefined}
-                  onChange={handleChangePassword2Auth}
                 />
               </Space>
             </div>
@@ -166,40 +209,6 @@ export function ContaNova() {
               shape="round"
               type="primary"
               onClick={() => {
-                let nome = document.getElementById("nome").value;
-                if (nome.split(" ").length < 2) {
-                  message.warn("Nome incorreto");
-                  return;
-                }
-                let email = document.getElementById("email").value;
-
-                if (
-                  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
-                ) {
-                } else {
-                  message.warn("Email inválido!");
-                  return;
-                }
-
-                let nivelArbitro =
-                  document.getElementById("nivelArbitro").value;
-
-                if (
-                  nivelArbitro !== "1" &&
-                  nivelArbitro !== "2" &&
-                  nivelArbitro !== "3" &&
-                  nivelArbitro !== "4"
-                ) {
-                  message.warn("Nivel de arbitro inválido!");
-                  return;
-                }
-                let licencaArbitro =
-                  document.getElementById("licencaArbitro").value;
-
-                if (licencaArbitro.length === 0) {
-                  message.warn("Licença de arbitro inválida!");
-                  return;
-                }
                 let pass = document.getElementById("pass").value;
                 let pass2 = document.getElementById("pass2").value;
 
@@ -207,53 +216,38 @@ export function ContaNova() {
                   message.warn("Passwords não correspondem entre si!");
                   return;
                 }
-                let isCA = document.getElementById("isCA").checked;
 
                 Meteor.call(
-                  "registerArbitro",
-                  nome,
-                  email,
-                  nivelArbitro,
-                  licencaArbitro,
-                  pass,
-                  pass2,
-                  isCA,
+                  "deleteUser",
+                  stateSelected,
+
                   (err, result) => {
-                    if (result) {
+                    if (result === 1) {
                       message.success(
                         "Árbitro " +
                           document.getElementById("nome").value +
-                          ", criado com sucesso!"
+                          ", removido com sucesso!"
                       );
-                      document.getElementById("nome").value = "";
-                      document.getElementById("email").value = "";
-                      document.getElementById("nivelArbitro").value = "";
-                      document.getElementById("licencaArbitro").value = "";
-                      document.getElementById("pass").value = "";
-                      document.getElementById("pass2").value = "";
-                      document.getElementById("isCA").checked = false;
                     }
                   }
                 );
               }}
             >
-              Registar árbitro novo
+              Eliminar árbitro
             </Button>
           </div>
         </div>
       </div>
     </>
   );
+
+  function loadArbitros() {
+    Meteor.call("getArbitros", (err, result) => {
+      if (err) {
+        console.log(err);
+      } else if (result) {
+        setTodosArbitros(result);
+      }
+    });
+  }
 }
-
-const handleChangeNomeContaNova = () => {};
-
-const handleChangeEmailContaNova = () => {};
-
-const handleChangeNivelArbitroContaNova = () => {};
-
-const handleChangeLicencaContaNova = () => {};
-
-const handleChangePasswordAuth = () => {};
-
-const handleChangePassword2Auth = () => {};

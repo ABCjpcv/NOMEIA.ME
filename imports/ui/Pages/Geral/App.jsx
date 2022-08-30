@@ -24,6 +24,7 @@ import { FileInput } from "../Arbitros/CA/FileInput";
 import { AtribuirJogos } from "../Arbitros/CA/AtribuirJogos";
 
 import { useTracker } from "meteor/react-meteor-data";
+import { RemoverConta } from "../Arbitros/CA/RemoverConta";
 
 const { Link } = require("react-router-dom");
 
@@ -98,6 +99,10 @@ export const App = () => {
               element={<ContaNova user={user} />}
             ></Route>
             <Route
+              path="ProfileCA/Remover_Arbitro"
+              element={<RemoverConta user={user} />}
+            ></Route>
+            <Route
               path="ProfileCA/Carregar_Novos_Jogos"
               element={<FileInput user={user} />}
             ></Route>
@@ -124,151 +129,3 @@ export const ProtectedRoute = ({
   // If not, return element that will navigate to login page
   return auth ? <Outlet /> : <Navigate to="/Autenticar" />;
 };
-
-{
-  /* EH NECESSARIO SER ARBITRO
-          <Route
-            path="Profile"
-            element={
-              <ProtectedRoutes
-                user={Meteor.user()}
-                allowed={!isAdmin(Meteor.user())}
-                redirectPath="/"
-              >
-                <Profile user={Meteor.user()} />
-              </ProtectedRoutes>
-            }
-          >
-            <Route
-              path="/Profile/Indisponibilidades"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={!isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <Indisponibilidades user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/Profile/Relacoes"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={!isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <Restricoes user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/Profile/Definicoes"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={!isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <UserSettings user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            {/* EH NECESSARIO SER CONSELHO DE ARBITRAGEM 
-
-            <Route
-              path="/ProfileCA"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <ProfileCA user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Carregar_Novos_Jogos"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <FileInput user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Atribuir_Arbitros"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <AtribuirJogos user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Criar_Arbitro"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <ContaNova user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Indisponibilidades"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <Indisponibilidades user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Relacoes"
-              element={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <Restricoes user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route>
-
-            <Route
-              path="/ProfileCA/Definicoes"
-              elelement={
-                <ProtectedRoutes
-                  user={Meteor.user()}
-                  allowed={isAdmin(Meteor.user())}
-                  redirectPath="/"
-                >
-                  <UserSettings user={Meteor.user()} />
-                </ProtectedRoutes>
-              }
-            ></Route> 
-          </Route>*/
-}
