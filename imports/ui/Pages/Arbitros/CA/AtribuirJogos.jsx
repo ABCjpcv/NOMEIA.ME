@@ -924,7 +924,7 @@ export function AtribuirJogos({ user }) {
                     mode="multiple"
                     style={{
                       marginLeft: "5px",
-                      width: "380px",
+                      width: "550px",
                       maxHeight: "min-content",
                     }}
                     allowClear
@@ -942,6 +942,7 @@ export function AtribuirJogos({ user }) {
                     }
                     onChange={handleChangeClubes}
                     optionLabelProp="label"
+                    maxTagCount={2}
                   >
                     {clubesDisponiveis.map((clube) => {
                       return (
