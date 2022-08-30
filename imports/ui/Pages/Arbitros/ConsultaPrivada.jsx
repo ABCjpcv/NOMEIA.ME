@@ -574,44 +574,49 @@ export function ConsultaPrivada({ user }) {
       //console.log("resultado de carregaNomeacoes da BD:", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
-      } else if (result.nomeacoesPrivadas.length > 0) {
-        //console.log("RESULTADO AQUI", result);
+      } else if (result)
+        if (result.nomeacoesPrivadas.length > 0) {
+          //console.log("RESULTADO AQUI", result);
 
-        let dataFromDB = [];
+          let dataFromDB = [];
 
-        let confirmado = true;
-        for (let index = 0; index < result.nomeacoesPrivadas.length; index++) {
-          let jogoLido = result.nomeacoesPrivadas[index].jogo;
+          let confirmado = true;
+          for (
+            let index = 0;
+            index < result.nomeacoesPrivadas.length;
+            index++
+          ) {
+            let jogoLido = result.nomeacoesPrivadas[index].jogo;
 
-          let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
+            let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
 
-          tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
+            tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
-          let obj = {
-            Jogo: jogoLido.id,
-            Dia: jogoLido.dia,
-            Hora: jogoLido.hora,
-            Prova: jogoLido.prova,
-            Serie: jogoLido.serie,
-            Equipas: jogoLido.equipas,
-            Pavilhao: jogoLido.pavilhao,
-            Arbitro1: jogoLido.arbitro_1,
-            Arbitro2: jogoLido.arbitro_2,
-            JL1: jogoLido.juiz_linha_1,
-            JL2: jogoLido.juiz_linha_2,
-            JL3: jogoLido.juiz_linha_3,
-            JL4: jogoLido.juiz_linha_4,
-            key: jogoLido.key,
-            tags: [tags],
-          };
+            let obj = {
+              Jogo: jogoLido.id,
+              Dia: jogoLido.dia,
+              Hora: jogoLido.hora,
+              Prova: jogoLido.prova,
+              Serie: jogoLido.serie,
+              Equipas: jogoLido.equipas,
+              Pavilhao: jogoLido.pavilhao,
+              Arbitro1: jogoLido.arbitro_1,
+              Arbitro2: jogoLido.arbitro_2,
+              JL1: jogoLido.juiz_linha_1,
+              JL2: jogoLido.juiz_linha_2,
+              JL3: jogoLido.juiz_linha_3,
+              JL4: jogoLido.juiz_linha_4,
+              key: jogoLido.key,
+              tags: [tags],
+            };
 
-          dataFromDB.push(obj);
+            dataFromDB.push(obj);
+          }
+          setSubmetido(confirmado);
+          setDataSource(dataFromDB);
+        } else {
+          setDataSource([]);
         }
-        setSubmetido(confirmado);
-        setDataSource(dataFromDB);
-      } else {
-        setDataSource([]);
-      }
     });
   }
 

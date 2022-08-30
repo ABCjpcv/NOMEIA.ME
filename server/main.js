@@ -241,11 +241,10 @@ Meteor.startup(() => {
   for (let index = 0; index < currCA.length; index++) {
     var mail = currCA[index];
     var a = arbitros.findOne({ email: mail });
-    console.log("arbitro: " + a.nome);
 
     let isAdmin = true;
 
-    if (a.nome != "" || a.nome != undefined) {
+    if (a != undefined) {
       a.isAdmin = isAdmin;
       conselhoDeArbitragem.insert({
         arbitrosCA: a,
@@ -547,6 +546,8 @@ Meteor.methods({
 
     let nomeacoesAuxiliares = [];
 
+    let games = jogos.find();
+
     // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
     games.forEach((jogo) => {
       if (
@@ -686,7 +687,7 @@ Meteor.methods({
   carregaNomeacoes: function carregaNomeacoes(email) {
     var arb = arbitros.findOne({ email: email });
     var result = nomeacoes.findOne({ arbitro: arb });
-    // console.log("resultado desta merda:", result);
+    console.log("resultado desta merda:", result);
     return result;
   },
 

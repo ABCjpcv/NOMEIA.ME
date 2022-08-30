@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { Button, Input, InputNumber, message, Popconfirm, Space } from "antd";
 import { Header } from "../../Geral/Header";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 export function ContaNova() {
+  let [nome, setNome] = useState();
+  useEffect(() => {
+    console.log("nome", nome);
+  }, [nome]);
   return (
     <>
       <Header
@@ -49,6 +53,9 @@ export function ContaNova() {
                 id="nome"
                 style={{ borderRadius: "10px" }}
                 status={undefined}
+                onChange={(e) => {
+                  setNome(e.target.value);
+                }}
               ></Input>
             </div>
             <p></p>
@@ -156,11 +163,7 @@ export function ContaNova() {
             </div>
             <p></p>
             <Popconfirm
-              title={
-                "Tem a certeza que quer adicionar " +
-                document.getElementById("nome") +
-                " ?"
-              }
+              title={"Tem a certeza que quer adicionar " + nome + " ?"}
               onConfirm={() => handleConfirmation()}
             >
               <Button size="small" shape="round" type="primary">
