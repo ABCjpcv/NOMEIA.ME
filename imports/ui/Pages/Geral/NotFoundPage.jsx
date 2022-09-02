@@ -21,6 +21,7 @@ export function NotFoundPage() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       <div
         style={{

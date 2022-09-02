@@ -22,6 +22,7 @@ import { ProtectedRoutes } from "./ProtectedRoutes";
 import { UserSettings } from "../Arbitros/UserSettings";
 import { FileInput } from "../Arbitros/CA/FileInput";
 import { AtribuirJogos } from "../Arbitros/CA/AtribuirJogos";
+import { JogosPassados } from "../Arbitros/JogosPassados";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { RemoverConta } from "../Arbitros/CA/RemoverConta";
@@ -79,6 +80,11 @@ export const App = () => {
             <Route
               path="Profile/Definicoes"
               element={<UserSettings user={user} />}
+            ></Route>
+
+            <Route
+              path="Profile/Jogos_Passados"
+              element={<JogosPassados user={user} />}
             ></Route>
 
             <Route path="ProfileCA" element={<ProfileCA user={user} />}></Route>

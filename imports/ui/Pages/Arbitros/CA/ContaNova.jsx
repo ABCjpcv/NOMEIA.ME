@@ -24,6 +24,7 @@ export function ContaNova() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       <div>
         {/* <h1 className="blue">Informações do Árbitro: </h1> */}

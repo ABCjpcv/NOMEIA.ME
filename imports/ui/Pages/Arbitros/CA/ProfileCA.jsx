@@ -22,6 +22,7 @@ export function ProfileCA({ user }) {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       <div id="profileCA">
         <div id="consultaPrivadaCA">

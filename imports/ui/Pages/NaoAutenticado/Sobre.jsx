@@ -17,6 +17,7 @@ export const Sobre = () => {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}

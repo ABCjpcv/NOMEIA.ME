@@ -187,6 +187,7 @@ export class Indisponibilidades extends React.Component {
             indisponibilidadePrivadas={false}
             restricoesPrivadas={true}
             definicoes={true}
+            historico={true}
           />
           {/* <ul>
             <li>

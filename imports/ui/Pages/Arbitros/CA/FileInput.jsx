@@ -67,6 +67,7 @@ export function FileInput() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       <div
         style={{

@@ -17,6 +17,7 @@ export const Header = ({
   indisponibilidadePrivadas,
   restricoesPrivadas,
   definicoes,
+  historico,
   clubesAfiliadosAVL,
   consultaNomeacoesSemanais,
   forgotPasswordHeader,
@@ -233,6 +234,18 @@ export const Header = ({
               >
                 🙍‍♂️ Perfil
               </p>
+
+              <p
+                id="historico"
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
+                hidden={historico}
+              >
+                Histórico de Jogos
+              </p>
             </div>
             <div
               id="divDireito"
@@ -336,6 +349,7 @@ export const Header = ({
                   height: "100%",
                   justifyContent: "space-evenly",
                 }}
+                onClick={() => navigate("/")}
               >
                 <img
                   id="logo"
@@ -444,7 +458,6 @@ export const Header = ({
                   id="avlLogo"
                   src="avllogo.png"
                   style={{ heigth: "100%", cursor: "pointer" }}
-                  onClick={() => navigate("/")}
                 />
               </a>
             </div>
@@ -538,6 +551,20 @@ const MenuPrivado = () => {
             Indicar Restrições
           </p>
         </a>
+
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => {
+              if (location.pathname != "Conta/Profile/Jogos_Passados") {
+                (location.pathname = "/Conta/Profile/Jogos_Passados"),
+                  navigate("/Conta/Profile/Jogos_Passados");
+              }
+            }}
+          >
+            Histórico de Jogos
+          </p>
+        </a>
       </Drawer>
     </>
   );
@@ -614,6 +641,17 @@ const MenuPrivadoCA = () => {
             )}
           >
             Indicar Restrições
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => (
+              (location.pathname = "/Conta/ProfileCA/Relacoes"),
+              navigate("/Conta/ProfileCA/Relacoes")
+            )}
+          >
+            Histórico de Jogos
           </p>
         </a>
         <p>

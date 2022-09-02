@@ -649,6 +649,11 @@ export function AtribuirJogos({ user }) {
     console.log("index", index);
     console.log("indexAux", indexAux);
 
+    console.log(
+      "$(.ant-select-selector).eq(index)",
+      $(".ant-select-selector").eq(index)
+    );
+
     $(".ant-select-selector").eq(index).css("background-color", "F7CB73");
 
     loadData();
@@ -743,6 +748,7 @@ export function AtribuirJogos({ user }) {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       {reloadData()}
 

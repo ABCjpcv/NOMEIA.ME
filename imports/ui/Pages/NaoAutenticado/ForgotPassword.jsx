@@ -35,6 +35,7 @@ export function ForgotPassword() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={false}

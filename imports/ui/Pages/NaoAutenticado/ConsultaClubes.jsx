@@ -36,6 +36,7 @@ export function ConsultaClubes() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
         clubesAfiliadosAVL={false}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}

@@ -194,6 +194,7 @@ export function UserSettings({ user }) {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={false}
+        historico={true}
       />
       <div
         style={{

@@ -8,7 +8,7 @@ import { Header } from "../Geral/Header";
 
 const { Search } = Input;
 
-const fetchUsers = async () => {
+let fetchUsers = async () => {
   const { data } = await axios.get("Livro.json");
   return { data };
 };
@@ -16,10 +16,42 @@ const fetchUsers = async () => {
 export function ConsultaTotal() {
   const [searchVal, setSearchVal] = useState(null);
 
+  const [dataSource, setDataSource] = useState([]);
+
   const { filteredData, loading } = useTableSearch({
     searchVal,
-    retrieve: fetchUsers,
+    retrieve: { dataSource },
   });
+
+  function loadData() {
+    user = Meteor.user();
+    let email = user.emails[0].address;
+
+    //console.log("email", email);
+    Meteor.call("carregaNomeacoesTotal", (err, result) => {
+      //console.log("resultado de carregaNomeacoes da BD:", result);
+      if (err) {
+        console.log("ERRRRROOOOO", err);
+      } else if (result) {
+        if (result.length > 0) {
+          let resultadosFromDB = [];
+
+          result.forEach((element) => {
+            let nomeacoes = element.nomeacoesPrivadas;
+            nomeacoes.forEach((element) => {
+              resultadosFromDB.push(element);
+            });
+          });
+
+          setDataSource(resultadosFromDB);
+        }
+      } else {
+        setDataSource([]);
+      }
+    });
+  }
+
+  if (dataSource.length == 0) loadData();
 
   return (
     <>
@@ -36,6 +68,7 @@ export function ConsultaTotal() {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={false}
         forgotPasswordHeader={true}

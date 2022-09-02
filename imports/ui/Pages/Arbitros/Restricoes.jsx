@@ -631,6 +631,7 @@ export function Restricoes({ user }) {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={false}
         definicoes={true}
+        historico={true}
       />
 
       {data.length === 0 ? loadData() : null}

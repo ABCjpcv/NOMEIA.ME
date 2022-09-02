@@ -20,6 +20,7 @@ export function Profile({ user }) {
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}
         definicoes={true}
+        historico={true}
       />
       <div id="profile">
         <div id="consultaPrivada">
