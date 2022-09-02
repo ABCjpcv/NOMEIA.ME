@@ -14,6 +14,8 @@ let nomeacoes = new Mongo.Collection("nomeacoes");
 let indisponibilidades = new Mongo.Collection("indisponibilidades");
 let restricoes = new Mongo.Collection("restricoes");
 let definicoesPessoais = new Mongo.Collection("definicoesPessoais");
+let jogosPassados = new Mongo.Collection("jogosPassados");
+let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 
 /************************************************************************************************
  *********************************** SCHEMA TABLE ***********************************************
@@ -51,12 +53,33 @@ indisponibilidades.schema = new SimpleSchema({
 
 //Schema nomeacoes:
 
+const parciais = new SimpleSchema({
+  pontos: { type: Number, optional: false },
+});
+
+const resultado = new SimpleSchema({
+  total: [parciais],
+  set1: [parciais],
+  set2: [parciais],
+  set3: [parciais],
+  set4: [parciais],
+  set5: [parciais],
+});
+
 const nomSchema = new SimpleSchema({
   jogo: { type: jogos, optional: false },
+  resultado: [resultado],
   confirmacao: { type: String, optional: false },
 });
 
 nomeacoes.schema = new SimpleSchema({
+  arbitro: { type: arbitros, optional: false },
+  nomeacoesPrivadas: [nomSchema],
+});
+
+//Schema jogosPassados
+
+jogosPassados.schema = new SimpleSchema({
   arbitro: { type: arbitros, optional: false },
   nomeacoesPrivadas: [nomSchema],
 });
@@ -442,6 +465,29 @@ Meteor.startup(() => {
 
     console.log("inserted nomeacoes a: " + arbitro.nome);
   });
+
+  console.log(
+    "******************************************************************************"
+  );
+  console.log(
+    "****************   DATABASE FOR JOGOS PASSADOS  **********************"
+  );
+  console.log(
+    "*****************************************************************************"
+  );
+
+  //if (jogosPassados.findOne() === undefined) {
+  jogosPassados.rawCollection().drop();
+
+  arb.forEach((arbitro) => {
+    jogosPassados.insert({
+      arbitro: arbitro,
+      nomeacoesPrivadas: [],
+    });
+
+    console.log("inserted jogosPassados a: " + arbitro.nome);
+  });
+  // }
 });
 
 Meteor.methods({
@@ -650,16 +696,69 @@ Meteor.methods({
     return -1;
   },
 
-  // REVER
+  // BONECO
+  addResultadoJogo: function addResultadoJogo(email, game, resultado) {
+    let confirmacao = "realizado";
+    let resultadoJogo = resultado.split("-");
+    let total = [resultadoJogo[0], resultadoJogo[1]];
+    let set1 = [resultadoJogo[2], resultadoJogo[3]];
+    let set2 = [resultadoJogo[4], resultadoJogo[5]];
+    let set3 = [resultadoJogo[6], resultadoJogo[7]];
+    let set4 = [resultadoJogo[8], resultadoJogo[9]];
+    let set5 = [resultadoJogo[10], resultadoJogo[11]];
+
+    var arb = arbitros.findOne({ email: email });
+    let jogo = jogos.findOne({ key: game.key });
+
+    var resultado = {
+      total: total,
+      set1: set1,
+      set2: set2,
+      set3: set3,
+      set4: set4,
+      set5: set5,
+    };
+
+    var nomeacao = {
+      jogo: jogo,
+      resultado: resultado,
+      confirmacaoAtual: confirmacao,
+    };
+
+    var alteraNomeacoes = nomeacoes.findOne({ arbitro: arb });
+
+    var atuais = alteraNomeacoes.nomeacoesPrivadas;
+    var novas = [];
+
+    console.log("JOGO", jogo);
+
+    console.log("game.key", game.key);
+
+    atuais.forEach((element) => {
+      if (element.jogo.key !== game.key) novas.push(element);
+    });
+
+    console.log("NOVAS", novas);
+
+    nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novas } });
+
+    var jogosAntigos = jogosPassados.findOne({ arbitro: arb });
+
+    var gamesJogosAntigos = jogosAntigos.nomeacoesPrivadas;
+
+    gamesJogosAntigos.push(nomeacao);
+
+    jogosPassados.update(
+      { arbitro: arb },
+      { $set: { nomeacoesPrivadas: gamesJogosAntigos } }
+    );
+  },
+
   addConfirmacaoNomeacao: function addConfirmacaoNomeacao(
     email,
     games,
     confirmacoes
   ) {
-    // console.log("email", email);
-    // console.log("games", games);
-    // console.log("confirmacoes", confirmacoes);
-
     var arb = arbitros.findOne({ email: email });
 
     let nomeacoesAuxiliares = [];
@@ -684,10 +783,19 @@ Meteor.methods({
     );
   },
 
+  carregaNomeacoesTotal: function carregaNomeacoesTotal() {
+    let n = [];
+    var refs = arbitros.find();
+    refs.forEach((element) => {
+      n.push(nomeacoes.findOne({ arbitro: element }));
+    });
+    console.log("n", n);
+    return n;
+  },
+
   carregaNomeacoes: function carregaNomeacoes(email) {
     var arb = arbitros.findOne({ email: email });
     var result = nomeacoes.findOne({ arbitro: arb });
-    console.log("resultado desta merda:", result);
     return result;
   },
 
@@ -719,6 +827,12 @@ Meteor.methods({
     }
 
     return false;
+  },
+
+  carregaResultadosJogosPassados: function (email) {
+    var arb = arbitros.findOne({ email: email });
+    var result = jogosPassados.findOne({ arbitro: arb });
+    return result;
   },
 
   /*****************************************************************
