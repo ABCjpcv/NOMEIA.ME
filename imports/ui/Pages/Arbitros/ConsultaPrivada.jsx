@@ -158,134 +158,248 @@ export function ConsultaPrivada({ user }) {
       title: "Ação",
       dataIndex: "acao",
       key: "acao",
-      width: "14%",
+      width: "15%",
       fixed: "right",
       render: (_, record) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
-          <div>
-            Resultado:
-            <br></br>
-            <InputNumber
-              className="resultado"
-              defaultValue={0}
-              max={3}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            X{" "}
-            <InputNumber
-              className="resultado"
-              defaultValue={0}
-              max={3}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-              // status={"warning"}
-            />
-            <br></br>
-            Sets:
-            <br></br>
-            {"( "}
-            <InputNumber
-              className="set1"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            -{" "}
-            <InputNumber
-              className="set1"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />
-            {" )"}
-            <br></br>
-            {"( "}
-            <InputNumber
-              className="set2"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            -{" "}
-            <InputNumber
-              className="set2"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />
-            {" )"}
-            <br></br>
-            {"( "}
-            <InputNumber
-              className="set3"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            -{" "}
-            <InputNumber
-              className="set3"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />
-            {" )"}
-            <br></br>
-            {"( "}
-            <InputNumber
-              className="set4"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            -{" "}
-            <InputNumber
-              className="set4"
-              defaultValue={0}
-              max={45}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />
-            {" )"}
-            <br></br>
-            {"( "}
-            <InputNumber
-              className="set5"
-              defaultValue={0}
-              max={30}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />{" "}
-            -{" "}
-            <InputNumber
-              className="set5"
-              defaultValue={0}
-              max={15}
-              min={0}
-              size={"small"}
-              style={{ height: "22px", width: "44px" }}
-            />
-            {" )"}
-          </div>
+          <>
+            <div className="divResultado">
+              Resultado:
+              <br></br>
+              <InputNumber
+                className="resultado"
+                defaultValue={0}
+                max={3}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              X{" "}
+              <InputNumber
+                className="resultado"
+                defaultValue={0}
+                max={3}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+                // status={"warning"}
+              />
+              <br></br>
+              Sets:
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set1"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set1"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set2"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set2"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set3"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set3"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set4"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set4"
+                defaultValue={0}
+                max={45}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set5"
+                defaultValue={0}
+                max={30}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set5"
+                defaultValue={0}
+                max={15}
+                min={0}
+                size={"small"}
+                style={{ height: "22px", width: "44px" }}
+              />
+              {" )"}
+            </div>
+
+            <div className="divResultadoDisabled" hidden>
+              Resultado:
+              <br></br>
+              <InputNumber
+                className="resultado"
+                size={"small"}
+                value={resultadoAtual.split("-")[0]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              X{" "}
+              <InputNumber
+                className="resultado"
+                size={"small"}
+                value={resultadoAtual.split("-")[1]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              <br></br>
+              Sets:
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set1"
+                size={"small"}
+                value={resultadoAtual.split("-")[2]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set1"
+                size={"small"}
+                value={resultadoAtual.split("-")[3]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set2"
+                size={"small"}
+                value={resultadoAtual.split("-")[4]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set2"
+                size={"small"}
+                value={resultadoAtual.split("-")[5]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set3"
+                size={"small"}
+                value={resultadoAtual.split("-")[6]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set3"
+                size={"small"}
+                value={resultadoAtual.split("-")[7]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set4"
+                size={"small"}
+                value={resultadoAtual.split("-")[8]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set4"
+                size={"small"}
+                value={resultadoAtual.split("-")[9]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              {" )"}
+              <br></br>
+              {"( "}
+              <InputNumber
+                className="set5"
+                size={"small"}
+                value={resultadoAtual.split("-")[10]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />{" "}
+              -{" "}
+              <InputNumber
+                className="set5"
+                size={"small"}
+                value={resultadoAtual.split("-")[11]}
+                style={{ height: "22px", width: "44px" }}
+                disabled
+              />
+              {" )"}
+            </div>
+          </>
         ) : dataSource.length > 0 ? (
           <div>
             <Popconfirm
@@ -327,7 +441,18 @@ export function ConsultaPrivada({ user }) {
                 type="primary"
                 shape="round"
                 style={{ width: "100%" }}
-                className="popconfirm_result"
+                className="button_result"
+                hidden={false}
+              >
+                Confirmo ✔️
+              </Button>
+              <Button
+                type="primary"
+                shape="round"
+                style={{ width: "100%" }}
+                className="button_result_hidden"
+                disabled
+                hidden={true}
               >
                 Confirmo ✔️
               </Button>
@@ -366,6 +491,8 @@ export function ConsultaPrivada({ user }) {
    */
 
   const [dataSource, setDataSource] = useState([]);
+
+  const [resultadoAtual, setResultadoAtual] = useState("");
 
   let [submetido, setSubmetido] = useState(Boolean);
 
@@ -467,9 +594,12 @@ export function ConsultaPrivada({ user }) {
 
     let inputs = document.querySelectorAll("input");
 
-    let resultado =
-      inputs[index * 12].value + "-" + inputs[index * 12 + 1].value;
+    console.log(inputs);
 
+    let resultado =
+      inputs[index * 24].value + "-" + inputs[index * 24 + 1].value;
+
+    console.log("RESULTADO", resultado);
     if (
       !(
         resultado === "0-3" ||
@@ -485,7 +615,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set1 =
-      inputs[index * 12 + 2].value + "-" + inputs[index * 12 + 3].value;
+      inputs[index * 24 + 2].value + "-" + inputs[index * 24 + 3].value;
 
     if (!validaSet(set1, false)) {
       message.warn("Pontuação do 1º Set inválida!");
@@ -493,7 +623,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set2 =
-      inputs[index * 12 + 4].value + "-" + inputs[index * 12 + 5].value;
+      inputs[index * 24 + 4].value + "-" + inputs[index * 24 + 5].value;
 
     console.log("set2", set2);
 
@@ -503,7 +633,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set3 =
-      inputs[index * 12 + 6].value + "-" + inputs[index * 12 + 7].value;
+      inputs[index * 24 + 6].value + "-" + inputs[index * 24 + 7].value;
 
     if (!validaSet(set3, false)) {
       message.warn("Pontuação do 3º Set inválida!");
@@ -519,14 +649,14 @@ export function ConsultaPrivada({ user }) {
       resultado === "3-2" ||
       resultado === "2-3"
     ) {
-      set4 = inputs[index * 12 + 8].value + "-" + inputs[index * 12 + 9].value;
+      set4 = inputs[index * 24 + 8].value + "-" + inputs[index * 24 + 9].value;
       if (!validaSet(set4, false)) {
         message.warn("Pontuação do 4º Set inválida!");
         return;
       }
       if (resultado === "2-3" || resultado === "3-2") {
         set5 =
-          inputs[index * 12 + 10].value + "-" + inputs[index * 12 + 11].value;
+          inputs[index * 24 + 10].value + "-" + inputs[index * 24 + 11].value;
         if (!validaSet(set5, true)) {
           message.warn("Pontuação do 5º Set inválida!");
           return;
@@ -546,23 +676,43 @@ export function ConsultaPrivada({ user }) {
 
     console.log("index", index);
 
-    $($("input")[index * 12]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 1]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 2]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 3]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 4]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 5]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 6]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 7]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 8]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 9]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 10]).toggleClass("ant-input-number-disabled");
-    $($("input")[index * 12 + 11]).toggleClass("ant-input-number-disabled");
+    let res =
+      resultado +
+      "-" +
+      set1 +
+      "-" +
+      set2 +
+      "-" +
+      set3 +
+      "-" +
+      set4 +
+      "-" +
+      set5;
+    setResultadoAtual(res);
 
-    console.log();
-    $($(".popconfirm_result")[index]).toggleClass(
-      "ant-popover-disabled-compatible-wrapper"
-    );
+    $($(".divResultadoDisabled")[index]).attr("hidden", false);
+    $($(".divResultado")[index]).attr("hidden", true);
+
+    $(
+      $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result_hidden")[
+        index
+      ]
+    ).attr("hidden", false);
+    $(
+      $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result")[index]
+    ).attr("hidden", true);
+
+    // GUARDAR NO LADO DO SERVER O RESULTADO
+
+    let email = user.emails[0].address;
+
+    Meteor.call("addResultadoJogo", email, jogo, res, (err, result) => {
+      if (err) {
+        console.log("ERRRRROOOOO", { err });
+      } else {
+        message.success("Resultado submetido " + user.username);
+      }
+    });
   }
 
   function loadData() {
@@ -681,9 +831,9 @@ export function ConsultaPrivada({ user }) {
                     }}
                     size="middle"
                     pagination={false}
-                    // scroll={{
-                    //   y: 800,
-                    // }}
+                    scroll={{
+                      y: "66vh",
+                    }}
                   />
                   <Button
                     onClick={handleAllConfirmation}
