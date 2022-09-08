@@ -10,7 +10,6 @@ import {
   Space,
 } from "antd";
 import { Header } from "../../Geral/Header";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 // Requiring the lodash library
 const _ = require("lodash");
@@ -19,6 +18,8 @@ export function RemoverConta() {
   let [todosArbitros, setTodosArbitros] = useState([]);
 
   let [stateSelected, setStateSelected] = useState("Escolha o nome do árbitro");
+
+  let [arbitroSelecionado, setArbitroSelecionado] = useState();
 
   const stateChange = (e) => {
     // console.log("e", e);
@@ -29,6 +30,7 @@ export function RemoverConta() {
     Meteor.call("getArbitroFromUsername", e, (err, result) => {
       if (result) {
         arbitro = result;
+        setArbitroSelecionado(result);
       }
     });
 
@@ -40,53 +42,69 @@ export function RemoverConta() {
     }, 200);
   };
 
-  const handleConfirmation = () => {
-    if (stateSelected.length != 0) {
-      let pass = document.getElementById("pass").value;
-      let pass2 = document.getElementById("pass2").value;
+  const editReferee = () => {
+    console.log("stateSelected", stateSelected);
+    if (stateSelected !== "Escolha o nome do árbitro") {
+      document.getElementById("input_disabled").hidden = true;
+      document.getElementById("input_enabled").hidden = false;
+      console.log("arbitroSelecionado", arbitroSelecionado);
+      $("#email").val(arbitroSelecionado.email);
+      $("#nivelArbitro").val(arbitroSelecionado.nivel);
+      $("#licencaArbitro").val(arbitroSelecionado.licenca);
+      $("#isCA").attr("checked", arbitroSelecionado.isAdmin);
+    } else {
+      message.warn("Não indicou o Árbitro a editar!");
+      return;
+    }
+  };
 
-      if (pass.length == 0 || pass2.length == 0) {
-        message.warn("Não inseriu a sua passwords!");
-        return;
-      }
-      if (pass != pass2) {
-        message.warn("Passwords não correspondem entre si!");
-        return;
-      }
-      let erro = false;
-      Meteor.loginWithPassword(
-        Meteor.user().emails[0].address,
-        pass,
-        function (err) {
-          if (err) {
-            erro = true;
-            message.error("Password atual errada");
-            return;
-          }
-        }
-      );
+  const handleConfirmation = () => {
+    if (stateSelected !== "Escolha o nome do árbitro") {
+      // let pass = document.getElementById("pass").value;
+      // let pass2 = document.getElementById("pass2").value;
+
+      // if (pass.length == 0 || pass2.length == 0) {
+      //   message.warn("Não inseriu a sua passwords!");
+      //   return;
+      // }
+      // if (pass != pass2) {
+      //   message.warn("Passwords não correspondem entre si!");
+      //   return;
+      // }
+      // let erro = false;
+      // Meteor.loginWithPassword(
+      //   Meteor.user().emails[0].address,
+      //   pass,
+      //   function (err) {
+      //     if (err) {
+      //       erro = true;
+      //       message.error("Password atual errada");
+      //       return;
+      //     }
+      //   }
+      // );
 
       setTimeout(() => {
-        if (!erro) {
-          Meteor.call(
-            "deleteUser",
-            stateSelected,
+        // if (!erro) {
+        Meteor.call(
+          "deleteUser",
+          stateSelected,
 
-            (err, result) => {
-              if (result === 1) {
-                message.success(
-                  "Árbitro " + stateSelected + ", removido com sucesso!"
-                );
-              }
+          (err, result) => {
+            if (result === 1) {
+              message.success(
+                "Árbitro " + stateSelected + ", removido com sucesso!"
+              );
             }
-          );
-          setStateSelected("Escolha o nome do árbitro");
-          $("#pass").removeAttr("value");
-          $("#pass2").removeAttr("value");
-        }
+          }
+        );
+        setStateSelected("Escolha o nome do árbitro");
+        // $("#pass").removeAttr("value");
+        // $("#pass2").removeAttr("value");
+        // }
       }, 300);
     } else {
-      message.warn("Não indicou o Árbitro a remover!");
+      message.warn("Não indicou o Árbitro a eliminar!");
       return;
     }
   };
@@ -162,77 +180,149 @@ export function RemoverConta() {
               </Select>
             </div>
             <p></p>
-            <div className="input" style={{ justifyContent: "flex-start" }}>
-              <label className="labels">Email</label>
-              <Input
-                type={"email"}
-                placeholder="exemplo@email.com"
-                id="email"
-                style={{ borderRadius: "10px" }}
-                disabled
-              ></Input>
-            </div>
-            <p></p>
-            <div className="input">
-              <div style={{ display: "flex" }}>
-                <label className="labels">Nivel</label>
-                <label className="labels" style={{ marginLeft: "44%" }}>
-                  Licença
-                </label>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <InputNumber
-                  type="number"
-                  placeholder="1"
-                  id="nivelArbitro"
-                  min="1"
-                  max="4"
-                  style={{ width: "49%", borderRadius: "10px" }}
-                  disabled
-                ></InputNumber>
-                <InputNumber
-                  type="number"
-                  placeholder="xxxx"
-                  id="licencaArbitro"
-                  style={{
-                    width: "50%",
-                    marginLeft: "1%",
-                    borderRadius: "10px",
-                  }}
-                  disabled
-                  // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
-                ></InputNumber>
-              </div>
-            </div>
-            <p></p>
-            <div className="input" style={{ display: "flex" }}>
-              <label
-                className="labels"
-                style={{
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                Conselho de Arbitragem da AVL:
+            <div id="input_disabled">
+              <div className="input" style={{ justifyContent: "flex-start" }}>
+                <label className="labels">Email</label>
                 <Input
-                  type={"checkbox"}
-                  id="isCA"
-                  style={{
-                    display: "flex",
-                    height: "30px",
-                    width: "30px",
-                    borderRadius: "10px",
-                  }}
+                  type={"email"}
+                  placeholder="exemplo@email.com"
+                  id="email"
+                  style={{ borderRadius: "10px" }}
                   disabled
                 ></Input>
-              </label>
+              </div>
+              <p></p>
+              <div className="input">
+                <div style={{ display: "flex" }}>
+                  <label className="labels">Nivel</label>
+                  <label className="labels" style={{ marginLeft: "44%" }}>
+                    Licença
+                  </label>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <InputNumber
+                    type="number"
+                    placeholder="1"
+                    id="nivelArbitro"
+                    min="1"
+                    max="4"
+                    disabled
+                    style={{ width: "49%", borderRadius: "10px" }}
+                  ></InputNumber>
+                  <InputNumber
+                    type="number"
+                    placeholder="xxxx"
+                    id="licencaArbitro"
+                    disabled
+                    style={{
+                      width: "50%",
+                      marginLeft: "1%",
+                      borderRadius: "10px",
+                    }}
+
+                    // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
+                  ></InputNumber>
+                </div>
+              </div>
+              <p></p>
+              <div className="input" style={{ display: "flex" }}>
+                <label
+                  className="labels"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  Conselho de Arbitragem da AVL:
+                  <Input
+                    type={"checkbox"}
+                    id="isCA"
+                    style={{
+                      display: "flex",
+                      height: "30px",
+                      width: "30px",
+                      borderRadius: "10px",
+                    }}
+                    disabled
+                  ></Input>
+                </label>
+              </div>
             </div>
-            <p></p>
+            <div id="input_enabled" hidden>
+              <div className="input" style={{ justifyContent: "flex-start" }}>
+                <label className="labels">Email</label>
+                <Input
+                  type={"email"}
+                  placeholder="exemplo@email.com"
+                  id="email"
+                  style={{ borderRadius: "10px" }}
+                ></Input>
+              </div>
+              <p></p>
+              <div className="input">
+                <div style={{ display: "flex" }}>
+                  <label className="labels">Nivel</label>
+                  <label className="labels" style={{ marginLeft: "44%" }}>
+                    Licença
+                  </label>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
+                >
+                  <InputNumber
+                    type="number"
+                    placeholder="1"
+                    id="nivelArbitro"
+                    min="1"
+                    max="4"
+                    style={{ width: "49%", borderRadius: "10px" }}
+                  ></InputNumber>
+                  <InputNumber
+                    type="number"
+                    placeholder="xxxx"
+                    id="licencaArbitro"
+                    style={{
+                      width: "50%",
+                      marginLeft: "1%",
+                      borderRadius: "10px",
+                    }}
+
+                    // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
+                  ></InputNumber>
+                </div>
+              </div>
+              <p></p>
+              <div className="input" style={{ display: "flex" }}>
+                <label
+                  className="labels"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  Conselho de Arbitragem da AVL:
+                  <Input
+                    type={"checkbox"}
+                    id="isCA"
+                    style={{
+                      display: "flex",
+                      height: "30px",
+                      width: "30px",
+                      borderRadius: "10px",
+                    }}
+                  ></Input>
+                </label>
+              </div>
+            </div>
+            {/* <p></p>
             <div className="input">
               <label className="labels">Insira a sua password:</label>
               <Space
@@ -266,16 +356,29 @@ export function RemoverConta() {
                   status={undefined}
                 />
               </Space>
-            </div>
+            </div> */}
             <p></p>
-            <Popconfirm
-              title={"Tem a certeza que quer eliminar " + stateSelected + " ?"}
-              onConfirm={() => handleConfirmation()}
-            >
-              <Button size="small" shape="round" type="primary">
-                Eliminar árbitro
+            <div style={{ display: "flex", justifyContent: "space-around" }}>
+              <Button size="small" shape="round" onClick={() => editReferee()}>
+                {" "}
+                ✏️ Editar Árbitro
               </Button>
-            </Popconfirm>
+              <Popconfirm
+                title={
+                  "Tem a certeza que quer eliminar " + stateSelected + " ?"
+                }
+                onConfirm={() => handleConfirmation()}
+              >
+                <Button
+                  size="small"
+                  shape="round"
+                  type="primary"
+                  style={{ backgroundColor: "red", borderColor: "red" }}
+                >
+                  🗑️ Eliminar árbitro
+                </Button>
+              </Popconfirm>
+            </div>
           </div>
         </div>
       </div>

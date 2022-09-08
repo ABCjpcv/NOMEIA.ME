@@ -53,7 +53,7 @@ export function ConsultaPrivada({ user }) {
       key: "Jogo",
       sorter: (a, b) => a.Jogo - b.Jogo,
       sortDirections: ["descend", "ascend"],
-      width: "1%",
+      width: "5%",
       fixed: "left",
     },
     {
@@ -62,7 +62,7 @@ export function ConsultaPrivada({ user }) {
       key: "Dia",
       sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
       sortDirections: ["descend", "ascend"],
-      width: "4%",
+      width: "8%",
       fixed: "left",
     },
     {
@@ -71,25 +71,25 @@ export function ConsultaPrivada({ user }) {
       key: "Hora",
       sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
       sortDirections: ["descend", "ascend"],
-      width: "4%",
+      width: "5%",
       fixed: "left",
     },
     {
       title: "Prova",
       dataIndex: "Prova",
       key: "Prova",
+      width: "6%",
       sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
       sortDirections: ["descend", "ascend"],
-      width: "5%",
       fixed: "left",
     },
     {
       title: "Serie",
       dataIndex: "Serie",
       key: "Serie",
+      width: "7%",
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
       sortDirections: ["descend", "ascend"],
-      width: "4%",
       fixed: "left",
     },
     {
@@ -98,7 +98,6 @@ export function ConsultaPrivada({ user }) {
       key: "Equipas",
       sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
-      width: "5%",
       fixed: "left",
     },
     {
@@ -107,7 +106,6 @@ export function ConsultaPrivada({ user }) {
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
-      width: "4%",
       fixed: "left",
     },
     {
@@ -116,7 +114,6 @@ export function ConsultaPrivada({ user }) {
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "Arbitro2",
@@ -124,41 +121,19 @@ export function ConsultaPrivada({ user }) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
-      width: "10%",
     },
     {
       title: "JL",
-      dataIndex: "JL1",
-      key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "JL",
-      dataIndex: "JL2",
-      key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "JL",
-      dataIndex: "JL3",
-      key: "JL3",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "JL",
-      dataIndex: "JL4",
-      key: "JL4",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
+      dataIndex: "JL",
+      key: "JL",
+      sorter: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Ação",
       dataIndex: "acao",
       key: "acao",
-      width: "15%",
+      width: "11%",
       fixed: "right",
       render: (_, record) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
@@ -427,7 +402,7 @@ export function ConsultaPrivada({ user }) {
       title: "Estado:",
       dataIndex: "estado",
       key: "estado",
-      width: "12%",
+      width: "10%",
       fixed: "right",
       render: (_, record, index) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
@@ -494,11 +469,13 @@ export function ConsultaPrivada({ user }) {
 
   const [resultadoAtual, setResultadoAtual] = useState("");
 
-  let [submetido, setSubmetido] = useState(Boolean);
-
   let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
     return result;
   });
+
+  useEffect(() => {
+    console.log("dataSource", dataSource);
+  }, [dataSource]);
 
   function handleJogoPassou(record) {
     let horario = addHours(
@@ -585,8 +562,6 @@ export function ConsultaPrivada({ user }) {
         }
       }
     );
-
-    setSubmetido(true);
   }
 
   function handleConfirmationResultado(record, index) {
@@ -742,6 +717,15 @@ export function ConsultaPrivada({ user }) {
 
             tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
+            console.log("jogoLido", jogoLido);
+
+            let jl =
+              jogoLido.juiz_linha[0].length == 0
+                ? ""
+                : jogoLido.juiz_linha.toString().replaceAll(",", "\n");
+
+            console.log("jogoLido JLs", jl);
+
             let obj = {
               Jogo: jogoLido.id,
               Dia: jogoLido.dia,
@@ -752,17 +736,13 @@ export function ConsultaPrivada({ user }) {
               Pavilhao: jogoLido.pavilhao,
               Arbitro1: jogoLido.arbitro_1,
               Arbitro2: jogoLido.arbitro_2,
-              JL1: jogoLido.juiz_linha_1,
-              JL2: jogoLido.juiz_linha_2,
-              JL3: jogoLido.juiz_linha_3,
-              JL4: jogoLido.juiz_linha_4,
+              JL: jl,
               key: jogoLido.key,
               tags: [tags],
             };
 
             dataFromDB.push(obj);
           }
-          setSubmetido(confirmado);
           setDataSource(dataFromDB);
         } else {
           setDataSource([]);
@@ -803,15 +783,19 @@ export function ConsultaPrivada({ user }) {
     if (passaramTodos) break;
   }
 
-  return (
-    <>
-      <div className="demo-app" style={{ alignSelf: "center" }}>
-        <div style={{ width: "100%", height: "100%" }}>
-          <div className="demo-app-main" style={{ width: "100%" }}>
-            <div className="container" style={{ width: "100%" }}>
-              <br />
+  setTimeout(() => {}, 300);
 
-              {dataSource.length != 0 ? (
+  if (dataSource.length === 0) {
+    return <h2 className="blue">Não tem nomeações de momento.</h2>;
+  } else {
+    return (
+      <>
+        <div className="demo-app" style={{ alignSelf: "center" }}>
+          <div style={{ width: "100%", height: "100%" }}>
+            <div className="demo-app-main" style={{ width: "100%" }}>
+              <div className="container" style={{ width: "100%" }}>
+                <br />
+
                 <div
                   className="table-responsive"
                   style={{
@@ -827,7 +811,7 @@ export function ConsultaPrivada({ user }) {
                     columns={colunasNomeacoesPrivadas}
                     style={{
                       width: "100%",
-                      height: "37vw",
+                      height: "35vw",
                     }}
                     size="middle"
                     pagination={false}
@@ -873,212 +857,210 @@ export function ConsultaPrivada({ user }) {
                     </Button>
                   </Space>
                 </div>
-              ) : (
-                <h2 className="blue">Não tem nomeações de momento.</h2>
-              )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
-  );
-}
-
-function addHours(numOfHours, date = new Date()) {
-  date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
-  return date;
-}
-
-function validaSet(set, decisivo) {
-  let parcial1 = set.split("-")[0];
-  let parcial2 = set.split("-")[1];
-
-  let conta = parseInt(parcial1) - parseInt(parcial2);
-  conta < 0 ? (conta = conta * -1) : null;
-
-  if (!(conta >= 2)) {
-    return false;
+      </>
+    );
   }
 
-  if (!decisivo) {
-    if (
-      !(
-        (parcial1 != "25" && parcial2 == "25") ||
-        (parcial1 == "25" && parcial2 != "25")
-      )
-    ) {
-      return false;
-    }
-  } else {
-    if (
-      !(
-        (parcial1 != "15" && parcial2 == "15") ||
-        (parcial1 == "15" && parcial2 != "15")
-      )
-    ) {
-      return false;
-    }
+  function addHours(numOfHours, date = new Date()) {
+    date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
+    return date;
   }
-  return true;
-}
 
-function parcial1(set) {
-  return parseInt(set.split("-")[0]);
-}
-function parcial2(set) {
-  return parseInt(set.split("-")[1]);
-}
-function validaResultadoComSets(resultado, set1, set2, set3, set4, set5) {
-  if (resultado === "3-0") {
-    return (
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) > parcial2(set3)
-    );
-  } else if (resultado === "0-3") {
-    return (
-      parcial1(set1) < parcial2(set1) &&
-      parcial1(set2) < parcial2(set2) &&
-      parcial1(set3) < parcial2(set3)
-    );
-  } else if (resultado === "3-1") {
-    //GGPG
-    let c1 =
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) < parcial2(set3) &&
-      parcial1(set4) > parcial2(set4);
-    //PGGG
-    let c2 =
-      parcial1(set1) < parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) > parcial2(set3) &&
-      parcial1(set4) > parcial2(set4);
-    //GPGG
-    let c3 =
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) < parcial2(set2) &&
-      parcial1(set3) > parcial2(set3) &&
-      parcial1(set4) > parcial2(set4);
+  function validaSet(set, decisivo) {
+    let parcial1 = set.split("-")[0];
+    let parcial2 = set.split("-")[1];
 
-    return c1 || c2 || c3;
-  } else if (resultado === "1-3") {
-    //GGPG
-    let c1 =
-      parcial2(set1) > parcial1(set1) &&
-      parcial2(set2) > parcial1(set2) &&
-      parcial2(set3) < parcial1(set3) &&
-      parcial2(set4) > parcial1(set4);
-    //PGGG
-    let c2 =
-      parcial2(set1) < parcial1(set1) &&
-      parcial2(set2) > parcial1(set2) &&
-      parcial2(set3) > parcial1(set3) &&
-      parcial2(set4) > parcial1(set4);
-    //GPGG
-    let c3 =
-      parcial2(set1) > parcial1(set1) &&
-      parcial2(set2) < parcial1(set2) &&
-      parcial2(set3) > parcial1(set3) &&
-      parcial2(set4) > parcial1(set4);
+    let conta = parseInt(parcial1) - parseInt(parcial2);
+    conta < 0 ? (conta = conta * -1) : null;
 
-    return c1 || c2 || c3;
-  } else if (resultado === "3-2") {
-    //GGPPG
-    let c1 =
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) < parcial2(set3) &&
-      parcial1(set4) < parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
-    //GPGPG
-    let c2 =
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) < parcial2(set2) &&
-      parcial1(set3) > parcial2(set3) &&
-      parcial1(set4) < parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
-    //GPPGG
-    let c3 =
-      parcial1(set1) > parcial2(set1) &&
-      parcial1(set2) < parcial2(set2) &&
-      parcial1(set3) < parcial2(set3) &&
-      parcial1(set4) > parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
-    //PGGPG
-    let c4 =
-      parcial1(set1) < parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) > parcial2(set3) &&
-      parcial1(set4) > parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
-    //PGPGG
-    let c5 =
-      parcial1(set1) < parcial2(set1) &&
-      parcial1(set2) > parcial2(set2) &&
-      parcial1(set3) < parcial2(set3) &&
-      parcial1(set4) > parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
-    //PPGGG
-    let c6 =
-      parcial1(set1) < parcial2(set1) &&
-      parcial1(set2) < parcial2(set2) &&
-      parcial1(set3) > parcial2(set3) &&
-      parcial1(set4) > parcial2(set4) &&
-      parcial1(set5) > parcial2(set5);
+    if (!(conta >= 2)) {
+      return false;
+    }
 
-    console.log("c1", c1);
-    console.log("c2", c2);
-    console.log("c3", c3);
-    console.log("c4", c4);
-    console.log("c5", c5);
-    console.log("c6", c6);
-    return c1 || c2 || c3 || c4 || c5 || c6;
-  } else if (resultado === "2-3") {
-    //GGPPG
-    let c1 =
-      parcial2(set1) > parcial1(set1) &&
-      parcial2(set2) > parcial1(set2) &&
-      parcial2(set3) < parcial1(set3) &&
-      parcial2(set4) < parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    //GPGPG
-    let c2 =
-      parcial2(set1) > parcial1(set1) &&
-      parcial2(set2) < parcial1(set2) &&
-      parcial2(set3) > parcial1(set3) &&
-      parcial2(set4) < parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    //GPPGG
-    let c3 =
-      parcial2(set1) > parcial1(set1) &&
-      parcial2(set2) < parcial1(set2) &&
-      parcial2(set3) < parcial1(set3) &&
-      parcial2(set4) > parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    //PGGPG
-    let c4 =
-      parcial2(set1) < parcial1(set1) &&
-      parcial2(set2) > parcial1(set2) &&
-      parcial2(set3) > parcial1(set3) &&
-      parcial2(set4) > parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    //PGPGG
-    let c5 =
-      parcial2(set1) < parcial1(set1) &&
-      parcial2(set2) > parcial1(set2) &&
-      parcial2(set3) < parcial1(set3) &&
-      parcial2(set4) > parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    //PPGGG
-    let c6 =
-      parcial2(set1) < parcial1(set1) &&
-      parcial2(set2) < parcial1(set2) &&
-      parcial2(set3) > parcial1(set3) &&
-      parcial2(set4) > parcial1(set4) &&
-      parcial2(set5) > parcial1(set5);
-    return c1 || c2 || c3 || c4 || c5 || c6;
-  } else {
-    false;
+    if (!decisivo) {
+      if (
+        !(
+          (parcial1 != "25" && parcial2 == "25") ||
+          (parcial1 == "25" && parcial2 != "25")
+        )
+      ) {
+        return false;
+      }
+    } else {
+      if (
+        !(
+          (parcial1 != "15" && parcial2 == "15") ||
+          (parcial1 == "15" && parcial2 != "15")
+        )
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function parcial1(set) {
+    return parseInt(set.split("-")[0]);
+  }
+  function parcial2(set) {
+    return parseInt(set.split("-")[1]);
+  }
+  function validaResultadoComSets(resultado, set1, set2, set3, set4, set5) {
+    if (resultado === "3-0") {
+      return (
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) > parcial2(set3)
+      );
+    } else if (resultado === "0-3") {
+      return (
+        parcial1(set1) < parcial2(set1) &&
+        parcial1(set2) < parcial2(set2) &&
+        parcial1(set3) < parcial2(set3)
+      );
+    } else if (resultado === "3-1") {
+      //GGPG
+      let c1 =
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) < parcial2(set3) &&
+        parcial1(set4) > parcial2(set4);
+      //PGGG
+      let c2 =
+        parcial1(set1) < parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) > parcial2(set3) &&
+        parcial1(set4) > parcial2(set4);
+      //GPGG
+      let c3 =
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) < parcial2(set2) &&
+        parcial1(set3) > parcial2(set3) &&
+        parcial1(set4) > parcial2(set4);
+
+      return c1 || c2 || c3;
+    } else if (resultado === "1-3") {
+      //GGPG
+      let c1 =
+        parcial2(set1) > parcial1(set1) &&
+        parcial2(set2) > parcial1(set2) &&
+        parcial2(set3) < parcial1(set3) &&
+        parcial2(set4) > parcial1(set4);
+      //PGGG
+      let c2 =
+        parcial2(set1) < parcial1(set1) &&
+        parcial2(set2) > parcial1(set2) &&
+        parcial2(set3) > parcial1(set3) &&
+        parcial2(set4) > parcial1(set4);
+      //GPGG
+      let c3 =
+        parcial2(set1) > parcial1(set1) &&
+        parcial2(set2) < parcial1(set2) &&
+        parcial2(set3) > parcial1(set3) &&
+        parcial2(set4) > parcial1(set4);
+
+      return c1 || c2 || c3;
+    } else if (resultado === "3-2") {
+      //GGPPG
+      let c1 =
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) < parcial2(set3) &&
+        parcial1(set4) < parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+      //GPGPG
+      let c2 =
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) < parcial2(set2) &&
+        parcial1(set3) > parcial2(set3) &&
+        parcial1(set4) < parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+      //GPPGG
+      let c3 =
+        parcial1(set1) > parcial2(set1) &&
+        parcial1(set2) < parcial2(set2) &&
+        parcial1(set3) < parcial2(set3) &&
+        parcial1(set4) > parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+      //PGGPG
+      let c4 =
+        parcial1(set1) < parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) > parcial2(set3) &&
+        parcial1(set4) > parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+      //PGPGG
+      let c5 =
+        parcial1(set1) < parcial2(set1) &&
+        parcial1(set2) > parcial2(set2) &&
+        parcial1(set3) < parcial2(set3) &&
+        parcial1(set4) > parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+      //PPGGG
+      let c6 =
+        parcial1(set1) < parcial2(set1) &&
+        parcial1(set2) < parcial2(set2) &&
+        parcial1(set3) > parcial2(set3) &&
+        parcial1(set4) > parcial2(set4) &&
+        parcial1(set5) > parcial2(set5);
+
+      console.log("c1", c1);
+      console.log("c2", c2);
+      console.log("c3", c3);
+      console.log("c4", c4);
+      console.log("c5", c5);
+      console.log("c6", c6);
+      return c1 || c2 || c3 || c4 || c5 || c6;
+    } else if (resultado === "2-3") {
+      //GGPPG
+      let c1 =
+        parcial2(set1) > parcial1(set1) &&
+        parcial2(set2) > parcial1(set2) &&
+        parcial2(set3) < parcial1(set3) &&
+        parcial2(set4) < parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      //GPGPG
+      let c2 =
+        parcial2(set1) > parcial1(set1) &&
+        parcial2(set2) < parcial1(set2) &&
+        parcial2(set3) > parcial1(set3) &&
+        parcial2(set4) < parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      //GPPGG
+      let c3 =
+        parcial2(set1) > parcial1(set1) &&
+        parcial2(set2) < parcial1(set2) &&
+        parcial2(set3) < parcial1(set3) &&
+        parcial2(set4) > parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      //PGGPG
+      let c4 =
+        parcial2(set1) < parcial1(set1) &&
+        parcial2(set2) > parcial1(set2) &&
+        parcial2(set3) > parcial1(set3) &&
+        parcial2(set4) > parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      //PGPGG
+      let c5 =
+        parcial2(set1) < parcial1(set1) &&
+        parcial2(set2) > parcial1(set2) &&
+        parcial2(set3) < parcial1(set3) &&
+        parcial2(set4) > parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      //PPGGG
+      let c6 =
+        parcial2(set1) < parcial1(set1) &&
+        parcial2(set2) < parcial1(set2) &&
+        parcial2(set3) > parcial1(set3) &&
+        parcial2(set4) > parcial1(set4) &&
+        parcial2(set5) > parcial1(set5);
+      return c1 || c2 || c3 || c4 || c5 || c6;
+    } else {
+      false;
+    }
   }
 }

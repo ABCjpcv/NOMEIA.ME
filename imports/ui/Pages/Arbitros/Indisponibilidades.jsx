@@ -214,6 +214,12 @@ export class Indisponibilidades extends React.Component {
                     center: "title",
                     right: "timeGridWeek,timeGridDay",
                   }}
+                  buttonText={{
+                    today: "Hoje",
+                    month: "Mês",
+                    week: "Semana",
+                    day: "Dia",
+                  }}
                   allDaySlot={false}
                   height={"410px"}
                   dayMinWidth={"8px"}
@@ -374,7 +380,7 @@ export class Indisponibilidades extends React.Component {
     if (clickInfo.event._def.title === " Indisponível ") {
       clickInfo.event.remove();
     } else {
-      message.error("Impossive remover um Jogo Nomeado");
+      message.error("Impossivel remover um Jogo Nomeado");
     }
   };
 

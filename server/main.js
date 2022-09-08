@@ -113,10 +113,7 @@ jogos.schema = new SimpleSchema({
   pavilhao: { type: String, optional: false },
   arbitro_1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro.
   arbitro_2: { type: String, optional: true }, //Mesmo que acima.
-  juiz_linha_1: { type: String, optional: true },
-  juiz_linha_2: { type: String, optional: true },
-  juiz_linha_3: { type: String, optional: true },
-  juiz_linha_4: { type: String, optional: true },
+  juiz_linha: [String],
   key: { type: Number, optional: true },
 });
 
@@ -415,10 +412,12 @@ Meteor.startup(() => {
       pavilhao: rows[index][6],
       arbitro_1: titleCase(rows[index][7]),
       arbitro_2: titleCase(rows[index][8]),
-      juiz_linha_1: titleCase(rows[index][9]),
-      juiz_linha_2: titleCase(rows[index][10]),
-      juiz_linha_3: titleCase(rows[index][11]),
-      juiz_linha_4: titleCase(rows[index][12]),
+      juiz_linha: [
+        titleCase(rows[index][9]),
+        titleCase(rows[index][10]),
+        titleCase(rows[index][11]),
+        titleCase(rows[index][12]),
+      ],
       key: index,
     });
     console.log("inserted JOGO " + rows[index][0]);
@@ -446,10 +445,7 @@ Meteor.startup(() => {
         jogo.arbitro_1 == arbitro.nome ||
         jogo.arbitro_1 == arbitro.nome ||
         jogo.arbitro_2 == arbitro.nome ||
-        jogo.juiz_linha_1 == arbitro.nome ||
-        jogo.juiz_linha_2 == arbitro.nome ||
-        jogo.juiz_linha_3 == arbitro.nome ||
-        jogo.juiz_linha_4 == arbitro.nome
+        jogo.juiz_linha.includes(arbitro.nome)
       ) {
         nomeacoesAuxiliares.push({
           jogo: jogo,
@@ -599,10 +595,7 @@ Meteor.methods({
       if (
         jogo.arbitro_1 === a.nome ||
         jogo.arbitro_2 === a.nome ||
-        jogo.juiz_linha_1 === a.nome ||
-        jogo.juiz_linha_2 === a.nome ||
-        jogo.juiz_linha_3 === a.nome ||
-        jogo.juiz_linha_4 === a.nome
+        jogo.juiz_linha.includes(a.nome)
       ) {
         nomeacoesAuxiliares.push({
           jogo: jogo,
@@ -1097,10 +1090,7 @@ Meteor.methods({
         pavilhao: jogo.pavilhao,
         arbitro_1: jogo.arbitro_1,
         arbitro_2: jogo.arbitro_2,
-        juiz_linha_1: jogo.juiz_linha_1,
-        juiz_linha_2: jogo.juiz_linha_2,
-        juiz_linha_3: jogo.juiz_linha_3,
-        juiz_linha_4: jogo.juiz_linha_4,
+        juiz_linha: jogo.juiz_linha,
         key: jogo.key,
       });
     }
@@ -1118,10 +1108,7 @@ Meteor.methods({
         if (
           jogo.arbitro_1 === arbitro.nome ||
           jogo.arbitro_2 === arbitro.nome ||
-          jogo.juiz_linha_1 === arbitro.nome ||
-          jogo.juiz_linha_2 === arbitro.nome ||
-          jogo.juiz_linha_3 === arbitro.nome ||
-          jogo.juiz_linha_4 === arbitro.nome
+          jogo.juiz_linha.includes(arbitro.nome)
         ) {
           nomeacoesAuxiliares.push({
             jogo: jogo,
@@ -1320,13 +1307,13 @@ Meteor.methods({
         } else if (funcao.toString().includes("option_2_arbitro")) {
           atuaisPreNomeacoes[index].arbitro_2 = nomeArbitro;
         } else if (funcao.toString().includes("option_1_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_1 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha[0] = nomeArbitro;
         } else if (funcao.toString().includes("option_2_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_2 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha[1] = nomeArbitro;
         } else if (funcao.toString().includes("option_3_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_3 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha[2] = nomeArbitro;
         } else if (funcao.toString().includes("option_4_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_4 = nomeArbitro;
+          atuaisPreNomeacoes[index].juiz_linha[3] = nomeArbitro;
         }
       }
     }
@@ -1416,13 +1403,13 @@ Meteor.methods({
         } else if (funcao.toString().includes("option_2_arbitro")) {
           atuaisPreNomeacoes[index].arbitro_2 = "";
         } else if (funcao.toString().includes("option_1_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_1 = "";
+          atuaisPreNomeacoes[index].juiz_linha[0] = "";
         } else if (funcao.toString().includes("option_2_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_2 = "";
+          atuaisPreNomeacoes[index].juiz_linha[1] = "";
         } else if (funcao.toString().includes("option_3_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_3 = "";
+          atuaisPreNomeacoes[index].juiz_linha[2] = "";
         } else if (funcao.toString().includes("option_4_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha_4 = "";
+          atuaisPreNomeacoes[index].juiz_linha[3] = "";
         }
       }
     }
@@ -1461,10 +1448,12 @@ Meteor.methods({
           pavilhao: jogos[index][6],
           arbitro_1: jogos[index][7],
           arbitro_2: jogos[index][8],
-          juiz_linha_1: jogos[index][9],
-          juiz_linha_2: jogos[index][10],
-          juiz_linha_3: jogos[index][11],
-          juiz_linha_4: jogos[index][12],
+          juiz_linha: [
+            jogos[index][9],
+            jogos[index][10],
+            jogos[index][11],
+            jogos[index][12],
+          ],
           key: index,
           tags: ["pendente"],
         };

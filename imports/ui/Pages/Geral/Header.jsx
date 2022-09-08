@@ -185,7 +185,7 @@ export const Header = ({
                 }}
                 hidden={removerConta}
               >
-                Remover Árbitro:
+                Atualizar Árbitro:
               </p>
 
               {/* AQUI ESTAO OS HEADERS DOS ARBITROS */}
@@ -682,6 +682,10 @@ const MenuPrivadoCA = () => {
             Carregar Jogos Novos
           </p>
         </a>
+        <p>
+          {" "}
+          <b> Gerir Árbitros: </b>{" "}
+        </p>
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}

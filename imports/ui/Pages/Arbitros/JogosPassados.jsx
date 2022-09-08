@@ -90,7 +90,6 @@ export function JogosPassados({ user }) {
       key: "Equipas",
       sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
-      width: "8%",
       fixed: "left",
     },
     {
@@ -99,7 +98,7 @@ export function JogosPassados({ user }) {
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
-      width: "6%",
+
       fixed: "left",
     },
     {
@@ -120,32 +119,12 @@ export function JogosPassados({ user }) {
     },
     {
       title: "JL",
-      dataIndex: "JL1",
-      key: "JL1",
+      dataIndex: "JL",
+      key: "JL",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
     },
-    {
-      title: "JL",
-      dataIndex: "JL2",
-      key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "JL",
-      dataIndex: "JL3",
-      key: "JL3",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL3, b.JL3),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "JL",
-      dataIndex: "JL4",
-      key: "JL4",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL4, b.JL4),
-      sortDirections: ["descend", "ascend"],
-    },
+
     {
       title: "Resultado",
       dataIndex: "resultado",
@@ -156,8 +135,6 @@ export function JogosPassados({ user }) {
         dataSource.length > 0 ? (
           <>
             <div className="divResultadoDisabled">
-              Resultado:
-              <br></br>
               {console.log("record", record)}
               {console.log("resultados[index]", resultados[index])}
               <InputNumber
@@ -374,8 +351,8 @@ export function JogosPassados({ user }) {
                 removerConta={true}
                 indisponibilidadePrivadas={true}
                 restricoesPrivadas={true}
-                definicoes={false}
-                historico={true}
+                definicoes={true}
+                historico={false}
               />
 
               {dataSource.length != 0 ? (

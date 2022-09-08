@@ -145,6 +145,9 @@ export function Autenticar({ user }) {
                   }
                   status={undefined}
                   onChange={handleChangePasswordAuth}
+                  onPressEnter={() => {
+                    document.getElementById("enterButton").click();
+                  }}
                 />
               </Space>
             </div>
@@ -152,6 +155,7 @@ export function Autenticar({ user }) {
             <Button
               type="primary"
               shape="round"
+              id="enterButton"
               onClick={() => {
                 let email = document.getElementById("eemail").value;
                 let pass = document.getElementById("ppass").value;
