@@ -2237,18 +2237,26 @@ function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
   }
 }
 
+function hasDST(date = new Date()) {
+  const january = new Date(CURRENT_YEAR, 0, 1).getTimezoneOffset();
+  const july = new Date(CURRENT_YEAR, 6, 1).getTimezoneOffset();
+
+  return Math.max(january, july) !== date.getTimezoneOffset();
+}
+
 function addFeriados(r) {
   let feriadosNacionais = [
     { nome: "Dia de Ano Novo", data: "01/01" },
     { nome: "Dia da Liberdade", data: "25/04" },
     { nome: "Dia do Trabalhador", data: "01/05" },
     {
-      nome: "Dia de Portugal, de Camões e das Comunidades Portuguesas",
+      nome: "Portugal, Camões e Comunidades Portuguesas",
       data: "10/06",
     },
-    { nome: "Dia da Implantação da República", data: "05/10" },
-    { nome: "Restauração da República", data: "01/12" },
+    { nome: "Implantação da República", data: "05/10" },
+    { nome: "Restauração da Independência", data: "01/12" },
     { nome: "Imaculada Conceição", data: "08/12" },
+    { nome: "Natal", data: "25/12" },
   ];
   for (let index = 0; index < feriadosNacionais.length; index++) {
     let newId = _("feriado");
@@ -2259,7 +2267,7 @@ function addFeriados(r) {
       feriadosNacionais[index].data.split("/")[1] +
       "-" +
       feriadosNacionais[index].data.split("/")[0] +
-      "T08:00:00+01:00";
+      "T08:00:00Z";
 
     let endStr =
       CURRENT_YEAR +
@@ -2267,7 +2275,25 @@ function addFeriados(r) {
       feriadosNacionais[index].data.split("/")[1] +
       "-" +
       feriadosNacionais[index].data.split("/")[0] +
-      "T09:00:00+01:00";
+      "T09:00:00Z";
+
+    if (hasDST(startStr)) {
+      startStr =
+        CURRENT_YEAR +
+        "-" +
+        feriadosNacionais[index].data.split("/")[1] +
+        "-" +
+        feriadosNacionais[index].data.split("/")[0] +
+        "T07:00:00Z";
+
+      endStr =
+        CURRENT_YEAR +
+        "-" +
+        feriadosNacionais[index].data.split("/")[1] +
+        "-" +
+        feriadosNacionais[index].data.split("/")[0] +
+        "T08:00:00Z";
+    }
 
     let novoEvento = {
       title: titulo,

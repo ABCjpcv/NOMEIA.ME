@@ -216,8 +216,8 @@ export class Calendario extends React.Component {
                     right: "timeGridWeek,timeGridDay",
                   }}
                   buttonText={{
-                    prev: "⬅ Anterior",
-                    next: "Seguinte ➡",
+                    // prev: "⬅ Anterior",
+                    // next: "Seguinte ➡",
                     today: "Hoje",
                     month: "Mês",
                     week: "Semana",
