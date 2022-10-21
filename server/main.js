@@ -2237,11 +2237,42 @@ function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
   }
 }
 
-function hasDST(date = new Date()) {
-  const january = new Date(CURRENT_YEAR, 0, 1).getTimezoneOffset();
-  const july = new Date(CURRENT_YEAR, 6, 1).getTimezoneOffset();
+function hasDST(str) {
+  // O atual regime de mudança da hora é regulado por uma diretiva (lei comunitária) de 2000, que prevê que todos os anos os relógios sejam, respetivamente, adiantados e atrasados uma hora no último domingo de março e no último domingo de outubro, marcando o início e o fim da hora de verão.
 
-  return Math.max(january, july) !== date.getTimezoneOffset();
+  Date.prototype.stdTimezoneOffset = function () {
+    var fy = this.getFullYear();
+    console.log("fy", fy);
+    if (!Date.prototype.stdTimezoneOffset.cache.hasOwnProperty(fy)) {
+      var maxOffset = new Date(fy, 0, 1).getTimezoneOffset();
+      console.log("maxOffset", maxOffset);
+      var monthsTestOrder = [6, 7, 5, 8, 4, 9, 3, 10, 2, 11, 1];
+
+      for (var mi = 0; mi < 12; mi++) {
+        var offset = new Date(fy, monthsTestOrder[mi], 1).getTimezoneOffset();
+        console.log("offset: ", offset);
+        if (offset != maxOffset) {
+          maxOffset = Math.max(maxOffset, offset);
+          break;
+        }
+      }
+      Date.prototype.stdTimezoneOffset.cache[fy] = maxOffset;
+      console.log(
+        "   Date.prototype.stdTimezoneOffset.cache[fy]",
+        Date.prototype.stdTimezoneOffset.cache[fy]
+      );
+    }
+    return Date.prototype.stdTimezoneOffset.cache[fy];
+  };
+
+  Date.prototype.stdTimezoneOffset.cache = {};
+
+  let d = new Date(str);
+
+  Date.prototype.isDST = function () {
+    console.log("this.getTimezoneOffset()", this.getTimezoneOffset());
+    return this.getTimezoneOffset() < this.stdTimezoneOffset();
+  };
 }
 
 function addFeriados(r) {
@@ -2277,7 +2308,7 @@ function addFeriados(r) {
       feriadosNacionais[index].data.split("/")[0] +
       "T09:00:00Z";
 
-    if (hasDST(startStr)) {
+    if (!hasDST(startStr)) {
       startStr =
         CURRENT_YEAR +
         "-" +
