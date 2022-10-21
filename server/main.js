@@ -16,7 +16,9 @@ let definicoesPessoais = new Mongo.Collection("definicoesPessoais");
 let jogosPassados = new Mongo.Collection("jogosPassados");
 let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 
-let DROP_ALL_TABLES = false;
+let CURRENT_YEAR = new Date().getFullYear();
+
+let DROP_ALL_TABLES = true;
 
 let CONSELHO_DE_ARBITRAGEM = [
   "sergiosp@netcabo.pt",
@@ -270,10 +272,13 @@ Meteor.startup(() => {
 
     indisponibilidades.rawCollection().drop();
 
+    let r = [];
+    r = addFeriados(r);
+
     arb.forEach((arbitro) => {
       indisponibilidades.insert({
         arbitro: arbitro,
-        disponibilidades: "",
+        disponibilidades: r,
       });
       console.log("inserted: INDISPONIBILIDADE");
     });
@@ -711,15 +716,15 @@ Meteor.methods({
     var atuais = alteraNomeacoes.nomeacoesPrivadas;
     var novas = [];
 
-    console.log("JOGO", jogo);
+    // console.log("JOGO", jogo);
 
-    console.log("game.key", game.key);
+    // console.log("game.key", game.key);
 
     atuais.forEach((element) => {
       if (element.jogo.key !== game.key) novas.push(element);
     });
 
-    console.log("NOVAS", novas);
+    // console.log("NOVAS", novas);
 
     nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novas } });
 
@@ -957,7 +962,7 @@ Meteor.methods({
    *****************************************************************
    */
   addIndisponibilidade: function addIndisponibilidade(username, events) {
-    console.log("events recebidos", events);
+    // console.log("events recebidos", events);
 
     try {
       const a = arbitros.findOne({ nome: username });
@@ -1327,8 +1332,8 @@ Meteor.methods({
     let jogoAntigo;
 
     for (let index = 0; index < jogosAntigos.length; index++) {
-      console.log("jogosAntigos[index]", jogosAntigos[index]);
-      console.log("jogo", jogo);
+      // console.log("jogosAntigos[index]", jogosAntigos[index]);
+      // console.log("jogo", jogo);
 
       if (jogosAntigos[index].id !== jogo.id)
         novosJogos.push(jogosAntigos[index]);
@@ -1365,7 +1370,7 @@ Meteor.methods({
     // Verificar as diferenças entre as equipas de arbitragem
     // Altera a confirmação para pendente
 
-    console.log("user", user);
+    // console.log("user", user);
 
     let arb = arbitros.findOne({ email: user.emails[0].address });
     let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
@@ -1493,8 +1498,8 @@ Meteor.methods({
 
     try {
       let defP = definicoesPessoais.findOne({ arbitro: arb });
-      console.log("arb", arb);
-      console.log("defP", defP);
+      // console.log("arb", arb);
+      // console.log("defP", defP);
 
       let temCarro = defP.temCarro;
       let emiteRecibo = defP.emiteRecibo;
@@ -1615,7 +1620,7 @@ Meteor.methods({
     let newId = _("jogo");
 
     let novoEvento = {
-      title: "\n" + titulo,
+      title: titulo,
       id: newId,
       start: startStr,
       end: endStr,
@@ -2230,4 +2235,52 @@ function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
       }
     });
   }
+}
+
+function addFeriados(r) {
+  let feriadosNacionais = [
+    { nome: "Dia de Ano Novo", data: "01/01" },
+    { nome: "Dia da Liberdade", data: "25/04" },
+    { nome: "Dia do Trabalhador", data: "01/05" },
+    {
+      nome: "Dia de Portugal, de Camões e das Comunidades Portuguesas",
+      data: "10/06",
+    },
+    { nome: "Dia da Implantação da República", data: "05/10" },
+    { nome: "Restauração da República", data: "01/12" },
+    { nome: "Imaculada Conceição", data: "08/12" },
+  ];
+  for (let index = 0; index < feriadosNacionais.length; index++) {
+    let newId = _("feriado");
+    let titulo = feriadosNacionais[index].nome;
+    let startStr =
+      CURRENT_YEAR +
+      "-" +
+      feriadosNacionais[index].data.split("/")[1] +
+      "-" +
+      feriadosNacionais[index].data.split("/")[0] +
+      "T08:00:00+01:00";
+
+    let endStr =
+      CURRENT_YEAR +
+      "-" +
+      feriadosNacionais[index].data.split("/")[1] +
+      "-" +
+      feriadosNacionais[index].data.split("/")[0] +
+      "T09:00:00+01:00";
+
+    let novoEvento = {
+      title: titulo,
+      id: newId,
+      start: startStr,
+      end: endStr,
+      color: "#000000",
+      editable: false,
+      className: "hideCalendarTime",
+      draggable: false,
+    };
+
+    r.push(novoEvento);
+  }
+  return r;
 }

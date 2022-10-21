@@ -13,6 +13,8 @@ import {
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
 function comparaAminhaLindaString(a, b) {
   let x = 0;
   let tamanho = a.length > b.length ? b.length : a.length;
@@ -958,8 +960,7 @@ export function ConsultaPrivada({ user }) {
                       value="Instruções"
                       onClick={info}
                     >
-                      {" "}
-                      Ajuda ❓{" "}
+                      <QuestionCircleOutlined />
                     </Button>
                   </Space>
                 </div>

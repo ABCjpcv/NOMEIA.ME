@@ -3,6 +3,7 @@ import { Meteor } from "meteor/meteor";
 import { Fragment } from "react/cjs/react.production.min";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { UserOutlined, LoginOutlined } from "@ant-design/icons";
 
 export const Header = ({
   user,
@@ -62,24 +63,26 @@ export const Header = ({
                   style={{
                     display: "flex",
                     width: "100%",
-                    height: "50%",
+                    height: "100%",
                     justifyContent: "flex-start",
-                    marginTop: "3.75%",
                     marginLeft: "3%",
+                    alignItems: "baseline",
                   }}
                 >
                   <MenuPrivado />
-                  <Button
-                    onClick={() => (
-                      (location.pathname = "/Conta/Profile/Definicoes"),
-                      navigate("/Conta/Profile/Definicoes")
-                    )}
-                    style={{
-                      fontSize: "14px",
-                    }}
-                  >
-                    🙍‍♂️ {user.username}
-                  </Button>
+                  <Space>
+                    <Button
+                      onClick={() => (
+                        (location.pathname = "/Conta/Profile/Definicoes"),
+                        navigate("/Conta/Profile/Definicoes")
+                      )}
+                      style={{
+                        fontSize: "14px",
+                      }}
+                    >
+                      <UserOutlined /> Perfil
+                    </Button>
+                  </Space>
                 </div>
               </div>
               <div
@@ -93,10 +96,10 @@ export const Header = ({
                   style={{
                     display: "flex",
                     width: "100%",
-                    height: "50%",
+                    height: "100%",
                     justifyContent: "flex-start",
-                    marginTop: "3.75%",
                     marginLeft: "3%",
+                    alignItems: "baseline",
                   }}
                 >
                   <MenuPrivadoCA />
@@ -110,7 +113,7 @@ export const Header = ({
                       verticalAlign: "text-bottom",
                     }}
                   >
-                    🙍‍♂️ {user.username}
+                    <UserOutlined /> Perfil
                   </Button>
                 </div>
               </div>
@@ -232,7 +235,8 @@ export const Header = ({
                 }}
                 hidden={definicoes}
               >
-                🙍‍♂️ Perfil
+                {/* 🙍‍♂️ Perfil  */}
+                {Meteor.user().username}
               </p>
 
               <p
@@ -282,7 +286,7 @@ export const Header = ({
                       marginRight: "3%",
                     }}
                   >
-                    Sair 🏃🚪
+                    Sair <LoginOutlined />
                   </Button>
                 </div>
               </div>
@@ -504,7 +508,7 @@ const MenuPrivado = () => {
           }}
           onClick={showDrawer}
         >
-          ☰
+          ☰ Menu
         </Button>
       </Space>
       <Drawer
@@ -603,7 +607,7 @@ const MenuPrivadoCA = () => {
           }}
           onClick={showDrawer}
         >
-          ☰
+          ☰ Menu
         </Button>
       </Space>
       <Drawer

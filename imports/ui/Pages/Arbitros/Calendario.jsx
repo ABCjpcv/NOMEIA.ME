@@ -9,7 +9,9 @@ import _ from "lodash.uniqueid";
 import { Header } from "../Geral/Header";
 
 import "antd/dist/antd.css";
-import { LoadingOutlined } from "@ant-design/icons";
+import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+
+let CURRENT_YEAR = new Date().getFullYear();
 
 const antIcon = (
   <div
@@ -214,17 +216,19 @@ export class Calendario extends React.Component {
                     right: "timeGridWeek,timeGridDay",
                   }}
                   buttonText={{
+                    prev: "⬅ Anterior",
+                    next: "Seguinte ➡",
                     today: "Hoje",
                     month: "Mês",
                     week: "Semana",
                     day: "Dia",
                   }}
                   allDaySlot={false}
-                  height={"410px"}
+                  height={"435px"}
                   dayMinWidth={"8px"}
                   firstDay={1}
                   slotDuration={"00:60:00"}
-                  slotMinTime={"09:00:00"}
+                  slotMinTime={"08:00:00"}
                   slotMaxTime={"23:00:00"}
                   initialView="timeGridWeek"
                   editable={true}
@@ -248,7 +252,10 @@ export class Calendario extends React.Component {
                   console.log("curr", curr);
                   let eventos = [];
                   curr.map((evento) => {
-                    if (evento.id.includes("jogo")) {
+                    if (
+                      evento.id.includes("jogo") ||
+                      evento.id.includes("feriado")
+                    ) {
                       eventos.push({
                         id: evento.id,
                         title: evento.title,
@@ -301,8 +308,7 @@ export class Calendario extends React.Component {
                   value="Instruções"
                   onClick={info}
                 >
-                  {" "}
-                  Ajuda ❓{" "}
+                  <QuestionCircleOutlined />
                 </Button>
               </Space>
             </form>
@@ -319,6 +325,7 @@ export class Calendario extends React.Component {
         console.log("ERRRRROOOOO", { err });
       } else if (result) {
         let r = result.disponibilidades;
+        console.log("r", r);
         const { state: currentState } = this;
         const newState = { ...currentState, resultado: r, loaded: true };
         this.setState(newState);

@@ -13,6 +13,12 @@ import {
   Modal,
 } from "antd";
 
+import {
+  SaveOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import $ from "jquery";
 
 import { Meteor } from "meteor/meteor";
@@ -424,7 +430,7 @@ export function Restricoes({ user }) {
                   setIsDisabled(newDisabled);
                 }}
               >
-                Editar ✏️
+                <EditOutlined width={"1.5em"} height={"1.5em"} /> Editar
               </Button>
             </div>
             <div>
@@ -484,7 +490,7 @@ export function Restricoes({ user }) {
                   handleSubmission(record);
                 }}
               >
-                Guardar 💾
+                <SaveOutlined width={"1.5em"} height={"1.5em"} /> Guardar
               </Button>
             </div>
 
@@ -498,7 +504,8 @@ export function Restricoes({ user }) {
                   shape="round"
                   style={{ display: "flex", flexDirection: "row" }}
                 >
-                  Eliminar 🗑️
+                  <DeleteOutlined />
+                  Eliminar
                 </Button>
               </Popconfirm>
             </div>
@@ -725,8 +732,7 @@ export function Restricoes({ user }) {
             value="Instruções"
             onClick={info}
           >
-            {" "}
-            Ajuda ❓{" "}
+            <QuestionCircleOutlined />
           </Button>
         </Space>
       </div>

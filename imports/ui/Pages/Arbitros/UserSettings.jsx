@@ -2,7 +2,12 @@ import { Button, Input, InputNumber, message, Space } from "antd";
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { Header } from "../Geral/Header";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  LockOutlined,
+} from "@ant-design/icons";
+import { ImagemPerfil } from "./ImagemPerfil v1";
 
 export function UserSettings({ user }) {
   user === null ? (user = Meteor.user()) : (user = user);
@@ -213,16 +218,35 @@ export function UserSettings({ user }) {
             marginTop: "1%",
           }}
         >
-          <div className="input" style={{ justifyContent: "flex-start" }}>
-            <label className="labels">Nome</label>
-
-            <Input
-              type={"text"}
-              value={user.username}
-              id="nomeUserSettings"
-              style={{ borderRadius: "10px" }}
-              disabled
-            ></Input>
+          <div
+            className="input"
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              flexDirection: "row",
+            }}
+          >
+            <ImagemPerfil></ImagemPerfil>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                marginLeft: "3%",
+                width: "-webkit-fill-available",
+                justifyContent: "flex-start",
+                marginTop: "3%",
+              }}
+            >
+              <label className="labels">Nome</label>
+              <br></br>
+              <Input
+                type={"text"}
+                value={user.username}
+                id="nomeUserSettings"
+                style={{ borderRadius: "10px" }}
+                disabled
+              ></Input>
+            </div>
           </div>
           <p></p>
           <div className="input" style={{ justifyContent: "flex-start" }}>
@@ -338,7 +362,10 @@ export function UserSettings({ user }) {
             }}
           >
             <label className="labels" style={{ alignSelf: "flex-start" }}>
-              <b> 🔑Mudar Password: </b>
+              <b>
+                {" "}
+                <LockOutlined /> Mudar Password:{" "}
+              </b>
             </label>
           </div>
 
