@@ -29,12 +29,17 @@ const handleChangePasswordAuth = (e) => {
   }
 };
 
-export function Autenticar({ user }) {
-  let [entrou, setEntrou] = useState(false);
+function validatePassword(password) {
+  return password.length > 4 ? true : false;
+}
 
-  if (user != null && entrou) {
-    Meteor.logout();
-  }
+export function Autenticar({ user }) {
+  // console.log("user", user);
+  // let u = Meteor.user();
+  // console.log("u", u);
+  // // if (u != null) {
+  // //   Meteor.logout();
+  // // }
 
   let navigate = useNavigate();
 
@@ -53,17 +58,24 @@ export function Autenticar({ user }) {
           } else if (result === 1) {
             //console.log("vou mostrar Perfil do CA");
             message.success("Bem vindo " + utilizador.username + "!");
-            setEntrou(true);
+
             navigate("/Conta/ProfileCA");
           } else if (result === 0) {
             //console.log("vou mostrar Perfil do Arbitro");
             message.success("Bem vindo " + utilizador.username + "!");
-            setEntrou(true);
+
             navigate("/Conta/Profile");
           }
         });
       });
     }
+  }
+
+  function validateEmail(mail) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -237,15 +249,4 @@ export function Autenticar({ user }) {
       </div>
     </>
   );
-}
-
-function validateEmail(mail) {
-  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-    return true;
-  }
-  return false;
-}
-
-function validatePassword(password) {
-  return password.length > 4 ? true : false;
 }

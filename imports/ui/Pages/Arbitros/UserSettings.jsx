@@ -277,9 +277,8 @@ export function UserSettings({ user }) {
             <div style={{ display: "flex" }}>
               <label
                 className="labels"
-                style={{ width: "49%", justifyContent: "space-between" }}
+                style={{ width: "49%", justifyContent: "space-around" }}
               >
-                Tenho Transporte próprio:
                 <Input
                   type={"checkbox"}
                   onChange={() => {
@@ -292,23 +291,21 @@ export function UserSettings({ user }) {
                   }}
                   style={{
                     display: "flex",
-                    marginLeft: "20%",
                     height: "30px",
                     width: "30px",
                     borderRadius: "10px",
                   }}
                   checked={temTransporte}
                 ></Input>
+                Tenho Transporte próprio
               </label>
               <label
                 className="labels"
                 style={{
                   width: "50%",
-                  justifyContent: "space-between",
-                  marginLeft: "1%",
+                  marginLeft: "2%",
                 }}
               >
-                Emito recibo verde:
                 <Input
                   type={"checkbox"}
                   onChange={() => {
@@ -321,13 +318,15 @@ export function UserSettings({ user }) {
                   }}
                   style={{
                     display: "flex",
-                    marginLeft: "20%",
+                    marginLeft: "2%",
                     height: "30px",
                     width: "30px",
                     borderRadius: "10px",
+                    marginRight: "5%",
                   }}
                   checked={temRecibo}
                 ></Input>
+                Emito recibo verde
               </label>
             </div>
           </div>

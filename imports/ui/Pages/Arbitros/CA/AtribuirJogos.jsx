@@ -13,9 +13,9 @@ const { Option } = Select;
 const StyledTable = styled((props) => (
   <Table
     {...props}
-    scroll={{
-      x: 1600,
-    }}
+    // scroll={{
+    //   x: 1600,
+    // }}
   />
 ))`
   && tbody > tr:hover > td {
@@ -31,6 +31,9 @@ function comparaAminhaLindaString(a, b) {
 
   try {
     a.length;
+    if (a.length == 0) {
+      a = "z";
+    }
   } catch (error) {
     console.log("O ERRO FOI: -> a", a);
   }
@@ -39,6 +42,7 @@ function comparaAminhaLindaString(a, b) {
   for (let index = 0; index < tamanho; index++) {
     posA = a.charCodeAt(index);
     posB = b.charCodeAt(index);
+
     if (posA != posB) {
       x = posB - posA;
       break;
@@ -78,62 +82,69 @@ export function AtribuirJogos({ user }) {
       title: "Jogo",
       dataIndex: "Jogo",
       key: "Jogo",
-      sorter: (a, b) => a.key - b.key,
+      sorter: (a, b) => parseInt(a.Jogo) - parseInt(b.Jogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+      width: "4.5%",
     },
     {
       title: "Dia",
       dataIndex: "Dia",
       key: "Dia",
-      sorter: (a, b) => comparaAminhaLindaData(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+      width: "6.5%",
     },
     {
       title: "Hora",
       dataIndex: "Hora",
       key: "Hora",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+      width: "4.5%",
     },
     {
       title: "Prova",
       dataIndex: "Prova",
       key: "Prova",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+      width: "6%",
     },
     {
-      title: "Serie",
+      title: "Série",
       dataIndex: "Serie",
       key: "Serie",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+      width: "6%",
     },
     {
       title: "Equipas",
       dataIndex: "Equipas",
       key: "Equipas",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
-      title: "Pavilhao",
+      title: "Pavilhão",
       dataIndex: "Pavilhao",
       key: "Pavilhao",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
-      title: "Arbitro1",
+      title: "1º Árbitro",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
+      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      sortDirections: ["descend", "ascend"],
       render: (text, record, index) => (
         <>
           <Select
@@ -141,12 +152,26 @@ export function AtribuirJogos({ user }) {
             showSearch
             mode="single"
             name="select_arbitro1"
-            style={{ width: "150px", backgroundColor: "F7CB73 !important" }}
+            style={{
+              width: "120px",
+              backgroundColor:
+                record.tags[0] === ""
+                  ? "white"
+                  : record.tags[0] === "pendente"
+                  ? "#FFB963"
+                  : record.tags[0] === "confirmado"
+                  ? "#6FD25A"
+                  : record.tags[0] === "recusado"
+                  ? "#ef5350"
+                  : "white",
+            }}
             key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro1 != "" ? record.Arbitro1 : null}
             disabled={disabledDataSource.includes(record)}
+            size="small"
+            showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -164,24 +189,37 @@ export function AtribuirJogos({ user }) {
       ),
     },
     {
-      title: "Arbitro2",
+      title: "2º Árbitro",
       dataIndex: "Arbitro2",
       key: "Arbitro2",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
-
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_arbitro2"
-            style={{ width: "150px" }}
+            style={{
+              width: "120px",
+              backgroundColor:
+                record.tags[1] === ""
+                  ? "white"
+                  : record.tags[1] === "pendente"
+                  ? "#FFB963"
+                  : record.tags[1] === "confirmado"
+                  ? "#6FD25A"
+                  : record.tags[1] === "recusado"
+                  ? "#ef5350"
+                  : "white",
+            }}
             key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Arbitro2 != "" ? record.Arbitro2 : null}
             disabled={disabledDataSource.includes(record)}
+            size="small"
+            showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -199,24 +237,37 @@ export function AtribuirJogos({ user }) {
       ),
     },
     {
-      title: "JL1",
+      title: "Juiz de linha",
       dataIndex: "JL1",
       key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
-
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl1"
-            style={{ width: "150px" }}
+            style={{
+              width: "120px",
+              backgroundColor:
+                record.tags[2] === ""
+                  ? "white"
+                  : record.tags[2] === "pendente"
+                  ? "#FFB963"
+                  : record.tags[2] === "confirmado"
+                  ? "#6FD25A"
+                  : record.tags[2] === "recusado"
+                  ? "#ef5350"
+                  : "white",
+            }}
             key={"select_jl1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl1 != "" ? record.JL1 : null}
             disabled={disabledDataSource.includes(record)}
+            size="small"
+            showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -234,24 +285,37 @@ export function AtribuirJogos({ user }) {
       ),
     },
     {
-      title: "JL2",
+      title: "Juiz de linha",
       dataIndex: "JL2",
       key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
       sortDirections: ["descend", "ascend"],
-
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
             name="select_jl2"
-            style={{ width: "150px" }}
+            style={{
+              width: "120px",
+              backgroundColor:
+                record.tags[3] === ""
+                  ? "white"
+                  : record.tags[3] === "pendente"
+                  ? "#FFB963"
+                  : record.tags[3] === "confirmado"
+                  ? "#6FD25A"
+                  : record.tags[3] === "recusado"
+                  ? "#ef5350"
+                  : "white",
+            }}
             key={"select_jl2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
             value={record.Jl2 != "" ? record.JL2 : null}
             disabled={disabledDataSource.includes(record)}
+            size="small"
+            showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
               return (
@@ -268,110 +332,137 @@ export function AtribuirJogos({ user }) {
         </>
       ),
     },
-    {
-      title: "JL3",
-      dataIndex: "JL3",
-      key: "JL3",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
-      sortDirections: ["descend", "ascend"],
-      render: (text, record, index) => (
-        <>
-          <Select
-            showSearch
-            mode="single"
-            name="select_jl3"
-            style={{ width: "150px" }}
-            key={"select_jl3_" + index}
-            type="select"
-            // onChange={handleChangeSelecaoArbitro}
-            onSelect={handleChangeSelecaoArbitro}
-            value={record.Jl3 != "" ? record.JL3 : null}
-            disabled={disabledDataSource.includes(record)}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
-    {
-      title: "JL4",
-      dataIndex: "JL4",
-      key: "JL4",
-      sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
-      sortDirections: ["descend", "ascend"],
-      render: (text, record, index) => (
-        <>
-          <Select
-            showSearch
-            mode="single"
-            name="select_jl4"
-            style={{ width: "150px" }}
-            key={"select_jl4_" + index}
-            type="select"
-            onChange={handleChangeSelecaoArbitro}
-            value={record.Jl4 != "" ? record.JL4 : null}
-            disabled={disabledDataSource.includes(record)}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
+    // {
+    //   title: "JL3",
+    //   dataIndex: "JL3",
+    //   key: "JL3",
+    //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+    //   sortDirections: ["descend", "ascend"],
+    //   render: (text, record, index) => (
+    //     <>
+    //       <Select
+    //         showSearch
+    //         mode="single"
+    //         name="select_jl3"
+    //         style={{
+    //           width: "120px",
+    //           backgroundColor:
+    //             record.tags[4] === ""
+    //               ? "white"
+    //               : record.tags[4] === "pendente"
+    //               ? "#FFB963"
+    //               : record.tags[4] === "confirmado"
+    //               ? "#6FD25A"
+    //               : record.tags[4] === "recusado"
+    //               ? "#ef5350"
+    //               : "white",
+    //         }}
+    //         key={"select_jl3_" + index}
+    //         type="select"
+    //         // onChange={handleChangeSelecaoArbitro}
+    //         onSelect={handleChangeSelecaoArbitro}
+    //         value={record.Jl3 != "" ? record.JL3 : null}
+    //         disabled={disabledDataSource.includes(record)}
+    //         size="small"
+    //         showArrow={false}
+    //       >
+    //         {arbitrosDisponiveis.map((arb) => {
+    //           return (
+    //             <Select.Option
+    //               className="select-ref-choice"
+    //               value={arb + ""}
+    //               key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
+    //             >
+    //               {arb + ""}
+    //             </Select.Option>
+    //           );
+    //         })}
+    //       </Select>
+    //     </>
+    //   ),
+    // },
+    // {
+    //   title: "JL4",
+    //   dataIndex: "JL4",
+    //   key: "JL4",
+    //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
+    //   sortDirections: ["descend", "ascend"],
+    //   render: (text, record, index) => (
+    //     <>
+    //       <Select
+    //         showSearch
+    //         mode="single"
+    //         name="select_jl4"
+    //         style={{
+    //           width: "120px",
+    //           backgroundColor:
+    //             record.tags[5] === ""
+    //               ? "white"
+    //               : record.tags[5] === "pendente"
+    //               ? "#FFB963"
+    //               : record.tags[5] === "confirmado"
+    //               ? "#6FD25A"
+    //               : "#ef5350",
+    //         }}
+    //         key={"select_jl4_" + index}
+    //         type="select"
+    //         onChange={handleChangeSelecaoArbitro}
+    //         value={record.Jl4 != "" ? record.JL4 : null}
+    //         disabled={disabledDataSource.includes(record)}
+    //         size="small"
+    //         showArrow={false}
+    //       >
+    //         {arbitrosDisponiveis.map((arb) => {
+    //           return (
+    //             <Select.Option
+    //               className="select-ref-choice"
+    //               value={arb + ""}
+    //               key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
+    //             >
+    //               {arb + ""}
+    //             </Select.Option>
+    //           );
+    //         })}
+    //       </Select>
+    //     </>
+    //   ),
+    // },
     {
       title: "Ação",
       dataIndex: "acao",
       key: "acao",
-      width: "14%",
       fixed: "right",
+      width: "7%",
       render: (_, record, key) => (
         <div style={{ display: "flex" }}>
           <div>
             <Button
               shape="round"
               className="edit-button"
-              style={{ display: "flex", flexDirection: "row" }}
+              size="small"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                fontSize: "12px",
+              }}
               onClick={() => {
                 $(".save-button")[key].toggleAttribute("hidden");
                 $(".edit-button")[key].toggleAttribute("hidden");
 
-                $($(".ant-select")[key * 6 + 2]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 3]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 4]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 5]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 6]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 7]).toggleClass(
-                  "ant-select-disabled"
-                );
+                let newDisabledDataSource = [];
+                for (
+                  let index = 0;
+                  index < disabledDataSource.length;
+                  index++
+                ) {
+                  if (disabledDataSource[index] !== record) {
+                    newDisabledDataSource.push(disabledDataSource[index]);
+                  }
+                }
+
+                setDisabledDataSource(newDisabledDataSource);
+                setEditableRow(record);
+                setEdit(true);
               }}
               disabled={!disabledDataSource.includes(record)}
             >
@@ -379,6 +470,8 @@ export function AtribuirJogos({ user }) {
             </Button>
             <Button
               shape="round"
+              type="primary"
+              size="small"
               className="save-button"
               style={{ display: "flex", flexDirection: "row" }}
               hidden
@@ -386,26 +479,19 @@ export function AtribuirJogos({ user }) {
                 $(".save-button")[key].toggleAttribute("hidden");
                 $(".edit-button")[key].toggleAttribute("hidden");
 
-                $($(".ant-select")[key * 6 + 2]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 3]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 4]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 5]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 6]).toggleClass(
-                  "ant-select-disabled"
-                );
-                $($(".ant-select")[key * 6 + 7]).toggleClass(
-                  "ant-select-disabled"
-                );
+                if (editableRow === record) {
+                  message.warn("Não foi detetada alteração!");
+                } else {
+                  Meteor.call("alteraNomeacao", record, user, (err, result) => {
+                    if (err) console.log("Error", err);
+                    if (result == 1)
+                      message.success("Alteração registada com sucesso!");
+                  });
 
-                console.log(record);
+                  console.log("Guardado");
+                }
+                loadData(false);
+                setDisabledDataSource(dataSource);
               }}
             >
               Guardar 💾
@@ -433,19 +519,22 @@ export function AtribuirJogos({ user }) {
   let [temTransporte, setTemTransporte] = useState(false);
   let [naoTemTransporte, setNaoTemTransporte] = useState(false);
   let [clubesRelacionados, setClubesRelacionados] = useState([]);
-
   let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
+  let [editableRow, setEditableRow] = useState("");
+  let [edit, setEdit] = useState();
+
   useEffect(() => {
-    console.log("disabledDataSource", disabledDataSource);
-  }, [disabledDataSource]);
+    console.log("disabledDataSource, BANANANANANAN", disabledDataSource);
+    console.log("dataSource", dataSource);
+  }, [disabledDataSource, dataSource]);
 
   function handleSubmissionConfirmation() {
     Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
       if (err) {
         console.log(err);
       } else if (result) {
-        console.log("result", result);
+        // console.log("BANANANAANANNANNANNAN", result);
 
         let preNomeacoesRealizadas = result;
 
@@ -469,12 +558,10 @@ export function AtribuirJogos({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    console.log("value", value);
-    console.log("key", key);
+    // console.log("value", value);
+    // console.log("key", key);
 
     let indexAux = key.key.split("_");
-    let rowIndex = 0;
-    let TODO;
 
     for (let i = 0; i < indexAux.length; i++) {
       const element = indexAux[i];
@@ -495,180 +582,170 @@ export function AtribuirJogos({ user }) {
       " " +
       currJogo.Pavilhao;
 
-    console.log("prevNomeArbitro", prevNomeArbitro);
+    // console.log("prevNomeArbitro", prevNomeArbitro);
 
-    if (value.length === 1) {
-      // remover a nomeacao anterior
-      Meteor.call(
-        "removeNomeacaoCalendarioArbitro",
-        currNomeArbitro,
-        titulo,
-        currJogo,
-        key.key,
-        (err, result) => {
-          console.log("RESULTADO", result);
-
-          if (err) {
-            console.error(err);
-          } else if (result) {
-            // console.log(result);
-          }
-        }
-      );
-    } else if (prevNomeArbitro.length > 0) {
-      Meteor.call(
-        "removeNomeacaoCalendarioArbitro",
-        prevNomeArbitro,
-        titulo,
-        currJogo,
-        key.key,
-        (err, result) => {
-          console.log("RESULTADO", result);
-
-          if (err) {
-            console.error(err);
-          } else if (result) {
-            // console.log(result);
-          }
-        }
-      );
-
-      currNomeArbitro = value;
-      // console.log("nomeArbitro: ", currNomeArbitro);
-
-      Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
-        let condicoesArbitro = JSON.parse(JSON.stringify(result));
-        let temCarro = condicoesArbitro.temCarro;
-        let emiteRecibo = condicoesArbitro.emiteRecibo;
-        let relacoes = condicoesArbitro.relacaoComEquipas;
-
-        // let mensagemRestricoes =
-        //   currNomeArbitro +
-        //   (!temCarro ? " não tem carro." : " tem carro.") +
-        //   "\n" +
-        //   currNomeArbitro +
-        //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-        //   "\n";
-
-        let mensagemRelacoesClubes = currNomeArbitro;
-        if (relacoes.length > 0) {
-          for (let index = 0; index < relacoes.length; index++) {
-            let cargo = relacoes[index].cargo;
-            let clube = relacoes[index].clube;
-            mensagemRelacoesClubes =
-              mensagemRelacoesClubes +
-              " é " +
-              cargo +
-              " do clube " +
-              clube +
-              ".";
-          }
-        }
-
-        // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
-
-        if (mensagemRelacoesClubes.length != currNomeArbitro.length)
-          message.warn(mensagemTotal);
-      });
-
-      //console.log("key", key);
-
-      Meteor.call(
-        "addNomeacaoCalendarioArbitro",
-        currNomeArbitro,
-        currJogo,
-        key.key,
-        (err, result) => {
-          //console.log("RESULTADO", result);
-
-          if (err) {
-            console.error(err);
-          } else if (result) {
-            //console.log(result);
-          }
-        }
-      );
+    if (prevNomeArbitro === "" && value === " ") {
+      return;
     } else {
-      currNomeArbitro = value;
-      // console.log("nomeArbitro: ", currNomeArbitro);
-
-      Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
-        let condicoesArbitro = JSON.parse(JSON.stringify(result));
-        let temCarro = condicoesArbitro.temCarro;
-        let emiteRecibo = condicoesArbitro.emiteRecibo;
-        let relacoes = condicoesArbitro.relacaoComEquipas;
-
-        // let mensagemRestricoes =
-        //   currNomeArbitro +
-        //   (!temCarro ? " não tem carro." : " tem carro.") +
-        //   "\n" +
-        //   currNomeArbitro +
-        //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-        //   "\n";
-
-        let mensagemRelacoesClubes = currNomeArbitro;
-        if (relacoes.length > 0) {
-          for (let index = 0; index < relacoes.length; index++) {
-            let cargo = relacoes[index].cargo;
-            let clube = relacoes[index].clube;
-            mensagemRelacoesClubes =
-              mensagemRelacoesClubes +
-              " é " +
-              cargo +
-              " do clube " +
-              clube +
-              ".";
+      if (value.length === 1) {
+        // remover a nomeacao anterior
+        Meteor.call(
+          "removeNomeacaoCalendarioArbitro",
+          currNomeArbitro,
+          titulo,
+          currJogo,
+          key.key,
+          (err, result) => {
+            if (err) {
+              console.error(err);
+            } else if (result) {
+              // console.log(result);
+            }
           }
-        }
-
-        // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
-
-        if (mensagemRelacoesClubes.length != currNomeArbitro.length)
-          message.warn(mensagemTotal);
-      });
-
-      //console.log("key", key);
-
-      Meteor.call(
-        "addNomeacaoCalendarioArbitro",
-        currNomeArbitro,
-        currJogo,
-        key.key,
-        (err, result) => {
-          //console.log("RESULTADO", result);
-
-          if (err) {
-            console.error(err);
-          } else if (result) {
-            //console.log(result);
+        );
+      } else if (prevNomeArbitro.length > 0) {
+        Meteor.call(
+          "removeNomeacaoCalendarioArbitro",
+          prevNomeArbitro,
+          titulo,
+          currJogo,
+          key.key,
+          (err, result) => {
+            if (err) {
+              console.error(err);
+            } else if (result) {
+              // console.log(result);
+            }
           }
-        }
-      );
+        );
+
+        currNomeArbitro = value;
+        // console.log("nomeArbitro: ", currNomeArbitro);
+
+        Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
+          let condicoesArbitro = JSON.parse(JSON.stringify(result));
+          let relacoes = condicoesArbitro.relacaoComEquipas;
+
+          // let mensagemRestricoes =
+          //   currNomeArbitro +
+          //   (!temCarro ? " não tem carro." : " tem carro.") +
+          //   "\n" +
+          //   currNomeArbitro +
+          //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+          //   "\n";
+
+          let mensagemRelacoesClubes = currNomeArbitro;
+          if (relacoes.length > 0) {
+            for (let index = 0; index < relacoes.length; index++) {
+              let cargo = relacoes[index].cargo;
+              let clube = relacoes[index].clube;
+              mensagemRelacoesClubes =
+                mensagemRelacoesClubes +
+                " é " +
+                cargo +
+                " do clube " +
+                clube +
+                ".";
+            }
+          }
+
+          // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
+
+          if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+            message.warn(mensagemTotal);
+        });
+
+        //console.log("key", key);
+
+        Meteor.call(
+          "addNomeacaoCalendarioArbitro",
+          currNomeArbitro,
+          currJogo,
+          key.key,
+          edit,
+          (err, result) => {
+            //console.log("RESULTADO", result);
+
+            if (err) {
+              console.error(err);
+            } else if (result) {
+              //console.log(result);
+            }
+          }
+        );
+      } else {
+        currNomeArbitro = value;
+        // console.log("nomeArbitro: ", currNomeArbitro);
+
+        Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
+          let condicoesArbitro = JSON.parse(JSON.stringify(result));
+          let relacoes = condicoesArbitro.relacaoComEquipas;
+
+          // let mensagemRestricoes =
+          //   currNomeArbitro +
+          //   (!temCarro ? " não tem carro." : " tem carro.") +
+          //   "\n" +
+          //   currNomeArbitro +
+          //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+          //   "\n";
+
+          let mensagemRelacoesClubes = currNomeArbitro;
+          if (relacoes.length > 0) {
+            for (let index = 0; index < relacoes.length; index++) {
+              let cargo = relacoes[index].cargo;
+              let clube = relacoes[index].clube;
+              mensagemRelacoesClubes =
+                mensagemRelacoesClubes +
+                " é " +
+                cargo +
+                " do clube " +
+                clube +
+                ".";
+            }
+          }
+
+          // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
+
+          if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+            message.warn(mensagemTotal);
+        });
+
+        //console.log("key", key);
+
+        Meteor.call(
+          "addNomeacaoCalendarioArbitro",
+          currNomeArbitro,
+          currJogo,
+          key.key,
+          edit,
+          (err, result) => {
+            //console.log("RESULTADO", result);
+
+            if (err) {
+              console.error(err);
+            } else if (result) {
+              //console.log(result);
+            }
+          }
+        );
+      }
+
+      loadData();
     }
-
-    console.log("index", index);
-    console.log("indexAux", indexAux);
-
-    console.log(
-      "$(.ant-select-selector).eq(index)",
-      $(".ant-select-selector").eq(index)
-    );
-
-    $(".ant-select-selector").eq(index).css("background-color", "F7CB73");
-
-    loadData();
   }
 
-  function loadData() {
+  function loadData(isEditing) {
     let email = Meteor.user().emails[0].address;
     Meteor.call("carregaJogosSemanais", email, (err, result) => {
       if (err) {
         console.log("ERRRRROOOOO", err);
-      } else if (result.length > 0) {
+      } else if (result[0].length > 0) {
+        console.log("RESULTADO", result);
         let dataFromDB = [];
+        let preNomeacoes = result[0];
 
-        for (let index = 0; index < result.length; index++) {
-          let jogoLido = result[index];
+        for (let index = 0; index < preNomeacoes.length; index++) {
+          let jogoLido = preNomeacoes[index];
           let obj = {
             Jogo: jogoLido.id,
             Dia: jogoLido.dia,
@@ -679,10 +756,10 @@ export function AtribuirJogos({ user }) {
             Pavilhao: jogoLido.pavilhao,
             Arbitro1: jogoLido.arbitro_1,
             Arbitro2: jogoLido.arbitro_2,
-            JL1: jogoLido.juiz_linha_1,
-            JL2: jogoLido.juiz_linha_2,
-            JL3: jogoLido.juiz_linha_3,
-            JL4: jogoLido.juiz_linha_4,
+            JL1: jogoLido.juiz_linha[0],
+            JL2: jogoLido.juiz_linha[1],
+            // JL3: jogoLido.juiz_linha[2],
+            // JL4: jogoLido.juiz_linha[3],
             key: jogoLido.key,
             tags: jogoLido.tags,
           };
@@ -691,6 +768,19 @@ export function AtribuirJogos({ user }) {
         }
         console.log("dataFromDB: ", dataFromDB);
         setDataSource(dataFromDB);
+        setEdit(isEditing);
+        console.log("edit", edit);
+        console.log("editableRow", editableRow);
+        if (result[1] == true && (edit == undefined || edit == false)) {
+          let dds = [];
+          for (let index = 0; index < dataFromDB.length; index++) {
+            const element = dataFromDB[index];
+            if (element !== editableRow) {
+              dds.push(element);
+            }
+          }
+          setDisabledDataSource(dds);
+        }
       } else {
         setDataSource([]);
       }
@@ -769,47 +859,55 @@ export function AtribuirJogos({ user }) {
       ) : (
         <div
           className="demo-app"
-          style={{ height: "10%", width: "auto", alignSelf: "center" }}
+          style={{
+            width: "auto",
+            alignSelf: "center",
+            marginTop: "1%",
+          }}
         >
-          <div className="demo-app-sidebar">
-            <div
-              style={{
-                backgroundColor: "white",
-                alignSelf: "flex-start",
-                marginTop: "0.5%",
-                marginLeft: "0.5%",
-                marginRight: "0.5%",
-                height: "78px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  marginLeft: "0.5%",
-                  marginBottom: "0.05%",
-                  height: "26px",
-                  alignItems: "flex-start",
-                }}
-              >
-                <h3 className="blue">Filtros:</h3>
-              </div>
-              {/* <h2 className="blue">
+          <div
+            style={{
+              backgroundColor: "white",
+              alignSelf: "flex-start",
+              marginTop: "0.5%",
+              marginLeft: "0.5%",
+              marginRight: "0.5%",
+              height: "54px",
+            }}
+          >
+            {/* <h2 className="blue">
                 {currJogo.Jogo != undefined
                   ? "Jogo nº: " + currJogo.Jogo
                   : "Clique num jogo para o selecionar."}
               </h2> */}
-              <div
-                id="filtros"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  marginLeft: "0.5%",
-                  marginTop: "-0.5%",
-                  whiteSpace: "nowrap",
-                  justifyContent: "flex-start",
-                  marginBottom: "0.5%",
-                }}
-              >
+            <div
+              id="filtros"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginLeft: "0.5%",
+                marginTop: "-0.5%",
+                whiteSpace: "nowrap",
+                justifyContent: "space-between",
+                marginBottom: "0.5%",
+              }}
+            >
+              {/* 0 COLUNA*/}
+              <div>
+                {/* PRIMEIRA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <h3 className="blue">Filtros:</h3>
+                </div>
+              </div>
+
+              {/* 1ª COLUNA*/}
+              <div>
                 {/* PRIMEIRA OPCAO FILTRO */}
                 <div
                   style={{
@@ -833,8 +931,7 @@ export function AtribuirJogos({ user }) {
                       }
                     }}
                     style={{
-                      width: "20px",
-                      height: "20px",
+                      height: "30px",
                       marginRight: "2%",
                     }}
                     checked={temTransporte}
@@ -846,6 +943,7 @@ export function AtribuirJogos({ user }) {
                   style={{
                     display: "flex",
                     marginLeft: "0.5%",
+                    marginTop: "-3.5%",
                     alignItems: "center",
                     height: "30px",
                   }}
@@ -865,20 +963,96 @@ export function AtribuirJogos({ user }) {
                       }
                     }}
                     style={{
-                      width: "20px",
-                      height: "20px",
+                      height: "30px",
+
                       marginRight: "2%",
                     }}
                     checked={naoTemTransporte}
                   ></input>
                   <span> Sem transporte próprio </span>
                 </div>
+              </div>
+              {/* 2ª COLUNA*/}
+              <div>
+                {/* TERCEIRA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                    marginLeft: "5%",
+                  }}
+                >
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (naoTemRecibo) {
+                        setTemRecibo(!temRecibo);
+                        setNaoTemRecibo(!naoTemRecibo);
+                        // message.info(
+                        //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        // );
+                      } else {
+                        setTemRecibo(!temRecibo);
+                      }
+                    }}
+                    style={{
+                      height: "30px",
+                      marginRight: "2%",
+                    }}
+                    checked={temRecibo}
+                  ></input>
+                  <span> Emite recibo verde</span>
+                </div>
+                {/* QUARTA OPCAO FILTRO */}
+                <div
+                  style={{
+                    display: "flex",
+                    marginLeft: "5%",
+                    alignItems: "center",
 
+                    marginTop: "-3.5%",
+                    height: "30px",
+                  }}
+                >
+                  <input
+                    className="inputt"
+                    type={"checkbox"}
+                    onChange={() => {
+                      if (temRecibo) {
+                        setNaoTemRecibo(!naoTemRecibo);
+                        setTemRecibo(!temRecibo);
+                        // message.info(
+                        //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                        // );
+                      } else {
+                        setNaoTemRecibo(!naoTemRecibo);
+                      }
+                    }}
+                    style={{
+                      height: "25px",
+
+                      marginRight: "2%",
+                    }}
+                    checked={naoTemRecibo}
+                  ></input>
+                  <span> Não emite recibo verde </span>
+                </div>
+              </div>
+
+              {/* 3ª COLUNA */}
+
+              <div
+                style={{
+                  marginLeft: "3%",
+                  marginTop: "0.8%",
+                }}
+              >
                 {/* QUINTA OPCAO FILTRO*/}
                 <div
                   style={{
                     display: "flex",
-                    marginLeft: "2%",
                     alignItems: "center",
                     height: "30px",
                   }}
@@ -916,70 +1090,78 @@ export function AtribuirJogos({ user }) {
                     </Option>
                   </Select>
                 </div>
+              </div>
 
-                {/* SEXTA OPCAO FILTRO*/}
+              {/* 4ª COLUNA
+
                 <div
                   style={{
-                    display: "flex",
-                    marginLeft: "2%",
-                    alignItems: "center",
-                    height: "30px",
+                    marginLeft: "3%",
+                    marginTop: "0.8%",
                   }}
                 >
-                  <span style={{ marginRight: "0.5%" }}>Sem relação com:</span>
-                  <Select
-                    mode="multiple"
+                  {/* SEXTA OPCAO FILTRO*
+                  <div
                     style={{
-                      marginLeft: "5px",
-                      width: "550px",
-                      maxHeight: "min-content",
+                      display: "flex",
+                      alignItems: "center",
+                      height: "30px",
                     }}
-                    allowClear
-                    defaultValue={[]}
-                    placeholder="Selecione clubes"
-                    onClick={() =>
-                      Meteor.call("getClubesDisponiveis", (err, result) => {
-                        console.log(result);
-                        if (err) {
-                          console.log(err);
-                        } else if (result) {
-                          return setClubesDisponiveis(result);
-                        }
-                      })
-                    }
-                    onChange={handleChangeClubes}
-                    optionLabelProp="label"
-                    maxTagCount={2}
                   >
-                    {clubesDisponiveis.map((clube) => {
-                      return (
-                        <Select.Option
-                          value={clube}
-                          label={clube}
-                          key={"option_clube" + _.uniqueId()}
-                        >
-                          <div className="demo-option-label-item">
-                            {" "}
-                            {clube}{" "}
-                          </div>
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                </div>
-              </div>
+                    <span style={{ marginRight: "0.5%" }}>
+                      Sem relação com:
+                    </span>
+                    <Select
+                      mode="multiple"
+                      style={{
+                        marginLeft: "5px",
+                        width: "375px",
+                        maxHeight: "min-content",
+                      }}
+                      allowClear
+                      defaultValue={[]}
+                      placeholder="Selecione clubes"
+                      onClick={() =>
+                        Meteor.call("getClubesDisponiveis", (err, result) => {
+                          console.log(result);
+                          if (err) {
+                            console.log(err);
+                          } else if (result) {
+                            return setClubesDisponiveis(result);
+                          }
+                        })
+                      }
+                      onChange={handleChangeClubes}
+                      optionLabelProp="label"
+                      maxTagCount={2}
+                    >
+                      {clubesDisponiveis.map((clube) => {
+                        return (
+                          <Select.Option
+                            value={clube}
+                            label={clube}
+                            key={"option_clube" + _.uniqueId()}
+                          >
+                            <div className="demo-option-label-item">
+                              {" "}
+                              {clube}{" "}
+                            </div>
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </div> */}
+
+              {/* 5ª COLUNA */}
+
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  marginTop: "-1%",
-                  whiteSpace: "nowrap",
-                  justifyContent: "flex-start",
-                  marginBottom: "0.5%",
-                  marginLeft: "0.5%",
+                  marginLeft: "3%",
+                  marginTop: "0.8%",
+                  marginRight: "0.5%",
                 }}
               >
-                {/* TERCEIRA OPCAO FILTRO */}
                 <div
                   style={{
                     display: "flex",
@@ -987,123 +1169,9 @@ export function AtribuirJogos({ user }) {
                     height: "30px",
                   }}
                 >
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (naoTemRecibo) {
-                        setTemRecibo(!temRecibo);
-                        setNaoTemRecibo(!naoTemRecibo);
-                        message.info(
-                          "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                        );
-                      } else {
-                        setTemRecibo(!temRecibo);
-                      }
-                    }}
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "2%",
-                    }}
-                    checked={temRecibo}
-                  ></input>
-                  <span> Emite recibo verde</span>
-                </div>
-                {/* QUARTA OPCAO FILTRO */}
-                <div
-                  style={{
-                    display: "flex",
-                    marginLeft: "38px",
-                    alignItems: "center",
-
-                    height: "30px",
-                  }}
-                >
-                  <input
-                    className="inputt"
-                    type={"checkbox"}
-                    onChange={() => {
-                      if (temRecibo) {
-                        setNaoTemRecibo(!naoTemRecibo);
-                        setTemRecibo(!temRecibo);
-                        // message.info(
-                        //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
-                        // );
-                      } else {
-                        setNaoTemRecibo(!naoTemRecibo);
-                      }
-                    }}
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      marginRight: "2%",
-                    }}
-                    checked={naoTemRecibo}
-                  ></input>
-                  <span> Não emite recibo verde </span>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="demo-app-main" style={{ overflow: "auto" }}>
-                <div className="container">
-                  <div
-                    className="table-responsive"
-                    style={{ display: "flex", marginRight: "100px" }}
-                  >
-                    <Table
-                      //bordered
-                      rowClassName={(index) =>
-                        index % 2 === 0 ? "table-row-light" : "table-row-dark"
-                      }
-                      dataSource={dataSource}
-                      columns={colunasNomeacoesPrivadas}
-                      pagination={false}
-                      size="middle"
-                      style={{
-                        marginLeft: "0.5%",
-                        marginTop: "0.5%",
-                        marginRight: "0.5%",
-                      }}
-                      onRow={(record) => {
-                        return {
-                          onClick: (event) => {
-                            //console.log("event", event);
-                            //console.log("event.target.value", event.target.value);
-
-                            if (event.target != "div.ant-select-selector") {
-                              Meteor.call(
-                                "arbitrosDisponiveis",
-                                record,
-                                temRecibo,
-                                naoTemRecibo,
-                                temTransporte,
-                                naoTemTransporte,
-                                clubesRelacionados,
-                                nivelDeArbitro,
-                                (err, result) => {
-                                  // console.log(
-                                  //   "result arbitros disponiveis: ",
-                                  //   result
-                                  // );
-                                  if (err) {
-                                    console.log("ERRRRROOOOO", { err });
-                                  } else if (result.length != 0) {
-                                    return setArbitrosDisponiveis(result);
-                                  }
-                                }
-                              );
-                              currJogo = record;
-                              prevNomeArbitro = event.target.title;
-                            }
-                          },
-                        };
-                      }}
-                    />
-                  </div>
                   <Button
                     id="enviaNomeacoes"
+                    size="small"
                     onClick={() => {
                       handleSubmissionConfirmation();
                       setTimeout(() => {
@@ -1112,12 +1180,70 @@ export function AtribuirJogos({ user }) {
                       document.getElementById("enviaNomeacoes").disabled = true;
                     }}
                     type="primary"
+                    disabled={disabledDataSource.length > 0 ? true : false}
+                  >
+                    Enviar Nomeações
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="demo-app-main">
+              <div className="container">
+                <div className="table-responsive">
+                  <Table
+                    //bordered
+                    rowClassName={(index) =>
+                      index % 2 === 0 ? "table-row-light" : "table-row-dark"
+                    }
+                    dataSource={dataSource}
+                    columns={colunasNomeacoesPrivadas}
+                    pagination={false}
+                    size="small"
                     style={{
+                      marginLeft: "0.5%",
+                      marginTop: "0.5%",
                       marginRight: "0.5%",
                     }}
-                  >
-                    Enviar Nomeações para Árbitros
-                  </Button>
+                    scroll={{
+                      y: (6 * window.screen.height) / 10,
+                    }}
+                    onRow={(record) => {
+                      return {
+                        onClick: (event) => {
+                          //console.log("event", event);
+                          //console.log("event.target.value", event.target.value);
+
+                          if (event.target != "div.ant-select-selector") {
+                            Meteor.call(
+                              "arbitrosDisponiveis",
+                              record,
+                              temRecibo,
+                              naoTemRecibo,
+                              temTransporte,
+                              naoTemTransporte,
+                              clubesRelacionados,
+                              nivelDeArbitro,
+                              (err, result) => {
+                                // console.log(
+                                //   "result arbitros disponiveis: ",
+                                //   result
+                                // );
+                                if (err) {
+                                  console.log("ERRRRROOOOO", { err });
+                                } else if (result.length != 0) {
+                                  return setArbitrosDisponiveis(result);
+                                }
+                              }
+                            );
+                            currJogo = record;
+                            prevNomeArbitro = event.target.title;
+                          }
+                        },
+                      };
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -93,8 +93,11 @@ const EditableCell = ({
 
   const toggleEdit = () => {
     setEditing(!editing);
+
+    form.fields;
+
     form.setFieldsValue({
-      [dataIndex]: record[dataIndex],
+      [dataIndex]: "",
     });
   };
 
@@ -102,6 +105,7 @@ const EditableCell = ({
     try {
       const values = await form.validateFields();
       toggleEdit();
+
       handleSave({ ...record, ...values });
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
@@ -488,6 +492,7 @@ export function Restricoes({ user }) {
               <Popconfirm
                 title="Tem a certeza que quer eliminar?"
                 onConfirm={() => handleDelete(record.key)}
+                cancelText="Cancelar"
               >
                 <Button
                   shape="round"
@@ -646,6 +651,7 @@ export function Restricoes({ user }) {
         }}
       >
         <Table
+          size="small"
           components={components}
           rowClassName={() => "editable-row"}
           bordered
@@ -659,8 +665,10 @@ export function Restricoes({ user }) {
           onRow={(record, index, key) => {
             return {
               onChange: (event) => {
-                // console.log("event", event);
-                console.log("record", record);
+                console.log("event", event);
+                console.log("event.target.type", event.target.type);
+                console.log("event.target.value", event.target.value);
+                // console.log("record", record);
                 // console.log("index", index);
                 // console.log("data", data);
                 // save row data to state
@@ -668,48 +676,30 @@ export function Restricoes({ user }) {
                 // console.log($(".edit-button")[index]);
 
                 if ($(".edit-button")[index].hidden) {
-                  if (record.Clube.length != 0) {
-                    if (event.target.type === "checkbox") {
-                      if (event.target.value === "Atleta") {
-                        adicionaRestricao(
-                          record.Clube,
-                          0,
-                          event.target.checked
-                        );
-                      }
-                      if (event.target.value === "Dirigente") {
-                        adicionaRestricao(
-                          record.Clube,
-                          1,
-                          event.target.checked
-                        );
-                      }
-                      if (event.target.value === "Treinador") {
-                        adicionaRestricao(
-                          record.Clube,
-                          2,
-                          event.target.checked
-                        );
-                      }
-                      if (event.target.value === "Outra") {
-                        adicionaRestricao(
-                          record.Clube,
-                          3,
-                          event.target.checked
-                        );
-                      }
-                    } else if (event.target.type === "text") {
-                      adicionaDescricao(record.Clube, event.target.value);
-                    } else if (
-                      record.Descricao != "Clique para adicionar informação"
-                    ) {
-                      adicionaDescricao(record.Clube, record.Descricao);
+                  if (event.target.type === "checkbox") {
+                    if (event.target.value === "Atleta") {
+                      console.log("ENTRA AQUI");
+                      adicionaRestricao(record.Clube, 0, event.target.checked);
                     }
-                  } else {
-                    message.warn("Selecione Clube!");
+                    if (event.target.value === "Dirigente") {
+                      adicionaRestricao(record.Clube, 1, event.target.checked);
+                    }
+                    if (event.target.value === "Treinador") {
+                      adicionaRestricao(record.Clube, 2, event.target.checked);
+                    }
+                    if (event.target.value === "Outro") {
+                      adicionaRestricao(record.Clube, 3, event.target.checked);
+                    }
+                  } else if (event.target.type === "text") {
+                    console.log("CLICOU NA DESCRICAO");
+                    adicionaDescricao(record.Clube, event.target.value);
+                  } else if (
+                    record.Descricao != "Clique para adicionar informação"
+                  ) {
+                    adicionaDescricao(record.Clube, record.Descricao);
                   }
 
-                  console.log("data depois de row changes", data);
+                  //console.log("data depois de row changes", data);
                 }
               },
             };
@@ -731,12 +721,12 @@ export function Restricoes({ user }) {
             style={{
               marginTop: "1%",
             }}
-            shape="circle"
+            shape="round"
             value="Instruções"
             onClick={info}
           >
             {" "}
-            ❓{" "}
+            Ajuda ❓{" "}
           </Button>
         </Space>
       </div>

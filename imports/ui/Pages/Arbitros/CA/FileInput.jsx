@@ -26,7 +26,6 @@ export function FileInput() {
       return isValidFyleType;
     },
     onChange: (event) => {
-      let go = false;
       if (event.file) {
         // Aceita ficheiros csv, xls, xlsx
         Papa.parse(event.file.originFileObj, {
@@ -37,19 +36,14 @@ export function FileInput() {
                 //console.log("Error: " + err);
                 return;
               }
-              go = true;
+              if (result) {
+                message.success("Novos jogos semanais carregados!");
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros");
+              }
             });
           },
         });
       }
-
-      setTimeout(() => {
-        if (go) {
-          go = false;
-          message.success("Novos jogos semanais carregados!");
-          navigate("/Conta/ProfileCA/Atribuir_Arbitros");
-        }
-      }, 300);
     },
   };
   return (

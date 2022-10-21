@@ -23,7 +23,6 @@ const antIcon = (
     <LoadingOutlined
       style={{
         fontSize: "24px",
-        width: "fit-content",
         justifyContent: "center",
       }}
       spin
@@ -47,7 +46,7 @@ const antIcon = (
   </div>
 );
 
-export class Indisponibilidades extends React.Component {
+export class Calendario extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -88,7 +87,7 @@ export class Indisponibilidades extends React.Component {
         const { state: currentState } = that;
         const newState = { ...currentState, show: true };
         that.setState(newState);
-      }, 2000);
+      }, 200);
     });
   }
 
@@ -246,14 +245,26 @@ export class Indisponibilidades extends React.Component {
               <Button
                 onClick={() => {
                   let curr = this.state.currentEvents;
+                  console.log("curr", curr);
                   let eventos = [];
-                  curr.map((evento) =>
-                    eventos.push({
-                      id: evento.id,
-                      start: evento.startStr,
-                      end: evento.endStr,
-                    })
-                  );
+                  curr.map((evento) => {
+                    if (evento.id.includes("jogo")) {
+                      eventos.push({
+                        id: evento.id,
+                        title: evento.title,
+                        start: evento.startStr,
+                        end: evento.endStr,
+                        color: "#000000",
+                      });
+                    } else {
+                      eventos.push({
+                        id: evento.id,
+                        title: " Indisponível ",
+                        start: evento.startStr,
+                        end: evento.endStr,
+                      });
+                    }
+                  });
 
                   Meteor.call(
                     "addIndisponibilidade",
@@ -283,7 +294,7 @@ export class Indisponibilidades extends React.Component {
               </Button>
               <Space wrap>
                 <Button
-                  shape="circle"
+                  shape="round"
                   style={{
                     marginBottom: 16,
                   }}
@@ -291,7 +302,7 @@ export class Indisponibilidades extends React.Component {
                   onClick={info}
                 >
                   {" "}
-                  ❓{" "}
+                  Ajuda ❓{" "}
                 </Button>
               </Space>
             </form>
@@ -323,8 +334,8 @@ export class Indisponibilidades extends React.Component {
 
     let hoje = new Date();
 
-    // console.log("selectInfo.start", selectInfo.startStr);
-    // console.log("selectInfo.end", selectInfo.endStr);
+    console.log("selectInfo.start", selectInfo.startStr);
+    console.log("selectInfo.end", selectInfo.endStr);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -360,7 +371,7 @@ export class Indisponibilidades extends React.Component {
     for (var element of eventsArray) {
       if (newStart < hoje) return false;
       if (newStart < element.start) {
-        if (newEnd < element.start) {
+        if (newEnd <= element.start) {
           resultado = true;
         } else {
           resultado = false;

@@ -42,7 +42,7 @@ export function ConsultaClubes() {
         forgotPasswordHeader={true}
         sobreHeader={true}
       />
-      <div>
+      <div style={{ marginTop: "0.5%" }}>
         <div
           style={{
             margin: "auto",
@@ -51,7 +51,7 @@ export function ConsultaClubes() {
             alignItems: "center",
           }}
         >
-          <div className="input" style={{ marginTop: "0.5%" }}>
+          <div className="input">
             <label className="labels">
               <Search
                 onChange={(e) => setSearchVal(e.target.value)}
@@ -75,6 +75,7 @@ export function ConsultaClubes() {
         >
           <Table
             rowKey="name"
+            size="small"
             dataSource={filteredData}
             columns={colunasClubesAfiliados}
             loading={loading}

@@ -14,7 +14,7 @@ import { Header } from "../../Geral/Header";
 // Requiring the lodash library
 const _ = require("lodash");
 
-export function RemoverConta() {
+export function EditarConta() {
   let [todosArbitros, setTodosArbitros] = useState([]);
 
   let [stateSelected, setStateSelected] = useState("Escolha o nome do árbitro");
@@ -22,7 +22,6 @@ export function RemoverConta() {
   let [arbitroSelecionado, setArbitroSelecionado] = useState();
 
   const stateChange = (e) => {
-    // console.log("e", e);
     setStateSelected(e);
 
     let arbitro = "";
@@ -31,34 +30,71 @@ export function RemoverConta() {
       if (result) {
         arbitro = result;
         setArbitroSelecionado(result);
+        console.log("arbitro", arbitro);
+
+        setTimeout(() => {
+          $("#email").val(arbitro.email);
+          $("#nivelArbitro").val(arbitro.nivel);
+          $("#licencaArbitro").val(arbitro.licenca);
+          $("#isCA").attr("checked", arbitro.isAdmin);
+        }, 300);
       }
     });
-
-    setTimeout(() => {
-      $("#email").val(arbitro.email);
-      $("#nivelArbitro").val(arbitro.nivel);
-      $("#licencaArbitro").val(arbitro.licenca);
-      $("#isCA").attr("checked", arbitro.isAdmin);
-    }, 200);
   };
 
-  const editReferee = () => {
-    console.log("stateSelected", stateSelected);
-    if (stateSelected !== "Escolha o nome do árbitro") {
-      document.getElementById("input_disabled").hidden = true;
-      document.getElementById("input_enabled").hidden = false;
-      console.log("arbitroSelecionado", arbitroSelecionado);
-      $("#email").val(arbitroSelecionado.email);
-      $("#nivelArbitro").val(arbitroSelecionado.nivel);
-      $("#licencaArbitro").val(arbitroSelecionado.licenca);
-      $("#isCA").attr("checked", arbitroSelecionado.isAdmin);
+  const handleEditConfirmation = () => {
+    let emailAntigo = arbitroSelecionado.email;
+    let nivelAntigo = arbitroSelecionado.nivel;
+    let licencaAntigo = arbitroSelecionado.licenca;
+    let isCA = arbitroSelecionado.isAdmin;
+
+    let emailNovo = $("#email").val();
+    let nivelNovo = $("#nivelArbitro").val();
+    let licencaNova = $("#licencaArbitro").val();
+    let CAnovo = document.getElementById("isCA").checked;
+
+    if (
+      emailAntigo == emailNovo &&
+      nivelNovo == nivelAntigo &&
+      licencaAntigo == licencaNova &&
+      isCA == CAnovo
+    ) {
+      message.warn("Não foi detetada alteração");
     } else {
-      message.warn("Não indicou o Árbitro a editar!");
-      return;
+      Meteor.call(
+        "editUser",
+        stateSelected,
+        emailNovo,
+        nivelNovo,
+        licencaNova,
+        CAnovo,
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else if (result == 1) {
+            message.success(
+              "Árbitro " + stateSelected + " foi editado com sucesso!"
+            );
+            $("#email").val(emailNovo);
+            $("#nivelArbitro").val(nivelNovo);
+            $("#licencaArbitro").val(licencaNova);
+            $("#isCA").attr("checked", CAnovo);
+          } else if (result == -1) {
+            message.error("Erro ao editar árbitro!");
+          }
+        }
+      );
+
+      Meteor.call("getArbitroFromUsername", stateSelected, (err, result) => {
+        if (result) {
+          arbitro = result;
+          setArbitroSelecionado(result);
+        }
+      });
     }
   };
 
-  const handleConfirmation = () => {
+  const handleEliminationConfirmation = () => {
     if (stateSelected !== "Escolha o nome do árbitro") {
       // let pass = document.getElementById("pass").value;
       // let pass2 = document.getElementById("pass2").value;
@@ -99,6 +135,10 @@ export function RemoverConta() {
           }
         );
         setStateSelected("Escolha o nome do árbitro");
+        $("#email").val(null);
+        $("#nivelArbitro").val(null);
+        $("#licencaArbitro").val(null);
+        $("#isCA").attr("checked", false);
         // $("#pass").removeAttr("value");
         // $("#pass2").removeAttr("value");
         // }
@@ -180,7 +220,7 @@ export function RemoverConta() {
               </Select>
             </div>
             <p></p>
-            <div id="input_disabled">
+            <div id="input">
               <div className="input" style={{ justifyContent: "flex-start" }}>
                 <label className="labels">Email</label>
                 <Input
@@ -188,79 +228,11 @@ export function RemoverConta() {
                   placeholder="exemplo@email.com"
                   id="email"
                   style={{ borderRadius: "10px" }}
-                  disabled
-                ></Input>
-              </div>
-              <p></p>
-              <div className="input">
-                <div style={{ display: "flex" }}>
-                  <label className="labels">Nivel</label>
-                  <label className="labels" style={{ marginLeft: "44%" }}>
-                    Licença
-                  </label>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <InputNumber
-                    type="number"
-                    placeholder="1"
-                    id="nivelArbitro"
-                    min="1"
-                    max="4"
-                    disabled
-                    style={{ width: "49%", borderRadius: "10px" }}
-                  ></InputNumber>
-                  <InputNumber
-                    type="number"
-                    placeholder="xxxx"
-                    id="licencaArbitro"
-                    disabled
-                    style={{
-                      width: "50%",
-                      marginLeft: "1%",
-                      borderRadius: "10px",
-                    }}
-
-                    // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
-                  ></InputNumber>
-                </div>
-              </div>
-              <p></p>
-              <div className="input" style={{ display: "flex" }}>
-                <label
-                  className="labels"
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  Conselho de Arbitragem da AVL:
-                  <Input
-                    type={"checkbox"}
-                    id="isCA"
-                    style={{
-                      display: "flex",
-                      height: "30px",
-                      width: "30px",
-                      borderRadius: "10px",
-                    }}
-                    disabled
-                  ></Input>
-                </label>
-              </div>
-            </div>
-            <div id="input_enabled" hidden>
-              <div className="input" style={{ justifyContent: "flex-start" }}>
-                <label className="labels">Email</label>
-                <Input
-                  type={"email"}
-                  placeholder="exemplo@email.com"
-                  id="email"
-                  style={{ borderRadius: "10px" }}
+                  defaultValue={
+                    arbitroSelecionado != undefined
+                      ? arbitroSelecionado.email
+                      : null
+                  }
                 ></Input>
               </div>
               <p></p>
@@ -284,6 +256,11 @@ export function RemoverConta() {
                     min="1"
                     max="4"
                     style={{ width: "49%", borderRadius: "10px" }}
+                    defaultValue={
+                      arbitroSelecionado != undefined
+                        ? arbitroSelecionado.nivel
+                        : null
+                    }
                   ></InputNumber>
                   <InputNumber
                     type="number"
@@ -294,8 +271,11 @@ export function RemoverConta() {
                       marginLeft: "1%",
                       borderRadius: "10px",
                     }}
-
-                    // value={userFromArbitro != "" ? userFromArbitro.licenca : null}
+                    defaultValue={
+                      arbitroSelecionado != undefined
+                        ? arbitroSelecionado.licenca
+                        : null
+                    }
                   ></InputNumber>
                 </div>
               </div>
@@ -322,6 +302,7 @@ export function RemoverConta() {
                 </label>
               </div>
             </div>
+
             {/* <p></p>
             <div className="input">
               <label className="labels">Insira a sua password:</label>
@@ -359,15 +340,21 @@ export function RemoverConta() {
             </div> */}
             <p></p>
             <div style={{ display: "flex", justifyContent: "space-around" }}>
-              <Button size="small" shape="round" onClick={() => editReferee()}>
+              <Button
+                size="small"
+                type="primary"
+                shape="round"
+                onClick={() => handleEditConfirmation()}
+              >
                 {" "}
-                ✏️ Editar Árbitro
+                💾 Guardar alterações
               </Button>
               <Popconfirm
                 title={
                   "Tem a certeza que quer eliminar " + stateSelected + " ?"
                 }
-                onConfirm={() => handleConfirmation()}
+                onConfirm={() => handleEliminationConfirmation()}
+                cancelText="Cancelar"
               >
                 <Button
                   size="small"

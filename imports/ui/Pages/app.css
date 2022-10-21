@@ -41,6 +41,45 @@ html {
   transition: all 200ms ease-in;
 }
 
+.containerLogo {
+  position: relative;
+}
+
+.overlayLogo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 33%;
+  right: 0;
+  height: 59px;
+  width: 86px;
+  opacity: 0;
+  transition: 0.5s ease;
+  background-color: rgb(24, 144, 255);
+}
+
+.containerLogo:hover .overlayLogo {
+  opacity: 0.9;
+  cursor: pointer;
+}
+
+.homePageText {
+  color: white;
+  font-size: 11px;
+  position: absolute;
+  font-weight: bolder;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* .ant-input::placeholder {
+  font-size: smaller;
+} */
+
 .inputt {
   height: 30px;
   border: none !important;
@@ -172,6 +211,10 @@ html {
   justify-content: stretch;
 } */
 
+.hideCalendarTime > div > b {
+  display: none;
+}
+
 .table-row-light {
   background-color: #ded9d9;
 }
@@ -211,13 +254,28 @@ html {
 }
 
 .ant-spin-nested-loading {
-  width: fit-content;
+  width: 100%;
 }
 
 .ant-table-container {
-  width: fit-content;
+  width: 100%;
 }
 
 .tableRestricoes {
   width: inherit;
+}
+
+.ant-select-disabled.ant-select:not(.ant-select-customize-input)
+  .ant-select-selector {
+  background: none !important;
+  color: black !important;
+}
+
+.ant-table table {
+  font-size: 12px;
+}
+
+/* PARA POR DISABLE COMO QUERO NO RECUSO JOGO*/
+.ant-popover-disabled-compatible-wrapper {
+  width: 100% !important;
 }

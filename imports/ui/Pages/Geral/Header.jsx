@@ -344,6 +344,7 @@ export const Header = ({
               }}
             >
               <div
+                className="containerLogo"
                 style={{
                   width: "100%",
                   height: "100%",
@@ -356,6 +357,13 @@ export const Header = ({
                   src="logo.png"
                   style={{ height: "100%", cursor: "pointer" }}
                 />
+                <div className="overlayLogo">
+                  <div className="homePageText">
+                    <h1 className="homePageText">
+                      Página <br></br>inicial
+                    </h1>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -444,7 +452,7 @@ export const Header = ({
                 display: "flex",
                 width: "20%",
                 height: "100%",
-                alignContent: "space-evenly",
+                justifyContent: "flex-end",
               }}
             >
               <a
@@ -462,7 +470,7 @@ export const Header = ({
               </a>
             </div>
           </div>
-          <br></br>
+          <h6></h6>
         </>
       )}
     </>
@@ -521,7 +529,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Consultar Nomeações
+            Consultar nomeações
           </p>
         </a>
 
@@ -529,12 +537,12 @@ const MenuPrivado = () => {
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
             onClick={() => {
-              if (location.pathname != "/Conta/Profile/Indisponibilidades")
-                (location.pathname = "/Conta/Profile/Indisponibilidades"),
-                  navigate("/Conta/Profile/Indisponibilidades");
+              if (location.pathname != "/Conta/Profile/Calendario")
+                (location.pathname = "/Conta/Profile/Calendario"),
+                  navigate("/Conta/Profile/Calendario");
             }}
           >
-            Indicar Indisponibilidades
+            Indicar indisponibilidades
           </p>
         </a>
 
@@ -548,7 +556,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Indicar Restrições
+            Indicar restrições
           </p>
         </a>
 
@@ -562,7 +570,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Histórico de Jogos
+            Histórico de jogos
           </p>
         </a>
       </Drawer>
@@ -613,45 +621,53 @@ const MenuPrivadoCA = () => {
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA"),
-              navigate("/Conta/ProfileCA")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA") {
+                (location.pathname = "/Conta/ProfileCA"),
+                  navigate("/Conta/ProfileCA");
+              }
+            }}
           >
-            Consultar Nomeações
+            Consultar nomeações
           </p>
         </a>
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Indisponibilidades"),
-              navigate("/Conta/ProfileCA/Indisponibilidades")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Calendario") {
+                (location.pathname = "/Conta/ProfileCA/Calendario"),
+                  navigate("/Conta/ProfileCA/Calendario");
+              }
+            }}
           >
-            Marcar Indisponibilidades
+            Indicar indisponibilidades
           </p>
         </a>
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Relacoes"),
-              navigate("/Conta/ProfileCA/Relacoes")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Relacoes") {
+                (location.pathname = "/Conta/ProfileCA/Relacoes"),
+                  navigate("/Conta/ProfileCA/Relacoes");
+              }
+            }}
           >
-            Indicar Restrições
+            Indicar restrições
           </p>
         </a>
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Relacoes"),
-              navigate("/Conta/ProfileCA/Relacoes")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Jogos_Passados") {
+                (location.pathname = "/Conta/ProfileCA/Jogos_Passados"),
+                  navigate("/Conta/ProfileCA/Jogos_Passados");
+              }
+            }}
           >
-            Histórico de Jogos
+            Histórico de jogos
           </p>
         </a>
         <p>
@@ -662,24 +678,28 @@ const MenuPrivadoCA = () => {
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
             id="clickOptionMenuAtribuirArbitros"
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros"),
-              navigate("/Conta/ProfileCA/Atribuir_Arbitros")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Atribuir_Arbitros") {
+                (location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros"),
+                  navigate("/Conta/ProfileCA/Atribuir_Arbitros");
+              }
+            }}
           >
-            Atribuir Árbitros a Jogos
+            Nomear árbitros
           </p>
         </a>
 
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Carregar_Novos_Jogos"),
-              navigate("/Conta/ProfileCA/Carregar_Novos_Jogos")
-            )}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Carregar_Novos_Jogos") {
+                (location.pathname = "/Conta/ProfileCA/Carregar_Novos_Jogos"),
+                  navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
+              }
+            }}
           >
-            Carregar Jogos Novos
+            Carregar jogos novos
           </p>
         </a>
         <p>
@@ -689,23 +709,27 @@ const MenuPrivadoCA = () => {
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Criar_Arbitro"),
-              navigate("/Conta/ProfileCA/Criar_Arbitro")
-            )}
+            onClick={() => {
+              if ((location.pathname = "/Conta/ProfileCA/Criar_Arbitro")) {
+                (location.pathname = "/Conta/ProfileCA/Criar_Arbitro"),
+                  navigate("/Conta/ProfileCA/Criar_Arbitro");
+              }
+            }}
           >
-            Criar Conta Nova
+            Criar conta árbitro
           </p>
         </a>
         <a className="menu-item">
           <p
             style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Remover_Arbitro"),
-              navigate("/Conta/ProfileCA/Remover_Arbitro")
-            )}
+            onClick={() => {
+              if ((location.pathname = "/Conta/ProfileCA/Criar_Arbitro")) {
+                (location.pathname = "/Conta/ProfileCA/Remover_Arbitro"),
+                  navigate("/Conta/ProfileCA/Remover_Arbitro");
+              }
+            }}
           >
-            Remover Conta Árbitro
+            Editar conta árbitro
           </p>
         </a>
 

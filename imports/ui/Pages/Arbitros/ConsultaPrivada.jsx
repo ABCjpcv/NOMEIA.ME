@@ -51,43 +51,43 @@ export function ConsultaPrivada({ user }) {
       title: "Jogo",
       dataIndex: "Jogo",
       key: "Jogo",
+      width: "4%",
       sorter: (a, b) => a.Jogo - b.Jogo,
       sortDirections: ["descend", "ascend"],
-      width: "5%",
       fixed: "left",
     },
     {
       title: "Dia",
       dataIndex: "Dia",
       key: "Dia",
+      width: "7%",
       sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
       sortDirections: ["descend", "ascend"],
-      width: "8%",
       fixed: "left",
     },
     {
       title: "Hora",
       dataIndex: "Hora",
       key: "Hora",
+      width: "5%",
       sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
       sortDirections: ["descend", "ascend"],
-      width: "5%",
       fixed: "left",
     },
     {
       title: "Prova",
       dataIndex: "Prova",
       key: "Prova",
-      width: "6%",
+      width: "7%",
       sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
-      title: "Serie",
+      title: "Série",
       dataIndex: "Serie",
       key: "Serie",
-      width: "7%",
+      width: "5%",
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
@@ -96,36 +96,41 @@ export function ConsultaPrivada({ user }) {
       title: "Equipas",
       dataIndex: "Equipas",
       key: "Equipas",
+      width: "12%",
       sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
-      title: "Pavilhao",
+      title: "Pavilhão",
       dataIndex: "Pavilhao",
       key: "Pavilhao",
+      width: "15%",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
-      title: "Arbitro1",
+      title: "1º Árbitro",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
+
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Arbitro2",
+      title: "2º Árbitro",
       dataIndex: "Arbitro2",
       key: "Arbitro2",
+
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "JL",
+      title: "Juízes de linha",
       dataIndex: "JL",
       key: "JL",
+      width: "9%",
       sorter: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
       sortDirections: ["descend", "ascend"],
     },
@@ -133,8 +138,8 @@ export function ConsultaPrivada({ user }) {
       title: "Ação",
       dataIndex: "acao",
       key: "acao",
-      width: "11%",
       fixed: "right",
+      width: "9%",
       render: (_, record) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
           <>
@@ -143,134 +148,145 @@ export function ConsultaPrivada({ user }) {
               <br></br>
               <InputNumber
                 className="resultado"
-                defaultValue={0}
+                placeholder="0"
                 max={3}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              X{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              X
               <InputNumber
                 className="resultado"
-                defaultValue={0}
+                placeholder="0"
                 max={3}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-                // status={"warning"}
+                style={{ width: "40px" }}
+                controls={false}
               />
               <br></br>
               Sets:
               <br></br>
-              {"( "}
+              {"("}
               <InputNumber
                 className="set1"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              -{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              -
               <InputNumber
                 className="set1"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "40px" }}
+                controls={false}
               />
-              {" )"}
+              {")"}
               <br></br>
-              {"( "}
+              {"("}
               <InputNumber
                 className="set2"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              -{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              -
               <InputNumber
                 className="set2"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "40px" }}
+                controls={false}
               />
-              {" )"}
+              {")"}
               <br></br>
-              {"( "}
+              {"("}
               <InputNumber
                 className="set3"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              -{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              -
               <InputNumber
                 className="set3"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "40px" }}
+                controls={false}
               />
-              {" )"}
+              {")"}
               <br></br>
-              {"( "}
+              {"("}
               <InputNumber
                 className="set4"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              -{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              -
               <InputNumber
                 className="set4"
-                defaultValue={0}
-                max={45}
+                placeholder="0"
+                max={50}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "40px" }}
+                controls={false}
               />
-              {" )"}
+              {")"}
               <br></br>
-              {"( "}
+              {"("}
               <InputNumber
                 className="set5"
-                defaultValue={0}
+                placeholder="0"
                 max={30}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
-              />{" "}
-              -{" "}
+                style={{ width: "40px" }}
+                controls={false}
+              />
+              -
               <InputNumber
                 className="set5"
-                defaultValue={0}
-                max={15}
+                placeholder="0"
+                max={30}
                 min={0}
                 size={"small"}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "40px" }}
+                controls={false}
               />
-              {" )"}
+              {")"}
             </div>
 
-            <div className="divResultadoDisabled" hidden>
+            {/* <div className="divResultadoDisabled" hidden>
               Resultado:
               <br></br>
               <InputNumber
                 className="resultado"
                 size={"small"}
                 value={resultadoAtual.split("-")[0]}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "44px" }}
                 disabled
               />{" "}
               X{" "}
@@ -278,7 +294,7 @@ export function ConsultaPrivada({ user }) {
                 className="resultado"
                 size={"small"}
                 value={resultadoAtual.split("-")[1]}
-                style={{ height: "22px", width: "44px" }}
+                style={{ width: "44px" }}
                 disabled
               />
               <br></br>
@@ -289,7 +305,7 @@ export function ConsultaPrivada({ user }) {
                 className="set1"
                 size={"small"}
                 value={resultadoAtual.split("-")[2]}
-                style={{ height: "22px", width: "44px" }}
+                style={{  width: "44px" }}
                 disabled
               />{" "}
               -{" "}
@@ -373,25 +389,39 @@ export function ConsultaPrivada({ user }) {
                 disabled
               />
               {" )"}
-            </div>
+            </div> */}
           </>
         ) : dataSource.length > 0 ? (
           <div>
-            <Popconfirm
-              title="Confirmar jogo?"
-              onConfirm={() => handleConfirmation(record)}
+            <Button
+              type="primary"
+              shape="round"
+              size="small"
+              style={{ width: "100%", fontSize: "12px" }}
+              onClick={() => {
+                handleConfirmation(record);
+              }}
+              disabled={record.tags[0] == "recusado" ? true : false}
             >
-              <Button type="primary" shape="round" style={{ width: "100%" }}>
-                Confirmo ✔️
-              </Button>
-            </Popconfirm>
-            <br></br>
-            <br></br>
+              Confirmo ✔️
+            </Button>
+            <div style={{ height: "5%" }}>
+              <h3></h3>
+            </div>
             <Popconfirm
               title="Recusar jogo?"
-              onConfirm={() => handleRefuse(record)}
+              onConfirm={() => recusa(record)}
+              style={{ width: "100%" }}
+              cancelText="Cancelar"
+              //disabled={record.tags[0] == "recusado" ? true : false}
             >
-              <Button shape="round" style={{ width: "100%" }}>
+              <Button
+                shape="round"
+                size="small"
+                style={{ width: "100%", fontSize: "12px" }}
+                disabled={record.tags[0] == "recusado" ? true : false}
+                // onClick={() => recusa(record)}
+              >
                 Recuso ❌
               </Button>
             </Popconfirm>
@@ -402,7 +432,6 @@ export function ConsultaPrivada({ user }) {
       title: "Estado:",
       dataIndex: "estado",
       key: "estado",
-      width: "10%",
       fixed: "right",
       render: (_, record, index) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
@@ -411,6 +440,7 @@ export function ConsultaPrivada({ user }) {
               className="popconfirm_result"
               title="Confirmar resultado?"
               onConfirm={() => handleConfirmationResultado(record, index)}
+              cancelText="Cancelar"
             >
               <Button
                 type="primary"
@@ -418,6 +448,7 @@ export function ConsultaPrivada({ user }) {
                 style={{ width: "100%" }}
                 className="button_result"
                 hidden={false}
+                size="small"
               >
                 Confirmo ✔️
               </Button>
@@ -469,13 +500,7 @@ export function ConsultaPrivada({ user }) {
 
   const [resultadoAtual, setResultadoAtual] = useState("");
 
-  let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-    return result;
-  });
-
-  useEffect(() => {
-    console.log("dataSource", dataSource);
-  }, [dataSource]);
+  useEffect(() => {}, [dataSource]);
 
   function handleJogoPassou(record) {
     let horario = addHours(
@@ -505,6 +530,7 @@ export function ConsultaPrivada({ user }) {
       }
     });
     setDataSource(newData);
+    handleSubmissionConfirmation(dataSource);
   };
 
   const handleAllConfirmation = () => {
@@ -523,31 +549,22 @@ export function ConsultaPrivada({ user }) {
     setDataSource(newData);
   };
 
-  const handleRefuse = (record) => {
-    const newData = dataSource.filter((item) => {
-      if (item.key == record.key) {
-        return (item.tags[0] = ["recusado"]);
-      } else {
-        return item;
-      }
-    });
-    setDataSource(newData);
-  };
-
-  function handleSubmissionConfirmation(data) {
+  function handleSubmissionConfirmation(data, confirma) {
     let jogos = [];
     let confirmacoes = [];
+    let sendMessage = false;
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
-        return message.info("Ainda tem jogos por confirmar, " + user.username);
-      } else {
-        jogos.push(data[index]);
-        confirmacoes.push(data[index].tags[0]);
+        sendMessage = true;
       }
+      jogos.push(data[index]);
+      confirmacoes.push(data[index].tags[0]);
     }
 
     let email = user.emails[0].address;
+
+    console.log("confirmacoes", confirmacoes);
 
     Meteor.call(
       "addConfirmacaoNomeacao",
@@ -558,10 +575,15 @@ export function ConsultaPrivada({ user }) {
         if (err) {
           console.log("ERRRRROOOOO", { err });
         } else {
-          message.success("Confirmações submetidas " + user.username);
+          confirma
+            ? message.success("Confirmação de jogo submetida " + user.username)
+            : message.info("Recusa de jogo submetida " + user.username);
         }
       }
     );
+
+    // if (sendMessage)
+    //   message.info("Ainda tem jogos por confirmar, " + user.username);
   }
 
   function handleConfirmationResultado(record, index) {
@@ -570,9 +592,18 @@ export function ConsultaPrivada({ user }) {
     let inputs = document.querySelectorAll("input");
 
     console.log(inputs);
+    console.log("index", index);
+    console.log("inputs[index]", inputs[index]);
+
+    let inputsLength = inputs.length;
+
+    if (index * 12 >= inputsLength) {
+      // EXISTEM JOGOS QUE AINDA NÃO FORAM REALIZADOS NO MEIO
+      handleConfirmationResultado(record, index - 1);
+    }
 
     let resultado =
-      inputs[index * 24].value + "-" + inputs[index * 24 + 1].value;
+      inputs[index * 12].value + "-" + inputs[index * 12 + 1].value;
 
     console.log("RESULTADO", resultado);
     if (
@@ -590,7 +621,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set1 =
-      inputs[index * 24 + 2].value + "-" + inputs[index * 24 + 3].value;
+      inputs[index * 12 + 2].value + "-" + inputs[index * 12 + 3].value;
 
     if (!validaSet(set1, false)) {
       message.warn("Pontuação do 1º Set inválida!");
@@ -598,7 +629,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set2 =
-      inputs[index * 24 + 4].value + "-" + inputs[index * 24 + 5].value;
+      inputs[index * 12 + 4].value + "-" + inputs[index * 12 + 5].value;
 
     console.log("set2", set2);
 
@@ -608,7 +639,7 @@ export function ConsultaPrivada({ user }) {
     }
 
     let set3 =
-      inputs[index * 24 + 6].value + "-" + inputs[index * 24 + 7].value;
+      inputs[index * 12 + 6].value + "-" + inputs[index * 12 + 7].value;
 
     if (!validaSet(set3, false)) {
       message.warn("Pontuação do 3º Set inválida!");
@@ -624,14 +655,14 @@ export function ConsultaPrivada({ user }) {
       resultado === "3-2" ||
       resultado === "2-3"
     ) {
-      set4 = inputs[index * 24 + 8].value + "-" + inputs[index * 24 + 9].value;
+      set4 = inputs[index * 12 + 8].value + "-" + inputs[index * 12 + 9].value;
       if (!validaSet(set4, false)) {
         message.warn("Pontuação do 4º Set inválida!");
         return;
       }
       if (resultado === "2-3" || resultado === "3-2") {
         set5 =
-          inputs[index * 24 + 10].value + "-" + inputs[index * 24 + 11].value;
+          inputs[index * 12 + 10].value + "-" + inputs[index * 12 + 11].value;
         if (!validaSet(set5, true)) {
           message.warn("Pontuação do 5º Set inválida!");
           return;
@@ -665,17 +696,17 @@ export function ConsultaPrivada({ user }) {
       set5;
     setResultadoAtual(res);
 
-    $($(".divResultadoDisabled")[index]).attr("hidden", false);
-    $($(".divResultado")[index]).attr("hidden", true);
+    // $($(".divResultadoDisabled")[index]).attr("hidden", false);
+    // $($(".divResultado")[index]).attr("hidden", true);
 
-    $(
-      $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result_hidden")[
-        index
-      ]
-    ).attr("hidden", false);
-    $(
-      $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result")[index]
-    ).attr("hidden", true);
+    // $(
+    //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result_hidden")[
+    //     index
+    //   ]
+    // ).attr("hidden", false);
+    // $(
+    //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result")[index]
+    // ).attr("hidden", true);
 
     // GUARDAR NO LADO DO SERVER O RESULTADO
 
@@ -688,6 +719,12 @@ export function ConsultaPrivada({ user }) {
         message.success("Resultado submetido " + user.username);
       }
     });
+
+    let newDS = [];
+    for (let index = 0; index < dataSource.length; index++) {
+      if (dataSource[index] != record) newDS.push(dataSource[index]);
+    }
+    setDataSource(newDS);
   }
 
   function loadData() {
@@ -701,7 +738,7 @@ export function ConsultaPrivada({ user }) {
         console.log("ERRRRROOOOO", err);
       } else if (result)
         if (result.nomeacoesPrivadas.length > 0) {
-          //console.log("RESULTADO AQUI", result);
+          console.log("RESULTADO AQUI", result);
 
           let dataFromDB = [];
 
@@ -717,14 +754,10 @@ export function ConsultaPrivada({ user }) {
 
             tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
-            console.log("jogoLido", jogoLido);
-
             let jl =
               jogoLido.juiz_linha[0].length == 0
                 ? ""
                 : jogoLido.juiz_linha.toString().replaceAll(",", "\n");
-
-            console.log("jogoLido JLs", jl);
 
             let obj = {
               Jogo: jogoLido.id,
@@ -747,6 +780,76 @@ export function ConsultaPrivada({ user }) {
         } else {
           setDataSource([]);
         }
+    });
+  }
+
+  let recusaInput = "";
+  let mudou = false;
+  let [recusaInputDisabled, setRecusaInputDisabled] = useState("");
+  let [estadoRecusaInput, setEstadoRecusaInput] = useState("error");
+  let [isModalVisible, setModalVisible] = useState();
+
+  const handleRecusaInput = (e) => {
+    recusaInput = e.target.value;
+
+    if (e.target.value.length != 0 && !mudou) {
+      // let ultimo = $(".ant-btn.ant-btn-primary").length - 1;
+      // $($(".ant-btn.ant-btn-primary"))[ultimo].toggleAttribute("disabled");
+      setRecusaInputDisabled(false);
+      setEstadoRecusaInput("");
+      mudou = true;
+    } else if (e.target.value.length == 0) {
+      // let ultimo = $(".ant-btn.ant-btn-primary").length - 1;
+      // $($(".ant-btn.ant-btn-primary"))[ultimo].toggleAttribute("disabled");
+      setRecusaInputDisabled(true);
+      setEstadoRecusaInput("error");
+      mudou = false;
+    }
+  };
+
+  function handleOkRecusa(record) {
+    console.log("Change is:", recusaInput);
+    const newData = dataSource.filter((item) => {
+      if (item.key == record.key) {
+        return (item.tags[0] = ["recusado"]);
+      } else {
+        return item;
+      }
+    });
+    setDataSource(newData);
+    handleSubmissionConfirmation(dataSource, false);
+  }
+
+  function recusa(record) {
+    Modal.confirm({
+      title: "Recusa de Jogo",
+      content: (
+        <div>
+          <p>Indique o motivo da recusa do Jogo</p>
+          <Input
+            id="input_recusa_jogo"
+            showCount
+            maxLength={80}
+            allowClear
+            onInput={handleRecusaInput}
+            status={estadoRecusaInput}
+          ></Input>
+        </div>
+      ),
+      keyboard: false,
+      okText: "Enviar recusa de jogo",
+      onOk() {
+        if (recusaInput.length == 0) {
+          message.warn("Não colocou motivo de recusa de jogo...");
+          setModalVisible(true);
+        } else {
+          handleOkRecusa(record);
+          setModalVisible(false);
+        }
+      },
+      cancelText: "Cancelar",
+      visible: isModalVisible == undefined ? true : isModalVisible,
+      className: "modalRecusa",
     });
   }
 
@@ -780,10 +883,8 @@ export function ConsultaPrivada({ user }) {
   for (let index = 0; index < dataSource.length; index++) {
     const element = dataSource[index];
     passaramTodos = passaramTodos && handleJogoPassou(element);
-    if (passaramTodos) break;
+    // if (passaramTodos) break;
   }
-
-  setTimeout(() => {}, 300);
 
   if (dataSource.length === 0) {
     return <h2 className="blue">Não tem nomeações de momento.</h2>;
@@ -811,26 +912,31 @@ export function ConsultaPrivada({ user }) {
                     columns={colunasNomeacoesPrivadas}
                     style={{
                       width: "100%",
-                      height: "35vw",
+                      height: "100%",
                     }}
-                    size="middle"
+                    size="small"
                     pagination={false}
                     scroll={{
                       y: "66vh",
                     }}
                   />
                   <Button
-                    onClick={handleAllConfirmation}
+                    onClick={() => {
+                      handleAllConfirmation,
+                        handleSubmissionConfirmation(dataSource);
+                    }}
                     style={{
                       marginTop: "0.5%",
                     }}
+                    type="primary"
+                    size="small"
                     id="confirmAllNominations"
                     disabled={passaramTodos}
                   >
                     Confirmar todos
                   </Button>
 
-                  <Button
+                  {/* <Button
                     onClick={() => {
                       handleSubmissionConfirmation(dataSource);
                     }}
@@ -842,10 +948,10 @@ export function ConsultaPrivada({ user }) {
                     disabled={passaramTodos}
                   >
                     Submeter Confirmações
-                  </Button>
+                  </Button> */}
                   <Space wrap>
                     <Button
-                      shape="circle"
+                      shape="round"
                       style={{
                         marginBottom: 16,
                       }}
@@ -853,7 +959,7 @@ export function ConsultaPrivada({ user }) {
                       onClick={info}
                     >
                       {" "}
-                      ❓{" "}
+                      Ajuda ❓{" "}
                     </Button>
                   </Space>
                 </div>
@@ -871,36 +977,36 @@ export function ConsultaPrivada({ user }) {
   }
 
   function validaSet(set, decisivo) {
-    let parcial1 = set.split("-")[0];
-    let parcial2 = set.split("-")[1];
+    let parcial1 = parseInt(set.split("-")[0]);
+    let parcial2 = parseInt(set.split("-")[1]);
 
-    let conta = parseInt(parcial1) - parseInt(parcial2);
+    let conta = parcial1 - parcial2;
     conta < 0 ? (conta = conta * -1) : null;
 
-    if (!(conta >= 2)) {
-      return false;
-    }
+    if (conta === NaN) return false;
 
-    if (!decisivo) {
-      if (
-        !(
-          (parcial1 != "25" && parcial2 == "25") ||
-          (parcial1 == "25" && parcial2 != "25")
-        )
-      ) {
-        return false;
-      }
-    } else {
-      if (
-        !(
-          (parcial1 != "15" && parcial2 == "15") ||
-          (parcial1 == "15" && parcial2 != "15")
-        )
-      ) {
-        return false;
-      }
-    }
-    return true;
+    if (conta < 2) return false;
+    // if (!decisivo) {
+    //   if (
+    //     !(
+    //       (parcial1 > 25 && parcial2 > 25) ||
+    //       (parcial1 == 25 && parcial2 != 25)
+    //     )
+    //   ) {
+    //     console.log("ERRADO");
+    //     return false;
+    //   }
+    // } else {
+    //   if (
+    //     !(
+    //       (parcial1 != 15 && parcial2 == 15) ||
+    //       (parcial1 == 15 && parcial2 != 15)
+    //     )
+    //   ) {
+    //     return false;
+    //   }
+    // }
+    else return true;
   }
 
   function parcial1(set) {

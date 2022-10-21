@@ -301,8 +301,8 @@ export function JogosPassados({ user }) {
               Arbitro2: jogoLido.arbitro_2,
               JL1: jogoLido.juiz_linha_1,
               JL2: jogoLido.juiz_linha_2,
-              JL3: jogoLido.juiz_linha_3,
-              JL4: jogoLido.juiz_linha_4,
+              // JL3: jogoLido.juiz_linha_3,
+              // JL4: jogoLido.juiz_linha_4,
               key: jogoLido.key,
               tags: [tags],
             };
@@ -373,7 +373,7 @@ export function JogosPassados({ user }) {
                       width: "100%",
                       height: "37vw",
                     }}
-                    size="middle"
+                    size="small"
                     pagination={false}
                     scroll={{
                       y: "66vh",

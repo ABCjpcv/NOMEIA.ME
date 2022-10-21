@@ -166,6 +166,7 @@ export function ContaNova() {
             <Popconfirm
               title={"Tem a certeza que quer adicionar " + nome + " ?"}
               onConfirm={() => handleConfirmation()}
+              cancelText="Cancelar"
             >
               <Button size="small" shape="round" type="primary">
                 Registar árbitro novo
@@ -218,7 +219,6 @@ const handleConfirmation = () => {
   }
   let isCA = document.getElementById("isCA").checked;
 
-  let sucesso = false;
   Meteor.call(
     "registerArbitro",
     nome,
@@ -230,21 +230,15 @@ const handleConfirmation = () => {
     isCA,
     (err, result) => {
       if (result) {
-        sucesso = true;
+        message.success("Árbitro " + nome + ", criado com sucesso!");
+        document.getElementById("nome").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("nivelArbitro").value = "";
+        document.getElementById("licencaArbitro").value = "";
+        document.getElementById("pass").value = "";
+        document.getElementById("pass2").value = "";
+        document.getElementById("isCA").checked = false;
       }
     }
   );
-
-  setTimeout(() => {
-    if (sucesso) {
-      message.success("Árbitro " + nome + ", criado com sucesso!");
-      document.getElementById("nome").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("nivelArbitro").value = "";
-      document.getElementById("licencaArbitro").value = "";
-      document.getElementById("pass").value = "";
-      document.getElementById("pass2").value = "";
-      document.getElementById("isCA").checked = false;
-    }
-  }, 300);
 };

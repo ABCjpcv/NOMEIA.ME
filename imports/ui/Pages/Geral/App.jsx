@@ -8,7 +8,7 @@ import "../../Pages/app.css";
 import { Navbar } from "./Navbar.jsx";
 import { Sobre } from "../NaoAutenticado/Sobre.jsx";
 import { ConsultaNomeacoes } from "../NaoAutenticado/ConsultaNomeacoes.jsx";
-import { Indisponibilidades } from "../Arbitros/Indisponibilidades.jsx";
+import { Calendario } from "../Arbitros/Calendario.jsx";
 import { Restricoes } from "../Arbitros/Restricoes.jsx";
 import { ContaNova } from "../Arbitros/CA/ContaNova.jsx";
 import { Autenticar } from "../NaoAutenticado/Autenticar.jsx";
@@ -23,9 +23,10 @@ import { UserSettings } from "../Arbitros/UserSettings";
 import { FileInput } from "../Arbitros/CA/FileInput";
 import { AtribuirJogos } from "../Arbitros/CA/AtribuirJogos";
 import { JogosPassados } from "../Arbitros/JogosPassados";
+import { JogosPassadosCA } from "../Arbitros/CA/JogosPassadosCA";
 
 import { useTracker } from "meteor/react-meteor-data";
-import { RemoverConta } from "../Arbitros/CA/RemoverConta";
+import { EditarConta } from "../Arbitros/CA/EditarConta";
 
 const { Link } = require("react-router-dom");
 
@@ -70,8 +71,8 @@ export const App = () => {
           <Route exact path="/Conta" element={<ProtectedRoute />}>
             <Route path="Profile" element={<Profile user={user} />}></Route>
             <Route
-              path="Profile/Indisponibilidades"
-              element={<Indisponibilidades user={user} />}
+              path="Profile/Calendario"
+              element={<Calendario user={user} />}
             ></Route>
             <Route
               path="Profile/Relacoes"
@@ -89,8 +90,8 @@ export const App = () => {
 
             <Route path="ProfileCA" element={<ProfileCA user={user} />}></Route>
             <Route
-              path="ProfileCA/Indisponibilidades"
-              element={<Indisponibilidades user={user} />}
+              path="ProfileCA/Calendario"
+              element={<Calendario user={user} />}
             ></Route>
             <Route
               path="ProfileCA/Relacoes"
@@ -106,7 +107,7 @@ export const App = () => {
             ></Route>
             <Route
               path="ProfileCA/Remover_Arbitro"
-              element={<RemoverConta user={user} />}
+              element={<EditarConta user={user} />}
             ></Route>
             <Route
               path="ProfileCA/Carregar_Novos_Jogos"
@@ -115,6 +116,10 @@ export const App = () => {
             <Route
               path="ProfileCA/Atribuir_Arbitros"
               element={<AtribuirJogos user={user} />}
+            ></Route>
+            <Route
+              path="ProfileCA/Jogos_Passados"
+              element={<JogosPassadosCA user={user} />}
             ></Route>
           </Route>
         </Routes>
