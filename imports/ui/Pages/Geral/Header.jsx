@@ -3,7 +3,18 @@ import { Meteor } from "meteor/meteor";
 import { Fragment } from "react/cjs/react.production.min";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { UserOutlined, LoginOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LoginOutlined,
+  CalendarOutlined,
+  ScheduleOutlined,
+  TagsOutlined,
+  SolutionOutlined,
+  UserAddOutlined,
+  UserDeleteOutlined,
+  UploadOutlined,
+  SelectOutlined,
+} from "@ant-design/icons";
 
 export const Header = ({
   user,
@@ -212,7 +223,7 @@ export const Header = ({
                 }}
                 hidden={indisponibilidadePrivadas}
               >
-                📅 Calendário
+                Calendário
               </p>
               <p
                 id="restricoesPrivadas"
@@ -223,7 +234,7 @@ export const Header = ({
                 }}
                 hidden={restricoesPrivadas}
               >
-                Relações com clubes:
+                Incompatibilidades:
               </p>
 
               <p
@@ -248,7 +259,7 @@ export const Header = ({
                 }}
                 hidden={historico}
               >
-                Histórico de Jogos
+                <SolutionOutlined /> Histórico de Jogos
               </p>
             </div>
             <div
@@ -317,7 +328,7 @@ export const Header = ({
                       marginRight: "3%",
                     }}
                   >
-                    Sair 🏃🚪
+                    Sair <LoginOutlined />
                   </Button>
                 </div>
               </div>
@@ -533,7 +544,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Consultar nomeações
+            <ScheduleOutlined /> Consultar nomeações
           </p>
         </a>
 
@@ -546,7 +557,7 @@ const MenuPrivado = () => {
                   navigate("/Conta/Profile/Calendario");
             }}
           >
-            Indicar indisponibilidades
+            <CalendarOutlined /> Indicar indisponibilidades
           </p>
         </a>
 
@@ -560,7 +571,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Indicar restrições
+            <TagsOutlined /> Indicar restrições
           </p>
         </a>
 
@@ -574,7 +585,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            Histórico de jogos
+            <SolutionOutlined /> Histórico de jogos
           </p>
         </a>
       </Drawer>
@@ -632,7 +643,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Consultar nomeações
+            <ScheduleOutlined /> Consultar nomeações
           </p>
         </a>
         <a className="menu-item">
@@ -645,7 +656,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Indicar indisponibilidades
+            <CalendarOutlined /> Indicar indisponibilidades
           </p>
         </a>
         <a className="menu-item">
@@ -658,7 +669,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Indicar restrições
+            <TagsOutlined /> Indicar restrições
           </p>
         </a>
         <a className="menu-item">
@@ -671,7 +682,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Histórico de jogos
+            <SolutionOutlined /> Histórico de jogos
           </p>
         </a>
         <p>
@@ -689,7 +700,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Nomear árbitros
+            <SelectOutlined /> Nomear árbitros
           </p>
         </a>
 
@@ -703,7 +714,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Carregar jogos novos
+            <UploadOutlined /> Carregar jogos novos
           </p>
         </a>
         <p>
@@ -720,7 +731,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Criar conta árbitro
+            <UserAddOutlined /> Criar conta árbitro
           </p>
         </a>
         <a className="menu-item">
@@ -733,7 +744,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            Editar conta árbitro
+            <UserDeleteOutlined /> Editar conta árbitro
           </p>
         </a>
 
