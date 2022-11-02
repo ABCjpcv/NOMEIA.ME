@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { Input, Button, message, Space } from "antd";
 import { Header } from "../Geral/Header";
 
@@ -153,7 +153,7 @@ export function Autenticar({ user }) {
                   style={{ width: "100%", borderRadius: "10px" }}
                   placeholder="*****"
                   iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
                   status={undefined}
                   onChange={handleChangePasswordAuth}

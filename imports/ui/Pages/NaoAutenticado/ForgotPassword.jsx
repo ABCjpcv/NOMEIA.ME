@@ -23,33 +23,37 @@ function validateEmail(mail) {
   return false;
 }
 
-function resetPasswordWithEmail() {
-  Meteor.call(
-    "esqueceuPassword",
-    document.getElementById("emailPerdido").value,
-
-    (err, result) => {
-      console.log("ENTRASTE pota ????");
-      if (!err) {
-        console.log("ENTRASTE????");
-        if (result == true) {
-          message.success("Email enviado com sucesso!");
-          message.info("Verifique a sua nova password na sua conta de email.");
-
-          navigate("/Autenticar");
-        }
-        if (result == false) {
-          message.error(
-            "Email não encontrado ou serviço indisponível. Por favor contacte o Conselho de Arbitragem."
-          );
-        }
-      }
-    }
-  );
-}
-
 export function ForgotPassword() {
   let navigate = useNavigate();
+
+  function resetPasswordWithEmail() {
+    if (document.getElementById("emailPerdido") != null) {
+      Meteor.call(
+        "esqueceuPassword",
+        document.getElementById("emailPerdido").value,
+
+        (err, result) => {
+          console.log("ENTRASTE pota ????");
+          if (!err) {
+            console.log("ENTRASTE????");
+            if (result == true) {
+              message.success("Email enviado com sucesso!");
+              message.info(
+                "Verifique a sua nova password na sua conta de email."
+              );
+
+              navigate("/Autenticar");
+            }
+            if (result == false) {
+              message.error(
+                "Email não encontrado ou serviço indisponível. Por favor contacte o Conselho de Arbitragem."
+              );
+            }
+          }
+        }
+      );
+    }
+  }
 
   return (
     <>
@@ -108,7 +112,7 @@ export function ForgotPassword() {
                 style={{ borderRadius: "10px" }}
                 status={undefined}
                 onChange={handleChangeEmailPasswordRedefined}
-                onPressEnter={resetPasswordWithEmail()}
+                onPressEnter={() => resetPasswordWithEmail()}
               ></Input>
             </div>
             <p></p>
@@ -116,7 +120,7 @@ export function ForgotPassword() {
               type="primary"
               shape="round"
               className="botao"
-              onClick={resetPasswordWithEmail()}
+              onClick={() => resetPasswordWithEmail()}
             >
               Enviar mail
             </Button>

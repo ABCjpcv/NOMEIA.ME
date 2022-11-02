@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Meteor } from "meteor/meteor";
 import { Button, Input, InputNumber, message, Popconfirm, Space } from "antd";
 import { Header } from "../../Geral/Header";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
 export function ContaNova() {
   let [nome, setNome] = useState();
@@ -138,7 +138,7 @@ export function ContaNova() {
                   style={{ width: "100%", borderRadius: "10px" }}
                   placeholder="*****"
                   iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
                   status={undefined}
                 />
@@ -156,7 +156,7 @@ export function ContaNova() {
                   style={{ width: "100%", borderRadius: "10px" }}
                   placeholder="*****"
                   iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
                   status={undefined}
                 />

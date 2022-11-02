@@ -430,7 +430,12 @@ export function Restricoes({ user }) {
                   setIsDisabled(newDisabled);
                 }}
               >
-                <EditOutlined width={"1.5em"} height={"1.5em"} /> Editar
+                <EditOutlined
+                  width={"1.5em"}
+                  height={"1.5em"}
+                  style={{ marginTop: "8%" }}
+                />{" "}
+                Editar
               </Button>
             </div>
             <div>
@@ -490,7 +495,12 @@ export function Restricoes({ user }) {
                   handleSubmission(record);
                 }}
               >
-                <SaveOutlined width={"1.5em"} height={"1.5em"} /> Guardar
+                <SaveOutlined
+                  width={"1.5em"}
+                  height={"1.5em"}
+                  style={{ marginTop: "8%" }}
+                />{" "}
+                Guardar
               </Button>
             </div>
 
@@ -504,7 +514,11 @@ export function Restricoes({ user }) {
                   shape="round"
                   style={{ display: "flex", flexDirection: "row" }}
                 >
-                  <DeleteOutlined />
+                  <DeleteOutlined
+                    width={"1.5em"}
+                    height={"1.5em"}
+                    style={{ marginTop: "8%" }}
+                  />
                   Eliminar
                 </Button>
               </Popconfirm>

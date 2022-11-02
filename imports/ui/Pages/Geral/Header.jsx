@@ -14,6 +14,7 @@ import {
   UserDeleteOutlined,
   UploadOutlined,
   SelectOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 
 export const Header = ({
@@ -77,23 +78,23 @@ export const Header = ({
                     height: "100%",
                     justifyContent: "flex-start",
                     marginLeft: "3%",
-                    alignItems: "baseline",
+                    alignItems: "center",
                   }}
                 >
                   <MenuPrivado />
-                  <Space>
-                    <Button
-                      onClick={() => (
-                        (location.pathname = "/Conta/Profile/Definicoes"),
-                        navigate("/Conta/Profile/Definicoes")
-                      )}
-                      style={{
-                        fontSize: "14px",
-                      }}
-                    >
-                      <UserOutlined /> Perfil
-                    </Button>
-                  </Space>
+                  <Button
+                    onClick={() => (
+                      (location.pathname = "/Conta/Profile/Definicoes"),
+                      navigate("/Conta/Profile/Definicoes")
+                    )}
+                    style={{
+                      display: "flex",
+                      fontSize: "14px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <UserOutlined /> {Meteor.user().username}
+                  </Button>
                 </div>
               </div>
               <div
@@ -110,7 +111,7 @@ export const Header = ({
                     height: "100%",
                     justifyContent: "flex-start",
                     marginLeft: "3%",
-                    alignItems: "baseline",
+                    alignItems: "center",
                   }}
                 >
                   <MenuPrivadoCA />
@@ -121,10 +122,11 @@ export const Header = ({
                     )}
                     style={{
                       fontSize: "14px",
-                      verticalAlign: "text-bottom",
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    <UserOutlined /> Perfil
+                    <UserOutlined /> {Meteor.user().username}
                   </Button>
                 </div>
               </div>
@@ -367,18 +369,20 @@ export const Header = ({
                 }}
                 onClick={() => navigate("/")}
               >
+                <HomeOutlined />
+                Página Inicial
                 <img
                   id="logo"
                   src="logo.png"
                   style={{ height: "100%", cursor: "pointer" }}
                 />
-                <div className="overlayLogo">
+                {/* <div className="overlayLogo">
                   <div className="homePageText">
                     <h1 className="homePageText">
                       Página <br></br>inicial
                     </h1>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -588,6 +592,20 @@ const MenuPrivado = () => {
             <SolutionOutlined /> Histórico de jogos
           </p>
         </a>
+
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => {
+              if (location.pathname != "Conta/Profile/Definicoes") {
+                (location.pathname = "/Conta/Profile/Definicoes"),
+                  navigate("/Conta/Profile/Definicoes");
+              }
+            }}
+          >
+            <UserOutlined /> Perfil
+          </p>
+        </a>
       </Drawer>
     </>
   );
@@ -613,8 +631,8 @@ const MenuPrivadoCA = () => {
         <Button
           type="primary"
           style={{
-            verticalAlign: "text-bottom",
-            width: "fit-content",
+            display: "flex",
+            width: "100%",
           }}
           onClick={showDrawer}
         >
@@ -683,6 +701,19 @@ const MenuPrivadoCA = () => {
             }}
           >
             <SolutionOutlined /> Histórico de jogos
+          </p>
+        </a>
+        <a className="menu-item">
+          <p
+            style={{ fontSize: "15px", marginLeft: "5%" }}
+            onClick={() => {
+              if (location.pathname != "Conta/ProfileCA/Definicoes") {
+                (location.pathname = "/Conta/ProfileCA/Definicoes"),
+                  navigate("/Conta/ProfileCA/Definicoes");
+              }
+            }}
+          >
+            <UserOutlined /> Perfil
           </p>
         </a>
         <p>

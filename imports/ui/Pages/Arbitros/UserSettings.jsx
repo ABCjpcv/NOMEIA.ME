@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Header } from "../Geral/Header";
 import {
   EyeInvisibleOutlined,
-  EyeTwoTone,
+  EyeOutlined,
   LockOutlined,
 } from "@ant-design/icons";
 import { ImagemPerfil } from "./ImagemPerfil v1";
@@ -380,7 +380,7 @@ export function UserSettings({ user }) {
                 style={{ width: "100%", borderRadius: "10px" }}
                 placeholder="*****"
                 iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                 }
                 status={undefined}
                 onChange={handleChangePasswordAuth}
@@ -400,7 +400,7 @@ export function UserSettings({ user }) {
                 style={{ width: "100%", borderRadius: "10px" }}
                 placeholder="*****"
                 iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                 }
                 status={undefined}
                 onChange={handleChangePasswordAuth2}
@@ -420,7 +420,7 @@ export function UserSettings({ user }) {
                 style={{ width: "100%", borderRadius: "10px" }}
                 placeholder="*****"
                 iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                  visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                 }
                 status={undefined}
                 onChange={handleChangePasswordAuth3}

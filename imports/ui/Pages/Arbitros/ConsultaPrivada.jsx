@@ -532,7 +532,7 @@ export function ConsultaPrivada({ user }) {
       }
     });
     setDataSource(newData);
-    handleSubmissionConfirmation(dataSource);
+    handleSubmissionConfirmation(dataSource, true);
   };
 
   const handleAllConfirmation = () => {
