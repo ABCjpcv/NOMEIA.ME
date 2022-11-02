@@ -54,7 +54,9 @@ export function FileInput() {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={false}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={false}
+        atribuirArbitrosCev={false}
+        atribuirArbitrosCR_CN={false}
         carregarJogos={false}
         criarContaNova={true}
         removerConta={true}

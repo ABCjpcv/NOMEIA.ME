@@ -192,7 +192,9 @@ export function UserSettings({ user }) {
         consultaPrivada={true}
         menuPrivado={isCA}
         menuPrivadoCA={!isCA}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={true}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}
@@ -226,7 +228,7 @@ export function UserSettings({ user }) {
               flexDirection: "row",
             }}
           >
-            <ImagemPerfil></ImagemPerfil>
+            {/* <ImagemPerfil></ImagemPerfil> */}
             <div
               style={{
                 display: "flex",

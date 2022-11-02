@@ -14,7 +14,9 @@ export function NotFoundPage() {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={false}
+        atribuirArbitrosCev={false}
+        atribuirArbitrosCR_CN={false}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}

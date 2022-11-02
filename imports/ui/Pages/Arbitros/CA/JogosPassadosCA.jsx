@@ -342,7 +342,9 @@ export function JogosPassadosCA({ user }) {
                 consultaPrivada={true}
                 menuPrivado={true}
                 menuPrivadoCA={false}
-                atribuirArbitros={true}
+                atribuirArbitrosAdesl={false}
+                atribuirArbitrosCev={false}
+                atribuirArbitrosCR_CN={false}
                 carregarJogos={true}
                 criarContaNova={true}
                 removerConta={true}

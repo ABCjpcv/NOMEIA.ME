@@ -13,7 +13,9 @@ export function Profile({ user }) {
         consultaPrivada={false}
         menuPrivado={false}
         menuPrivadoCA={true}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={false}
+        atribuirArbitrosCev={false}
+        atribuirArbitrosCR_CN={false}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}

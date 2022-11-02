@@ -18,7 +18,7 @@ import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { Header } from "../../Geral/Header";
+import { Header } from "../../../Geral/Header";
 import {
   SearchOutlined,
   AlertOutlined,
@@ -104,7 +104,7 @@ let currJogo = {};
 let currNomeArbitro = "";
 let prevNomeArbitro = "";
 
-export function AtribuirJogos({ user }) {
+export function Adesl({ user }) {
   let navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
@@ -1417,7 +1417,9 @@ export function AtribuirJogos({ user }) {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={false}
-        atribuirArbitros={false}
+        atribuirArbitrosAdesl={false}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}

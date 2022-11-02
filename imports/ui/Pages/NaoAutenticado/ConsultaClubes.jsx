@@ -30,7 +30,9 @@ export function ConsultaClubes() {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={true}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={true}
         criarContaNova={true}
         indisponibilidadePrivadas={true}

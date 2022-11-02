@@ -181,7 +181,9 @@ export class Calendario extends React.Component {
             consultaPrivada={true}
             menuPrivado={this.state.isCA}
             menuPrivadoCA={!this.state.isCA}
-            atribuirArbitros={true}
+            atribuirArbitrosAdesl={true}
+            atribuirArbitrosCev={true}
+            atribuirArbitrosCR_CN={true}
             carregarJogos={true}
             criarContaNova={true}
             removerConta={true}

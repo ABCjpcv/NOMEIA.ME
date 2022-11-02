@@ -25,7 +25,9 @@ export const Header = ({
   consultaPrivada,
   menuPrivado,
   menuPrivadoCA,
-  atribuirArbitros,
+  atribuirArbitrosAdesl,
+  atribuirArbitrosCev,
+  atribuirArbitrosCR_CN,
   carregarJogos,
   criarContaNova,
   removerConta,
@@ -159,15 +161,39 @@ export const Header = ({
 
               {/* AQUI ESTAO OS HEADERS DOS CONSELHO DE ARBITRAGEM */}
               <p
-                id="atribuirArbitros"
+                id="atribuirArbitrosAdesl"
                 style={{
                   width: "100%",
                   marginTop: "1%",
                   fontSize: "smaller",
                 }}
-                hidden={atribuirArbitros}
+                hidden={atribuirArbitrosAdesl}
               >
-                Atribuição de Árbitros
+                Atribuição de Árbitros (ADESL)
+              </p>
+
+              <p
+                id="atribuirArbitrosCev"
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
+                hidden={atribuirArbitrosCev}
+              >
+                Atribuição de Árbitros (CEV)
+              </p>
+
+              <p
+                id="atribuirArbitrosCR_CN"
+                style={{
+                  width: "100%",
+                  marginTop: "1%",
+                  fontSize: "smaller",
+                }}
+                hidden={atribuirArbitrosCR_CN}
+              >
+                Atribuição de Árbitros (CR / CN)
               </p>
 
               <p
@@ -731,20 +757,67 @@ const MenuPrivadoCA = () => {
           {" "}
           <b> Conselho de Arbitragem: </b>{" "}
         </p>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            id="clickOptionMenuAtribuirArbitros"
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Atribuir_Arbitros") {
-                (location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros"),
-                  navigate("/Conta/ProfileCA/Atribuir_Arbitros");
-              }
-            }}
-          >
-            <SelectOutlined /> Nomear árbitros
-          </p>
-        </a>
+
+        <p
+          style={{ fontSize: "15px", marginLeft: "5%" }}
+          id="clickOptionMenuAtribuirArbitros"
+        >
+          <SelectOutlined /> Nomear árbitros
+          <ul>
+            <li>
+              <a
+                className="menu-item"
+                onClick={() => {
+                  if (
+                    location.pathname !=
+                    "Conta/ProfileCA/Atribuir_Arbitros/ADESL"
+                  ) {
+                    (location.pathname =
+                      "/Conta/ProfileCA/Atribuir_Arbitros/ADESL"),
+                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
+                  }
+                }}
+              >
+                ADESL - CUL
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                className="menu-item"
+                onClick={() => {
+                  if (
+                    location.pathname != "Conta/ProfileCA/Atribuir_Arbitros/CEV"
+                  ) {
+                    (location.pathname =
+                      "/Conta/ProfileCA/Atribuir_Arbitros/CEV"),
+                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/CEV");
+                  }
+                }}
+              >
+                CEV{" "}
+              </a>
+            </li>
+            <li>
+              {" "}
+              <a
+                className="menu-item"
+                onClick={() => {
+                  if (
+                    location.pathname !=
+                    "Conta/ProfileCA/Atribuir_Arbitros/CR_CN"
+                  ) {
+                    (location.pathname =
+                      "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN"),
+                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
+                  }
+                }}
+              >
+                CR / CN
+              </a>
+            </li>
+          </ul>
+        </p>
 
         <a className="menu-item">
           <p

@@ -650,7 +650,9 @@ export function Restricoes({ user }) {
         consultaPrivada={true}
         menuPrivado={isCA}
         menuPrivadoCA={!isCA}
-        atribuirArbitros={true}
+        atribuirArbitrosAdesl={true}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}

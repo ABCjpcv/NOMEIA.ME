@@ -21,12 +21,14 @@ import { ProfileCA } from "../Arbitros/CA/ProfileCA";
 import { ProtectedRoutes } from "./ProtectedRoutes";
 import { UserSettings } from "../Arbitros/UserSettings";
 import { FileInput } from "../Arbitros/CA/FileInput";
-import { AtribuirJogos } from "../Arbitros/CA/AtribuirJogos";
+import { Cev } from "../Arbitros/CA/AtribuirJogos/Cev";
 import { JogosPassados } from "../Arbitros/JogosPassados";
 import { JogosPassadosCA } from "../Arbitros/CA/JogosPassadosCA";
 
 import { useTracker } from "meteor/react-meteor-data";
 import { EditarConta } from "../Arbitros/CA/EditarConta";
+import { Adesl } from "../Arbitros/CA/AtribuirJogos/Adesl";
+import { CampeonatoRegionalNacional } from "../Arbitros/CA/AtribuirJogos/CampeonatoRegionalNacional";
 
 const { Link } = require("react-router-dom");
 
@@ -114,8 +116,16 @@ export const App = () => {
               element={<FileInput user={user} />}
             ></Route>
             <Route
-              path="ProfileCA/Atribuir_Arbitros"
-              element={<AtribuirJogos user={user} />}
+              path="ProfileCA/Atribuir_Arbitros/ADESL"
+              element={<Adesl user={user} />}
+            ></Route>
+            <Route
+              path="ProfileCA/Atribuir_Arbitros/CEV"
+              element={<Cev user={user} />}
+            ></Route>
+            <Route
+              path="ProfileCA/Atribuir_Arbitros/CR_CN"
+              element={<CampeonatoRegionalNacional user={user} />}
             ></Route>
             <Route
               path="ProfileCA/Jogos_Passados"
