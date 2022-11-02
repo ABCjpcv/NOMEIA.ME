@@ -27,8 +27,8 @@ let CONSELHO_DE_ARBITRAGEM = [
 ];
 
 /**********************************************************************************************
- ******************************* SCHEMA TABLE ************************************************
- ************************************************************************************************
+ ******************************** SCHEMA TABLE ************************************************
+ ***********************************************************************************************
  */
 
 //Schema restricoes
@@ -632,10 +632,10 @@ Meteor.methods({
         secureConnection: false, // TLS requires secureConnection to be false
         port: 587, // port for secure SMTP
         tls: {
-          ciphers: "SSLv3",
+          rejectUnauthorized: false,
         },
-        requireTLS: true, //this parameter solved problem for me
-        service: "Hotmail", // no need to set host or port etc.
+        //requireTLS: true, //this parameter solved problem for me
+        // service: "Hotmail", // no need to set host or port etc.
         auth: {
           user: "nomeia_me_ponav@hotmail.com",
           pass: "2*qzEB)eKR*KZ6gn",
@@ -2292,45 +2292,46 @@ function addFeriados(r) {
   for (let index = 0; index < feriadosNacionais.length; index++) {
     let newId = _("feriado");
     let titulo = feriadosNacionais[index].nome;
-    let startStr =
-      CURRENT_YEAR +
-      "-" +
-      feriadosNacionais[index].data.split("/")[1] +
-      "-" +
-      feriadosNacionais[index].data.split("/")[0] +
-      "T08:00:00Z";
+    // let startStr =
+    //   CURRENT_YEAR +
+    //   "-" +
+    //   feriadosNacionais[index].data.split("/")[1] +
+    //   "-" +
+    //   feriadosNacionais[index].data.split("/")[0] +
+    //   "T08:00:00Z";
 
-    let endStr =
-      CURRENT_YEAR +
-      "-" +
-      feriadosNacionais[index].data.split("/")[1] +
-      "-" +
-      feriadosNacionais[index].data.split("/")[0] +
-      "T09:00:00Z";
+    // let endStr =
+    //   CURRENT_YEAR +
+    //   "-" +
+    //   feriadosNacionais[index].data.split("/")[1] +
+    //   "-" +
+    //   feriadosNacionais[index].data.split("/")[0] +
+    //   "T09:00:00Z";
 
-    if (!hasDST(startStr)) {
-      startStr =
-        CURRENT_YEAR +
-        "-" +
-        feriadosNacionais[index].data.split("/")[1] +
-        "-" +
-        feriadosNacionais[index].data.split("/")[0] +
-        "T07:00:00Z";
+    // if (!hasDST(startStr)) {
+    //   startStr =
+    //     CURRENT_YEAR +
+    //     "-" +
+    //     feriadosNacionais[index].data.split("/")[1] +
+    //     "-" +
+    //     feriadosNacionais[index].data.split("/")[0] +
+    //     "T07:00:00Z";
 
-      endStr =
-        CURRENT_YEAR +
-        "-" +
-        feriadosNacionais[index].data.split("/")[1] +
-        "-" +
-        feriadosNacionais[index].data.split("/")[0] +
-        "T08:00:00Z";
-    }
+    //   endStr =
+    //     CURRENT_YEAR +
+    //     "-" +
+    //     feriadosNacionais[index].data.split("/")[1] +
+    //     "-" +
+    //     feriadosNacionais[index].data.split("/")[0] +
+    //     "T08:00:00Z";
+    // }
 
     let novoEvento = {
       title: titulo,
       id: newId,
-      start: startStr,
-      end: endStr,
+      allDay: true,
+      // start: startStr,
+      // end: endStr,
       color: "#000000",
       editable: false,
       className: "hideCalendarTime",

@@ -6,6 +6,13 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../Geral/Header";
 
+import {
+  SaveOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
+
 import $ from "jquery";
 
 const { Option } = Select;
@@ -85,7 +92,7 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => parseInt(a.Jogo) - parseInt(b.Jogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "4.5%",
+      width: "4%",
     },
     {
       title: "Dia",
@@ -466,7 +473,12 @@ export function AtribuirJogos({ user }) {
               }}
               disabled={!disabledDataSource.includes(record)}
             >
-              Editar ✏️
+              <EditOutlined
+                width={"1.5em"}
+                height={"1.5em"}
+                style={{ marginTop: "8%" }}
+              />{" "}
+              Editar
             </Button>
             <Button
               shape="round"
@@ -494,7 +506,12 @@ export function AtribuirJogos({ user }) {
                 setDisabledDataSource(dataSource);
               }}
             >
-              Guardar 💾
+              <SaveOutlined
+                width={"1.5em"}
+                height={"1.5em"}
+                style={{ marginTop: "8%" }}
+              />
+              Guardar
             </Button>
           </div>
         </div>
@@ -1154,6 +1171,35 @@ export function AtribuirJogos({ user }) {
                 </div> */}
 
               {/* 5ª COLUNA */}
+
+              <div
+                style={{
+                  marginLeft: "3%",
+                  marginTop: "0.8%",
+                  marginRight: "0.5%",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: "30px",
+                  }}
+                >
+                  <Button
+                    id="enviaAlerta"
+                    size="small"
+                    onClick={() => {
+                      handleAlert();
+                      setTimeout(() => {
+                        message.success("Alertas enviados");
+                      }, 200);
+                    }}
+                  >
+                    Alertar Árbitros
+                  </Button>
+                </div>
+              </div>
 
               <div
                 style={{

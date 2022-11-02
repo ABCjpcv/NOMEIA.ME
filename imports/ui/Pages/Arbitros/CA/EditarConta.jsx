@@ -315,7 +315,7 @@ export function EditarConta() {
                   style={{ width: "100%", borderRadius: "10px" }}
                   placeholder="*****"
                   iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
                 />
               </Space>
@@ -332,7 +332,7 @@ export function EditarConta() {
                   style={{ width: "100%", borderRadius: "10px" }}
                   placeholder="*****"
                   iconRender={(visible) =>
-                    visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
                   }
                   status={undefined}
                 />

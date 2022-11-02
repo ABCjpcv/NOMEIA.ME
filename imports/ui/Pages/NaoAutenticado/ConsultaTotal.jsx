@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Table, Input } from "antd";
+import React, { useRef, useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import { Header } from "../Geral/Header";
+import { SearchOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Table } from "antd";
+
+import Highlighter from "react-highlight-words";
 
 const { Search } = Input;
 
@@ -9,113 +12,6 @@ const { Search } = Input;
 const _ = require("lodash");
 
 export function ConsultaTotal() {
-  const colunasNomeacoes = [
-    {
-      title: "Jogo",
-      dataIndex: "Jogo",
-      key: "Jogo",
-      sorter: {
-        compare: (a, b) => a.Jogo - b.Jogo,
-      },
-      sortDirections: ["descend", "ascend"],
-      width: "5%",
-    },
-    {
-      title: "Dia",
-      dataIndex: "Dia",
-      key: "Dia",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
-      },
-      sortDirections: ["descend", "ascend"],
-      width: "8%",
-    },
-    {
-      title: "Hora",
-      dataIndex: "Hora",
-      key: "Hora",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
-      },
-      sortDirections: ["descend", "ascend"],
-      width: "5%",
-    },
-    {
-      title: "Prova",
-      dataIndex: "Prova",
-      key: "Prova",
-      width: "7%",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
-      },
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Série",
-      dataIndex: "Serie",
-      key: "Serie",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
-      },
-      sortDirections: ["descend", "ascend"],
-      width: "7%",
-    },
-    {
-      title: "Equipas",
-      dataIndex: "Equipas",
-      key: "Equipas",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
-        multiple: 6,
-      },
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Pavilhão",
-      dataIndex: "Pavilhao",
-      key: "Pavilhao",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
-      },
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "1º Árbitro",
-      dataIndex: "Arbitro1",
-      key: "Arbitro1",
-      width: "11%",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
-      },
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "2º Árbitro",
-      dataIndex: "Arbitro2",
-      key: "Arbitro2",
-      width: "11%",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
-      },
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Juízes de linha",
-      dataIndex: "JL",
-      key: "JL",
-      width: "10%",
-      sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
-      },
-      sortDirections: ["ascend", "descend"],
-      // render: (record) => (
-      //   <>
-      //     <div>{console.log(record.juiz_linha)}</div>
-      //   </>
-      // ),
-    },
-  ];
-
   function comparaAminhaLindaString(a, b) {
     let x = 0;
     let tamanho = a.length > b.length ? b.length : a.length;
@@ -155,6 +51,122 @@ export function ConsultaTotal() {
   const [dataSource, setDataSource] = useState([]);
 
   const [filteredData, setFilteredData] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Pesquisar por: ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Pesquisar
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Limpar
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filtrar
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: true,
+              });
+            }}
+          >
+            Fechar
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1890ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
 
   useEffect(() => {
     if (searchVal.length > 0) {
@@ -231,6 +243,131 @@ export function ConsultaTotal() {
     });
   }
 
+  const colunasNomeacoes = [
+    {
+      title: "Jogo",
+      dataIndex: "Jogo",
+      key: "Jogo",
+      sorter: {
+        compare: (a, b) => a.Jogo - b.Jogo,
+      },
+      sortDirections: ["descend", "ascend"],
+      width: "6%",
+      ...getColumnSearchProps("Jogo"),
+    },
+    {
+      title: "Dia",
+      dataIndex: "Dia",
+      key: "Dia",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+      },
+      sortDirections: ["descend", "ascend"],
+      width: "8%",
+      ...getColumnSearchProps("Dia"),
+    },
+    {
+      title: "Hora",
+      dataIndex: "Hora",
+      key: "Hora",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+      },
+      sortDirections: ["descend", "ascend"],
+      width: "6%",
+
+      ...getColumnSearchProps("Hora"),
+    },
+    {
+      title: "Prova",
+      dataIndex: "Prova",
+      key: "Prova",
+      width: "7%",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+      },
+      sortDirections: ["descend", "ascend"],
+
+      ...getColumnSearchProps("Prova"),
+    },
+    {
+      title: "Série",
+      dataIndex: "Serie",
+      key: "Serie",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+      },
+      sortDirections: ["descend", "ascend"],
+      width: "7%",
+
+      ...getColumnSearchProps("Serie"),
+    },
+    {
+      title: "Equipas",
+      dataIndex: "Equipas",
+      key: "Equipas",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+        multiple: 6,
+      },
+      sortDirections: ["descend", "ascend"],
+
+      ...getColumnSearchProps("Equipas"),
+    },
+    {
+      title: "Pavilhão",
+      dataIndex: "Pavilhao",
+      key: "Pavilhao",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+      },
+      sortDirections: ["descend", "ascend"],
+
+      ...getColumnSearchProps("Pavilhao"),
+    },
+    {
+      title: "1º Árbitro",
+      dataIndex: "Arbitro1",
+      key: "Arbitro1",
+      width: "11%",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      },
+      sortDirections: ["descend", "ascend"],
+
+      ...getColumnSearchProps("Arbitro1"),
+    },
+    {
+      title: "2º Árbitro",
+      dataIndex: "Arbitro2",
+      key: "Arbitro2",
+      width: "11%",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+      },
+      sortDirections: ["descend", "ascend"],
+
+      ...getColumnSearchProps("Arbitro2"),
+    },
+    {
+      title: "Juízes de linha",
+      dataIndex: "JL",
+      key: "JL",
+      width: "9%",
+      sorter: {
+        compare: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
+      },
+      sortDirections: ["ascend", "descend"],
+
+      ...getColumnSearchProps("JL"),
+      // render: (record) => (
+      //   <>
+      //     <div>{console.log(record.juiz_linha)}</div>
+      //   </>
+      // ),
+    },
+  ];
+
   dataSource.length == 0 ? loadData() : null;
 
   return (
@@ -255,9 +392,9 @@ export function ConsultaTotal() {
         sobreHeader={true}
       />
       <div
-        style={{
-          marginTop: "0.5%",
-        }}
+      // style={{
+      //   marginTop: "0.5%",
+      // }}
       >
         <div
           style={{
@@ -267,7 +404,7 @@ export function ConsultaTotal() {
             alignItems: "center",
           }}
         >
-          <div className="input">
+          {/* <div className="input">
             <label
               className="labels"
               style={{ display: "flex", alignSelf: "space-evenly" }}
@@ -283,7 +420,7 @@ export function ConsultaTotal() {
                 }}
               />
             </label>
-          </div>
+          </div> */}
         </div>
         <div
           style={{

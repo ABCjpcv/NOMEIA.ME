@@ -17,6 +17,8 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 
+import { Button, Drawer, Space } from "antd";
+
 export const Header = ({
   user,
   titulo,
@@ -356,7 +358,7 @@ export const Header = ({
               id="divEsquerdo"
               style={{
                 display: "flex",
-                width: "20%",
+                width: "15%",
                 height: "100%",
               }}
             >
@@ -367,15 +369,30 @@ export const Header = ({
                   height: "100%",
                   justifyContent: "space-evenly",
                 }}
-                onClick={() => navigate("/")}
               >
-                <HomeOutlined />
-                Página Inicial
-                <img
-                  id="logo"
-                  src="logo.png"
-                  style={{ height: "100%", cursor: "pointer" }}
-                />
+                <div
+                  style={{
+                    width: "40%",
+                    height: "100%",
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "20%",
+                    marginTop: "2%",
+                  }}
+                  onClick={() => navigate("/")}
+                >
+                  <HomeOutlined onClick={() => navigate("/")} />
+                  <Button
+                    size="small"
+                    type="link"
+                    style={{ fontSize: "10px", color: "#4933ac" }}
+                    onClick={() => navigate("/")}
+                  >
+                    Página Inicial
+                  </Button>
+                </div>
+
                 {/* <div className="overlayLogo">
                   <div className="homePageText">
                     <h1 className="homePageText">
@@ -406,6 +423,7 @@ export const Header = ({
                 }}
                 hidden={titulo}
               >
+                <img id="logo" src="logo.png" style={{ height: "100%" }} />
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
@@ -495,8 +513,6 @@ export const Header = ({
     </>
   );
 };
-
-import { Button, Drawer, Space } from "antd";
 
 const MenuPrivado = () => {
   const [visible, setVisible] = useState(false);
