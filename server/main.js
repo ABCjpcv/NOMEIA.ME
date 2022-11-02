@@ -28,7 +28,7 @@ let CONSELHO_DE_ARBITRAGEM = [
 
 /**********************************************************************************************
  ******************************** SCHEMA TABLE ************************************************
- ***********************************************************************************************
+ **********************************************************************************************
  */
 
 //Schema restricoes
@@ -1878,6 +1878,8 @@ Meteor.methods({
   ) {
     // ESTA DISPONIVEL NAQUELE HORARIO?
 
+    console.log("jogo", jogo);
+
     let todasIndisponibilidades = [];
 
     indisponibilidades.find().forEach((indisponibilidade) => {
@@ -1901,10 +1903,13 @@ Meteor.methods({
       horaDeJogo[1] +
       ":00";
 
+    console.log("dataInicio", dataInicio);
+
     let inicioDoJogo = new Date(dataInicio);
 
     let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
-    //console.log("horaFimDeJogo: ", horaFimDeJogo);
+    console.log("horaINICIODeJogo: ", inicioDoJogo);
+    console.log("horaFimDeJogo: ", horaFimDeJogo);
 
     let dataFim =
       diaDeJogo[2] +
@@ -1940,6 +1945,8 @@ Meteor.methods({
         }
       }
     });
+
+    console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
 
     let auxiliarNivel = [];
 
@@ -1984,7 +1991,7 @@ Meteor.methods({
 
     let arbitrosDisponiveisRecibos = [];
 
-    //console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
+    console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
 
     if (temRecibo) {
       for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
@@ -2120,6 +2127,200 @@ Meteor.methods({
       arbitrosDisponiveisTransportes.push(" ");
       return arbitrosDisponiveisTransportes.sort();
     }
+  },
+
+  enviaMailAlerta: function enviaMailAlerta(dataSource) {
+    let arbitrosComJogosPendentes = [];
+
+    for (let index = 0; index < dataSource.length; index++) {
+      const element = dataSource[index];
+      console.log("ELEMENT");
+      console.log(element);
+
+      if (element.tags[0] === "pendente") {
+        if (!arbitrosComJogosPendentes.includes(element.Arbitro1))
+          arbitrosComJogosPendentes.push(element.Arbitro1);
+      }
+      if (element.tags[1] === "pendente") {
+        if (!arbitrosComJogosPendentes.includes(element.Arbitro2))
+          arbitrosComJogosPendentes.push(element.Arbitro2);
+      }
+      if (element.tags[2] === "pendente") {
+        if (!arbitrosComJogosPendentes.includes(element.JL1))
+          arbitrosComJogosPendentes.push(element.JL1);
+      }
+      if (element.tags[3] === "pendente") {
+        if (!arbitrosComJogosPendentes.includes(element.JL2))
+          arbitrosComJogosPendentes.push(element.JL2);
+      }
+    }
+    console.log("arbitrosComJogosPendentes", arbitrosComJogosPendentes);
+
+    let emails = [];
+
+    for (let index = 0; index < arbitrosComJogosPendentes.length; index++) {
+      const element = arbitrosComJogosPendentes[index];
+      console.log("element", element);
+
+      try {
+        let arb = arbitros.findOne({ nome: element });
+        if (!emails.includes(arb.email)) emails.push(arb.email);
+      } catch (error) {
+        console.log("?");
+      }
+    }
+
+    console.log("emails", emails);
+
+    for (let index = 0; index < emails.length; index++) {
+      const element = emails[index];
+
+      try {
+        let transporter = nodemailer.createTransport({
+          host: "smtp-mail.outlook.com", // hostname
+          secureConnection: false, // TLS requires secureConnection to be false
+          port: 587, // port for secure SMTP
+          tls: {
+            rejectUnauthorized: false,
+          },
+          //requireTLS: true, //this parameter solved problem for me
+          // service: "Hotmail", // no need to set host or port etc.
+          auth: {
+            user: "nomeia_me_ponav@hotmail.com",
+            pass: "2*qzEB)eKR*KZ6gn",
+          },
+        });
+
+        transporter.sendMail({
+          from: "nomeia_me_ponav@hotmail.com",
+          to: element,
+          subject:
+            "[TESTE] Nomeação pendente " +
+            arbitrosComJogosPendentes[index] +
+            "",
+          text:
+            arbitrosComJogosPendentes[index] +
+            ", \n\n Ainda possui nomeações pendentes. " +
+            "\n Por favor confirme ou recuse uma nomeação na sua conta através da plataforma" +
+            " Nomeia.Me acedendo às suas nomeações." +
+            "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
+        });
+      } catch (error) {
+        console.log("error: " + error);
+        return -1;
+      }
+      return emails.length;
+    }
+  },
+  adicionaJogoNovo: function adicionaJogoNovo(
+    id,
+    dia,
+    hora,
+    prova,
+    serie,
+    equipaA,
+    equipaB,
+    pavilhao
+  ) {
+    console.log("dia", dia);
+
+    let d = dia.split("-");
+
+    let newGame = {
+      id: id,
+      dia: d[0] + "/" + d[1] + "/" + d[2],
+      hora: hora,
+
+      prova: prova,
+      serie: serie,
+      equipas: equipaA + " - " + equipaB,
+
+      pavilhao: pavilhao,
+      arbitro_1: "",
+      arbitro_2: "",
+      juiz_linha: ["", "", "", ""],
+      key: _("novo"),
+    };
+
+    jogos.insert(newGame);
+
+    let ca1;
+
+    let ca = conselhoDeArbitragem.find();
+
+    ca.forEach((ca) => {
+      //console.log("CA", ca);
+      ca1 = ca.arbitrosCA;
+    });
+
+    let games_ca = conselhoDeArbitragem.findOne({
+      arbitrosCA: ca1,
+    }).preNomeacoes;
+
+    let newGameCA = {};
+
+    console.log("games_ca", games_ca);
+
+    games_ca.push({
+      id: id,
+      dia: newGame.dia,
+      hora: hora,
+
+      prova: prova,
+      serie: serie,
+      equipas: equipaA + " - " + equipaB,
+
+      pavilhao: pavilhao,
+      arbitro_1: "",
+      arbitro_2: "",
+      juiz_linha: ["", "", "", ""],
+      key: newGame.key,
+      tags: ["", "", "", "", "", ""],
+    });
+
+    console.log("games_ca", games_ca);
+
+    ca.forEach((ca) => {
+      conselhoDeArbitragem.update(
+        { arbitrosCA: ca.arbitrosCA },
+        { $set: { preNomeacoes: games_ca } }
+      );
+    });
+  },
+
+  eliminaJogo: function eliminaJogo(jogo) {
+    let id = jogo.Jogo;
+
+    jogos.remove({ id: parseInt(id) });
+
+    let ca1;
+
+    let ca = conselhoDeArbitragem.find();
+
+    ca.forEach((ca) => {
+      //console.log("CA", ca);
+      ca1 = ca.arbitrosCA;
+    });
+
+    let games_ca = conselhoDeArbitragem.findOne({
+      arbitrosCA: ca1,
+    }).preNomeacoes;
+
+    let newGames = [];
+    for (let index = 0; index < games_ca.length; index++) {
+      if (games_ca[index].id != parseInt(id)) {
+        newGames.push(games_ca[index]);
+      }
+    }
+
+    console.log("games_ca", games_ca);
+
+    ca.forEach((ca) => {
+      conselhoDeArbitragem.update(
+        { arbitrosCA: ca.arbitrosCA },
+        { $set: { preNomeacoes: newGames } }
+      );
+    });
   },
 });
 
@@ -2292,46 +2493,46 @@ function addFeriados(r) {
   for (let index = 0; index < feriadosNacionais.length; index++) {
     let newId = _("feriado");
     let titulo = feriadosNacionais[index].nome;
-    // let startStr =
-    //   CURRENT_YEAR +
-    //   "-" +
-    //   feriadosNacionais[index].data.split("/")[1] +
-    //   "-" +
-    //   feriadosNacionais[index].data.split("/")[0] +
-    //   "T08:00:00Z";
+    let startStr =
+      CURRENT_YEAR +
+      "-" +
+      feriadosNacionais[index].data.split("/")[1] +
+      "-" +
+      feriadosNacionais[index].data.split("/")[0] +
+      "T08:00:00Z";
 
-    // let endStr =
-    //   CURRENT_YEAR +
-    //   "-" +
-    //   feriadosNacionais[index].data.split("/")[1] +
-    //   "-" +
-    //   feriadosNacionais[index].data.split("/")[0] +
-    //   "T09:00:00Z";
+    let endStr =
+      CURRENT_YEAR +
+      "-" +
+      feriadosNacionais[index].data.split("/")[1] +
+      "-" +
+      feriadosNacionais[index].data.split("/")[0] +
+      "T09:00:00Z";
 
-    // if (!hasDST(startStr)) {
-    //   startStr =
-    //     CURRENT_YEAR +
-    //     "-" +
-    //     feriadosNacionais[index].data.split("/")[1] +
-    //     "-" +
-    //     feriadosNacionais[index].data.split("/")[0] +
-    //     "T07:00:00Z";
+    if (!hasDST(startStr)) {
+      startStr =
+        CURRENT_YEAR +
+        "-" +
+        feriadosNacionais[index].data.split("/")[1] +
+        "-" +
+        feriadosNacionais[index].data.split("/")[0] +
+        "T07:00:00Z";
 
-    //   endStr =
-    //     CURRENT_YEAR +
-    //     "-" +
-    //     feriadosNacionais[index].data.split("/")[1] +
-    //     "-" +
-    //     feriadosNacionais[index].data.split("/")[0] +
-    //     "T08:00:00Z";
-    // }
+      endStr =
+        CURRENT_YEAR +
+        "-" +
+        feriadosNacionais[index].data.split("/")[1] +
+        "-" +
+        feriadosNacionais[index].data.split("/")[0] +
+        "T08:00:00Z";
+    }
 
     let novoEvento = {
       title: titulo,
       id: newId,
       allDay: true,
-      // start: startStr,
-      // end: endStr,
+      start: startStr,
+      end: endStr,
       color: "#000000",
       editable: false,
       className: "hideCalendarTime",

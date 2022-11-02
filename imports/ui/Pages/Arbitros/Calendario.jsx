@@ -223,13 +223,12 @@ export class Calendario extends React.Component {
                     week: "Semana",
                     day: "Dia",
                   }}
-                  allDaySlot={true}
-                  allDayText={"Feriado"}
+                  allDaySlot={false}
                   height={"460px"}
                   dayMinWidth={"8px"}
                   firstDay={1}
                   slotDuration={"00:60:00"}
-                  slotMinTime={"09:00:00"}
+                  slotMinTime={"08:00:00"}
                   slotMaxTime={"23:00:00"}
                   initialView="timeGridWeek"
                   editable={true}

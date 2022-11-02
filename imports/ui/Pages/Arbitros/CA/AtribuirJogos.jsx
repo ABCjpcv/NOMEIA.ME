@@ -1,17 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Button, message, Popconfirm, Select, Table, Tag } from "antd";
+import React, { useRef, useEffect, useState } from "react";
+import {
+  Button,
+  Input,
+  message,
+  Space,
+  Select,
+  Table,
+  Form,
+  Modal,
+  Cascader,
+  DatePicker,
+  TimePicker,
+  InputNumber,
+  Popconfirm,
+} from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Header } from "../../Geral/Header";
-
 import {
+  SearchOutlined,
+  AlertOutlined,
+  PlusCircleOutlined,
+  DeleteOutlined,
   SaveOutlined,
   EditOutlined,
-  DeleteOutlined,
-  QuestionCircleOutlined,
 } from "@ant-design/icons";
+
+import { ConfigProvider } from "antd";
+
+import locale from "antd/es/locale/pt_PT";
+
+import Highlighter from "react-highlight-words";
+
+import moment from "moment/moment";
 
 import $ from "jquery";
 
@@ -84,6 +107,122 @@ let prevNomeArbitro = "";
 export function AtribuirJogos({ user }) {
   let navigate = useNavigate();
 
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Pesquisar por: ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Pesquisar
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Limpar
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filtrar
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: true,
+              });
+            }}
+          >
+            Fechar
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1890ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
@@ -92,7 +231,8 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => parseInt(a.Jogo) - parseInt(b.Jogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "4%",
+      width: "5.8%",
+      ...getColumnSearchProps("Jogo"),
     },
     {
       title: "Dia",
@@ -101,7 +241,8 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "6.5%",
+      width: "6.3%",
+      ...getColumnSearchProps("Dia"),
     },
     {
       title: "Hora",
@@ -110,7 +251,8 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "4.5%",
+      width: "5.8%",
+      ...getColumnSearchProps("Hora"),
     },
     {
       title: "Prova",
@@ -120,6 +262,8 @@ export function AtribuirJogos({ user }) {
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "6%",
+
+      ...getColumnSearchProps("Prova"),
     },
     {
       title: "Série",
@@ -128,7 +272,9 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "6%",
+      width: "5.5%",
+
+      ...getColumnSearchProps("Serie"),
     },
     {
       title: "Equipas",
@@ -137,6 +283,8 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+
+      ...getColumnSearchProps("Equipas"),
     },
     {
       title: "Pavilhão",
@@ -145,6 +293,8 @@ export function AtribuirJogos({ user }) {
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
+
+      ...getColumnSearchProps("Pavilhao"),
     },
     {
       title: "1º Árbitro",
@@ -152,6 +302,7 @@ export function AtribuirJogos({ user }) {
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
       sortDirections: ["descend", "ascend"],
+      ...getColumnSearchProps("Arbitro1"),
       render: (text, record, index) => (
         <>
           <Select
@@ -201,6 +352,7 @@ export function AtribuirJogos({ user }) {
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
       sortDirections: ["descend", "ascend"],
+      ...getColumnSearchProps("Arbitro2"),
       render: (text, record, index) => (
         <>
           <Select
@@ -249,6 +401,7 @@ export function AtribuirJogos({ user }) {
       key: "JL1",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
       sortDirections: ["descend", "ascend"],
+      ...getColumnSearchProps("JL1"),
       render: (text, record, index) => (
         <>
           <Select
@@ -297,6 +450,7 @@ export function AtribuirJogos({ user }) {
       key: "JL2",
       sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
       sortDirections: ["descend", "ascend"],
+      ...getColumnSearchProps("JL2"),
       render: (text, record, index) => (
         <>
           <Select
@@ -439,7 +593,7 @@ export function AtribuirJogos({ user }) {
       dataIndex: "acao",
       key: "acao",
       fixed: "right",
-      width: "7%",
+      width: "8%",
       render: (_, record, key) => (
         <div style={{ display: "flex" }}>
           <div>
@@ -477,9 +631,34 @@ export function AtribuirJogos({ user }) {
                 width={"1.5em"}
                 height={"1.5em"}
                 style={{ marginTop: "8%" }}
-              />{" "}
-              Editar
+              />
+              Alterar
             </Button>
+            <Popconfirm
+              className="popconfirm_deleteGame"
+              title="Tem a certeza que quer apagar?"
+              onConfirm={() => handleDeleteGame(record)}
+              cancelText="Cancelar"
+            >
+              <Button
+                shape="round"
+                className="delete-button"
+                size="small"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  fontSize: "12px",
+                }}
+              >
+                <DeleteOutlined
+                  width={"1.5em"}
+                  height={"1.5em"}
+                  style={{ marginTop: "8%" }}
+                />
+                Apagar
+              </Button>
+            </Popconfirm>
+
             <Button
               shape="round"
               type="primary"
@@ -493,6 +672,7 @@ export function AtribuirJogos({ user }) {
 
                 if (editableRow === record) {
                   message.warn("Não foi detetada alteração!");
+                  setDisabledDataSource(dataSource);
                 } else {
                   Meteor.call("alteraNomeacao", record, user, (err, result) => {
                     if (err) console.log("Error", err);
@@ -501,9 +681,10 @@ export function AtribuirJogos({ user }) {
                   });
 
                   console.log("Guardado");
+
+                  loadData(false);
+                  setDisabledDataSource(dataSource);
                 }
-                loadData(false);
-                setDisabledDataSource(dataSource);
               }}
             >
               <SaveOutlined
@@ -572,11 +753,12 @@ export function AtribuirJogos({ user }) {
     let disabledData = dataSource;
 
     setDisabledDataSource(disabledData);
+    setDataSource(dataSource);
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    // console.log("value", value);
-    // console.log("key", key);
+    console.log("value", value);
+    console.log("key", key);
 
     let indexAux = key.key.split("_");
 
@@ -783,12 +965,15 @@ export function AtribuirJogos({ user }) {
 
           dataFromDB.push(obj);
         }
-        console.log("dataFromDB: ", dataFromDB);
+        // console.log("dataFromDB: ", dataFromDB);
         setDataSource(dataFromDB);
         setEdit(isEditing);
-        console.log("edit", edit);
-        console.log("editableRow", editableRow);
-        if (result[1] == true && (edit == undefined || edit == false)) {
+        // console.log("edit", isEditing);
+        // console.log("editableRow", editableRow);
+        if (
+          result[1] == true &&
+          (isEditing == undefined || isEditing == false)
+        ) {
           let dds = [];
           for (let index = 0; index < dataFromDB.length; index++) {
             const element = dataFromDB[index];
@@ -838,6 +1023,390 @@ export function AtribuirJogos({ user }) {
     } else {
       setNivelDeArbitro(value);
     }
+  }
+
+  function handleAlert() {
+    Meteor.call("enviaMailAlerta", dataSource, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else if (result > 0) {
+        message.success("Alertas enviados para " + result + " árbitros");
+      } else {
+        message.error("Não foi possível enviar os emails.");
+      }
+    });
+  }
+  let [isModalVisible, setModalVisible] = useState();
+
+  // let [novoJogoID, setNovoJogoID] = useState();
+  // let [novoJogoDia, setNovoJogoDia] = useState();
+  // let [novoJogoHora, setNovoJogoHora] = useState();
+  let novoJogoProva = "";
+  // let [novoJogoSerie, setNovoJogoSerie] = useState();
+  // let [novoJogoD, setNovoJogoID] = useState();
+
+  // {jogo: 0, dia: "", hora: "", prova: "", serie: "", equipas: "", pavilhao: ""});
+
+  const disabledDate = (current) => {
+    // Can not select days before today
+
+    return !moment().isSameOrBefore(current);
+  };
+
+  let [idJogo, setIdJogo] = useState("");
+  let [idDia, setIdDia] = useState("");
+  let [idHora, setIdHora] = useState("");
+  let [idSerie, setIdSerie] = useState("");
+  let [idEquipaA, setIdEquipaA] = useState("");
+  let [idEquipaB, setIdEquipaB] = useState("");
+  let [idPavilhao, setIdPavilhao] = useState("");
+
+  let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
+
+  function handleAddJogoNovo() {
+    Modal.confirm({
+      title: "Adicionar novo jogo:",
+      content: (
+        <div>
+          <>
+            <br></br>
+            <Form
+              labelCol={{
+                span: 3,
+                offset: 0,
+              }}
+              wrapperCol={{
+                span: 21,
+              }}
+              layout="horizontal"
+              size="small"
+            >
+              <Form.Item label="Jogo">
+                <InputNumber
+                  id="newGameId"
+                  placeholder="****"
+                  min={0}
+                  onChange={(e) => setIdJogo(e.target.value)}
+                />
+              </Form.Item>
+              <Form.Item label="Dia">
+                <ConfigProvider locale={locale}>
+                  <DatePicker
+                    locale={locale}
+                    placeholder="Selecione o dia..."
+                    style={{ width: "100%" }}
+                    id="newGameDate"
+                    disabledDate={disabledDate}
+                    onChange={(e) => setIdDia(e.target.value)}
+                    // showTime={{
+                    //   defaultValue: moment("00:00:00"),
+                    // }}
+                  />
+                </ConfigProvider>
+              </Form.Item>
+              <Form.Item label="Hora">
+                <TimePicker
+                  locale={locale}
+                  placeholder="Selecione a hora..."
+                  style={{ width: "100%" }}
+                  id="newGameHour"
+                  format={"HH:mm"}
+                  secondStep={1}
+                  onChange={(e) => setIdHora(e.target.value)}
+                />
+              </Form.Item>
+              <Form.Item label="Prova">
+                <Cascader
+                  id="newGameProva"
+                  placeholder="Selecione a prova..."
+                  onChange={(e) => {
+                    let p = "";
+                    for (let index = 0; index < e.length; index++) {
+                      p = p + e[index];
+                    }
+                    novoJogoProva = p;
+                  }}
+                  options={[
+                    {
+                      value: "NS",
+                      label: "NS",
+                      children: [
+                        {
+                          value: "F",
+                          label: "F",
+                          children: [
+                            {
+                              value: "I",
+                              label: "I",
+                            },
+                            {
+                              value: "II",
+                              label: "II",
+                            },
+                            {
+                              value: "III",
+                              label: "III",
+                            },
+                          ],
+                        },
+                        {
+                          value: "M",
+                          label: "M",
+                          children: [
+                            {
+                              value: "I",
+                              label: "I",
+                            },
+                            {
+                              value: "II",
+                              label: "II",
+                            },
+                            {
+                              value: "III",
+                              label: "III",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      value: "CR",
+                      label: "CR",
+                      children: [
+                        {
+                          value: "INF",
+                          label: "INF",
+                          children: [
+                            { value: "F", label: "F" },
+                            { value: "M", label: "M" },
+                          ],
+                        },
+                        {
+                          value: "INI",
+                          label: "INI",
+                          children: [
+                            { value: "F", label: "F" },
+                            { value: "M", label: "M" },
+                          ],
+                        },
+                        {
+                          value: "CAD",
+                          label: "CAD",
+                          children: [
+                            { value: "F", label: "F" },
+                            { value: "M", label: "M" },
+                          ],
+                        },
+                        {
+                          value: "JUV",
+                          label: "JUV",
+                          children: [
+                            { value: "F", label: "F" },
+                            { value: "M", label: "M" },
+                          ],
+                        },
+                        {
+                          value: "JUN",
+                          label: "JUN",
+                          children: [
+                            { value: "F", label: "F" },
+                            { value: "M", label: "M" },
+                          ],
+                        },
+                        {
+                          value: "S",
+                          label: "S",
+                          children: [
+                            {
+                              value: "F",
+                              label: "F",
+                              children: [{ value: "III", label: "III" }],
+                            },
+                            {
+                              value: "M",
+                              label: "M",
+                              children: [{ value: "III", label: "III" }],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      value: "CN",
+                      label: "CN",
+                      children: [
+                        {
+                          value: "JB1",
+                          label: "JB1",
+                        },
+                        {
+                          value: "JNB",
+                          label: "JNB",
+                        },
+                      ],
+                    },
+                  ]}
+                />
+              </Form.Item>
+
+              <Form.Item label="Série">
+                <Input
+                  id="newGameSerie"
+                  style={{ textTransform: "uppercase" }}
+                  onChange={(e) => setIdSerie(e.target.value)}
+                  placeholder="Selecione a serie..."
+                />
+              </Form.Item>
+              <Form.Item label="Equipas">
+                <Input
+                  id="newGameEquipaA"
+                  style={{ width: "46%", textTransform: "uppercase" }}
+                  onChange={(e) => setIdEquipaA(e.target.value)}
+                  placeholder="Visitada"
+                />{" "}
+                —{" "}
+                <Input
+                  id="newGameEquipaB"
+                  style={{ width: "47%", textTransform: "uppercase" }}
+                  onChange={(e) => setIdEquipaB(e.target.value)}
+                  placeholder="Visitante"
+                />
+              </Form.Item>
+              <Form.Item label="Pavilhão">
+                <Input
+                  id="newGamePavilhao"
+                  type="text"
+                  style={{ textTransform: "uppercase" }}
+                  onChange={(e) => setIdPavilhao(e.target.value)}
+                  placeholder="Selecione o pavilhão..."
+                />
+              </Form.Item>
+            </Form>
+          </>
+        </div>
+      ),
+      width: "42%",
+      keyboard: false,
+      okText: "Adicionar jogo",
+      closable: true,
+
+      onOk() {
+        let id = document.getElementById("newGameId").value;
+        let dia = document.getElementById("newGameDate").value;
+        let hora = document.getElementById("newGameHour").value;
+        let serie = document
+          .getElementById("newGameSerie")
+          .value.toString()
+          .toUpperCase();
+        let prova = novoJogoProva;
+        let equipaA = document
+          .getElementById("newGameEquipaA")
+          .value.toString()
+          .toUpperCase();
+        let equipaB = document
+          .getElementById("newGameEquipaB")
+          .value.toString()
+          .toUpperCase();
+        let pavilhao = document
+          .getElementById("newGamePavilhao")
+          .value.toString()
+          .toUpperCase();
+        let valido = true;
+        if (id.length <= 0) {
+          message.warn("Não colocou número de jogo!");
+          valido = false;
+        }
+        if (valido && dia.length <= 0) {
+          message.warn("Não colocou dia!");
+          valido = false;
+        }
+        if (valido && hora.length <= 0) {
+          message.warn("Não colocou hora!");
+          valido = false;
+        }
+        if (valido && prova.length <= 0) {
+          message.warn("Não colocou prova!");
+          valido = false;
+        }
+        if (valido && serie.length <= 0) {
+          message.warn("Não colocou série!");
+          valido = false;
+        }
+        if (valido && equipaA.length <= 0) {
+          message.warn("Não colocou equipa visitada!");
+          valido = false;
+        }
+        if (valido && equipaB.length <= 0) {
+          message.warn("Não colocou equipa visitante!");
+          valido = false;
+        }
+        if (valido && pavilhao.length <= 0) {
+          message.warn("Não colocou pavilhão!");
+          valido = false;
+        }
+
+        setFormValido(valido);
+
+        console.log(
+          "id",
+          id,
+          "dia",
+          dia,
+          "hora",
+          hora,
+          "prova",
+          prova,
+          "serie",
+          serie,
+          "equipaA",
+          equipaA,
+          "equipaB",
+          equipaB,
+          "pavilhao",
+          pavilhao
+        );
+        if (valido && !dataSource.includes(id)) {
+          Meteor.call(
+            "adicionaJogoNovo",
+            id,
+            dia,
+            hora,
+            prova,
+            serie,
+            equipaA,
+            equipaB,
+            pavilhao,
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                message.success("Adicionado o jogo " + id + ".");
+              }
+            }
+          );
+          setModalVisible(false);
+        } else if (valido && dataSource.includes(id)) {
+          message.warn("Esse jogo já existe...");
+        } else {
+          setModalVisible(true);
+        }
+
+        // }
+      },
+      cancelText: "Cancelar",
+      visible: isModalVisible == undefined ? true : isModalVisible,
+      className: "modalRecusa",
+    });
+  }
+
+  function handleDeleteGame(record) {
+    Meteor.call("eliminaJogo", record, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        message.success("Jogo eliminado!");
+      }
+    });
   }
 
   return (
@@ -910,7 +1479,13 @@ export function AtribuirJogos({ user }) {
               }}
             >
               {/* 0 COLUNA*/}
-              <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
                 {/* PRIMEIRA OPCAO FILTRO */}
                 <div
                   style={{
@@ -1191,12 +1766,21 @@ export function AtribuirJogos({ user }) {
                     size="small"
                     onClick={() => {
                       handleAlert();
-                      setTimeout(() => {
-                        message.success("Alertas enviados");
-                      }, 200);
                     }}
+                    icon={<AlertOutlined />}
                   >
                     Alertar Árbitros
+                  </Button>
+
+                  <Button
+                    id="addJogoNovo"
+                    size="small"
+                    onClick={() => {
+                      handleAddJogoNovo();
+                    }}
+                    icon={<PlusCircleOutlined />}
+                  >
+                    Adicionar Jogo
                   </Button>
                 </div>
               </div>
@@ -1258,8 +1842,8 @@ export function AtribuirJogos({ user }) {
                     onRow={(record) => {
                       return {
                         onClick: (event) => {
-                          //console.log("event", event);
-                          //console.log("event.target.value", event.target.value);
+                          console.log("event", event);
+                          console.log("event.target.value", event.target.value);
 
                           if (event.target != "div.ant-select-selector") {
                             Meteor.call(
@@ -1281,6 +1865,8 @@ export function AtribuirJogos({ user }) {
                                 } else if (result.length != 0) {
                                   return setArbitrosDisponiveis(result);
                                 }
+
+                                console.log("RESULTADO***", result);
                               }
                             );
                             currJogo = record;

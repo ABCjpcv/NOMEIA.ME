@@ -351,34 +351,27 @@ export const Header = ({
               marginLeft: "0.5%",
               marginRight: "0.5%",
               flexDirection: "row",
-              justifyContent: "flex-start",
+              justifyContent: "space-around",
             }}
           >
             <div
               id="divEsquerdo"
               style={{
                 display: "flex",
-                width: "15%",
+                width: "6%",
                 height: "100%",
               }}
             >
-              <div
-                className="containerLogo"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  justifyContent: "space-evenly",
-                }}
-              >
+              <div className="containerLogo">
                 <div
                   style={{
-                    width: "40%",
                     height: "100%",
-                    justifyContent: "space-evenly",
+                    justifyContent: "center",
                     display: "flex",
                     flexDirection: "column",
                     marginLeft: "20%",
                     marginTop: "2%",
+                    alignItems: "center",
                   }}
                   onClick={() => navigate("/")}
                 >
@@ -487,24 +480,26 @@ export const Header = ({
               id="divDireito"
               style={{
                 display: "flex",
-                width: "20%",
                 height: "100%",
                 justifyContent: "flex-end",
+                alignItems: "center",
               }}
             >
-              <a
-                href="https://www.avlisboa.pt/"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  id="avlLogo"
-                  src="avllogo.png"
-                  style={{ heigth: "100%", cursor: "pointer" }}
-                />
-              </a>
+              <div style={{ display: "flex", height: "70%" }}>
+                <a
+                  href="https://www.avlisboa.pt/"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    id="avlLogo"
+                    src="avllogo.png"
+                    style={{ heigth: "80%", cursor: "pointer" }}
+                  />
+                </a>
+              </div>
             </div>
           </div>
           <h6></h6>
