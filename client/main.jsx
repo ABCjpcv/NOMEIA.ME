@@ -5,6 +5,7 @@ import { App } from "../imports/ui/Pages/Geral/App";
 import { ConfigProvider } from "antd";
 
 import pt_PT from "antd/es/locale/pt_PT";
+import moment from "moment";
 
 moment.locale("pt_PT");
 

@@ -756,6 +756,8 @@ export function ConsultaPrivada({ user }) {
 
             tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
+            console.log("jogoLido", jogoLido);
+
             let jl =
               jogoLido.juiz_linha[0].length == 0
                 ? ""

@@ -118,8 +118,12 @@ jogos.schema = new SimpleSchema({
 //Schema ConselhoDeArbitragem
 conselhoDeArbitragem.schema = new SimpleSchema({
   arbitrosCA: { type: arbitros, optional: false },
-  preNomeacoes: [jogos],
-  enviado: { type: Boolean, optional: false },
+  preNomeacoesRegionais: [jogos],
+  enviadoRegionais: { type: Boolean, optional: false },
+  preNomeacoesUniversitarias: [jogos],
+  enviadoUniversitarias: { type: Boolean, optional: false },
+  // preNomeacoesEuropeias: [jogos],
+  // enviadoEuropeias: { type: Boolean, optional: false },
 });
 
 //Schema Clubes:
@@ -248,8 +252,12 @@ Meteor.startup(() => {
         a.isAdmin = isAdmin;
         conselhoDeArbitragem.insert({
           arbitrosCA: a,
-          preNomeacoes: [],
-          enviado: false,
+          preNomeacoesRegionais: [],
+          enviadoRegionais: false,
+          // preNomeacoesEuropeias: [],
+          // enviadoEuropeias: false,
+          preNomeacoesUniversitarias: [],
+          enviadoUniversitarias: false,
         });
         arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
       }
@@ -334,12 +342,12 @@ Meteor.startup(() => {
       return splitStr.join(" ");
     }
 
-    //Setup the database, by adding games.
+    //Setup the database, by adding games...
     for (let index = 1; index < rows.length - 1; index++) {
       // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
 
       jogos.insert({
-        id: parseInt(rows[index][0]),
+        id: rows[index][0],
         dia: rows[index][1],
         hora: rows[index][2],
         prova: rows[index][3],
@@ -491,8 +499,12 @@ Meteor.methods({
 
       conselhoDeArbitragem.insert({
         arbitrosCA: a,
-        preNomeacoes: ca.preNomeacoes,
-        enviado: false,
+        preNomeacoesRegionais: ca.preNomeacoesRegionais,
+        enviadoRegionais: false,
+        // preNomeacoesEuropeias: [],
+        // enviadoEuropeias: false,
+        preNomeacoesUniversitarias: [],
+        enviadoUniversitarias: false,
       });
     }
 
@@ -575,11 +587,16 @@ Meteor.methods({
             ca1 = ca;
           });
 
-          let atuaisPreNomeacoes = ca1.preNomeacoes;
+          let atuaisPreNomeacoesRegionais = ca1.preNomeacoesRegionais;
+          let atuaisPreNomeacoesUniversitarias = ca1.preNomeacoesUniversitarias;
           conselhoDeArbitragem.insert({
             arbitrosCA: arb,
-            preNomeacoes: atuaisPreNomeacoes,
-            enviado: false,
+            preNomeacoesRegionais: atuaisPreNomeacoesRegionais,
+            enviadoRegionais: false,
+            // preNomeacoesEuropeias: [],
+            // enviadoEuropeias: false,
+            preNomeacoesUniversitarias: atuaisPreNomeacoesUniversitarias,
+            enviadoUniversitarias: false,
           });
         }
         arbitros.update({ nome: username }, { $set: { isAdmin: CAnovo } });
@@ -655,7 +672,7 @@ Meteor.methods({
           "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
       });
 
-      Accounts.setPassword(u._id, newDefaultPassword);
+      Accounts.setPassword(uid, newDefaultPassword);
     } catch (error) {
       return false;
     }
@@ -665,7 +682,7 @@ Meteor.methods({
 
   alteraPassword: function alteraPassword(user, novaPass) {
     let utilizador = Meteor.users.findOne({ username: user.username });
-    Accounts.setPassword(utilizador._id, novaPass);
+    Accounts.setPassword(utilizadorid, novaPass);
     return 1;
   },
 
@@ -778,113 +795,121 @@ Meteor.methods({
       { $set: { nomeacoesPrivadas: nomeacoesAuxiliares } }
     );
 
-    let preNomeacoes = conselhoDeArbitragem.findOne().preNomeacoes;
-
-    //console.log("PRENOMEACOES SEM AS CONFIRMAÇÕES");
+    let preNomeacoesRegionais =
+      conselhoDeArbitragem.findOne().preNomeacoesRegionais;
+    let preNomeacoesUniversitarias =
+      conselhoDeArbitragem.findOne().preNomeacoesUniversitarias;
 
     for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
-      //console.log("arbConfirmacaoJogo[i]", arbConfirmacaoJogo[i]);
-      //Current id do jogo:
       let jogoId = arbConfirmacaoJogo[i].jogo;
-      for (let j = 0; j < preNomeacoes.length; j++) {
-        if (preNomeacoes[j].id == jogoId) {
-          if (preNomeacoes[j].arbitro_1 == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[0] = arbConfirmacaoJogo[i].confirmacaoAtual;
+      for (let j = 0; j < preNomeacoesRegionais.length; j++) {
+        if (preNomeacoesRegionais[j].id == jogoId) {
+          if (
+            preNomeacoesRegionais[j].arbitro_1 == arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[0] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
-          if (preNomeacoes[j].arbitro_2 == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[1] = arbConfirmacaoJogo[i].confirmacaoAtual;
+          if (
+            preNomeacoesRegionais[j].arbitro_2 == arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[1] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
-          if (preNomeacoes[j].juiz_linha[0] == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[2] = arbConfirmacaoJogo[i].confirmacaoAtual;
+          if (
+            preNomeacoesRegionais[j].juiz_linha[0] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[2] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
-          if (preNomeacoes[j].juiz_linha[1] == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[3] = arbConfirmacaoJogo[i].confirmacaoAtual;
+          if (
+            preNomeacoesRegionais[j].juiz_linha[1] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[3] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
-          if (preNomeacoes[j].juiz_linha[2] == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[4] = arbConfirmacaoJogo[i].confirmacaoAtual;
+          if (
+            preNomeacoesRegionais[j].juiz_linha[2] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[4] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
-          if (preNomeacoes[j].juiz_linha[3] == arbConfirmacaoJogo[i].arbitro) {
-            preNomeacoes[j].tags[5] = arbConfirmacaoJogo[i].confirmacaoAtual;
+          if (
+            preNomeacoesRegionais[j].juiz_linha[3] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesRegionais[j].tags[5] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
           }
         }
       }
     }
 
-    // console.log("PRENOME+ACOES COM AS CONFIRMAÇÕES");
-
-    // console.log(preNomeacoes);
-
-    // for (let index = 0; index < preNomeacoes.length; index++) {
-    //   if (preNomeacoes[index].arbitro_1 === arb.nome) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       // console.log("jogo", jogo);
-    //       // console.log("preNomeacoes[index].id", preNomeacoes[index].id);
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[0] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //         // console.log("mudou?? agora está assim", preNomeacoes);
-    //       }
-    //     }
-    //   }
-    //   if (preNomeacoes[index].arbitro_2 === arb.nome) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[1] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //       }
-    //     }
-    //   }
-    //   if (preNomeacoes[index].juiz_linha[0].includes(arb.nome)) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[2] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //       }
-    //     }
-    //   }
-    //   if (preNomeacoes[index].juiz_linha[1].includes(arb.nome)) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[3] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //       }
-    //     }
-    //   }
-    //   if (preNomeacoes[index].juiz_linha[2].includes(arb.nome)) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[4] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //       }
-    //     }
-    //   }
-    //   if (preNomeacoes[index].juiz_linha[3].includes(arb.nome)) {
-    //     let n = nomeacoes.findOne({ arbitro: arb });
-    //     for (let index = 0; index < n.nomeacoesPrivadas.length; index++) {
-    //       const jogo = n.nomeacoesPrivadas[index].jogo;
-    //       if (jogo.id == preNomeacoes[index].id) {
-    //         preNomeacoes[index].tags[5] =
-    //           n.nomeacoesPrivadas[index].confirmacaoAtual[0];
-    //       }
-    //     }
-    //   }
-    // }
+    for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
+      let jogoId = arbConfirmacaoJogo[i].jogo;
+      for (let j = 0; j < preNomeacoesUniversitarias.length; j++) {
+        if (preNomeacoesUniversitarias[j].id == jogoId) {
+          if (
+            preNomeacoesUniversitarias[j].arbitro_1 ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[0] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+          if (
+            preNomeacoesUniversitarias[j].arbitro_2 ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[1] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+          if (
+            preNomeacoesUniversitarias[j].juiz_linha[0] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[2] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+          if (
+            preNomeacoesUniversitarias[j].juiz_linha[1] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[3] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+          if (
+            preNomeacoesUniversitarias[j].juiz_linha[2] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[4] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+          if (
+            preNomeacoesUniversitarias[j].juiz_linha[3] ==
+            arbConfirmacaoJogo[i].arbitro
+          ) {
+            preNomeacoesUniversitarias[j].tags[5] =
+              arbConfirmacaoJogo[i].confirmacaoAtual;
+          }
+        }
+      }
+    }
 
     let ca = conselhoDeArbitragem.find();
     ca.forEach((ca) => {
       conselhoDeArbitragem.update(
         { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoes: preNomeacoes } }
+        { $set: { preNomeacoesRegionais: preNomeacoesRegionais } }
+      );
+    });
+
+    ca.forEach((ca) => {
+      conselhoDeArbitragem.update(
+        { arbitrosCA: ca.arbitrosCA },
+        { $set: { preNomeacoesUniversitarias: preNomeacoesUniversitarias } }
       );
     });
   },
@@ -1158,13 +1183,24 @@ Meteor.methods({
 
   /*****************************************************************
    **************** METODOS DO CONSELHO DE ARBITRAGEM *************
-   *****************************************************************
+   ****************************************************************
    */
 
-  jogosForamUpdated: function jogosForamUpdated(user, data) {
+  jogosForamUpdated: function jogosForamUpdated(
+    user,
+    data,
+    universitario,
+    regional
+  ) {
     let arb = arbitros.findOne({ email: user.emails[0].address });
     let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-    let atuaisPreNomeacoes = ca.preNomeacoes;
+    let atuaisPreNomeacoes = [];
+    if (universitario) {
+      atuaisPreNomeacoes = ca.preNomeacoesUniversitarias;
+    }
+    if (regional) {
+      atuaisPreNomeacoes = ca.preNomeacoesRegionais;
+    }
     if (data.length != atuaisPreNomeacoes.length) {
       return true;
     } else {
@@ -1184,21 +1220,39 @@ Meteor.methods({
     try {
       let arb = arbitros.findOne({ nome: user.username });
       let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-      return ca.preNomeacoes;
+      return ca.preNomeacoesRegionais;
     } catch (error) {
       return -1;
     }
   },
 
-  submeteJogosComNomeacoes: function submeteJogosComNomeacoes(data) {
-    // REVER MUITO BEM
+  getPreNomeacoesRealizadasUniversitarias:
+    function getPreNomeacoesRealizadasUniversitarias(user) {
+      try {
+        let arb = arbitros.findOne({ nome: user.username });
+        let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+        return ca.preNomeacoesUniversitarias;
+      } catch (error) {
+        return -1;
+      }
+    },
 
-    jogos.remove({});
+  submeteJogosComNomeacoes: function submeteJogosComNomeacoes(
+    data,
+    universitario,
+    regional
+  ) {
+    // R E VER MUITO BEM
 
     for (let index = 0; index < data.length; index++) {
       const jogo = data[index];
+      let k = "u";
+      if (regional) {
+        k = "r";
+      }
+
       jogos.insert({
-        id: jogo.id + "",
+        id: jogo.id,
         dia: jogo.dia,
         hora: jogo.hora,
         prova: jogo.prova,
@@ -1208,17 +1262,15 @@ Meteor.methods({
         arbitro_1: jogo.arbitro_1,
         arbitro_2: jogo.arbitro_2,
         juiz_linha: jogo.juiz_linha,
-        key: jogo.key,
+        key: k + jogo.key,
       });
     }
-
-    nomeacoes.remove({});
 
     let games = jogos.find();
     let refs = arbitros.find();
 
     refs.forEach((arbitro) => {
-      let nomeacoesAuxiliares = [];
+      let jogosAssociados = [];
 
       // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
       games.forEach((jogo) => {
@@ -1227,17 +1279,43 @@ Meteor.methods({
           jogo.arbitro_2 === arbitro.nome ||
           jogo.juiz_linha.includes(arbitro.nome)
         ) {
-          nomeacoesAuxiliares.push({
-            jogo: jogo,
-            confirmacaoAtual: ["pendente"],
-          });
+          if (!jogosAssociados.includes(jogo)) jogosAssociados.push(jogo);
         }
       });
 
-      nomeacoes.insert({
-        arbitro: arbitro,
-        nomeacoesPrivadas: nomeacoesAuxiliares,
-      });
+      console.log("jogos associados", jogosAssociados);
+
+      let final = [];
+      let n = nomeacoes.findOne({ arbitro: arbitro });
+      let nAntigas = n.nomeacoesPrivadas;
+
+      for (let index = 0; index < jogosAssociados.length; index++) {
+        const element = jogosAssociados[index];
+        if (nAntigas != undefined && nAntigas.length > 0) {
+          if (!nAntigas.includes(element)) {
+            console.log("nAntigas", nAntigas);
+            final.push({ jogo: element, confirmacaoAtual: ["pendente"] });
+          }
+        }
+      }
+
+      // for (let index = 0; index < nAntigas.length; index++) {
+      //   const element = nAntigas[index];
+      //   for (let i = 0; i < nAntigas.length; i++) {
+      //     const element = nAntigas[i];
+
+      //     if (!final.includes(nAntigas[i])) {
+      //       final.push(element);
+      //     }
+      //   }
+      // }
+
+      nomeacoes.update(
+        {
+          arbitro: arbitro,
+        },
+        { $set: { nomeacoesPrivadas: final } }
+      );
 
       console.log("inserted nomeacoes a: " + arbitro.nome);
     });
@@ -1245,20 +1323,24 @@ Meteor.methods({
     let ca = conselhoDeArbitragem.find();
 
     let ca1;
+    let games_ca;
 
     ca.forEach((ca) => {
-      conselhoDeArbitragem.update(
-        { arbitrosCA: ca.arbitrosCA },
-        { $set: { enviado: true } }
-      );
-
       //console.log("CA", ca);
       ca1 = ca.arbitrosCA;
     });
 
-    let games_ca = conselhoDeArbitragem.findOne({
-      arbitrosCA: ca1,
-    }).preNomeacoes;
+    if (universitario) {
+      games_ca = conselhoDeArbitragem.findOne({
+        arbitrosCA: ca1,
+      }).preNomeacoesUniversitarias;
+    }
+
+    if (regional) {
+      games_ca = conselhoDeArbitragem.findOne({
+        arbitrosCA: ca1,
+      }).preNomeacoesRegionais;
+    }
 
     let newGames_ca = [];
 
@@ -1293,15 +1375,33 @@ Meteor.methods({
       newGames_ca.push(element);
     }
 
-    ca.forEach((ca) => {
-      conselhoDeArbitragem.update(
-        { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoes: newGames_ca } }
-      );
-    });
+    if (universitario) {
+      ca.forEach((ca) => {
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { preNomeacoesUniversitarias: newGames_ca } }
+        );
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { enviadoUniversitarias: true } }
+        );
+      });
+    }
+    if (regional) {
+      ca.forEach((ca) => {
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { preNomeacoesRegionais: newGames_ca } }
+        );
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { enviadoRegionais: true } }
+        );
+      });
+    }
   },
 
-  alteraNomeacao: function alteraNomeacao(jogo, user) {
+  alteraNomeacao: function alteraNomeacao(jogo, user, universitario, regional) {
     jogo = {
       id: jogo.Jogo,
       dia: jogo.Dia,
@@ -1350,6 +1450,8 @@ Meteor.methods({
     // 2º PASSO
     // Altera membros da equipa de arbitragem associada ao jogo
 
+    console.log("jogo", jogo);
+
     // EQUIPA DE ARBITRAGEM ANTIGA
     let arbitro1Antigo = jogoAntigo.arbitro_1;
     let arbitro2Antigo = jogoAntigo.arbitro_2;
@@ -1374,7 +1476,13 @@ Meteor.methods({
 
     let arb = arbitros.findOne({ email: user.emails[0].address });
     let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-    let caPreGames = ca.preNomeacoes;
+    let caPreGames = [];
+    if (universitario) {
+      caPreGames = ca.preNomeacoesUniversitarias;
+    }
+    if (regional) {
+      caPreGames = ca.preNomeacoesRegionais;
+    }
 
     if (arbitro1Antigo !== arbitro1Novo) {
       // Nomeacao foi alterada no 1º Arbitro
@@ -1456,23 +1564,24 @@ Meteor.methods({
       }
     }
 
-    // if (jl3Antigo !== jl3Novo) {
-    //   // Nomeacao foi alterada no JL3
-    //   mudaArbitro(jl3Antigo, jl3Novo, jogo);
-    // }
-
-    // if (jl4Antigo !== jl4Novo) {
-    //   // Nomeacao foi alterada no JL4
-    //   mudaArbitro(jl4Antigo, jl4Novo, jogo);
-    // }
-
     ca = conselhoDeArbitragem.find();
-    ca.forEach((ca) => {
-      conselhoDeArbitragem.update(
-        { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoes: caPreGames } }
-      );
-    });
+    if (universitario) {
+      ca.forEach((ca) => {
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { preNomeacoesUniversitarias: caPreGames } }
+        );
+      });
+    }
+
+    if (regional) {
+      ca.forEach((ca) => {
+        conselhoDeArbitragem.update(
+          { arbitrosCA: ca.arbitrosCA },
+          { $set: { preNomeacoesRegionais: caPreGames } }
+        );
+      });
+    }
 
     return true;
   },
@@ -1564,7 +1673,9 @@ Meteor.methods({
     nomeArbitro,
     currJogo,
     funcao,
-    edit
+    edit,
+    universitario,
+    regional
   ) {
     //console.log(" currJogo: ", currJogo);
 
@@ -1582,7 +1693,7 @@ Meteor.methods({
       currJogo.Pavilhao;
     // console.log("titulo: ", titulo);
 
-    // FORMAT -> 2022-07-17T11:00:00+01:00
+    // FORMAT  -> 2022-07-17T11:00:00+01:00
 
     // DIA DE JOGO : "24/07/2022"
 
@@ -1665,7 +1776,19 @@ Meteor.methods({
       ca1 = ca;
     });
 
-    let atuaisPreNomeacoes = ca1.preNomeacoes;
+    let atuaisPreNomeacoes = [];
+
+    if (universitario) {
+      atuaisPreNomeacoes = ca1.preNomeacoesUniversitarias;
+    }
+    // if (europeias) {
+    //   atuaisPreNomeacoes = ca1.preNomeacoesEuropeias;
+    // }
+    if (regional) {
+      atuaisPreNomeacoes = ca1.preNomeacoesRegionais;
+    }
+
+    console.log("ATUAIS, PRE NOMEACOES", atuaisPreNomeacoes);
 
     for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
       if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
@@ -1686,14 +1809,40 @@ Meteor.methods({
     }
     let newGames = atuaisPreNomeacoes;
 
+    let oldGamesRegionais = ca1.preNomeacoesRegionais;
+    let envioRegional = ca1.enviadoRegionais;
+
+    let oldGamesUniversitarios = ca1.preNomeacoesUniversitarias;
+    let envioUniversitario = ca1.enviadoUniversitarias;
+
     conselhoDeArbitragem.remove({});
 
     for (let index = 0; index < arbCAs.length; index++) {
-      conselhoDeArbitragem.insert({
-        arbitrosCA: arbCAs[index],
-        preNomeacoes: newGames,
-        enviado: edit,
-      });
+      if (universitario) {
+        conselhoDeArbitragem.insert({
+          arbitrosCA: arbCAs[index],
+          preNomeacoesUniversitarias: newGames,
+          enviadoUniversitarias: edit,
+          preNomeacoesRegionais: oldGamesRegionais,
+          enviadoRegionais: envioRegional,
+        });
+      }
+      // if (europeias) {
+      //   conselhoDeArbitragem.insert({
+      //     arbitrosCA: arbCAs[index],
+      //     preNomeacoesEuropeias: newGames,
+      //     enviadoEuropeias: edit,
+      //   });
+      // }
+      if (regional) {
+        conselhoDeArbitragem.insert({
+          arbitrosCA: arbCAs[index],
+          preNomeacoesRegionais: newGames,
+          enviadoRegionais: edit,
+          preNomeacoesUniversitarias: oldGamesUniversitarios,
+          enviadoUniversitarias: envioUniversitario,
+        });
+      }
     }
 
     return true;
@@ -1705,7 +1854,10 @@ Meteor.methods({
     nomeArbitro,
     tituloJogo,
     currJogo,
-    funcao
+    funcao,
+    universitario,
+
+    regional
   ) {
     // console.log("nomeArbitro", nomeArbitro);
     // console.log("tituloJogo", tituloJogo);
@@ -1719,7 +1871,7 @@ Meteor.methods({
 
     let events = i.disponibilidades;
 
-    // console.log("events", events);
+    // console.lo g("events", events);
 
     if (events === "") {
       events = [];
@@ -1730,19 +1882,19 @@ Meteor.methods({
     for (let index = 0; index < events.length; index++) {
       const titulo = events[index].title;
 
-      // console.log("TITULO DO JOGO DA BD: ", events[index].title);
-      // console.log("TITULO RECEBIDO A COMPARAR:", titulo);
+      console.log("TITULO DO JOGO DA BD: ", events[index].title);
+      console.log("TITULO RECEBIDO A COMPARAR:", titulo);
 
-      // console.log("SÃO IGUAIS?", titulo === tituloJogo);
+      console.log("SÃO IGUAIS?", titulo === tituloJogo);
 
       let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
 
       let numeroJogoRecebido = parseInt(tituloJogo.split(" ")[2]);
 
-      // console.log("numeroJogoDaBD : ", numeroJogoDaBD);
-      // console.log("numeroJogoRecebido:", numeroJogoRecebido);
+      console.log("numeroJogoDaBD : ", numeroJogoDaBD);
+      console.log("numeroJogoRecebido:", numeroJogoRecebido);
 
-      // console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
+      console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
 
       if (numeroJogoDaBD != numeroJogoRecebido) {
         novosEvents.push(events[index]);
@@ -1764,7 +1916,17 @@ Meteor.methods({
       ca1 = ca;
     });
 
-    let atuaisPreNomeacoes = ca1.preNomeacoes;
+    let atuaisPreNomeacoes;
+
+    if (universitario) {
+      atuaisPreNomeacoes = ca1.preNomeacoesUniversitarias;
+    }
+    // if (europeias) {
+    //   atuaisPreNomeacoes = ca1.preNomeacoesEuropeias;
+    // }
+    if (regional) {
+      atuaisPreNomeacoes = ca1.preNomeacoesRegionais;
+    }
 
     for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
       if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
@@ -1787,22 +1949,124 @@ Meteor.methods({
 
     for (let index = 0; index < arbCAs.length; index++) {
       let arbitroCA = arbCAs[index];
-      conselhoDeArbitragem.update(
-        {
-          arbitrosCA: arbitroCA,
-        },
-        { $set: { preNomeacoes: newGames } }
-      );
-      conselhoDeArbitragem.update(
-        {
-          arbitrosCA: arbitroCA,
-        },
-        { $set: { enviado: true } }
-      );
+
+      if (universitario) {
+        conselhoDeArbitragem.update(
+          {
+            arbitrosCA: arbitroCA,
+          },
+          { $set: { preNomeacoesUniversitarias: newGames } }
+        );
+        conselhoDeArbitragem.update(
+          {
+            arbitrosCA: arbitroCA,
+          },
+          { $set: { enviadoUniversitarias: true } }
+        );
+      }
+      // if (europeias) {
+      //   conselhoDeArbitragem.update(
+      //     {
+      //       arbitrosCA: arbitroCA,
+      //     },
+      //     { $set: { preNomeacoesEuropeias: newGames } }
+      //   );
+      //   conselhoDeArbitragem.update(
+      //     {
+      //       arbitrosCA: arbitroCA,
+      //     },
+      //     { $set: { enviadoEuropeias: true } }
+      //   );
+      // }
+      if (regional) {
+        conselhoDeArbitragem.update(
+          {
+            arbitrosCA: arbitroCA,
+          },
+          { $set: { preNomeacoesRegionais: newGames } }
+        );
+        conselhoDeArbitragem.update(
+          {
+            arbitrosCA: arbitroCA,
+          },
+          { $set: { enviadoRegionais: true } }
+        );
+      }
     }
     return true;
   },
 
+  /**
+   * CAMPEONATO UNIVERSITARIO
+   * @param {} jogos
+   * @returns
+   */
+  addJogosUniversitarios: function addJogosUniversitarios(jogos) {
+    let ca = conselhoDeArbitragem.find();
+    let arbCAs = [];
+    ca.forEach((ca) => {
+      arbCAs.push(ca.arbitrosCA);
+    });
+
+    let newGamesUniversitarios = [];
+
+    for (let index = 1; index < jogos.length; index++) {
+      if (jogos[index][0] != "") {
+        let game = {
+          id: jogos[index][0],
+          dia: jogos[index][1],
+          hora: jogos[index][2],
+          prova: jogos[index][3],
+          equipas: jogos[index][4],
+          pavilhao: jogos[index][5] + " Campo: " + jogos[index][6],
+          arbitro_1: jogos[index][7],
+          arbitro_2: jogos[index][8],
+          juiz_linha: [
+            jogos[index][9],
+            jogos[index][10],
+            jogos[index][11],
+            jogos[index][12],
+          ],
+          key: index,
+          tags: ["", "", "", "", "", ""],
+        };
+        newGamesUniversitarios.push(game);
+      }
+    }
+
+    for (let index = 0; index < arbCAs.length; index++) {
+      let arbitroCA = arbCAs[index];
+
+      conselhoDeArbitragem.update(
+        {
+          arbitrosCA: arbitroCA,
+        },
+        { $set: { preNomeacoesUniversitarias: newGamesUniversitarios } }
+      );
+
+      conselhoDeArbitragem.update(
+        {
+          arbitrosCA: arbitroCA,
+        },
+        { $set: { enviadoUniversitarias: false } }
+      );
+    }
+
+    return true;
+  },
+
+  carregaJogosUniversitarios: function carregaJogosUniversitarios(email) {
+    const a = arbitros.findOne({ email: email });
+    //console.log("a", a);
+    const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
+    return [ca.preNomeacoesUniversitarias, ca.enviadoUniversitarias];
+  },
+
+  /**
+   * CAMPEONATO REGIONAL
+   * @param {} jogos
+   * @returns
+   */
   addJogosSemanais: function addJogosSemanais(jogos) {
     let ca = conselhoDeArbitragem.find();
     let arbCAs = [];
@@ -1844,14 +2108,14 @@ Meteor.methods({
         {
           arbitrosCA: arbitroCA,
         },
-        { $set: { preNomeacoes: newGames } }
+        { $set: { preNomeacoesRegionais: newGames } }
       );
 
       conselhoDeArbitragem.update(
         {
           arbitrosCA: arbitroCA,
         },
-        { $set: { enviado: false } }
+        { $set: { enviadoRegionais: false } }
       );
     }
 
@@ -1859,12 +2123,11 @@ Meteor.methods({
   },
 
   carregaJogosSemanais: function carregaJogosSemanais(email) {
-    // console.log("email", email);
     const a = arbitros.findOne({ email: email });
     //console.log("a", a);
     const ca = conselhoDeArbitragem.findOne({ arbitrosCA: a });
     //console.log("ca", ca);
-    return [ca.preNomeacoes, ca.enviado];
+    return [ca.preNomeacoesRegionais, ca.enviadoRegionais];
   },
 
   arbitrosDisponiveis: function arbitrosDisponiveis(
@@ -1898,18 +2161,18 @@ Meteor.methods({
       "-" +
       diaDeJogo[0] +
       "T" +
-      (horaPavilhao + 1) + // NAO FACO IDEIA PORQUE, MAS TEVE DE SER
+      (horaPavilhao + 1) + // NAO FACO IDEIA  PORQUE, MAS TEVE DE SER
       ":" +
       horaDeJogo[1] +
       ":00";
 
-    console.log("dataInicio", dataInicio);
+    // console.log("dataInicio", dataInicio);
 
     let inicioDoJogo = new Date(dataInicio);
 
     let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
-    console.log("horaINICIODeJogo: ", inicioDoJogo);
-    console.log("horaFimDeJogo: ", horaFimDeJogo);
+    // console.log("horaINICIODeJogo: ", inicioDoJogo);
+    // console.log("horaFimDeJogo: ", horaFimDeJogo);
 
     let dataFim =
       diaDeJogo[2] +
@@ -1946,7 +2209,7 @@ Meteor.methods({
       }
     });
 
-    console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
+    // console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
 
     let auxiliarNivel = [];
 
@@ -1991,7 +2254,7 @@ Meteor.methods({
 
     let arbitrosDisponiveisRecibos = [];
 
-    console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
+    // console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
 
     if (temRecibo) {
       for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
@@ -2134,8 +2397,8 @@ Meteor.methods({
 
     for (let index = 0; index < dataSource.length; index++) {
       const element = dataSource[index];
-      console.log("ELEMENT");
-      console.log(element);
+      // console.log("ELEMENT");
+      // console.log(element);
 
       if (element.tags[0] === "pendente") {
         if (!arbitrosComJogosPendentes.includes(element.Arbitro1))
@@ -2154,13 +2417,13 @@ Meteor.methods({
           arbitrosComJogosPendentes.push(element.JL2);
       }
     }
-    console.log("arbitrosComJogosPendentes", arbitrosComJogosPendentes);
+    // console.log("arbitrosComJogosPendentes", arbitrosComJogosPendentes);
 
     let emails = [];
 
     for (let index = 0; index < arbitrosComJogosPendentes.length; index++) {
       const element = arbitrosComJogosPendentes[index];
-      console.log("element", element);
+      // console.log("element", element);
 
       try {
         let arb = arbitros.findOne({ nome: element });
@@ -2170,7 +2433,7 @@ Meteor.methods({
       }
     }
 
-    console.log("emails", emails);
+    // console.log("emails", emails);
 
     for (let index = 0; index < emails.length; index++) {
       const element = emails[index];
@@ -2239,7 +2502,7 @@ Meteor.methods({
       arbitro_1: "",
       arbitro_2: "",
       juiz_linha: ["", "", "", ""],
-      key: _("novo"),
+      key: "r" + _("novo"),
     };
 
     jogos.insert(newGame);
@@ -2255,11 +2518,9 @@ Meteor.methods({
 
     let games_ca = conselhoDeArbitragem.findOne({
       arbitrosCA: ca1,
-    }).preNomeacoes;
+    }).preNomeacoesRegionais;
 
-    let newGameCA = {};
-
-    console.log("games_ca", games_ca);
+    // console.log("games_ca", games_ca);
 
     games_ca.push({
       id: id,
@@ -2283,7 +2544,78 @@ Meteor.methods({
     ca.forEach((ca) => {
       conselhoDeArbitragem.update(
         { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoes: games_ca } }
+        { $set: { preNomeacoesRegionais: games_ca } }
+      );
+    });
+  },
+
+  adicionaJogoNovoUniversitario: function adicionaJogoNovoUniversitario(
+    id,
+    dia,
+    hora,
+    prova,
+    equipaA,
+    equipaB,
+    pavilhao
+  ) {
+    console.log("dia", dia);
+
+    let d = dia.split("-");
+
+    let newGame = {
+      id: id,
+      dia: d[0] + "/" + d[1] + "/" + d[2],
+      hora: hora,
+
+      prova: prova,
+      equipas: equipaA + " - " + equipaB,
+
+      pavilhao: pavilhao,
+      arbitro_1: "",
+      arbitro_2: "",
+      juiz_linha: ["", "", "", ""],
+      key: "u" + _("novo"),
+    };
+
+    jogos.insert(newGame);
+
+    let ca1;
+
+    let ca = conselhoDeArbitragem.find();
+
+    ca.forEach((ca) => {
+      //console.log("CA", ca);
+      ca1 = ca.arbitrosCA;
+    });
+
+    let games_ca = conselhoDeArbitragem.findOne({
+      arbitrosCA: ca1,
+    }).preNomeacoesUniversitarias;
+
+    // console.log("games_ca", games_ca);
+
+    games_ca.push({
+      id: id,
+      dia: newGame.dia,
+      hora: hora,
+
+      prova: prova,
+      equipas: equipaA + " - " + equipaB,
+
+      pavilhao: pavilhao,
+      arbitro_1: "",
+      arbitro_2: "",
+      juiz_linha: ["", "", "", ""],
+      key: newGame.key,
+      tags: ["", "", "", "", "", ""],
+    });
+
+    console.log("games_ca", games_ca);
+
+    ca.forEach((ca) => {
+      conselhoDeArbitragem.update(
+        { arbitrosCA: ca.arbitrosCA },
+        { $set: { preNomeacoesUniversitarias: games_ca } }
       );
     });
   },
@@ -2298,13 +2630,12 @@ Meteor.methods({
     let ca = conselhoDeArbitragem.find();
 
     ca.forEach((ca) => {
-      //console.log("CA", ca);
       ca1 = ca.arbitrosCA;
     });
 
     let games_ca = conselhoDeArbitragem.findOne({
       arbitrosCA: ca1,
-    }).preNomeacoes;
+    }).preNomeacoesRegionais;
 
     let newGames = [];
     for (let index = 0; index < games_ca.length; index++) {
@@ -2313,12 +2644,46 @@ Meteor.methods({
       }
     }
 
-    console.log("games_ca", games_ca);
+    // console.log("games_ca", games_ca);
 
     ca.forEach((ca) => {
       conselhoDeArbitragem.update(
         { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoes: newGames } }
+        { $set: { preNomeacoesRegionais: newGames } }
+      );
+    });
+  },
+
+  eliminaJogoUniversitario: function eliminaJogoUniversitario(jogo) {
+    let id = jogo.Jogo;
+
+    jogos.remove({ id: parseInt(id) });
+
+    let ca1;
+
+    let ca = conselhoDeArbitragem.find();
+
+    ca.forEach((ca) => {
+      ca1 = ca.arbitrosCA;
+    });
+
+    let games_ca = conselhoDeArbitragem.findOne({
+      arbitrosCA: ca1,
+    }).preNomeacoesUniversitarias;
+
+    let newGames = [];
+    for (let index = 0; index < games_ca.length; index++) {
+      if (games_ca[index].id != parseInt(id)) {
+        newGames.push(games_ca[index]);
+      }
+    }
+
+    // console.log("games_ca", games_ca);
+
+    ca.forEach((ca) => {
+      conselhoDeArbitragem.update(
+        { arbitrosCA: ca.arbitrosCA },
+        { $set: { preNomeacoesUniversitarias: newGames } }
       );
     });
   },
@@ -2507,7 +2872,7 @@ function addFeriados(r) {
       feriadosNacionais[index].data.split("/")[1] +
       "-" +
       feriadosNacionais[index].data.split("/")[0] +
-      "T09:00:00Z";
+      "T08:00:00Z";
 
     if (!hasDST(startStr)) {
       startStr =

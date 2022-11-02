@@ -225,11 +225,11 @@ export function UserSettings({ user }) {
             style={{
               display: "flex",
               justifyContent: "flex-start",
-              flexDirection: "row",
+              flexDirection: "column",
             }}
           >
             {/* <ImagemPerfil></ImagemPerfil> */}
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -238,17 +238,17 @@ export function UserSettings({ user }) {
                 justifyContent: "flex-start",
                 marginTop: "3%",
               }}
-            >
-              <label className="labels">Nome</label>
-              <br></br>
-              <Input
-                type={"text"}
-                value={user.username}
-                id="nomeUserSettings"
-                style={{ borderRadius: "10px" }}
-                disabled
-              ></Input>
-            </div>
+            > */}
+            <label className="labels">Nome</label>
+
+            <Input
+              type={"text"}
+              value={user.username}
+              id="nomeUserSettings"
+              style={{ borderRadius: "10px" }}
+              disabled
+            ></Input>
+            {/* </div> */}
           </div>
           <p></p>
           <div className="input" style={{ justifyContent: "flex-start" }}>
@@ -484,9 +484,7 @@ export function UserSettings({ user }) {
                         password2UserSettings,
                         (err, result) => {
                           if (result === 1) {
-                            message.success(
-                              "Password alterada com sucesso! Faça a autenticação novamente."
-                            );
+                            message.success("Password alterada com sucesso! ");
                             Meteor.logout();
                           }
                         }

@@ -86,9 +86,9 @@ export function Autenticar({ user }) {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={true}
-        atribuirArbitrosAdesl={false}
-        atribuirArbitrosCev={false}
-        atribuirArbitrosCR_CN={false}
+        atribuirArbitrosAdesl={true}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={true}
         criarContaNova={true}
         removerConta={true}
@@ -128,7 +128,7 @@ export function Autenticar({ user }) {
             }}
           >
             <div className="input" style={{ justifyContent: "flex-start" }}>
-              <label className="labels">Email</label>
+              <label className="labels">Email: </label>
             </div>
             <div className="input">
               <Input

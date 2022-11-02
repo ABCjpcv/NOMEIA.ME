@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
 import { Meteor } from "meteor/meteor";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
+import { message, Select, Upload } from "antd";
 import { Header } from "../../Geral/Header";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -12,6 +12,9 @@ const { Dragger } = Upload;
 export function FileInput() {
   let navigate = useNavigate();
   let location = useLocation();
+  let [selectVal, setSelectVal] = useState(null);
+
+  useEffect(() => {}, [selectVal]);
   const props = {
     beforeUpload: (file) => {
       let isValidFyleType = file.type === "text/csv";
@@ -27,25 +30,59 @@ export function FileInput() {
     },
     onChange: (event) => {
       if (event.file) {
-        // Aceita ficheiros csv, xls, xlsx
-        Papa.parse(event.file.originFileObj, {
-          complete: function (results) {
-            let newGames = results.data;
-            Meteor.call("addJogosSemanais", newGames, (err, result) => {
-              if (err) {
-                //console.log("Error: " + err);
-                return;
+        console.log("selectVal", selectVal);
+        if (selectVal != undefined) {
+          // Aceita ficheiros csv, xls, xlsx
+          Papa.parse(event.file.originFileObj, {
+            complete: function (results) {
+              let newGames = results.data;
+              console.log("NEW GAMES", newGames);
+              if (selectVal === "Campeonato Universitário") {
+                console.log(
+                  "ENTRAS???????????????????????????????????????????"
+                );
+                Meteor.call(
+                  "addJogosUniversitarios",
+                  newGames,
+                  (err, result) => {
+                    if (err) {
+                      //console.log("Error: " + err);
+                      return;
+                    }
+                    if (result) {
+                      message.success(
+                        "Novos jogos do Campeonato Universitário carregados!"
+                      );
+                    }
+                  }
+                );
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
+              } else if (selectVal === "Campeonato Regional / Nacional") {
+                Meteor.call("addJogosSemanais", newGames, (err, result) => {
+                  console.log(
+                    "ENTRAS REGIONAL???????????????????????????????????????????"
+                  );
+                  if (err) {
+                    //console.log("Error: " + err);
+                    return;
+                  }
+                  if (result) {
+                    message.success(
+                      "Novos jogos do Campeonato Regional / Nacional carregados!"
+                    );
+                  }
+                });
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
               }
-              if (result) {
-                message.success("Novos jogos semanais carregados!");
-                navigate("/Conta/ProfileCA/Atribuir_Arbitros");
-              }
-            });
-          },
-        });
+            },
+          });
+        } else {
+          message.error("Não indicou o campeonato!");
+        }
       }
     },
   };
+
   return (
     <>
       <Header
@@ -54,9 +91,9 @@ export function FileInput() {
         consultaPrivada={true}
         menuPrivado={true}
         menuPrivadoCA={false}
-        atribuirArbitrosAdesl={false}
-        atribuirArbitrosCev={false}
-        atribuirArbitrosCR_CN={false}
+        atribuirArbitrosAdesl={true}
+        atribuirArbitrosCev={true}
+        atribuirArbitrosCR_CN={true}
         carregarJogos={false}
         criarContaNova={true}
         removerConta={true}
@@ -65,14 +102,48 @@ export function FileInput() {
         definicoes={true}
         historico={true}
       />
+
+      {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
+
       <div
         style={{
-          marginTop: "1%",
+          margin: "auto",
           display: "flex",
-          justifyContent: "space-evenly",
+          flexDirection: "column",
+          alignItems: "center",
+          marginTop: "1%",
         }}
       >
-        {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}
+        <div className="input">
+          <label className="labels">
+            <Select
+              onChange={(e) => setSelectVal(e)}
+              placeholder="Indique o Campeonato"
+              style={{
+                position: "sticky",
+                top: "0",
+                left: "0",
+                width: "300px",
+                flexDirection: "none",
+                justifyContent: "space-evenly",
+              }}
+            >
+              <Select.Option key="adesl" value="Campeonato Universitário">
+                Campeonato Universitário
+              </Select.Option>
+              {/* <Select.Option
+                key="cev"
+                value="Confederação Europeia de Voleibol"
+              >
+                Confederação Europeia de Voleibol
+              </Select.Option> */}
+              <Select.Option key="Campeonato Regional / Nacional">
+                Campeonato Regional / Nacional
+              </Select.Option>
+            </Select>
+          </label>
+          <br></br>
+        </div>
 
         <span>
           <Dragger

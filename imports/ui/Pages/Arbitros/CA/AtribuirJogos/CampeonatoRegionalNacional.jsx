@@ -720,10 +720,10 @@ export function CampeonatoRegionalNacional({ user }) {
   let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
   let [editableRow, setEditableRow] = useState("");
-  let [edit, setEdit] = useState();
+  let [edit, setEdit] = useState(Boolean);
 
   useEffect(() => {
-    console.log("disabledDataSource, BANANANANANAN", disabledDataSource);
+    console.log("disabledDataSource", disabledDataSource);
     console.log("dataSource", dataSource);
   }, [disabledDataSource, dataSource]);
 
@@ -739,6 +739,8 @@ export function CampeonatoRegionalNacional({ user }) {
         Meteor.call(
           "submeteJogosComNomeacoes",
           preNomeacoesRealizadas,
+          false,
+          true,
           (err, result) => {
             if (err) {
               console.log("ERRRRROOOOO", { err });
@@ -757,8 +759,8 @@ export function CampeonatoRegionalNacional({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    console.log("value", value);
-    console.log("key", key);
+    // console.log("value", value);
+    // console.log("key", key);
 
     let indexAux = key.key.split("_");
 
@@ -768,6 +770,8 @@ export function CampeonatoRegionalNacional({ user }) {
         index = parseInt(indexAux[i + 1]);
       }
     }
+
+    console.log("currJogo", currJogo);
 
     let titulo =
       "Jogo nº " +
@@ -780,6 +784,8 @@ export function CampeonatoRegionalNacional({ user }) {
       currJogo.Equipas +
       " " +
       currJogo.Pavilhao;
+
+    console.log("titulo", titulo);
 
     // console.log("prevNomeArbitro", prevNomeArbitro);
 
@@ -794,6 +800,8 @@ export function CampeonatoRegionalNacional({ user }) {
           titulo,
           currJogo,
           key.key,
+          false,
+          true,
           (err, result) => {
             if (err) {
               console.error(err);
@@ -809,6 +817,8 @@ export function CampeonatoRegionalNacional({ user }) {
           titulo,
           currJogo,
           key.key,
+          false,
+          true,
           (err, result) => {
             if (err) {
               console.error(err);
@@ -862,6 +872,8 @@ export function CampeonatoRegionalNacional({ user }) {
           currJogo,
           key.key,
           edit,
+          false,
+          true,
           (err, result) => {
             //console.log("RESULTADO", result);
 
@@ -917,6 +929,8 @@ export function CampeonatoRegionalNacional({ user }) {
           currJogo,
           key.key,
           edit,
+          false,
+          true,
           (err, result) => {
             //console.log("RESULTADO", result);
 
@@ -939,7 +953,7 @@ export function CampeonatoRegionalNacional({ user }) {
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result[0].length > 0) {
-        console.log("RESULTADO", result);
+        // console.log("RESULTADO", result);
         let dataFromDB = [];
         let preNomeacoes = result[0];
 
@@ -1002,6 +1016,8 @@ export function CampeonatoRegionalNacional({ user }) {
         "jogosForamUpdated",
         Meteor.user(),
         dataSource,
+        false,
+        true,
         (err, result) => {
           //console.log("jogos atualizados???", result);
           if (result === true) {
@@ -1807,7 +1823,9 @@ export function CampeonatoRegionalNacional({ user }) {
                     onClick={() => {
                       handleSubmissionConfirmation();
                       setTimeout(() => {
-                        message.success("Nomeações enviadas para os Árbitros.");
+                        message.success(
+                          "Nomeações regionais e nacionais enviadas para os Árbitros."
+                        );
                       }, 200);
                       document.getElementById("enviaNomeacoes").disabled = true;
                     }}

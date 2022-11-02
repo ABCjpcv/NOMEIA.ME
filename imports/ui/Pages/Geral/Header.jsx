@@ -156,6 +156,7 @@ export const Header = ({
                 }}
                 hidden={titulo}
               >
+                <img id="logo" src="logo.png" style={{ height: "100%" }} />
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
@@ -242,7 +243,7 @@ export const Header = ({
                 }}
                 hidden={consultaPrivada}
               >
-                As minhas nomeações:
+                Nomeações:
               </p>
               <p
                 id="indisponibilidadePrivadas"
@@ -485,7 +486,8 @@ export const Header = ({
                 }}
                 hidden={forgotPasswordHeader}
               >
-                <b>Redefinir Password</b>
+                <img id="logo" src="logo.png" style={{ height: "100%" }} />
+                <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
               <h1
@@ -781,7 +783,7 @@ const MenuPrivadoCA = () => {
                 ADESL - CUL
               </a>
             </li>
-            <li>
+            {/* <li>
               {" "}
               <a
                 className="menu-item"
@@ -797,7 +799,7 @@ const MenuPrivadoCA = () => {
               >
                 CEV{" "}
               </a>
-            </li>
+            </li> */}
             <li>
               {" "}
               <a

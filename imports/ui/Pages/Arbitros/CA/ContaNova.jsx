@@ -12,7 +12,7 @@ export function ContaNova() {
   return (
     <>
       <Header
-        user={user}
+        user={Meteor.user()}
         titulo={true}
         consultaPrivada={true}
         menuPrivado={true}
@@ -21,7 +21,7 @@ export function ContaNova() {
         atribuirArbitrosCev={true}
         atribuirArbitrosCR_CN={true}
         carregarJogos={true}
-        criarContaNova={true}
+        criarContaNova={false}
         removerConta={true}
         indisponibilidadePrivadas={true}
         restricoesPrivadas={true}

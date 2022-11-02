@@ -265,17 +265,7 @@ export function Adesl({ user }) {
 
       ...getColumnSearchProps("Prova"),
     },
-    {
-      title: "Série",
-      dataIndex: "Serie",
-      key: "Serie",
-      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
-      sortDirections: ["descend", "ascend"],
-      fixed: "left",
-      width: "5.5%",
 
-      ...getColumnSearchProps("Serie"),
-    },
     {
       title: "Equipas",
       dataIndex: "Equipas",
@@ -493,101 +483,6 @@ export function Adesl({ user }) {
         </>
       ),
     },
-    // {
-    //   title: "JL3",
-    //   dataIndex: "JL3",
-    //   key: "JL3",
-    //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
-    //   sortDirections: ["descend", "ascend"],
-    //   render: (text, record, index) => (
-    //     <>
-    //       <Select
-    //         showSearch
-    //         mode="single"
-    //         name="select_jl3"
-    //         style={{
-    //           width: "120px",
-    //           backgroundColor:
-    //             record.tags[4] === ""
-    //               ? "white"
-    //               : record.tags[4] === "pendente"
-    //               ? "#FFB963"
-    //               : record.tags[4] === "confirmado"
-    //               ? "#6FD25A"
-    //               : record.tags[4] === "recusado"
-    //               ? "#ef5350"
-    //               : "white",
-    //         }}
-    //         key={"select_jl3_" + index}
-    //         type="select"
-    //         // onChange={handleChangeSelecaoArbitro}
-    //         onSelect={handleChangeSelecaoArbitro}
-    //         value={record.Jl3 != "" ? record.JL3 : null}
-    //         disabled={disabledDataSource.includes(record)}
-    //         size="small"
-    //         showArrow={false}
-    //       >
-    //         {arbitrosDisponiveis.map((arb) => {
-    //           return (
-    //             <Select.Option
-    //               className="select-ref-choice"
-    //               value={arb + ""}
-    //               key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
-    //             >
-    //               {arb + ""}
-    //             </Select.Option>
-    //           );
-    //         })}
-    //       </Select>
-    //     </>
-    //   ),
-    // },
-    // {
-    //   title: "JL4",
-    //   dataIndex: "JL4",
-    //   key: "JL4",
-    //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
-    //   sortDirections: ["descend", "ascend"],
-    //   render: (text, record, index) => (
-    //     <>
-    //       <Select
-    //         showSearch
-    //         mode="single"
-    //         name="select_jl4"
-    //         style={{
-    //           width: "120px",
-    //           backgroundColor:
-    //             record.tags[5] === ""
-    //               ? "white"
-    //               : record.tags[5] === "pendente"
-    //               ? "#FFB963"
-    //               : record.tags[5] === "confirmado"
-    //               ? "#6FD25A"
-    //               : "#ef5350",
-    //         }}
-    //         key={"select_jl4_" + index}
-    //         type="select"
-    //         onChange={handleChangeSelecaoArbitro}
-    //         value={record.Jl4 != "" ? record.JL4 : null}
-    //         disabled={disabledDataSource.includes(record)}
-    //         size="small"
-    //         showArrow={false}
-    //       >
-    //         {arbitrosDisponiveis.map((arb) => {
-    //           return (
-    //             <Select.Option
-    //               className="select-ref-choice"
-    //               value={arb + ""}
-    //               key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
-    //             >
-    //               {arb + ""}
-    //             </Select.Option>
-    //           );
-    //         })}
-    //       </Select>
-    //     </>
-    //   ),
-    // },
     {
       title: "Ação",
       dataIndex: "acao",
@@ -720,36 +615,42 @@ export function Adesl({ user }) {
   let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
   let [editableRow, setEditableRow] = useState("");
-  let [edit, setEdit] = useState();
+  let [edit, setEdit] = useState(Boolean);
 
   useEffect(() => {
-    console.log("disabledDataSource, BANANANANANAN", disabledDataSource);
-    console.log("dataSource", dataSource);
+    // console.log("disabledDataSource, BANANANANANAN", disabledDataSource);
+    // console.log("dataSource", dataSource);
   }, [disabledDataSource, dataSource]);
 
   function handleSubmissionConfirmation() {
-    Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
-      if (err) {
-        console.log(err);
-      } else if (result) {
-        // console.log("BANANANAANANNANNANNAN", result);
+    Meteor.call(
+      "getPreNomeacoesRealizadasUniversitarias",
+      Meteor.user(),
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else if (result) {
+          // console.log("BANANANAANANNANNANNAN", result);
 
-        let preNomeacoesRealizadas = result;
+          let preNomeacoesRealizadas = result;
 
-        Meteor.call(
-          "submeteJogosComNomeacoes",
-          preNomeacoesRealizadas,
-          (err, result) => {
-            if (err) {
-              console.log("ERRRRROOOOO", { err });
+          Meteor.call(
+            "submeteJogosComNomeacoes",
+            preNomeacoesRealizadas,
+            true,
+            false,
+            (err, result) => {
+              if (err) {
+                console.log("ERRRRROOOOO", { err });
+              }
+              if (result) {
+                console.log("Success");
+              }
             }
-            if (result) {
-              console.log("Success");
-            }
-          }
-        );
+          );
+        }
       }
-    });
+    );
     let disabledData = dataSource;
 
     setDisabledDataSource(disabledData);
@@ -774,8 +675,6 @@ export function Adesl({ user }) {
       currJogo.Jogo +
       " " +
       currJogo.Prova +
-      " Serie " +
-      currJogo.Serie +
       " " +
       currJogo.Equipas +
       " " +
@@ -794,6 +693,8 @@ export function Adesl({ user }) {
           titulo,
           currJogo,
           key.key,
+          true,
+          false,
           (err, result) => {
             if (err) {
               console.error(err);
@@ -809,6 +710,8 @@ export function Adesl({ user }) {
           titulo,
           currJogo,
           key.key,
+          true,
+          false,
           (err, result) => {
             if (err) {
               console.error(err);
@@ -862,6 +765,8 @@ export function Adesl({ user }) {
           currJogo,
           key.key,
           edit,
+          true,
+          false,
           (err, result) => {
             //console.log("RESULTADO", result);
 
@@ -917,6 +822,9 @@ export function Adesl({ user }) {
           currJogo,
           key.key,
           edit,
+          true,
+          false,
+
           (err, result) => {
             //console.log("RESULTADO", result);
 
@@ -935,7 +843,8 @@ export function Adesl({ user }) {
 
   function loadData(isEditing) {
     let email = Meteor.user().emails[0].address;
-    Meteor.call("carregaJogosSemanais", email, (err, result) => {
+    Meteor.call("carregaJogosUniversitarios", email, (err, result) => {
+      console.log("BANANANANANAN", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result[0].length > 0) {
@@ -950,7 +859,6 @@ export function Adesl({ user }) {
             Dia: jogoLido.dia,
             Hora: jogoLido.hora,
             Prova: jogoLido.prova,
-            Serie: jogoLido.serie,
             Equipas: jogoLido.equipas,
             Pavilhao: jogoLido.pavilhao,
             Arbitro1: jogoLido.arbitro_1,
@@ -1002,6 +910,9 @@ export function Adesl({ user }) {
         "jogosForamUpdated",
         Meteor.user(),
         dataSource,
+        true,
+        false,
+        false,
         (err, result) => {
           //console.log("jogos atualizados???", result);
           if (result === true) {
@@ -1052,16 +963,6 @@ export function Adesl({ user }) {
 
     return !moment().isSameOrBefore(current);
   };
-
-  let [idJogo, setIdJogo] = useState("");
-  let [idDia, setIdDia] = useState("");
-  let [idHora, setIdHora] = useState("");
-  let [idSerie, setIdSerie] = useState("");
-  let [idEquipaA, setIdEquipaA] = useState("");
-  let [idEquipaB, setIdEquipaB] = useState("");
-  let [idPavilhao, setIdPavilhao] = useState("");
-
-  let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
 
   function handleAddJogoNovo() {
     Modal.confirm({
@@ -1128,120 +1029,30 @@ export function Adesl({ user }) {
                   }}
                   options={[
                     {
-                      value: "NS",
-                      label: "NS",
+                      value: "I",
+                      label: "I",
                       children: [
                         {
                           value: "F",
                           label: "F",
-                          children: [
-                            {
-                              value: "I",
-                              label: "I",
-                            },
-                            {
-                              value: "II",
-                              label: "II",
-                            },
-                            {
-                              value: "III",
-                              label: "III",
-                            },
-                          ],
                         },
                         {
                           value: "M",
                           label: "M",
-                          children: [
-                            {
-                              value: "I",
-                              label: "I",
-                            },
-                            {
-                              value: "II",
-                              label: "II",
-                            },
-                            {
-                              value: "III",
-                              label: "III",
-                            },
-                          ],
                         },
                       ],
                     },
                     {
-                      value: "CR",
-                      label: "CR",
+                      value: "II",
+                      label: "II",
                       children: [
                         {
-                          value: "INF",
-                          label: "INF",
-                          children: [
-                            { value: "F", label: "F" },
-                            { value: "M", label: "M" },
-                          ],
+                          value: "F",
+                          label: "F",
                         },
                         {
-                          value: "INI",
-                          label: "INI",
-                          children: [
-                            { value: "F", label: "F" },
-                            { value: "M", label: "M" },
-                          ],
-                        },
-                        {
-                          value: "CAD",
-                          label: "CAD",
-                          children: [
-                            { value: "F", label: "F" },
-                            { value: "M", label: "M" },
-                          ],
-                        },
-                        {
-                          value: "JUV",
-                          label: "JUV",
-                          children: [
-                            { value: "F", label: "F" },
-                            { value: "M", label: "M" },
-                          ],
-                        },
-                        {
-                          value: "JUN",
-                          label: "JUN",
-                          children: [
-                            { value: "F", label: "F" },
-                            { value: "M", label: "M" },
-                          ],
-                        },
-                        {
-                          value: "S",
-                          label: "S",
-                          children: [
-                            {
-                              value: "F",
-                              label: "F",
-                              children: [{ value: "III", label: "III" }],
-                            },
-                            {
-                              value: "M",
-                              label: "M",
-                              children: [{ value: "III", label: "III" }],
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      value: "CN",
-                      label: "CN",
-                      children: [
-                        {
-                          value: "JB1",
-                          label: "JB1",
-                        },
-                        {
-                          value: "JNB",
-                          label: "JNB",
+                          value: "M",
+                          label: "M",
                         },
                       ],
                     },
@@ -1249,14 +1060,6 @@ export function Adesl({ user }) {
                 />
               </Form.Item>
 
-              <Form.Item label="Série">
-                <Input
-                  id="newGameSerie"
-                  style={{ textTransform: "uppercase" }}
-                  onChange={(e) => setIdSerie(e.target.value)}
-                  placeholder="Selecione a serie..."
-                />
-              </Form.Item>
               <Form.Item label="Equipas">
                 <Input
                   id="newGameEquipaA"
@@ -1294,10 +1097,7 @@ export function Adesl({ user }) {
         let id = document.getElementById("newGameId").value;
         let dia = document.getElementById("newGameDate").value;
         let hora = document.getElementById("newGameHour").value;
-        let serie = document
-          .getElementById("newGameSerie")
-          .value.toString()
-          .toUpperCase();
+
         let prova = novoJogoProva;
         let equipaA = document
           .getElementById("newGameEquipaA")
@@ -1328,10 +1128,7 @@ export function Adesl({ user }) {
           message.warn("Não colocou prova!");
           valido = false;
         }
-        if (valido && serie.length <= 0) {
-          message.warn("Não colocou série!");
-          valido = false;
-        }
+
         if (valido && equipaA.length <= 0) {
           message.warn("Não colocou equipa visitada!");
           valido = false;
@@ -1356,8 +1153,7 @@ export function Adesl({ user }) {
           hora,
           "prova",
           prova,
-          "serie",
-          serie,
+
           "equipaA",
           equipaA,
           "equipaB",
@@ -1367,12 +1163,12 @@ export function Adesl({ user }) {
         );
         if (valido && !dataSource.includes(id)) {
           Meteor.call(
-            "adicionaJogoNovo",
+            " ",
             id,
             dia,
             hora,
             prova,
-            serie,
+
             equipaA,
             equipaB,
             pavilhao,
@@ -1400,7 +1196,7 @@ export function Adesl({ user }) {
   }
 
   function handleDeleteGame(record) {
-    Meteor.call("eliminaJogo", record, (err, result) => {
+    Meteor.call("eliminaJogoUniversitario", record, (err, result) => {
       if (err) {
         console.log(err);
       } else {
