@@ -769,7 +769,20 @@ Meteor.methods({
     let arbConfirmacaoJogo = [];
 
     for (let index = 0; index < games.length; index++) {
-      let jogo = jogos.findOne({ key: games[index].key });
+      console.log("TEM ID?", games[index].id);
+
+      let id;
+      let jogo;
+
+      if (games[index].id === undefined) {
+        jogo = jogos.findOne({ id: games[index].Jogo });
+      } else {
+        jogo = jogos.findOne({ id: games[index].id });
+      }
+
+      console.log("jogo", jogo);
+      console.log("games[index]", games[index]);
+      console.log("*********************************************");
 
       let confirmacaoAtual = confirmacoes[index];
 
@@ -1293,22 +1306,12 @@ Meteor.methods({
         const element = jogosAssociados[index];
         if (nAntigas != undefined && nAntigas.length > 0) {
           if (!nAntigas.includes(element)) {
-            console.log("nAntigas", nAntigas);
             final.push({ jogo: element, confirmacaoAtual: ["pendente"] });
           }
+        } else {
+          final.push({ jogo: element, confirmacaoAtual: ["pendente"] });
         }
       }
-
-      // for (let index = 0; index < nAntigas.length; index++) {
-      //   const element = nAntigas[index];
-      //   for (let i = 0; i < nAntigas.length; i++) {
-      //     const element = nAntigas[i];
-
-      //     if (!final.includes(nAntigas[i])) {
-      //       final.push(element);
-      //     }
-      //   }
-      // }
 
       nomeacoes.update(
         {
@@ -1885,7 +1888,7 @@ Meteor.methods({
       console.log("TITULO DO JOGO DA BD: ", events[index].title);
       console.log("TITULO RECEBIDO A COMPARAR:", titulo);
 
-      console.log("SÃO IGUAIS?", titulo === tituloJogo);
+      console.log("SÃO IGUAIS?", titulo == tituloJogo);
 
       let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
 
@@ -1894,7 +1897,7 @@ Meteor.methods({
       console.log("numeroJogoDaBD : ", numeroJogoDaBD);
       console.log("numeroJogoRecebido:", numeroJogoRecebido);
 
-      console.log("SÃO IGUAIS?", numeroJogoDaBD === numeroJogoRecebido);
+      console.log("SÃO IGUAIS?", numeroJogoDaBD == numeroJogoRecebido);
 
       if (numeroJogoDaBD != numeroJogoRecebido) {
         novosEvents.push(events[index]);
@@ -2652,6 +2655,37 @@ Meteor.methods({
         { $set: { preNomeacoesRegionais: newGames } }
       );
     });
+
+    // AINDA FALTA IR A TABELA DE NOMEACOES E RETIRAR O JOGO DE LÁ
+
+    let refs = arbitros.find();
+
+    refs.forEach((ref) => {
+      console.log("ARBITRO?", ref.nome);
+      let n = nomeacoes.findOne({ arbitro: ref });
+      let nAntigas;
+      let nNovas = [];
+      if (n.nomeacoesPrivadas != undefined || n.nomeacoesPrivadas.length != 0) {
+        nAntigas = n.nomeacoesPrivadas;
+        console.log("nAntigas", nAntigas);
+        for (let index = 0; index < nAntigas.length; index++) {
+          console.log("nAntigas[index].jogo", nAntigas[index].jogo);
+          console.log("jogo", jogo);
+          console.log(
+            "nAntigas[index].jogo.id != jogo.Jogo",
+            nAntigas[index].jogo.id != jogo.Jogo
+          );
+          if (nAntigas[index].jogo.id != jogo.Jogo) {
+            nNovas.push(nAntigas[index]);
+          }
+        }
+      }
+      console.log("NOVAS?", nNovas);
+      nomeacoes.update(
+        { arbitro: ref },
+        { $set: { nomeacoesPrivadas: nNovas } }
+      );
+    });
   },
 
   eliminaJogoUniversitario: function eliminaJogoUniversitario(jogo) {
@@ -2686,6 +2720,36 @@ Meteor.methods({
         { $set: { preNomeacoesUniversitarias: newGames } }
       );
     });
+
+    // let n = nomeacoes.find();
+    // let r = arbitros.find();
+
+    // let nomeacoesAntigas = [];
+
+    // n.forEach((n) => {
+    //   r.forEach((r) => {
+    //     if (n.arbitro.nome === r.nome) {
+    //       if (
+    //         n.nomeacoesPrivadas.length != undefined &&
+    //         n.nomeacoesPrivadas.length != 0
+    //       ) {
+    //         nomeacoesAntigas.push(n.nomeacoesPrivadas);
+    //         let novas = [];
+    //         for (let index = 0; index < nomeacoesAntigas.length; index++) {
+    //           const element = nomeacoesAntigas[index];
+    //           if (element.jogo.id != id) {
+    //             novas.push(nomeacoesAntigas[index]);
+    //           }
+    //         }
+
+    //         nomeacoes.update(
+    //           { arbitro: r },
+    //           { $set: { nomeacoesPrivadas: novas } }
+    //         );
+    //       }
+    //     }
+    //   });
+    // });
   },
 });
 
@@ -2843,9 +2907,9 @@ function hasDST(str) {
 
 function addFeriados(r) {
   let feriadosNacionais = [
-    { nome: "Dia de Ano Novo", data: "01/01" },
-    { nome: "Dia da Liberdade", data: "25/04" },
-    { nome: "Dia do Trabalhador", data: "01/05" },
+    { nome: "Ano Novo", data: "01/01" },
+    { nome: "Liberdade", data: "25/04" },
+    { nome: "Trabalhador", data: "01/05" },
     {
       nome: "Portugal, Camões e Comunidades Portuguesas",
       data: "10/06",
@@ -2881,7 +2945,7 @@ function addFeriados(r) {
         feriadosNacionais[index].data.split("/")[1] +
         "-" +
         feriadosNacionais[index].data.split("/")[0] +
-        "T07:00:00Z";
+        "T08:00:00Z";
 
       endStr =
         CURRENT_YEAR +
@@ -2889,22 +2953,23 @@ function addFeriados(r) {
         feriadosNacionais[index].data.split("/")[1] +
         "-" +
         feriadosNacionais[index].data.split("/")[0] +
-        "T08:00:00Z";
+        "T09:00:00Z";
     }
 
     let novoEvento = {
       title: titulo,
       id: newId,
-      allDay: true,
       start: startStr,
       end: endStr,
-      color: "#000000",
+      color: "#666666",
       editable: false,
       className: "hideCalendarTime",
       draggable: false,
     };
 
     r.push(novoEvento);
+
+    console.log("rrrrrrrrrrrrrrrrrrrr", r);
   }
   return r;
 }

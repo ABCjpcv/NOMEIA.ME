@@ -1203,6 +1203,33 @@ export function Adesl({ user }) {
         message.success("Jogo eliminado!");
       }
     });
+    let titulo =
+      "Jogo nº " +
+      record.id +
+      " " +
+      record.prova +
+      " " +
+      record.equipas +
+      " " +
+      record.pavilhao;
+    if (record.arbitro_1 != undefined) {
+      Meteor.call(
+        "removeNomeacaoCalendarioArbitro",
+        record.arbitro_1,
+        titulo,
+        record,
+        key.key,
+        true,
+        false,
+        (err, result) => {
+          if (err) {
+            console.error(err);
+          } else if (result) {
+            // console.log(result);
+          }
+        }
+      );
+    }
   }
 
   return (

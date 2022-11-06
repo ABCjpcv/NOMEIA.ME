@@ -773,7 +773,7 @@ export function ConsultaPrivada({ user }) {
               Pavilhao: jogoLido.pavilhao,
               Arbitro1: jogoLido.arbitro_1,
               Arbitro2: jogoLido.arbitro_2,
-              JL: jl,
+              JL: jogoLido.juiz_linha[0] + " " + jogoLido.juiz_linha[1],
               key: jogoLido.key,
               tags: [tags],
             };
