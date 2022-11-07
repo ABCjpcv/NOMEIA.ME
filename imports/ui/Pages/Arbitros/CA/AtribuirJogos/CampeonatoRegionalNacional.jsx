@@ -723,8 +723,8 @@ export function CampeonatoRegionalNacional({ user }) {
   let [edit, setEdit] = useState(Boolean);
 
   useEffect(() => {
-    console.log("disabledDataSource", disabledDataSource);
-    console.log("dataSource", dataSource);
+    // console.log("disabledDataSource", disabledDataSource);
+    // console.log("dataSource", dataSource);
   }, [disabledDataSource, dataSource]);
 
   function handleSubmissionConfirmation() {

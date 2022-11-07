@@ -771,7 +771,6 @@ Meteor.methods({
     for (let index = 0; index < games.length; index++) {
       console.log("TEM ID?", games[index].id);
 
-      let id;
       let jogo;
 
       if (games[index].id === undefined) {
@@ -779,9 +778,6 @@ Meteor.methods({
       } else {
         jogo = jogos.findOne({ id: games[index].id });
       }
-
-      console.log("jogo", jogo);
-      console.log("games[index]", games[index]);
       console.log("*********************************************");
 
       let confirmacaoAtual = confirmacoes[index];
@@ -1299,17 +1295,31 @@ Meteor.methods({
       console.log("jogos associados", jogosAssociados);
 
       let final = [];
+      let finalIds = [];
       let n = nomeacoes.findOne({ arbitro: arbitro });
       let nAntigas = n.nomeacoesPrivadas;
 
-      for (let index = 0; index < jogosAssociados.length; index++) {
-        const element = jogosAssociados[index];
+      for (let i = 0; i < jogosAssociados.length; i++) {
+        let jogo = jogosAssociados[i];
         if (nAntigas != undefined && nAntigas.length > 0) {
-          if (!nAntigas.includes(element)) {
-            final.push({ jogo: element, confirmacaoAtual: ["pendente"] });
+          // Já possuia nomeações antigas, que podem ter confirmação atual diferente de 'pendente'
+
+          console.log("******************************************");
+
+          console.log("nAntigas", nAntigas);
+
+          for (let index = 0; index < nAntigas.length; index++) {
+            final.push(nAntigas[index]);
+            finalIds.push(parseInt(nAntigas[index].jogo.id));
+          }
+
+          console.log("finalIDs", finalIds);
+
+          if (!finalIds.includes(parseInt(jogo.id))) {
+            final.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
           }
         } else {
-          final.push({ jogo: element, confirmacaoAtual: ["pendente"] });
+          final.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
         }
       }
 
@@ -2658,29 +2668,35 @@ Meteor.methods({
 
     // AINDA FALTA IR A TABELA DE NOMEACOES E RETIRAR O JOGO DE LÁ
 
-    let refs = arbitros.find();
+    let nomeacoesAntigas = nomeacoes.find();
 
-    refs.forEach((ref) => {
-      console.log("ARBITRO?", ref.nome);
-      let n = nomeacoes.findOne({ arbitro: ref });
+    nomeacoesAntigas.forEach((nomeacao) => {
+      // console.log("nomeacao", nomeacao);
+      // console.log("ARBITRO?", nomeacao.arbitro.nome);
       let nAntigas;
       let nNovas = [];
-      if (n.nomeacoesPrivadas != undefined || n.nomeacoesPrivadas.length != 0) {
-        nAntigas = n.nomeacoesPrivadas;
-        console.log("nAntigas", nAntigas);
+      if (
+        nomeacao.nomeacoesPrivadas != undefined ||
+        nomeacao.nomeacoesPrivadas.length != 0
+      ) {
+        nAntigas = nomeacao.nomeacoesPrivadas;
+        // console.log("nAntigas", nAntigas);
         for (let index = 0; index < nAntigas.length; index++) {
-          console.log("nAntigas[index].jogo", nAntigas[index].jogo);
-          console.log("jogo", jogo);
-          console.log(
-            "nAntigas[index].jogo.id != jogo.Jogo",
-            nAntigas[index].jogo.id != jogo.Jogo
-          );
-          if (nAntigas[index].jogo.id != jogo.Jogo) {
+          // console.log("nAntigas[index].jogo", nAntigas[index].jogo);
+          // console.log("jogo", jogo);
+          // console.log("nAntigas[index].jogo.id", nAntigas[index].jogo.id);
+          // console.log("jogo.Jogo", jogo.Jogo);
+          // console.log(
+          //   "nAntigas[index].jogo.id != jogo.Jogo",
+          //   parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)
+          // );
+          if (parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)) {
             nNovas.push(nAntigas[index]);
           }
         }
       }
-      console.log("NOVAS?", nNovas);
+      // console.log("NOVAS? ", nNovas);
+      let ref = arbitros.findOne({ nome: nomeacao.arbitro.nome });
       nomeacoes.update(
         { arbitro: ref },
         { $set: { nomeacoesPrivadas: nNovas } }
@@ -2721,35 +2737,42 @@ Meteor.methods({
       );
     });
 
-    // let n = nomeacoes.find();
-    // let r = arbitros.find();
+    // AINDA FALTA IR A TABELA DE NOMEACOES E RETIRAR O JOGO DE LÁ
 
-    // let nomeacoesAntigas = [];
+    let nomeacoesAntigas = nomeacoes.find();
 
-    // n.forEach((n) => {
-    //   r.forEach((r) => {
-    //     if (n.arbitro.nome === r.nome) {
-    //       if (
-    //         n.nomeacoesPrivadas.length != undefined &&
-    //         n.nomeacoesPrivadas.length != 0
-    //       ) {
-    //         nomeacoesAntigas.push(n.nomeacoesPrivadas);
-    //         let novas = [];
-    //         for (let index = 0; index < nomeacoesAntigas.length; index++) {
-    //           const element = nomeacoesAntigas[index];
-    //           if (element.jogo.id != id) {
-    //             novas.push(nomeacoesAntigas[index]);
-    //           }
-    //         }
-
-    //         nomeacoes.update(
-    //           { arbitro: r },
-    //           { $set: { nomeacoesPrivadas: novas } }
-    //         );
-    //       }
-    //     }
-    //   });
-    // });
+    nomeacoesAntigas.forEach((nomeacao) => {
+      // console.log("nomeacao", nomeacao);
+      // console.log("ARBITRO?", nomeacao.arbitro.nome);
+      let nAntigas;
+      let nNovas = [];
+      if (
+        nomeacao.nomeacoesPrivadas != undefined ||
+        nomeacao.nomeacoesPrivadas.length != 0
+      ) {
+        nAntigas = nomeacao.nomeacoesPrivadas;
+        // console.log("nAntigas", nAntigas);
+        for (let index = 0; index < nAntigas.length; index++) {
+          // console.log("nAntigas[index].jogo", nAntigas[index].jogo);
+          // console.log("jogo", jogo);
+          // console.log("nAntigas[index].jogo.id", nAntigas[index].jogo.id);
+          // console.log("jogo.Jogo", jogo.Jogo);
+          // console.log(
+          //   "nAntigas[index].jogo.id != jogo.Jogo",
+          //   parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)
+          // );
+          if (parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)) {
+            nNovas.push(nAntigas[index]);
+          }
+        }
+      }
+      // console.log("NOVAS? ", nNovas);
+      let ref = arbitros.findOne({ nome: nomeacao.arbitro.nome });
+      nomeacoes.update(
+        { arbitro: ref },
+        { $set: { nomeacoesPrivadas: nNovas } }
+      );
+    });
   },
 });
 
