@@ -28,7 +28,7 @@ let CONSELHO_DE_ARBITRAGEM = [
 
 /**********************************************************************************************
  ******************************** SCHEMA TABLE ************************************************
- **********************************************************************************************
+ *********************************************************************************************
  */
 
 //Schema restricoes
@@ -470,83 +470,105 @@ Meteor.methods({
       throw new Meteor.Error("Passwords do not match.");
     // console.log("Passwords match.");
 
-    //Accounts.verifyEmail(user_email, (error) => {
-    //  if (!error) {
-    //    return
-    Accounts.createUser({
-      username: user_name,
-      email: user_email,
-      password: user_password,
-    });
-    //   } else {
-    //     throw new Meteor.Error("Email is invalid.");
-    //   }
-    // });
+    let userName = user_name.split(" ");
+    user_name = "";
 
-    let a = {
-      nome: user_name,
-      email: user_email,
-      licenca: parseInt(licencaArbitro),
-      nivel: parseInt(nivelArbitro),
-      isAdmin: isAdmin,
-    };
-    arbitros.insert(a);
-
-    console.log("inserted: " + user_name);
-
-    if (isAdmin) {
-      let ca = conselhoDeArbitragem.findOne();
-
-      conselhoDeArbitragem.insert({
-        arbitrosCA: a,
-        preNomeacoesRegionais: ca.preNomeacoesRegionais,
-        enviadoRegionais: false,
-        // preNomeacoesEuropeias: [],
-        // enviadoEuropeias: false,
-        preNomeacoesUniversitarias: [],
-        enviadoUniversitarias: false,
-      });
+    for (let index = 0; index < userName.length; index++) {
+      user_name =
+        user_name +
+        (userName[index].substring(0, 1).toUpperCase() +
+          user_name[index].substring(1).toLowerCase()) +
+        " ";
     }
 
-    indisponibilidades.insert({
-      arbitro: a,
-      disponibilidades: "",
-    });
+    user_name = user_name.substring(0, userName.length - 1);
 
-    restricoes.insert({
-      arbitro: a,
-      relacoes: [],
-    });
+    let u = Meteor.users.findOne({ username: user_name });
+    let u2 = Accounts.findUserByEmail(user_email);
 
-    definicoesPessoais.insert({
-      arbitro: a,
-      temCarro: false,
-      emiteRecibo: false,
-    });
+    if (u != undefined) {
+      throw new Meteor.Error("User already exists.");
+    } else if (u2 != undefined) {
+      throw new Meteor.Error("User already exists.");
+    } else {
+      //Accounts.verifyEmail(user_email, (error) => {
+      //  if (!error) {
+      //    return
+      Accounts.createUser({
+        username: user_name,
+        email: user_email,
+        password: user_password,
+      });
+      //   } else {
+      //     throw new Meteor.Error("Email is invalid.");
+      //   }
+      // });
 
-    let nomeacoesAuxiliares = [];
+      let a = {
+        nome: user_name,
+        email: user_email,
+        licenca: parseInt(licencaArbitro),
+        nivel: parseInt(nivelArbitro),
+        isAdmin: isAdmin,
+      };
+      arbitros.insert(a);
 
-    let games = jogos.find();
+      console.log("inserted: " + user_name);
 
-    // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
-    games.forEach((jogo) => {
-      if (
-        jogo.arbitro_1 === a.nome ||
-        jogo.arbitro_2 === a.nome ||
-        jogo.juiz_linha.includes(a.nome)
-      ) {
-        nomeacoesAuxiliares.push({
-          jogo: jogo,
-          confirmacaoAtual: ["pendente"],
+      if (isAdmin) {
+        let ca = conselhoDeArbitragem.findOne();
+
+        conselhoDeArbitragem.insert({
+          arbitrosCA: a,
+          preNomeacoesRegionais: ca.preNomeacoesRegionais,
+          enviadoRegionais: false,
+          // preNomeacoesEuropeias: [],
+          // enviadoEuropeias: false,
+          preNomeacoesUniversitarias: [],
+          enviadoUniversitarias: false,
         });
       }
-    });
-    nomeacoes.insert({
-      arbitro: a,
-      nomeacoesPrivadas: nomeacoesAuxiliares,
-    });
 
-    return true;
+      indisponibilidades.insert({
+        arbitro: a,
+        disponibilidades: "",
+      });
+
+      restricoes.insert({
+        arbitro: a,
+        relacoes: [],
+      });
+
+      definicoesPessoais.insert({
+        arbitro: a,
+        temCarro: false,
+        emiteRecibo: false,
+      });
+
+      let nomeacoesAuxiliares = [];
+
+      let games = jogos.find();
+
+      // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
+      games.forEach((jogo) => {
+        if (
+          jogo.arbitro_1 === a.nome ||
+          jogo.arbitro_2 === a.nome ||
+          jogo.juiz_linha.includes(a.nome)
+        ) {
+          nomeacoesAuxiliares.push({
+            jogo: jogo,
+            confirmacaoAtual: ["pendente"],
+          });
+        }
+      });
+      nomeacoes.insert({
+        arbitro: a,
+        nomeacoesPrivadas: nomeacoesAuxiliares,
+      });
+
+      return true;
+    }
   },
 
   editUser: function (username, emailNovo, nivelNovo, licencaNova, CAnovo) {
@@ -641,7 +663,7 @@ Meteor.methods({
       return false;
     }
 
-    let newDefaultPassword = randomPassword(8);
+    let newDefaultPassword = randomPassword(10);
 
     try {
       let transporter = nodemailer.createTransport({
@@ -672,7 +694,7 @@ Meteor.methods({
           "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
       });
 
-      Accounts.setPassword(uid, newDefaultPassword);
+      Accounts.setPassword(u._id, newDefaultPassword);
     } catch (error) {
       return false;
     }
@@ -682,7 +704,7 @@ Meteor.methods({
 
   alteraPassword: function alteraPassword(user, novaPass) {
     let utilizador = Meteor.users.findOne({ username: user.username });
-    Accounts.setPassword(utilizadorid, novaPass);
+    Accounts.setPassword(utilizador._id, novaPass);
     return 1;
   },
 
@@ -1009,6 +1031,157 @@ Meteor.methods({
       return false;
     }
   },
+
+  addIndisponibilidadeRecorrente: function addIndisponibilidadeRecorrente(
+    username,
+    hora,
+    frequencia,
+    diaInicio
+  ) {
+    console.log("diaInicio", diaInicio);
+
+    let inicio = hora[0];
+    let fim = hora[1];
+
+    console.log("inicio", inicio);
+    console.log("fim", fim);
+
+    //diaInico -> 2022-11-10T15:44:45+00:00 algo deste genero!!!
+
+    let anoFinal = new Date(diaInicio).getFullYear() + 1;
+
+    console.log("anoFinal", anoFinal);
+
+    let dataSplitada = diaInicio.split("T");
+    let final = dataSplitada[0].split("-");
+    let diaFinal = final[2];
+    let mesFinal = final[1];
+
+    console.log("final", final);
+
+    // formatar para 2022-11-11T10:00:00Z
+    let dataAposUmAnoInicial =
+      anoFinal + "-" + final[1] + "-" + final[2] + "T" + inicio + ":00Z";
+    let dataAposUmAnoFinal = anoFinal + "-" + +"-" + diaFinal + "T" + fim + "Z";
+    let dataInicialA =
+      new Date(diaInicio).getFullYear() +
+      "-" +
+      mesFinal +
+      "-" +
+      diaFinal +
+      "T" +
+      inicio +
+      ":00Z";
+    let dataInicialB =
+      new Date(diaInicio).getFullYear() +
+      "-" +
+      mesFinal +
+      "-" +
+      diaFinal +
+      "T" +
+      fim +
+      ":00Z";
+
+    let events = [];
+    let stopAdding = true;
+    let startStr;
+    let endStr;
+
+    if (frequencia === "todosDias") {
+      // Adiciona a events a indisponibilidade diaria
+      while (stopAdding) {
+        startStr = dataInicialA;
+        endStr = dataInicialB;
+
+        console.log("startStr", startStr);
+        console.log("dataAposUmAnoInicial", dataAposUmAnoInicial);
+
+        console.log("MIAU");
+
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+
+        console.log(
+          "startStr === dataAposUmAnoInicial",
+          startStr === dataAposUmAnoInicial
+        );
+
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+        console.log("******************************************************");
+
+        if (startStr === dataAposUmAnoInicial) {
+          // Adiciona o ultimo evento
+
+          let evento = {
+            title: " Indisponível ",
+            id: _("recorrente"),
+            start: startStr,
+            end: dataAposUmAnoFinal,
+            color: "#eb3434",
+          };
+
+          console.log("ULTIMO EVENTO", evento);
+
+          events.push(evento);
+
+          // Quebra o ciclo
+          stopAdding = false;
+        } else {
+          // Adiciona evento
+          let evento = {
+            title: " Indisponível ",
+            id: _("recorrente"),
+            start: startStr,
+            end: endStr,
+            color: "#eb3434",
+          };
+
+          console.log("eventoooooooooooooooo", evento);
+
+          events.push(evento);
+
+          let nDataA = new Date(dataInicialA);
+          nDataA.setDate(new Date(dataInicialA).getDate() + 1);
+
+          dataInicialA = nDataA;
+
+          let nDataB = new Date(dataInicialB);
+          nDataB.setDate(new Date(dataInicialB).getDate() + 1);
+
+          dataInicialB = nDataB;
+        }
+      }
+    } else if (frequencia === "diasUteis") {
+      // Adiciona a events a indisponibilidade util
+      for (let index = 0; stopAdding; index++) {
+        const element = array[index];
+      }
+    } else if (frequencia === "semanalmente") {
+      // Adiciona a events a indisponibilidade semanalmente
+      for (let index = 0; stopAdding; index++) {
+        const element = array[index];
+      }
+    } else if (frequencia === "mensalmente") {
+      // Adiciona a events a indisponibilidade mensalmente
+      for (let index = 0; stopAdding; index++) {
+        const element = array[index];
+      }
+    }
+
+    const a = arbitros.findOne({ nome: username });
+    indisponibilidades.update(
+      { arbitro: a },
+      { $set: { disponibilidades: events } }
+    );
+    return true;
+  },
+
   carregaHorario: function carregaHorario(username) {
     const a = arbitros.findOne({ nome: username });
     return indisponibilidades.findOne({ arbitro: a });
@@ -1299,6 +1472,17 @@ Meteor.methods({
       let n = nomeacoes.findOne({ arbitro: arbitro });
       let nAntigas = n.nomeacoesPrivadas;
 
+      if (nAntigas.length != undefined) {
+        for (let index = 0; index < nAntigas.length; index++) {
+          final.push(nAntigas[index]);
+          finalIds.push(parseInt(nAntigas[index].jogo.id));
+        }
+      }
+
+      console.log("******************************************");
+
+      console.log("finalIds: ", finalIds);
+
       for (let i = 0; i < jogosAssociados.length; i++) {
         let jogo = jogosAssociados[i];
         if (nAntigas != undefined && nAntigas.length > 0) {
@@ -1307,13 +1491,6 @@ Meteor.methods({
           console.log("******************************************");
 
           console.log("nAntigas", nAntigas);
-
-          for (let index = 0; index < nAntigas.length; index++) {
-            final.push(nAntigas[index]);
-            finalIds.push(parseInt(nAntigas[index].jogo.id));
-          }
-
-          console.log("finalIDs", finalIds);
 
           if (!finalIds.includes(parseInt(jogo.id))) {
             final.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
@@ -1640,8 +1817,10 @@ Meteor.methods({
     }
 
     let relacoesClubes = restricoes.findOne({ arbitro: arb });
-    let relacoes = relacoesClubes.relacoes;
-
+    let relacoes;
+    if (relacoesClubes != undefined) {
+      relacoes = relacoesClubes.relacoes;
+    }
     if (relacoes == undefined || relacoes.length === 0) {
       return resultado;
     } else {
@@ -2477,7 +2656,7 @@ Meteor.methods({
           text:
             arbitrosComJogosPendentes[index] +
             ", \n\n Ainda possui nomeações pendentes. " +
-            "\n Por favor confirme ou recuse uma nomeação na sua conta através da plataforma" +
+            "\n Por favor confirme ou recuse nomeações na sua conta através da plataforma" +
             " Nomeia.Me acedendo às suas nomeações." +
             "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
         });
@@ -2487,6 +2666,7 @@ Meteor.methods({
       }
       return emails.length;
     }
+    return 0;
   },
   adicionaJogoNovo: function adicionaJogoNovo(
     id,

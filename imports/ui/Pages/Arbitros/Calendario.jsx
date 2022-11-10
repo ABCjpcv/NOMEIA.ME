@@ -1,6 +1,16 @@
 import React from "react";
 import { Meteor } from "meteor/meteor";
-import { Button, message, Modal, Space, Spin } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  message,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  TimePicker,
+} from "antd";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -8,10 +18,23 @@ import interactionPlugin from "@fullcalendar/interaction";
 import _ from "lodash.uniqueid";
 import { Header } from "../Geral/Header";
 
+import locale from "antd/es/locale/pt_PT";
+
+import moment from "moment";
+
 import "antd/dist/antd.css";
 import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
-let CURRENT_YEAR = new Date().getFullYear();
+let horasI = "";
+let horasF = "";
+let frequencia = "";
+let diaInicioRecorrente = "";
+
+const disabledDate = (current) => {
+  // Can not select days before today
+
+  return !moment().isSameOrBefore(current);
+};
 
 const antIcon = (
   <div
@@ -75,7 +98,7 @@ export class Calendario extends React.Component {
     var that = this;
 
     myPromise.then(function (state, resultado) {
-      console.log("state", state);
+      //console.log("state", state);
       const { state: currentState } = state;
       const admin = resultado === 1;
       const newState = { ...currentState, isCA: admin };
@@ -173,6 +196,149 @@ export class Calendario extends React.Component {
         });
       };
 
+      function recorrente() {
+        Modal.confirm({
+          title: "Indisponibilidade Recorrente",
+          content: (
+            <div>
+              <>
+                <br></br>
+                <Form
+                  labelCol={{
+                    span: 6,
+                    offset: 0,
+                  }}
+                  wrapperCol={{
+                    span: 21,
+                  }}
+                  layout="horizontal"
+                  size="small"
+                >
+                  <Form.Item label="Horas:">
+                    <TimePicker.RangePicker
+                      format={"HH:mm"}
+                      placeholder={[" Início ", " Fim "]}
+                      onChange={(e) => {
+                        horasI = e[0].format("HH:mm");
+                        horasF = e[1].format("HH:mm");
+                      }}
+                      minuteStep={60}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Frequência:">
+                    <Select
+                      onChange={(e) => {
+                        frequencia = e;
+                      }}
+                    >
+                      <Select.Option value="todosDias">
+                        Todos os dias
+                      </Select.Option>
+                      <Select.Option value="diasUteis">
+                        Dias úteis
+                      </Select.Option>
+                      <Select.Option value="semanalmente">
+                        Semanalmente
+                      </Select.Option>
+                      <Select.Option value="mensalmente">
+                        Mensalmente
+                      </Select.Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item label="Começa:">
+                    <DatePicker
+                      locale={locale}
+                      placeholder="Selecione o dia..."
+                      style={{ width: "100%" }}
+                      disabledDate={disabledDate}
+                      onChange={(e) => {
+                        diaInicioRecorrente = e.format();
+                      }}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Nota: ">
+                    {" "}
+                    Será registada até ao próximo ano.
+                  </Form.Item>
+                </Form>
+              </>
+            </div>
+          ),
+          keyboard: false,
+          okText: "Adicionar indisponibilidades",
+          onOk() {
+            console.log("hora", horasI + "   " + horasF);
+            console.log("freq", frequencia);
+            console.log("diaInicioRecorrente", diaInicioRecorrente);
+
+            if (horasI == "" || horasF == "") {
+              message.warn("Não colocou as horas!");
+              //this.visible(true);
+            } else if (frequencia == "") {
+              message.warn("Não colocou a frequência!");
+              //this.visible(true);
+            } else {
+              handleIndisponibilidadeRecorrente(
+                [horasI, horasF],
+                frequencia,
+                diaInicioRecorrente
+              );
+              //this.visible(false);
+            }
+          },
+          cancelText: "Cancelar",
+          className: "modalRecusa",
+        });
+      }
+
+      function handleIndisponibilidadeRecorrente(
+        hora,
+        freq,
+        diaInicioRecorrente
+      ) {
+        console.log("hora", hora);
+        console.log("freq", freq);
+        console.log("diaInicioRecorrente", diaInicioRecorrente);
+
+        Meteor.call(
+          "addIndisponibilidadeRecorrente",
+          Meteor.user().username,
+          hora,
+          freq,
+          diaInicioRecorrente,
+          (err, result) => {
+            if (err) {
+              //Fazer aparecer mensagem de texto de credenciais erradas.
+              console.log(err);
+            } else if (result) {
+              message.success(
+                "Indisponibilidades registadas " + Meteor.user().username + "!"
+              );
+            }
+          }
+        );
+
+        // Meteor.call(
+        //   "carregaHorario",
+        //   Meteor.user?.()?.username,
+        //   (err, result) => {
+        //     if (err) {
+        //       console.log("ERRRRROOOOO", { err });
+        //     } else if (result) {
+        //       let r = result.disponibilidades;
+        //       console.log("r", r);
+        //       const { state: currentState } = this;
+        //       const newState = {
+        //         ...currentState,
+        //         resultado: r,
+        //         loaded: true,
+        //       };
+        //       this.setState(newState);
+        //     }
+        //   }
+        // );
+      }
+
       return (
         <div>
           <Header
@@ -191,6 +357,7 @@ export class Calendario extends React.Component {
             restricoesPrivadas={true}
             definicoes={true}
             historico={true}
+            forgotPasswordHeader={true}
           />
           {/* <ul>
             <li>
@@ -226,7 +393,7 @@ export class Calendario extends React.Component {
                     day: "Dia",
                   }}
                   allDaySlot={false}
-                  height={"460px"}
+                  height={(20 * window.screen.height) / 33}
                   dayMinWidth={"8px"}
                   firstDay={1}
                   slotDuration={"00:60:00"}
@@ -247,11 +414,21 @@ export class Calendario extends React.Component {
                 />
               </div>
               <br></br>
-
+              {/* <Button
+                onClick={() => {
+                  recorrente();
+                }}
+                type="default"
+                style={{
+                  marginBottom: 16,
+                }}
+              >
+                Indisponibilidade recorrente
+              </Button> */}
               <Button
                 onClick={() => {
                   let curr = this.state.currentEvents;
-                  console.log("curr", curr);
+                  //console.log("curr", curr);
                   let eventos = [];
                   curr.map((evento) => {
                     if (
@@ -280,7 +457,7 @@ export class Calendario extends React.Component {
                     Meteor.user().username,
                     eventos,
                     (err, result) => {
-                      console.log("result", result);
+                      //console.log("result", result);
                       if (err) {
                         //Fazer aparecer mensagem de texto de credenciais erradas.
                         console.log(err);
@@ -327,7 +504,7 @@ export class Calendario extends React.Component {
         console.log("ERRRRROOOOO", { err });
       } else if (result) {
         let r = result.disponibilidades;
-        console.log("r", r);
+        //console.log("r", r);
         const { state: currentState } = this;
         const newState = { ...currentState, resultado: r, loaded: true };
         this.setState(newState);
@@ -397,10 +574,13 @@ export class Calendario extends React.Component {
   }
 
   handleEventClick = (clickInfo) => {
-    if (clickInfo.event._def.title === " Indisponível ") {
+    console.log("click event", clickInfo.event._def);
+    if (clickInfo.event._def.publicId.includes("feriado")) {
+      message.warn("Impossível remover feriado!");
+    } else if (clickInfo.event._def.title === " Indisponível ") {
       clickInfo.event.remove();
     } else {
-      message.error("Impossivel remover um Jogo Nomeado");
+      message.error("Impossível remover um Jogo Nomeado");
     }
   };
 
