@@ -30,17 +30,17 @@ export function FileInput() {
     },
     onChange: (event) => {
       if (event.file) {
-        console.log("selectVal", selectVal);
+        // console.log("selectVal", selectVal);
         if (selectVal != undefined) {
           // Aceita ficheiros csv, xls, xlsx
           Papa.parse(event.file.originFileObj, {
             complete: function (results) {
               let newGames = results.data;
-              console.log("NEW GAMES", newGames);
+              // console.log("NEW GAMES", newGames);
               if (selectVal === "Campeonato Universitário") {
-                console.log(
-                  "ENTRAS???????????????????????????????????????????"
-                );
+                // console.log(
+                //   "ENTRAS???????????????????????????????????????????"
+                // );
                 Meteor.call(
                   "addJogosUniversitarios",
                   newGames,
@@ -59,9 +59,9 @@ export function FileInput() {
                 navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
               } else if (selectVal === "Campeonato Regional / Nacional") {
                 Meteor.call("addJogosSemanais", newGames, (err, result) => {
-                  console.log(
-                    "ENTRAS REGIONAL???????????????????????????????????????????"
-                  );
+                  // console.log(
+                  //   "ENTRAS REGIONAL???????????????????????????????????????????"
+                  // );
                   if (err) {
                     //console.log("Error: " + err);
                     return;
@@ -101,6 +101,7 @@ export function FileInput() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
 
       {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}

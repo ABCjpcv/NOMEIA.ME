@@ -58,7 +58,7 @@ export const Sobre = () => {
               existirem jogos sem árbitros. <h6></h6> Existem alterações
               realizadas com frequência, das equipas ou do próprio pavilhão e
               considerar a deslocação dos árbitros aos jogos, as suas
-              disponibilidades e restrições.
+              disponibilidades e incompatibilidades.
             </p>
           </h4>
           <h6></h6>

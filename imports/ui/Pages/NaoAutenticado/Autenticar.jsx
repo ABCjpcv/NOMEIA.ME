@@ -96,6 +96,7 @@ export function Autenticar({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}
@@ -205,8 +206,8 @@ export function Autenticar({ user }) {
                     pass,
 
                     (err, result) => {
-                      console.log("err", err);
-                      console.log("result", result);
+                      // console.log("err", err);
+                      // console.log("result", result);
                       if (err) {
                         //Fazer aparecer mensagem de texto de credenciais erradas.
                         message.error(

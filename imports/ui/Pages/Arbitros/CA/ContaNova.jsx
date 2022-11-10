@@ -7,7 +7,7 @@ import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 export function ContaNova() {
   let [nome, setNome] = useState();
   useEffect(() => {
-    console.log("nome", nome);
+    // console.log("nome", nome);
   }, [nome]);
   return (
     <>
@@ -27,6 +27,7 @@ export function ContaNova() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       <div>
         {/* <h1 className="blue">Informações do Árbitro: </h1> */}

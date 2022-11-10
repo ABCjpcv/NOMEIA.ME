@@ -680,7 +680,7 @@ export function CampeonatoRegionalNacional({ user }) {
                       message.success("Alteração registada com sucesso!");
                   });
 
-                  console.log("Guardado");
+                  // console.log("Guardado");
 
                   loadData(false);
                   setDisabledDataSource(dataSource);
@@ -1033,7 +1033,7 @@ export function CampeonatoRegionalNacional({ user }) {
   }
 
   function handleChangeNivel(value) {
-    console.log("value nivel", value);
+    // console.log("value nivel", value);
     if (value === "Todos") {
       setNivelDeArbitro(0);
     } else {
@@ -1047,7 +1047,10 @@ export function CampeonatoRegionalNacional({ user }) {
         console.log(err);
       } else if (result > 0) {
         message.success("Alertas enviados para " + result + " árbitros");
+      } else if (result === 0) {
+        message.warn("Não existem jogos pendentes de confirmação");
       } else {
+        // console.log("result: ", result);
         message.error("Não foi possível enviar os emails.");
       }
     });
@@ -1363,24 +1366,24 @@ export function CampeonatoRegionalNacional({ user }) {
 
         setFormValido(valido);
 
-        console.log(
-          "id",
-          id,
-          "dia",
-          dia,
-          "hora",
-          hora,
-          "prova",
-          prova,
-          "serie",
-          serie,
-          "equipaA",
-          equipaA,
-          "equipaB",
-          equipaB,
-          "pavilhao",
-          pavilhao
-        );
+        // console.log(
+        //   "id",
+        //   id,
+        //   "dia",
+        //   dia,
+        //   "hora",
+        //   hora,
+        //   "prova",
+        //   prova,
+        //   "serie",
+        //   serie,
+        //   "equipaA",
+        //   equipaA,
+        //   "equipaB",
+        //   equipaB,
+        //   "pavilhao",
+        //   pavilhao
+        // );
         if (valido && !dataSource.includes(id)) {
           Meteor.call(
             "adicionaJogoNovo",
@@ -1443,6 +1446,7 @@ export function CampeonatoRegionalNacional({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       {reloadData()}
 
@@ -1886,7 +1890,7 @@ export function CampeonatoRegionalNacional({ user }) {
                                   return setArbitrosDisponiveis(result);
                                 }
 
-                                console.log("RESULTADO***", result);
+                                // console.log("RESULTADO***", result);
                               }
                             );
                             currJogo = record;

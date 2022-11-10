@@ -140,7 +140,7 @@ export const Header = ({
               id="divCentral"
               style={{
                 display: "flex",
-                justifyContent: "center",
+                alignItems: "stretch",
                 width: "60%",
                 height: "100%",
               }}
@@ -156,7 +156,31 @@ export const Header = ({
                 }}
                 hidden={titulo}
               >
-                <img id="logo" src="logo.png" style={{ height: "100%" }} />
+                <img
+                  id="logo"
+                  src="logo.png"
+                  style={{ height: "100%", cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                />
+                <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
+              </h1>
+
+              <h1
+                className="blue"
+                id="forgotPasswordHeader"
+                style={{
+                  width: "100%",
+                  fontWeight: "100",
+                  marginTop: "1%",
+                  fontSize: "22px",
+                }}
+                hidden={forgotPasswordHeader}
+              >
+                <img
+                  id="logo"
+                  src="logo.png"
+                  style={{ height: "100%", cursor: "pointer" }}
+                />
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
@@ -206,7 +230,7 @@ export const Header = ({
                 }}
                 hidden={carregarJogos}
               >
-                Carregar Jogos Novos:
+                Carregar Jogos Novos
               </p>
 
               <p
@@ -218,7 +242,7 @@ export const Header = ({
                 }}
                 hidden={criarContaNova}
               >
-                Criar Conta Nova:
+                Criar Conta Nova
               </p>
 
               <p
@@ -243,7 +267,7 @@ export const Header = ({
                 }}
                 hidden={consultaPrivada}
               >
-                Nomeações:
+                Nomeações
               </p>
               <p
                 id="indisponibilidadePrivadas"
@@ -265,7 +289,7 @@ export const Header = ({
                 }}
                 hidden={restricoesPrivadas}
               >
-                Incompatibilidades:
+                Incompatibilidades
               </p>
 
               <p
@@ -312,9 +336,9 @@ export const Header = ({
                   style={{
                     display: "flex",
                     width: "100%",
-                    height: "50%",
+                    height: "100%",
                     justifyContent: "flex-end",
-                    marginTop: "3.75%",
+                    alignItems: "center",
                   }}
                 >
                   <Button
@@ -324,7 +348,7 @@ export const Header = ({
                     style={{
                       fontSize: "14px",
 
-                      height: "100%",
+                      height: "50%",
                       marginRight: "3%",
                     }}
                   >
@@ -343,9 +367,9 @@ export const Header = ({
                   style={{
                     display: "flex",
                     width: "100%",
-                    height: "50%",
+                    height: "100%",
                     justifyContent: "flex-end",
-                    marginTop: "3.75%",
+                    alignItems: "center",
                   }}
                 >
                   <Button
@@ -355,7 +379,7 @@ export const Header = ({
                     style={{
                       fontSize: "14px",
 
-                      height: "100%",
+                      height: "50%",
                       marginRight: "3%",
                     }}
                   >
@@ -443,7 +467,12 @@ export const Header = ({
                 }}
                 hidden={titulo}
               >
-                <img id="logo" src="logo.png" style={{ height: "100%" }} />
+                <img
+                  id="logo"
+                  src="logo.png"
+                  style={{ height: "100%", cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                />
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
@@ -486,7 +515,12 @@ export const Header = ({
                 }}
                 hidden={forgotPasswordHeader}
               >
-                <img id="logo" src="logo.png" style={{ height: "100%" }} />
+                <img
+                  id="logo"
+                  src="logo.png"
+                  style={{ height: "100%", cursor: "pointer" }}
+                  onClick={() => navigate("/")}
+                />
                 <b>Plataforma Online de Nomeações de Árbitros de Voleibol</b>
               </h1>
 
@@ -600,7 +634,7 @@ const MenuPrivado = () => {
                   navigate("/Conta/Profile/Calendario");
             }}
           >
-            <CalendarOutlined /> Indicar indisponibilidades
+            <CalendarOutlined /> Calendário
           </p>
         </a>
 
@@ -614,7 +648,7 @@ const MenuPrivado = () => {
               }
             }}
           >
-            <TagsOutlined /> Indicar restrições
+            <TagsOutlined /> Indicar incompatibilidades
           </p>
         </a>
 
@@ -713,7 +747,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            <CalendarOutlined /> Indicar indisponibilidades
+            <CalendarOutlined /> Calendário
           </p>
         </a>
         <a className="menu-item">
@@ -726,7 +760,7 @@ const MenuPrivadoCA = () => {
               }
             }}
           >
-            <TagsOutlined /> Indicar restrições
+            <TagsOutlined /> Indicar incompatibilidades
           </p>
         </a>
         <a className="menu-item">
@@ -761,29 +795,30 @@ const MenuPrivadoCA = () => {
         </p>
 
         <p
-          style={{ fontSize: "15px", marginLeft: "5%" }}
+          style={{ fontSize: "15px", marginLeft: "5%", marginBottom: "-0.5em" }}
           id="clickOptionMenuAtribuirArbitros"
         >
           <SelectOutlined /> Nomear árbitros
-          <ul>
-            <li>
-              <a
-                className="menu-item"
-                onClick={() => {
-                  if (
-                    location.pathname !=
-                    "Conta/ProfileCA/Atribuir_Arbitros/ADESL"
-                  ) {
-                    (location.pathname =
-                      "/Conta/ProfileCA/Atribuir_Arbitros/ADESL"),
-                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
-                  }
-                }}
-              >
-                ADESL - CUL
-              </a>
-            </li>
-            {/* <li>
+          <span>
+            <ul>
+              <li>
+                <a
+                  className="menu-item"
+                  onClick={() => {
+                    if (
+                      location.pathname !=
+                      "Conta/ProfileCA/Atribuir_Arbitros/ADESL"
+                    ) {
+                      (location.pathname =
+                        "/Conta/ProfileCA/Atribuir_Arbitros/ADESL"),
+                        navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
+                    }
+                  }}
+                >
+                  ADESL - CUL
+                </a>
+              </li>
+              {/* <li>
               {" "}
               <a
                 className="menu-item"
@@ -800,25 +835,26 @@ const MenuPrivadoCA = () => {
                 CEV{" "}
               </a>
             </li> */}
-            <li>
-              {" "}
-              <a
-                className="menu-item"
-                onClick={() => {
-                  if (
-                    location.pathname !=
-                    "Conta/ProfileCA/Atribuir_Arbitros/CR_CN"
-                  ) {
-                    (location.pathname =
-                      "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN"),
-                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
-                  }
-                }}
-              >
-                CR / CN
-              </a>
-            </li>
-          </ul>
+              <li>
+                {" "}
+                <a
+                  className="menu-item"
+                  onClick={() => {
+                    if (
+                      location.pathname !=
+                      "Conta/ProfileCA/Atribuir_Arbitros/CR_CN"
+                    ) {
+                      (location.pathname =
+                        "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN"),
+                        navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
+                    }
+                  }}
+                >
+                  CR / CN
+                </a>
+              </li>
+            </ul>
+          </span>
         </p>
 
         <a className="menu-item">

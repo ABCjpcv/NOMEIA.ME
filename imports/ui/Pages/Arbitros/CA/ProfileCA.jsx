@@ -25,6 +25,7 @@ export function ProfileCA({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       <div id="profileCA">
         <div id="consultaPrivadaCA">

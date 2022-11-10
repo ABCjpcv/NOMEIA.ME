@@ -22,7 +22,7 @@ export const ImagemPerfil = () => {
   const [imageUrl, setImageUrl] = useState();
   const [selectedImage, setSelectedImage] = useState(null);
   const handleChange = (event) => {
-    console.log("event", event);
+    // console.log("event", event);
     // if (info.file.status === "uploading") {
     //   setLoading(true);
     //   return;

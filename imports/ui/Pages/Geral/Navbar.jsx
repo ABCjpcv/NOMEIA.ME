@@ -27,6 +27,7 @@ export function Navbar() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}

@@ -76,7 +76,7 @@ export function JogosPassadosCA({ user }) {
       fixed: "left",
     },
     {
-      title: "Serie",
+      title: "Série",
       dataIndex: "Serie",
       key: "Serie",
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
@@ -93,7 +93,7 @@ export function JogosPassadosCA({ user }) {
       fixed: "left",
     },
     {
-      title: "Pavilhao",
+      title: "Pavilhão",
       dataIndex: "Pavilhao",
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
@@ -102,7 +102,7 @@ export function JogosPassadosCA({ user }) {
       fixed: "left",
     },
     {
-      title: "Arbitro1",
+      title: "1º Árbitro",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
@@ -110,7 +110,7 @@ export function JogosPassadosCA({ user }) {
       width: "10%",
     },
     {
-      title: "Arbitro2",
+      title: "2º Árbitro",
       dataIndex: "Arbitro2",
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
@@ -118,7 +118,7 @@ export function JogosPassadosCA({ user }) {
       width: "10%",
     },
     {
-      title: "JL",
+      title: "Juízes de linha",
       dataIndex: "JL",
       key: "JL",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
@@ -269,7 +269,7 @@ export function JogosPassadosCA({ user }) {
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result) {
-        console.log("resultado de carrega", result);
+        // console.log("resultado de carrega", result);
         if (result.length > 0) {
           let dataFromDB = [];
           let resultadosFromDB = [];
@@ -277,7 +277,7 @@ export function JogosPassadosCA({ user }) {
           for (let index = 0; index < result.length; index++) {
             let jogoLido = result[index].jogo;
 
-            console.log("jogoLido", jogoLido);
+            // console.log("jogoLido", jogoLido);
 
             let tags = result[index].confirmacaoAtual;
 
@@ -352,6 +352,7 @@ export function JogosPassadosCA({ user }) {
                 restricoesPrivadas={true}
                 definicoes={true}
                 historico={false}
+                forgotPasswordHeader={true}
               />
 
               {dataSource.length != 0 ? (

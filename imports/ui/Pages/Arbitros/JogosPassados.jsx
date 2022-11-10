@@ -76,7 +76,7 @@ export function JogosPassados({ user }) {
       fixed: "left",
     },
     {
-      title: "Serie",
+      title: "Série",
       dataIndex: "Serie",
       key: "Serie",
       sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
@@ -93,7 +93,7 @@ export function JogosPassados({ user }) {
       fixed: "left",
     },
     {
-      title: "Pavilhao",
+      title: "Pavilhão",
       dataIndex: "Pavilhao",
       key: "Pavilhao",
       sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
@@ -102,7 +102,7 @@ export function JogosPassados({ user }) {
       fixed: "left",
     },
     {
-      title: "Arbitro1",
+      title: "1º Árbitro",
       dataIndex: "Arbitro1",
       key: "Arbitro1",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
@@ -110,7 +110,7 @@ export function JogosPassados({ user }) {
       width: "10%",
     },
     {
-      title: "Arbitro2",
+      title: "2º Árbitro",
       dataIndex: "Arbitro2",
       key: "Arbitro2",
       sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
@@ -118,7 +118,7 @@ export function JogosPassados({ user }) {
       width: "10%",
     },
     {
-      title: "JL",
+      title: "Juízes de linha",
       dataIndex: "JL",
       key: "JL",
       sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
@@ -135,8 +135,8 @@ export function JogosPassados({ user }) {
         dataSource.length > 0 ? (
           <>
             <div className="divResultadoDisabled">
-              {console.log("record", record)}
-              {console.log("resultados[index]", resultados[index])}
+              {/* {console.log("record", record)}
+              {console.log("resultados[index]", resultados[index])} */}
               <InputNumber
                 className="resultado"
                 size={"small"}
@@ -355,6 +355,7 @@ export function JogosPassados({ user }) {
                 restricoesPrivadas={true}
                 definicoes={true}
                 historico={false}
+                forgotPasswordHeader={true}
               />
 
               {dataSource.length != 0 ? (

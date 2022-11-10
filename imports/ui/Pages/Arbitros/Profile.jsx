@@ -23,6 +23,7 @@ export function Profile({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       <div id="profile">
         <div id="consultaPrivada">

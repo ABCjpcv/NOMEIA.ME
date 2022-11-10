@@ -8,9 +8,9 @@ import { Header } from "../Geral/Header";
 
 const { Search } = Input;
 
-const fetchUsers = async () => {
+const fetchClubes = async () => {
   const { data } = await axios.get("ClubesAVL_info.json");
-  console.log("data", data);
+  // console.log("data", data);
   return { data };
 };
 
@@ -19,7 +19,7 @@ export function ConsultaClubes() {
 
   const { filteredData, loading } = useTableSearch({
     searchVal,
-    retrieve: fetchUsers,
+    retrieve: fetchClubes,
   });
 
   return (
@@ -39,9 +39,9 @@ export function ConsultaClubes() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
         clubesAfiliadosAVL={false}
         consultaNomeacoesSemanais={true}
-        forgotPasswordHeader={true}
         sobreHeader={true}
       />
       <div style={{ marginTop: "0.5%" }}>

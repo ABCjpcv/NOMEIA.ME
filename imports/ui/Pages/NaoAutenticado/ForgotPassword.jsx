@@ -33,9 +33,9 @@ export function ForgotPassword() {
         document.getElementById("emailPerdido").value,
 
         (err, result) => {
-          console.log("ENTRASTE pota ????");
+          // console.log("ENTRASTE pota ????");
           if (!err) {
-            console.log("ENTRASTE????");
+            // console.log("ENTRASTE????");
             if (result == true) {
               message.success("Email enviado com sucesso!");
               message.info(

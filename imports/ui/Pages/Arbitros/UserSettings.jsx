@@ -68,7 +68,7 @@ export function UserSettings({ user }) {
 
   function adicionaTransporteProprioUserSettings(user) {
     Meteor.call("adicionaTransporte", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result === 1) {
         message.success("Adicionado transporte próprio!");
         setTemTransporte(true);
@@ -79,7 +79,7 @@ export function UserSettings({ user }) {
 
   function removeTransporteProprioUserSettings(user) {
     Meteor.call("removeTransporte", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result === 1) {
         message.warn("Removido transporte próprio!");
         setTemTransporte(false);
@@ -90,7 +90,7 @@ export function UserSettings({ user }) {
 
   function adicionaEmissaoReciboUserSettings(user) {
     Meteor.call("adicionaRecibo", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result === 1) {
         message.success("Adicionada emissão de recibo!");
         setTemRecibo(true);
@@ -101,7 +101,7 @@ export function UserSettings({ user }) {
 
   function removeEmissaoReciboUserSettings(user) {
     Meteor.call("removeRecibo", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result === 1) {
         message.warn("Removida emissão de recibo!");
         setTemRecibo(false);
@@ -112,7 +112,7 @@ export function UserSettings({ user }) {
 
   function getTransporteProprioUser(user) {
     Meteor.call("getTransporte", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result) {
         setTemTransporte(result);
         setNaoTemTransporte(!result);
@@ -122,7 +122,7 @@ export function UserSettings({ user }) {
 
   function getEmissaoReciboUser(user) {
     return Meteor.call("getRecibo", user, (err, result) => {
-      console.log("result", result);
+      // console.log("result", result);
       if (result) {
         setTemRecibo(result);
         setNaoTemRecibo(!result);
@@ -202,6 +202,7 @@ export function UserSettings({ user }) {
         restricoesPrivadas={true}
         definicoes={false}
         historico={true}
+        forgotPasswordHeader={true}
       />
       <div
         style={{

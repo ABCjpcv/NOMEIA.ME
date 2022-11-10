@@ -30,7 +30,7 @@ export function EditarConta() {
       if (result) {
         arbitro = result;
         setArbitroSelecionado(result);
-        console.log("arbitro", arbitro);
+        // console.log("arbitro", arbitro);
 
         setTimeout(() => {
           $("#email").val(arbitro.email);
@@ -171,6 +171,7 @@ export function EditarConta() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       <div>
         {/* <h1 className="blue">Informações do Árbitro: </h1> */}

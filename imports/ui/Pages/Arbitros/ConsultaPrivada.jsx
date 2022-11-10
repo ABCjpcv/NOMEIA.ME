@@ -566,7 +566,7 @@ export function ConsultaPrivada({ user }) {
 
     let email = user.emails[0].address;
 
-    console.log("confirmacoes", confirmacoes);
+    //console.log("confirmacoes", confirmacoes);
 
     Meteor.call(
       "addConfirmacaoNomeacao",
@@ -593,9 +593,9 @@ export function ConsultaPrivada({ user }) {
 
     let inputs = document.querySelectorAll("input");
 
-    console.log(inputs);
-    console.log("index", index);
-    console.log("inputs[index]", inputs[index]);
+    // console.log(inputs);
+    // console.log("index", index);
+    // console.log("inputs[index]", inputs[index]);
 
     let inputsLength = inputs.length;
 
@@ -607,7 +607,7 @@ export function ConsultaPrivada({ user }) {
     let resultado =
       inputs[index * 12].value + "-" + inputs[index * 12 + 1].value;
 
-    console.log("RESULTADO", resultado);
+    // console.log("RESULTADO", resultado);
     if (
       !(
         resultado === "0-3" ||
@@ -633,7 +633,7 @@ export function ConsultaPrivada({ user }) {
     let set2 =
       inputs[index * 12 + 4].value + "-" + inputs[index * 12 + 5].value;
 
-    console.log("set2", set2);
+    // console.log("set2", set2);
 
     if (!validaSet(set2, false)) {
       message.warn("Pontuação do 2º Set inválida!");
@@ -677,12 +677,12 @@ export function ConsultaPrivada({ user }) {
       return;
     }
 
-    console.log(
-      "sets",
-      set1 + " " + set2 + " " + set3 + " " + set4 + " " + set5
-    );
+    // console.log(
+    //   "sets",
+    //   set1 + " " + set2 + " " + set3 + " " + set4 + " " + set5
+    // );
 
-    console.log("index", index);
+    // console.log("index", index);
 
     let res =
       resultado +
@@ -740,7 +740,7 @@ export function ConsultaPrivada({ user }) {
         console.log("ERRRRROOOOO", err);
       } else if (result)
         if (result.nomeacoesPrivadas.length > 0) {
-          console.log("RESULTADO AQUI", result);
+          // console.log("RESULTADO AQUI", result);
 
           let dataFromDB = [];
 
@@ -756,7 +756,7 @@ export function ConsultaPrivada({ user }) {
 
             tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
-            console.log("jogoLido", jogoLido);
+            // console.log("jogoLido", jogoLido);
 
             let jl =
               jogoLido.juiz_linha[0].length == 0
@@ -1117,12 +1117,12 @@ export function ConsultaPrivada({ user }) {
         parcial1(set4) > parcial2(set4) &&
         parcial1(set5) > parcial2(set5);
 
-      console.log("c1", c1);
-      console.log("c2", c2);
-      console.log("c3", c3);
-      console.log("c4", c4);
-      console.log("c5", c5);
-      console.log("c6", c6);
+      // console.log("c1", c1);
+      // console.log("c2", c2);
+      // console.log("c3", c3);
+      // console.log("c4", c4);
+      // console.log("c5", c5);
+      // console.log("c6", c6);
       return c1 || c2 || c3 || c4 || c5 || c6;
     } else if (resultado === "2-3") {
       //GGPPG

@@ -192,7 +192,7 @@ export function ConsultaTotal() {
     } else {
       setFilteredData(dataSource);
     }
-    console.log(filteredData);
+    // console.log(filteredData);
   }, [searchVal, dataSource, filteredData]);
 
   function loadData() {
@@ -388,9 +388,9 @@ export function ConsultaTotal() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={false}
-        forgotPasswordHeader={true}
         sobreHeader={true}
       />
       <div

@@ -658,8 +658,8 @@ export function Adesl({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    console.log("value", value);
-    console.log("key", key);
+    // console.log("value", value);
+    // console.log("key", key);
 
     let indexAux = key.key.split("_");
 
@@ -844,11 +844,11 @@ export function Adesl({ user }) {
   function loadData(isEditing) {
     let email = Meteor.user().emails[0].address;
     Meteor.call("carregaJogosUniversitarios", email, (err, result) => {
-      console.log("BANANANANANAN", result);
+      // console.log("BANANANANANAN", result);
       if (err) {
         console.log("ERRRRROOOOO", err);
       } else if (result[0].length > 0) {
-        console.log("RESULTADO", result);
+        // console.log("RESULTADO", result);
         let dataFromDB = [];
         let preNomeacoes = result[0];
 
@@ -928,7 +928,7 @@ export function Adesl({ user }) {
   }
 
   function handleChangeNivel(value) {
-    console.log("value nivel", value);
+    // console.log("value nivel", value);
     if (value === "Todos") {
       setNivelDeArbitro(0);
     } else {
@@ -942,6 +942,8 @@ export function Adesl({ user }) {
         console.log(err);
       } else if (result > 0) {
         message.success("Alertas enviados para " + result + " árbitros");
+      } else if (result === 0) {
+        message.warn("Não existem jogos pendentes de confirmação");
       } else {
         message.error("Não foi possível enviar os emails.");
       }
@@ -1144,23 +1146,23 @@ export function Adesl({ user }) {
 
         setFormValido(valido);
 
-        console.log(
-          "id",
-          id,
-          "dia",
-          dia,
-          "hora",
-          hora,
-          "prova",
-          prova,
+        // console.log(
+        //   "id",
+        //   id,
+        //   "dia",
+        //   dia,
+        //   "hora",
+        //   hora,
+        //   "prova",
+        //   prova,
 
-          "equipaA",
-          equipaA,
-          "equipaB",
-          equipaB,
-          "pavilhao",
-          pavilhao
-        );
+        //   "equipaA",
+        //   equipaA,
+        //   "equipaB",
+        //   equipaB,
+        //   "pavilhao",
+        //   pavilhao
+        // );
         if (valido && !dataSource.includes(id)) {
           Meteor.call(
             " ",
@@ -1250,6 +1252,7 @@ export function Adesl({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
       {reloadData()}
 
@@ -1667,8 +1670,8 @@ export function Adesl({ user }) {
                     onRow={(record) => {
                       return {
                         onClick: (event) => {
-                          console.log("event", event);
-                          console.log("event.target.value", event.target.value);
+                          // console.log("event", event);
+                          // console.log("event.target.value", event.target.value);
 
                           if (event.target != "div.ant-select-selector") {
                             Meteor.call(
@@ -1691,7 +1694,7 @@ export function Adesl({ user }) {
                                   return setArbitrosDisponiveis(result);
                                 }
 
-                                console.log("RESULTADO***", result);
+                                // console.log("RESULTADO***", result);
                               }
                             );
                             currJogo = record;

@@ -209,9 +209,9 @@ export function Restricoes({ user }) {
   }, 200);
 
   useEffect(() => {
-    console.log("data", data);
-    console.log("isDisabled", isDisabled);
-    console.log("isCA", isCA);
+    // console.log("data", data);
+    // console.log("isDisabled", isDisabled);
+    // console.log("isCA", isCA);
   }, [data, isDisabled, isCA]);
 
   function loadData() {
@@ -228,7 +228,7 @@ export function Restricoes({ user }) {
           let j = JSON.parse(JSON.stringify(result));
           let dataFromDB = j.relacoes;
 
-          console.log("data from db ????", dataFromDB.length);
+          // console.log("data from db ????", dataFromDB.length);
 
           if (dataFromDB.length != 0) {
             let isDisabledFromDB = [];
@@ -446,7 +446,7 @@ export function Restricoes({ user }) {
                 hidden={isDisabled.some((item) => item === record.key)}
                 style={{ display: "flex", flexDirection: "row" }}
                 onClick={() => {
-                  console.log("RECORD HERE:", record);
+                  // console.log("RECORD HERE:", record);
 
                   if (record.Clube == "") {
                     message.warn("Selecione Clube!");
@@ -483,12 +483,12 @@ export function Restricoes({ user }) {
 
                   let newDisabled = isDisabled;
 
-                  console.log("newDisabled v1.0", newDisabled);
+                  // console.log("newDisabled v1.0", newDisabled);
 
                   newDisabled.push(record.key);
 
-                  console.log("record.key", record.key);
-                  console.log("newDisabled v2.0", newDisabled);
+                  // console.log("record.key", record.key);
+                  // console.log("newDisabled v2.0", newDisabled);
 
                   setIsDisabled(newDisabled);
 
@@ -571,7 +571,7 @@ export function Restricoes({ user }) {
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
-    console.log("Saved", newData);
+    // console.log("Saved", newData);
     setData(newData);
   }
 
@@ -629,7 +629,7 @@ export function Restricoes({ user }) {
         <div>
           <p>
             Indique se possui algum cargo num clube ou adicione informação
-            relativo às suas restrições como árbitro num clube.
+            relativo às suas incompatibilidades como árbitro num clube.
           </p>
           <p>
             Para alterar uma restrição existente basta clicar no botão 'Editar'.
@@ -660,6 +660,7 @@ export function Restricoes({ user }) {
         restricoesPrivadas={false}
         definicoes={true}
         historico={true}
+        forgotPasswordHeader={true}
       />
 
       {data.length === 0 ? loadData() : null}
@@ -688,9 +689,9 @@ export function Restricoes({ user }) {
           onRow={(record, index, key) => {
             return {
               onChange: (event) => {
-                console.log("event", event);
-                console.log("event.target.type", event.target.type);
-                console.log("event.target.value", event.target.value);
+                // console.log("event", event);
+                // console.log("event.target.type", event.target.type);
+                // console.log("event.target.value", event.target.value);
                 // console.log("record", record);
                 // console.log("index", index);
                 // console.log("data", data);
@@ -701,7 +702,7 @@ export function Restricoes({ user }) {
                 if ($(".edit-button")[index].hidden) {
                   if (event.target.type === "checkbox") {
                     if (event.target.value === "Atleta") {
-                      console.log("ENTRA AQUI");
+                      // console.log("ENTRA AQUI");
                       adicionaRestricao(record.Clube, 0, event.target.checked);
                     }
                     if (event.target.value === "Dirigente") {
@@ -714,7 +715,7 @@ export function Restricoes({ user }) {
                       adicionaRestricao(record.Clube, 3, event.target.checked);
                     }
                   } else if (event.target.type === "text") {
-                    console.log("CLICOU NA DESCRICAO");
+                    // console.log("CLICOU NA DESCRICAO");
                     adicionaDescricao(record.Clube, event.target.value);
                   } else if (
                     record.Descricao != "Clique para adicionar informação"
