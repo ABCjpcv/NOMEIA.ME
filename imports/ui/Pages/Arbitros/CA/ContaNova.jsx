@@ -223,7 +223,7 @@ const handleConfirmation = () => {
   let isCA = document.getElementById("isCA").checked;
 
   Meteor.call(
-    "registerArbitro",
+    "adicionaArbitro",
     nome,
     email,
     nivelArbitro,

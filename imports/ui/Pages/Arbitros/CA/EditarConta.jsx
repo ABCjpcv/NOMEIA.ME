@@ -21,12 +21,14 @@ export function EditarConta() {
 
   let [arbitroSelecionado, setArbitroSelecionado] = useState();
 
+  let [countagem, setCountagem] = useState();
+
   const stateChange = (e) => {
     setStateSelected(e);
 
     let arbitro = "";
 
-    Meteor.call("getArbitroFromUsername", e, (err, result) => {
+    Meteor.call("getArbitroPorNome", e, (err, result) => {
       if (result) {
         arbitro = result;
         setArbitroSelecionado(result);
@@ -62,7 +64,7 @@ export function EditarConta() {
       message.warn("Não foi detetada alteração");
     } else {
       Meteor.call(
-        "editUser",
+        "editarArbitro",
         stateSelected,
         emailNovo,
         nivelNovo,
@@ -85,7 +87,7 @@ export function EditarConta() {
         }
       );
 
-      Meteor.call("getArbitroFromUsername", stateSelected, (err, result) => {
+      Meteor.call("getArbitroPorNome", stateSelected, (err, result) => {
         if (result) {
           arbitro = result;
           setArbitroSelecionado(result);
@@ -123,7 +125,7 @@ export function EditarConta() {
       setTimeout(() => {
         // if (!erro) {
         Meteor.call(
-          "deleteUser",
+          "eliminarArbitro",
           stateSelected,
 
           (err, result) => {
@@ -131,6 +133,7 @@ export function EditarConta() {
               message.success(
                 "Árbitro " + stateSelected + ", removido com sucesso!"
               );
+              loadArbitros();
             }
           }
         );
@@ -149,7 +152,7 @@ export function EditarConta() {
     }
   };
 
-  useEffect(() => {}, [stateSelected]);
+  useEffect(() => {}, [stateSelected, countagem]);
 
   if (todosArbitros.length == 0) loadArbitros();
 
@@ -193,6 +196,7 @@ export function EditarConta() {
               marginTop: "1%",
             }}
           >
+            Árbitros inscritos: {countagem}
             <div className="input" style={{ justifyContent: "flex-start" }}>
               <label className="labels">Nome</label>
               <Select
@@ -305,7 +309,6 @@ export function EditarConta() {
                 </label>
               </div>
             </div>
-
             {/* <p></p>
             <div className="input">
               <label className="labels">Insira a sua password:</label>
@@ -381,6 +384,7 @@ export function EditarConta() {
         console.log(err);
       } else if (result) {
         setTodosArbitros(result);
+        setCountagem(result.length);
       }
     });
   }

@@ -201,7 +201,7 @@ export function Autenticar({ user }) {
                 ) {
                   Meteor.call(
                     // faz a verificacao dos parametros e se o user existe ou não
-                    "authenticateUser",
+                    "loginArbitro",
                     email,
                     pass,
 

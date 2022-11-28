@@ -857,7 +857,7 @@ export function Cev({ user }) {
         //console.log("key", key);
 
         Meteor.call(
-          "addNomeacaoCalendarioArbitro",
+          "adicionaNomeacaoCalendarioArbitro",
           currNomeArbitro,
           currJogo,
           key.key,
@@ -912,7 +912,7 @@ export function Cev({ user }) {
         //console.log("key", key);
 
         Meteor.call(
-          "addNomeacaoCalendarioArbitro",
+          "adicionaNomeacaoCalendarioArbitro",
           currNomeArbitro,
           currJogo,
           key.key,
@@ -999,7 +999,7 @@ export function Cev({ user }) {
     // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
     else {
       Meteor.call(
-        "jogosForamUpdated",
+        "getJogosAtualizados",
         Meteor.user(),
         dataSource,
         (err, result) => {

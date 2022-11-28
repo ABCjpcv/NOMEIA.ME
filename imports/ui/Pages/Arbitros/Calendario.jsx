@@ -301,7 +301,7 @@ export class Calendario extends React.Component {
         console.log("diaInicioRecorrente", diaInicioRecorrente);
 
         Meteor.call(
-          "addIndisponibilidadeRecorrente",
+          "adicionaIndisponibilidadeRecorrente",
           Meteor.user().username,
           hora,
           freq,
@@ -453,7 +453,7 @@ export class Calendario extends React.Component {
                   });
 
                   Meteor.call(
-                    "addIndisponibilidade",
+                    "adicionaIndisponibilidade",
                     Meteor.user().username,
                     eventos,
                     (err, result) => {

@@ -42,7 +42,7 @@ export function FileInput() {
                 //   "ENTRAS???????????????????????????????????????????"
                 // );
                 Meteor.call(
-                  "addJogosUniversitarios",
+                  "adicionaJogosUniversitarios",
                   newGames,
                   (err, result) => {
                     if (err) {
@@ -58,20 +58,24 @@ export function FileInput() {
                 );
                 navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
               } else if (selectVal === "Campeonato Regional / Nacional") {
-                Meteor.call("addJogosSemanais", newGames, (err, result) => {
-                  // console.log(
-                  //   "ENTRAS REGIONAL???????????????????????????????????????????"
-                  // );
-                  if (err) {
-                    //console.log("Error: " + err);
-                    return;
+                Meteor.call(
+                  "adicionaJogosSemanais",
+                  newGames,
+                  (err, result) => {
+                    // console.log(
+                    //   "ENTRAS REGIONAL???????????????????????????????????????????"
+                    // );
+                    if (err) {
+                      //console.log("Error: " + err);
+                      return;
+                    }
+                    if (result) {
+                      message.success(
+                        "Novos jogos do Campeonato Regional / Nacional carregados!"
+                      );
+                    }
                   }
-                  if (result) {
-                    message.success(
-                      "Novos jogos do Campeonato Regional / Nacional carregados!"
-                    );
-                  }
-                });
+                );
                 navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
               }
             },

@@ -218,7 +218,7 @@ export function Restricoes({ user }) {
     // Verifica se o utilizador loggado tem restricoes guardadas na bd
 
     Meteor.call(
-      "carregaRestricoes",
+      "carregaIncompatibilidades",
       Meteor.user?.()?.username,
       (err, result) => {
         if (err) {
@@ -577,7 +577,7 @@ export function Restricoes({ user }) {
 
   function handleSubmission(record) {
     Meteor.call(
-      "addRestricao",
+      "adicionaIncompatibilidade",
       Meteor.user().username,
       record,
       (err, result) => {
@@ -604,7 +604,7 @@ export function Restricoes({ user }) {
     const newDisabled = isDisabled.filter((item) => item !== key);
 
     Meteor.call(
-      "updateRestricoes",
+      "atualizaIcnompatibilidades",
       Meteor.user().username,
       key,
       (err, result) => {
