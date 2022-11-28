@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Button,
+  Form,
   Input,
   InputNumber,
   message,
@@ -46,6 +47,497 @@ function comparaAminhaLindaData(a, b) {
   }
   return 0;
 }
+
+function validaSet(set, decisivo) {
+  let parcial1 = parseInt(set.split("-")[0]);
+  let parcial2 = parseInt(set.split("-")[1]);
+
+  let conta = parcial1 - parcial2;
+  conta < 0 ? (conta = conta * -1) : null;
+
+  if (conta === NaN) return false;
+
+  if (conta < 2) return false;
+  // if (!decisivo) {
+  //   if (
+  //     !(
+  //       (parcial1 > 25 && parcial2 > 25) ||
+  //       (parcial1 == 25 && parcial2 != 25)
+  //     )
+  //   ) {
+  //     console.log("ERRADO");
+  //     return false;
+  //   }
+  // } else {
+  //   if (
+  //     !(
+  //       (parcial1 != 15 && parcial2 == 15) ||
+  //       (parcial1 == 15 && parcial2 != 15)
+  //     )
+  //   ) {
+  //     return false;
+  //   }
+  // }
+  else return true;
+}
+
+function parcial1(set) {
+  return parseInt(set.split("-")[0]);
+}
+function parcial2(set) {
+  return parseInt(set.split("-")[1]);
+}
+function validaResultadoComSets(resultado, set1, set2, set3, set4, set5) {
+  if (resultado === "3-0") {
+    return (
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) > parcial2(set3)
+    );
+  } else if (resultado === "0-3") {
+    return (
+      parcial1(set1) < parcial2(set1) &&
+      parcial1(set2) < parcial2(set2) &&
+      parcial1(set3) < parcial2(set3)
+    );
+  } else if (resultado === "3-1") {
+    //GGPG
+    let c1 =
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) < parcial2(set3) &&
+      parcial1(set4) > parcial2(set4);
+    //PGGG
+    let c2 =
+      parcial1(set1) < parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) > parcial2(set3) &&
+      parcial1(set4) > parcial2(set4);
+    //GPGG
+    let c3 =
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) < parcial2(set2) &&
+      parcial1(set3) > parcial2(set3) &&
+      parcial1(set4) > parcial2(set4);
+
+    return c1 || c2 || c3;
+  } else if (resultado === "1-3") {
+    //GGPG
+    let c1 =
+      parcial2(set1) > parcial1(set1) &&
+      parcial2(set2) > parcial1(set2) &&
+      parcial2(set3) < parcial1(set3) &&
+      parcial2(set4) > parcial1(set4);
+    //PGGG
+    let c2 =
+      parcial2(set1) < parcial1(set1) &&
+      parcial2(set2) > parcial1(set2) &&
+      parcial2(set3) > parcial1(set3) &&
+      parcial2(set4) > parcial1(set4);
+    //GPGG
+    let c3 =
+      parcial2(set1) > parcial1(set1) &&
+      parcial2(set2) < parcial1(set2) &&
+      parcial2(set3) > parcial1(set3) &&
+      parcial2(set4) > parcial1(set4);
+
+    return c1 || c2 || c3;
+  } else if (resultado === "3-2") {
+    //GGPPG
+    let c1 =
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) < parcial2(set3) &&
+      parcial1(set4) < parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+    //GPGPG
+    let c2 =
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) < parcial2(set2) &&
+      parcial1(set3) > parcial2(set3) &&
+      parcial1(set4) < parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+    //GPPGG
+    let c3 =
+      parcial1(set1) > parcial2(set1) &&
+      parcial1(set2) < parcial2(set2) &&
+      parcial1(set3) < parcial2(set3) &&
+      parcial1(set4) > parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+    //PGGPG
+    let c4 =
+      parcial1(set1) < parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) > parcial2(set3) &&
+      parcial1(set4) > parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+    //PGPGG
+    let c5 =
+      parcial1(set1) < parcial2(set1) &&
+      parcial1(set2) > parcial2(set2) &&
+      parcial1(set3) < parcial2(set3) &&
+      parcial1(set4) > parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+    //PPGGG
+    let c6 =
+      parcial1(set1) < parcial2(set1) &&
+      parcial1(set2) < parcial2(set2) &&
+      parcial1(set3) > parcial2(set3) &&
+      parcial1(set4) > parcial2(set4) &&
+      parcial1(set5) > parcial2(set5);
+
+    // console.log("c1", c1);
+    // console.log("c2", c2);
+    // console.log("c3", c3);
+    // console.log("c4", c4);
+    // console.log("c5", c5);
+    // console.log("c6", c6);
+    return c1 || c2 || c3 || c4 || c5 || c6;
+  } else if (resultado === "2-3") {
+    //GGPPG
+    let c1 =
+      parcial2(set1) > parcial1(set1) &&
+      parcial2(set2) > parcial1(set2) &&
+      parcial2(set3) < parcial1(set3) &&
+      parcial2(set4) < parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    //GPGPG
+    let c2 =
+      parcial2(set1) > parcial1(set1) &&
+      parcial2(set2) < parcial1(set2) &&
+      parcial2(set3) > parcial1(set3) &&
+      parcial2(set4) < parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    //GPPGG
+    let c3 =
+      parcial2(set1) > parcial1(set1) &&
+      parcial2(set2) < parcial1(set2) &&
+      parcial2(set3) < parcial1(set3) &&
+      parcial2(set4) > parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    //PGGPG
+    let c4 =
+      parcial2(set1) < parcial1(set1) &&
+      parcial2(set2) > parcial1(set2) &&
+      parcial2(set3) > parcial1(set3) &&
+      parcial2(set4) > parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    //PGPGG
+    let c5 =
+      parcial2(set1) < parcial1(set1) &&
+      parcial2(set2) > parcial1(set2) &&
+      parcial2(set3) < parcial1(set3) &&
+      parcial2(set4) > parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    //PPGGG
+    let c6 =
+      parcial2(set1) < parcial1(set1) &&
+      parcial2(set2) < parcial1(set2) &&
+      parcial2(set3) > parcial1(set3) &&
+      parcial2(set4) > parcial1(set4) &&
+      parcial2(set5) > parcial1(set5);
+    return c1 || c2 || c3 || c4 || c5 || c6;
+  } else {
+    false;
+  }
+}
+
+function handleConfirmationResultado(record, index) {
+  let jogo = record;
+
+  let inputs = document.querySelectorAll("input");
+
+  console.log(inputs);
+  console.log("index", index);
+  console.log("inputs[index]", inputs[index]);
+
+  let inputsLength = inputs.length;
+
+  if (index * 12 >= inputsLength) {
+    // EXISTEM JOGOS QUE AINDA NÃO FORAM REALIZADOS NO MEIO
+    handleConfirmationResultado(record, index - 1);
+  }
+
+  let resultado = inputs[index * 12].value + "-" + inputs[index * 12 + 1].value;
+
+  // console.log("RESULTADO", resultado);
+  if (
+    !(
+      resultado === "0-3" ||
+      resultado === "1-3" ||
+      resultado === "2-3" ||
+      resultado === "3-0" ||
+      resultado === "3-1" ||
+      resultado === "3-2"
+    )
+  ) {
+    message.warn("Resultado incorreto!");
+    return;
+  }
+
+  let set1 = inputs[index * 12 + 2].value + "-" + inputs[index * 12 + 3].value;
+
+  if (!validaSet(set1, false)) {
+    message.warn("Pontuação do 1º Set inválida!");
+    return;
+  }
+
+  let set2 = inputs[index * 12 + 4].value + "-" + inputs[index * 12 + 5].value;
+
+  // console.log("set2", set2);
+
+  if (!validaSet(set2, false)) {
+    message.warn("Pontuação do 2º Set inválida!");
+    return;
+  }
+
+  let set3 = inputs[index * 12 + 6].value + "-" + inputs[index * 12 + 7].value;
+
+  if (!validaSet(set3, false)) {
+    message.warn("Pontuação do 3º Set inválida!");
+    return;
+  }
+
+  let set4 = "0-0";
+  let set5 = "0-0";
+
+  if (
+    resultado === "3-1" ||
+    resultado === "1-3" ||
+    resultado === "3-2" ||
+    resultado === "2-3"
+  ) {
+    set4 = inputs[index * 12 + 8].value + "-" + inputs[index * 12 + 9].value;
+    if (!validaSet(set4, false)) {
+      message.warn("Pontuação do 4º Set inválida!");
+      return;
+    }
+    if (resultado === "2-3" || resultado === "3-2") {
+      set5 =
+        inputs[index * 12 + 10].value + "-" + inputs[index * 12 + 11].value;
+      if (!validaSet(set5, true)) {
+        message.warn("Pontuação do 5º Set inválida!");
+        return;
+      }
+    }
+  }
+
+  if (!validaResultadoComSets(resultado, set1, set2, set3, set4, set5)) {
+    message.warn("Pontuações inválidas de acordo com o resultado!");
+    return;
+  }
+
+  // console.log(
+  //   "sets",
+  //   set1 + " " + set2 + " " + set3 + " " + set4 + " " + set5
+  // );
+
+  // console.log("index", index);
+
+  let res =
+    resultado + "-" + set1 + "-" + set2 + "-" + set3 + "-" + set4 + "-" + set5;
+  RES = res;
+
+  // $($(".divResultadoDisabled")[index]).attr("hidden", false);
+  // $($(".divResultado")[index]).attr("hidden", true);
+
+  // $(
+  //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result_hidden")[
+  //     index
+  //   ]
+  // ).attr("hidden", false);
+  // $(
+  //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result")[index]
+  // ).attr("hidden", true);
+
+  // GUARDAR NO LADO DO SERVER O RESULTADO
+
+  let user = Meteor.user();
+  let email = user.emails[0].address;
+
+  Meteor.call("adicionaResultadoJogo", email, jogo, res, (err, result) => {
+    if (err) {
+      console.log("ERRRRROOOOO", { err });
+    } else {
+      message.success("Resultado submetido " + user.username);
+    }
+  });
+
+  let newDS = [];
+  for (let index = 0; index < dataSource.length; index++) {
+    if (dataSource[index] != record) newDS.push(dataSource[index]);
+  }
+  setDataSource(newDS);
+}
+
+function handleAddResultadoNovo(record, index) {
+  console.log("ertyuiolk,mnbg", record);
+  Modal.confirm({
+    title: "Resultado do jogo:\r\n" + record.Equipas,
+    content: (
+      <div className="divResultado">
+        <Form
+          labelCol={{
+            span: 20,
+            offset: 0,
+          }}
+          wrapperCol={{
+            span: 20,
+          }}
+          layout="vertical"
+          size="small"
+        >
+          <Form.Item label="Resultado:">
+            <InputNumber
+              className="resultado"
+              placeholder="0"
+              max={3}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            X
+            <InputNumber
+              className="resultado"
+              placeholder="0"
+              max={3}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+          </Form.Item>
+          <Form.Item label="Sets">
+            {"("}
+            <InputNumber
+              className="set1"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            -
+            <InputNumber
+              className="set1"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            {")"}
+            <br></br>
+            {"("}
+            <InputNumber
+              className="set2"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            -
+            <InputNumber
+              className="set2"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            {")"}
+            <br></br>
+            {"("}
+            <InputNumber
+              className="set3"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            -
+            <InputNumber
+              className="set3"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            {")"}
+            <br></br>
+            {"("}
+            <InputNumber
+              className="set4"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            -
+            <InputNumber
+              className="set4"
+              placeholder="0"
+              max={50}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            {")"}
+            <br></br>
+            {"("}
+            <InputNumber
+              className="set5"
+              placeholder="0"
+              max={30}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            -
+            <InputNumber
+              className="set5"
+              placeholder="0"
+              max={30}
+              min={0}
+              size={"small"}
+              style={{ width: "40px" }}
+              controls={false}
+            />
+            {")"}
+          </Form.Item>
+        </Form>
+      </div>
+    ),
+    width: "20%",
+    keyboard: false,
+    okText: "Submeter",
+    closable: true,
+
+    onOk() {
+      handleConfirmationResultado(record, index);
+
+      // }
+    },
+    cancelText: "Cancelar",
+    className: "modalRecusa",
+  });
+}
+
+let RES = "";
 
 export function ConsultaPrivada({ user }) {
   const colunasNomeacoesPrivadas = [
@@ -142,256 +634,28 @@ export function ConsultaPrivada({ user }) {
       key: "acao",
       fixed: "right",
       width: "9%",
-      render: (_, record) =>
+      render: (_, record, index) =>
         dataSource.length > 0 && handleJogoPassou(record) ? (
           <>
-            <div className="divResultado">
-              Resultado:
-              <br></br>
-              <InputNumber
-                className="resultado"
-                placeholder="0"
-                max={3}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              X
-              <InputNumber
-                className="resultado"
-                placeholder="0"
-                max={3}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              <br></br>
-              Sets:
-              <br></br>
-              {"("}
-              <InputNumber
-                className="set1"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              -
-              <InputNumber
-                className="set1"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              {")"}
-              <br></br>
-              {"("}
-              <InputNumber
-                className="set2"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              -
-              <InputNumber
-                className="set2"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              {")"}
-              <br></br>
-              {"("}
-              <InputNumber
-                className="set3"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              -
-              <InputNumber
-                className="set3"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              {")"}
-              <br></br>
-              {"("}
-              <InputNumber
-                className="set4"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              -
-              <InputNumber
-                className="set4"
-                placeholder="0"
-                max={50}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              {")"}
-              <br></br>
-              {"("}
-              <InputNumber
-                className="set5"
-                placeholder="0"
-                max={30}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              -
-              <InputNumber
-                className="set5"
-                placeholder="0"
-                max={30}
-                min={0}
-                size={"small"}
-                style={{ width: "40px" }}
-                controls={false}
-              />
-              {")"}
+            <div>
+              <Button
+                type="ghost"
+                shape="round"
+                size="small"
+                style={{
+                  whiteSpace: "normal",
+                  minWidth: "100px",
+                  height: "40px",
+                  fontSize: "12px",
+                  whiteSpace: "nowrap",
+                }}
+                onClick={() => {
+                  handleAddResultadoNovo(record, index);
+                }}
+              >
+                Adiciona <br></br>Resultado
+              </Button>
             </div>
-
-            {/* <div className="divResultadoDisabled" hidden>
-              Resultado:
-              <br></br>
-              <InputNumber
-                className="resultado"
-                size={"small"}
-                value={resultadoAtual.split("-")[0]}
-                style={{ width: "44px" }}
-                disabled
-              />{" "}
-              X{" "}
-              <InputNumber
-                className="resultado"
-                size={"small"}
-                value={resultadoAtual.split("-")[1]}
-                style={{ width: "44px" }}
-                disabled
-              />
-              <br></br>
-              Sets:
-              <br></br>
-              {"( "}
-              <InputNumber
-                className="set1"
-                size={"small"}
-                value={resultadoAtual.split("-")[2]}
-                style={{  width: "44px" }}
-                disabled
-              />{" "}
-              -{" "}
-              <InputNumber
-                className="set1"
-                size={"small"}
-                value={resultadoAtual.split("-")[3]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />
-              {" )"}
-              <br></br>
-              {"( "}
-              <InputNumber
-                className="set2"
-                size={"small"}
-                value={resultadoAtual.split("-")[4]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />{" "}
-              -{" "}
-              <InputNumber
-                className="set2"
-                size={"small"}
-                value={resultadoAtual.split("-")[5]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />
-              {" )"}
-              <br></br>
-              {"( "}
-              <InputNumber
-                className="set3"
-                size={"small"}
-                value={resultadoAtual.split("-")[6]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />{" "}
-              -{" "}
-              <InputNumber
-                className="set3"
-                size={"small"}
-                value={resultadoAtual.split("-")[7]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />
-              {" )"}
-              <br></br>
-              {"( "}
-              <InputNumber
-                className="set4"
-                size={"small"}
-                value={resultadoAtual.split("-")[8]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />{" "}
-              -{" "}
-              <InputNumber
-                className="set4"
-                size={"small"}
-                value={resultadoAtual.split("-")[9]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />
-              {" )"}
-              <br></br>
-              {"( "}
-              <InputNumber
-                className="set5"
-                size={"small"}
-                value={resultadoAtual.split("-")[10]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />{" "}
-              -{" "}
-              <InputNumber
-                className="set5"
-                size={"small"}
-                value={resultadoAtual.split("-")[11]}
-                style={{ height: "22px", width: "44px" }}
-                disabled
-              />
-              {" )"}
-            </div> */}
           </>
         ) : dataSource.length > 0 ? (
           <div>
@@ -436,37 +700,38 @@ export function ConsultaPrivada({ user }) {
       key: "estado",
       fixed: "right",
       render: (_, record, index) =>
-        dataSource.length > 0 && handleJogoPassou(record) ? (
-          <>
-            <Popconfirm
-              className="popconfirm_result"
-              title="Confirmar resultado?"
-              onConfirm={() => handleConfirmationResultado(record, index)}
-              cancelText="Cancelar"
-            >
-              <Button
-                type="primary"
-                shape="round"
-                style={{ width: "100%" }}
-                className="button_result"
-                hidden={false}
-                size="small"
-              >
-                Confirmo ✔️
-              </Button>
-              <Button
-                type="primary"
-                shape="round"
-                style={{ width: "100%" }}
-                className="button_result_hidden"
-                disabled
-                hidden={true}
-              >
-                Confirmo ✔️
-              </Button>
-            </Popconfirm>
-          </>
-        ) : dataSource.length > 0 ? (
+        // dataSource.length > 0 && handleJogoPassou(record) ? (
+        //   <>
+        //     <Popconfirm
+        //       className="popconfirm_result"
+        //       title="Confirmar resultado?"
+        //       onConfirm={() => handleConfirmationResultado(record, index)}
+        //       cancelText="Cancelar"
+        //     >
+        //       <Button
+        //         type="primary"
+        //         shape="round"
+        //         style={{ width: "100%" }}
+        //         className="button_result"
+        //         hidden={false}
+        //         size="small"
+        //       >
+        //         Confirmo ✔️
+        //       </Button>
+        //       <Button
+        //         type="primary"
+        //         shape="round"
+        //         style={{ width: "100%" }}
+        //         className="button_result_hidden"
+        //         disabled
+        //         hidden={true}
+        //       >
+        //         Confirmo ✔️
+        //       </Button>
+        //     </Popconfirm>
+        //   </>
+        // ) :
+        dataSource.length > 0 ? (
           <>
             {record.tags.map((tag) => {
               let color;
@@ -499,8 +764,6 @@ export function ConsultaPrivada({ user }) {
    */
 
   const [dataSource, setDataSource] = useState([]);
-
-  const [resultadoAtual, setResultadoAtual] = useState("");
 
   useEffect(() => {}, [dataSource]);
 
@@ -569,7 +832,7 @@ export function ConsultaPrivada({ user }) {
     //console.log("confirmacoes", confirmacoes);
 
     Meteor.call(
-      "addConfirmacaoNomeacao",
+      "adicionaConfirmacaoNomeacao",
       email,
       jogos,
       confirmacoes,
@@ -586,147 +849,6 @@ export function ConsultaPrivada({ user }) {
 
     // if (sendMessage)
     //   message.info("Ainda tem jogos por confirmar, " + user.username);
-  }
-
-  function handleConfirmationResultado(record, index) {
-    let jogo = record;
-
-    let inputs = document.querySelectorAll("input");
-
-    // console.log(inputs);
-    // console.log("index", index);
-    // console.log("inputs[index]", inputs[index]);
-
-    let inputsLength = inputs.length;
-
-    if (index * 12 >= inputsLength) {
-      // EXISTEM JOGOS QUE AINDA NÃO FORAM REALIZADOS NO MEIO
-      handleConfirmationResultado(record, index - 1);
-    }
-
-    let resultado =
-      inputs[index * 12].value + "-" + inputs[index * 12 + 1].value;
-
-    // console.log("RESULTADO", resultado);
-    if (
-      !(
-        resultado === "0-3" ||
-        resultado === "1-3" ||
-        resultado === "2-3" ||
-        resultado === "3-0" ||
-        resultado === "3-1" ||
-        resultado === "3-2"
-      )
-    ) {
-      message.warn("Resultado incorreto!");
-      return;
-    }
-
-    let set1 =
-      inputs[index * 12 + 2].value + "-" + inputs[index * 12 + 3].value;
-
-    if (!validaSet(set1, false)) {
-      message.warn("Pontuação do 1º Set inválida!");
-      return;
-    }
-
-    let set2 =
-      inputs[index * 12 + 4].value + "-" + inputs[index * 12 + 5].value;
-
-    // console.log("set2", set2);
-
-    if (!validaSet(set2, false)) {
-      message.warn("Pontuação do 2º Set inválida!");
-      return;
-    }
-
-    let set3 =
-      inputs[index * 12 + 6].value + "-" + inputs[index * 12 + 7].value;
-
-    if (!validaSet(set3, false)) {
-      message.warn("Pontuação do 3º Set inválida!");
-      return;
-    }
-
-    let set4 = "0-0";
-    let set5 = "0-0";
-
-    if (
-      resultado === "3-1" ||
-      resultado === "1-3" ||
-      resultado === "3-2" ||
-      resultado === "2-3"
-    ) {
-      set4 = inputs[index * 12 + 8].value + "-" + inputs[index * 12 + 9].value;
-      if (!validaSet(set4, false)) {
-        message.warn("Pontuação do 4º Set inválida!");
-        return;
-      }
-      if (resultado === "2-3" || resultado === "3-2") {
-        set5 =
-          inputs[index * 12 + 10].value + "-" + inputs[index * 12 + 11].value;
-        if (!validaSet(set5, true)) {
-          message.warn("Pontuação do 5º Set inválida!");
-          return;
-        }
-      }
-    }
-
-    if (!validaResultadoComSets(resultado, set1, set2, set3, set4, set5)) {
-      message.warn("Pontuações inválidas de acordo com o resultado!");
-      return;
-    }
-
-    // console.log(
-    //   "sets",
-    //   set1 + " " + set2 + " " + set3 + " " + set4 + " " + set5
-    // );
-
-    // console.log("index", index);
-
-    let res =
-      resultado +
-      "-" +
-      set1 +
-      "-" +
-      set2 +
-      "-" +
-      set3 +
-      "-" +
-      set4 +
-      "-" +
-      set5;
-    setResultadoAtual(res);
-
-    // $($(".divResultadoDisabled")[index]).attr("hidden", false);
-    // $($(".divResultado")[index]).attr("hidden", true);
-
-    // $(
-    //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result_hidden")[
-    //     index
-    //   ]
-    // ).attr("hidden", false);
-    // $(
-    //   $("button.ant-btn.ant-btn-round.ant-btn-primary.button_result")[index]
-    // ).attr("hidden", true);
-
-    // GUARDAR NO LADO DO SERVER O RESULTADO
-
-    let email = user.emails[0].address;
-
-    Meteor.call("addResultadoJogo", email, jogo, res, (err, result) => {
-      if (err) {
-        console.log("ERRRRROOOOO", { err });
-      } else {
-        message.success("Resultado submetido " + user.username);
-      }
-    });
-
-    let newDS = [];
-    for (let index = 0; index < dataSource.length; index++) {
-      if (dataSource[index] != record) newDS.push(dataSource[index]);
-    }
-    setDataSource(newDS);
   }
 
   function loadData() {
@@ -977,199 +1099,5 @@ export function ConsultaPrivada({ user }) {
   function addHours(numOfHours, date = new Date()) {
     date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000);
     return date;
-  }
-
-  function validaSet(set, decisivo) {
-    let parcial1 = parseInt(set.split("-")[0]);
-    let parcial2 = parseInt(set.split("-")[1]);
-
-    let conta = parcial1 - parcial2;
-    conta < 0 ? (conta = conta * -1) : null;
-
-    if (conta === NaN) return false;
-
-    if (conta < 2) return false;
-    // if (!decisivo) {
-    //   if (
-    //     !(
-    //       (parcial1 > 25 && parcial2 > 25) ||
-    //       (parcial1 == 25 && parcial2 != 25)
-    //     )
-    //   ) {
-    //     console.log("ERRADO");
-    //     return false;
-    //   }
-    // } else {
-    //   if (
-    //     !(
-    //       (parcial1 != 15 && parcial2 == 15) ||
-    //       (parcial1 == 15 && parcial2 != 15)
-    //     )
-    //   ) {
-    //     return false;
-    //   }
-    // }
-    else return true;
-  }
-
-  function parcial1(set) {
-    return parseInt(set.split("-")[0]);
-  }
-  function parcial2(set) {
-    return parseInt(set.split("-")[1]);
-  }
-  function validaResultadoComSets(resultado, set1, set2, set3, set4, set5) {
-    if (resultado === "3-0") {
-      return (
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) > parcial2(set3)
-      );
-    } else if (resultado === "0-3") {
-      return (
-        parcial1(set1) < parcial2(set1) &&
-        parcial1(set2) < parcial2(set2) &&
-        parcial1(set3) < parcial2(set3)
-      );
-    } else if (resultado === "3-1") {
-      //GGPG
-      let c1 =
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) < parcial2(set3) &&
-        parcial1(set4) > parcial2(set4);
-      //PGGG
-      let c2 =
-        parcial1(set1) < parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) > parcial2(set3) &&
-        parcial1(set4) > parcial2(set4);
-      //GPGG
-      let c3 =
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) < parcial2(set2) &&
-        parcial1(set3) > parcial2(set3) &&
-        parcial1(set4) > parcial2(set4);
-
-      return c1 || c2 || c3;
-    } else if (resultado === "1-3") {
-      //GGPG
-      let c1 =
-        parcial2(set1) > parcial1(set1) &&
-        parcial2(set2) > parcial1(set2) &&
-        parcial2(set3) < parcial1(set3) &&
-        parcial2(set4) > parcial1(set4);
-      //PGGG
-      let c2 =
-        parcial2(set1) < parcial1(set1) &&
-        parcial2(set2) > parcial1(set2) &&
-        parcial2(set3) > parcial1(set3) &&
-        parcial2(set4) > parcial1(set4);
-      //GPGG
-      let c3 =
-        parcial2(set1) > parcial1(set1) &&
-        parcial2(set2) < parcial1(set2) &&
-        parcial2(set3) > parcial1(set3) &&
-        parcial2(set4) > parcial1(set4);
-
-      return c1 || c2 || c3;
-    } else if (resultado === "3-2") {
-      //GGPPG
-      let c1 =
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) < parcial2(set3) &&
-        parcial1(set4) < parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-      //GPGPG
-      let c2 =
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) < parcial2(set2) &&
-        parcial1(set3) > parcial2(set3) &&
-        parcial1(set4) < parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-      //GPPGG
-      let c3 =
-        parcial1(set1) > parcial2(set1) &&
-        parcial1(set2) < parcial2(set2) &&
-        parcial1(set3) < parcial2(set3) &&
-        parcial1(set4) > parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-      //PGGPG
-      let c4 =
-        parcial1(set1) < parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) > parcial2(set3) &&
-        parcial1(set4) > parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-      //PGPGG
-      let c5 =
-        parcial1(set1) < parcial2(set1) &&
-        parcial1(set2) > parcial2(set2) &&
-        parcial1(set3) < parcial2(set3) &&
-        parcial1(set4) > parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-      //PPGGG
-      let c6 =
-        parcial1(set1) < parcial2(set1) &&
-        parcial1(set2) < parcial2(set2) &&
-        parcial1(set3) > parcial2(set3) &&
-        parcial1(set4) > parcial2(set4) &&
-        parcial1(set5) > parcial2(set5);
-
-      // console.log("c1", c1);
-      // console.log("c2", c2);
-      // console.log("c3", c3);
-      // console.log("c4", c4);
-      // console.log("c5", c5);
-      // console.log("c6", c6);
-      return c1 || c2 || c3 || c4 || c5 || c6;
-    } else if (resultado === "2-3") {
-      //GGPPG
-      let c1 =
-        parcial2(set1) > parcial1(set1) &&
-        parcial2(set2) > parcial1(set2) &&
-        parcial2(set3) < parcial1(set3) &&
-        parcial2(set4) < parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      //GPGPG
-      let c2 =
-        parcial2(set1) > parcial1(set1) &&
-        parcial2(set2) < parcial1(set2) &&
-        parcial2(set3) > parcial1(set3) &&
-        parcial2(set4) < parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      //GPPGG
-      let c3 =
-        parcial2(set1) > parcial1(set1) &&
-        parcial2(set2) < parcial1(set2) &&
-        parcial2(set3) < parcial1(set3) &&
-        parcial2(set4) > parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      //PGGPG
-      let c4 =
-        parcial2(set1) < parcial1(set1) &&
-        parcial2(set2) > parcial1(set2) &&
-        parcial2(set3) > parcial1(set3) &&
-        parcial2(set4) > parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      //PGPGG
-      let c5 =
-        parcial2(set1) < parcial1(set1) &&
-        parcial2(set2) > parcial1(set2) &&
-        parcial2(set3) < parcial1(set3) &&
-        parcial2(set4) > parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      //PPGGG
-      let c6 =
-        parcial2(set1) < parcial1(set1) &&
-        parcial2(set2) < parcial1(set2) &&
-        parcial2(set3) > parcial1(set3) &&
-        parcial2(set4) > parcial1(set4) &&
-        parcial2(set5) > parcial1(set5);
-      return c1 || c2 || c3 || c4 || c5 || c6;
-    } else {
-      false;
-    }
   }
 }
