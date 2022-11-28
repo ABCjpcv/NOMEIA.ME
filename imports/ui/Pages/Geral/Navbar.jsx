@@ -30,7 +30,6 @@ export function Navbar() {
         forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
-        forgotPasswordHeader={true}
         sobreHeader={true}
       />
       <div>
@@ -94,7 +93,7 @@ export function Navbar() {
               </Button>
             </div>
             <p></p>
-            <div className="input" style={{ justifyContent: "flex-start" }}>
+            {/* <div className="input" style={{ justifyContent: "flex-start" }}>
               <Button
                 style={{ display: "flex", width: "100%" }}
                 shape="round"
@@ -106,7 +105,7 @@ export function Navbar() {
               >
                 Sobre
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

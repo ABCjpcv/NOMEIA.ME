@@ -485,7 +485,7 @@ export const Header = ({
                   marginTop: "1%",
                   fontSize: "22px",
                 }}
-                hidden={clubesAfiliadosAVL}
+                hidden={clubesAfiliadosAVL || !titulo}
               >
                 <b>Clubes Afiliados à AVL</b>
               </h1>
@@ -499,7 +499,7 @@ export const Header = ({
                   marginTop: "1%",
                   fontSize: "22px",
                 }}
-                hidden={consultaNomeacoesSemanais}
+                hidden={consultaNomeacoesSemanais || !titulo}
               >
                 <b>Nomeações Semanais</b>
               </h1>
@@ -513,7 +513,7 @@ export const Header = ({
                   marginTop: "1%",
                   fontSize: "22px",
                 }}
-                hidden={forgotPasswordHeader}
+                hidden={forgotPasswordHeader || !titulo}
               >
                 <img
                   id="logo"
@@ -533,7 +533,7 @@ export const Header = ({
                   marginTop: "1%",
                   fontSize: "22px",
                 }}
-                hidden={sobreHeader}
+                hidden={sobreHeader || !titulo}
               >
                 <b>Sobre o Nomeia.Me</b>
               </h1>
