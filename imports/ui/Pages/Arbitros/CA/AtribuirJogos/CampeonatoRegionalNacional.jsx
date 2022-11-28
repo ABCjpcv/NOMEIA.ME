@@ -912,38 +912,42 @@ export function CampeonatoRegionalNacional({ user }) {
         currNomeArbitro = value;
         // console.log("nomeArbitro: ", currNomeArbitro);
 
-        Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
-          let condicoesArbitro = JSON.parse(JSON.stringify(result));
-          let relacoes = condicoesArbitro.relacaoComEquipas;
+        Meteor.call(
+          "verificaIncompatibilidades",
+          currNomeArbitro,
+          (err, result) => {
+            let condicoesArbitro = JSON.parse(JSON.stringify(result));
+            let relacoes = condicoesArbitro.relacaoComEquipas;
 
-          // let mensagemRestricoes =
-          //   currNomeArbitro +
-          //   (!temCarro ? " não tem carro." : " tem carro.") +
-          //   "\n" +
-          //   currNomeArbitro +
-          //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-          //   "\n";
+            // let mensagemRestricoes =
+            //   currNomeArbitro +
+            //   (!temCarro ? " não tem carro." : " tem carro.") +
+            //   "\n" +
+            //   currNomeArbitro +
+            //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+            //   "\n";
 
-          let mensagemRelacoesClubes = currNomeArbitro;
-          if (relacoes.length > 0) {
-            for (let index = 0; index < relacoes.length; index++) {
-              let cargo = relacoes[index].cargo;
-              let clube = relacoes[index].clube;
-              mensagemRelacoesClubes =
-                mensagemRelacoesClubes +
-                " é " +
-                cargo +
-                " do clube " +
-                clube +
-                ".";
+            let mensagemRelacoesClubes = currNomeArbitro;
+            if (relacoes.length > 0) {
+              for (let index = 0; index < relacoes.length; index++) {
+                let cargo = relacoes[index].cargo;
+                let clube = relacoes[index].clube;
+                mensagemRelacoesClubes =
+                  mensagemRelacoesClubes +
+                  " é " +
+                  cargo +
+                  " do clube " +
+                  clube +
+                  ".";
+              }
             }
+
+            // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
+
+            if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+              message.warn(mensagemTotal);
           }
-
-          // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
-
-          if (mensagemRelacoesClubes.length != currNomeArbitro.length)
-            message.warn(mensagemTotal);
-        });
+        );
 
         //console.log("key", key);
 
@@ -969,38 +973,42 @@ export function CampeonatoRegionalNacional({ user }) {
         currNomeArbitro = value;
         // console.log("nomeArbitro: ", currNomeArbitro);
 
-        Meteor.call("verificaRestricoes", currNomeArbitro, (err, result) => {
-          let condicoesArbitro = JSON.parse(JSON.stringify(result));
-          let relacoes = condicoesArbitro.relacaoComEquipas;
+        Meteor.call(
+          "verificaIncompatibilidades",
+          currNomeArbitro,
+          (err, result) => {
+            let condicoesArbitro = JSON.parse(JSON.stringify(result));
+            let relacoes = condicoesArbitro.relacaoComEquipas;
 
-          // let mensagemRestricoes =
-          //   currNomeArbitro +
-          //   (!temCarro ? " não tem carro." : " tem carro.") +
-          //   "\n" +
-          //   currNomeArbitro +
-          //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-          //   "\n";
+            // let mensagemRestricoes =
+            //   currNomeArbitro +
+            //   (!temCarro ? " não tem carro." : " tem carro.") +
+            //   "\n" +
+            //   currNomeArbitro +
+            //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
+            //   "\n";
 
-          let mensagemRelacoesClubes = currNomeArbitro;
-          if (relacoes.length > 0) {
-            for (let index = 0; index < relacoes.length; index++) {
-              let cargo = relacoes[index].cargo;
-              let clube = relacoes[index].clube;
-              mensagemRelacoesClubes =
-                mensagemRelacoesClubes +
-                " é " +
-                cargo +
-                " do clube " +
-                clube +
-                ".";
+            let mensagemRelacoesClubes = currNomeArbitro;
+            if (relacoes.length > 0) {
+              for (let index = 0; index < relacoes.length; index++) {
+                let cargo = relacoes[index].cargo;
+                let clube = relacoes[index].clube;
+                mensagemRelacoesClubes =
+                  mensagemRelacoesClubes +
+                  " é " +
+                  cargo +
+                  " do clube " +
+                  clube +
+                  ".";
+              }
             }
+
+            // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
+
+            if (mensagemRelacoesClubes.length != currNomeArbitro.length)
+              message.warn(mensagemTotal);
           }
-
-          // AVISA SE ARBITRO TEM RELACOES COM ALGUM CLUBE
-
-          if (mensagemRelacoesClubes.length != currNomeArbitro.length)
-            message.warn(mensagemTotal);
-        });
+        );
 
         //console.log("key", key);
 

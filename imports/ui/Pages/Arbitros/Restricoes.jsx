@@ -604,7 +604,7 @@ export function Restricoes({ user }) {
     const newDisabled = isDisabled.filter((item) => item !== key);
 
     Meteor.call(
-      "atualizaIcnompatibilidades",
+      "atualizaIncompatibilidades",
       Meteor.user().username,
       key,
       (err, result) => {
