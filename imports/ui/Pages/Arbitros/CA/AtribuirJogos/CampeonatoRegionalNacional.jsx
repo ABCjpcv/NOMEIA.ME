@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
+import Papa from "papaparse";
 import {
   Button,
   Input,
   message,
   Space,
   Select,
+  Upload,
   Table,
   Form,
   Modal,
@@ -17,7 +19,6 @@ import {
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { Header } from "../../../Geral/Header";
 import {
   SearchOutlined,
@@ -26,7 +27,10 @@ import {
   DeleteOutlined,
   SaveOutlined,
   EditOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { ConfigProvider } from "antd";
 
@@ -39,6 +43,7 @@ import moment from "moment/moment";
 import $ from "jquery";
 
 const { Option } = Select;
+const { Dragger } = Upload;
 
 const StyledTable = styled((props) => (
   <Table
@@ -106,6 +111,82 @@ let prevNomeArbitro = "";
 
 export function CampeonatoRegionalNacional({ user }) {
   let navigate = useNavigate();
+  let location = useLocation();
+  let [selectVal, setSelectVal] = useState("Campeonato Regional / Nacional");
+
+  useEffect(() => {}, [selectVal]);
+
+  const props = {
+    beforeUpload: (file) => {
+      let isValidFyleType = file.type === "text/csv";
+      isValidFyleType = isValidFyleType || file.type === ".xlsx";
+      isValidFyleType = isValidFyleType || file.type === ".xls";
+
+      if (!isValidFyleType) {
+        message.error(
+          "Formato de ficheiro inválido. \n" + `${file.name} não é CSV.`
+        );
+      }
+      return isValidFyleType;
+    },
+    onChange: (event) => {
+      if (event.file) {
+        // console.log("selectVal", selectVal);
+        if (selectVal != undefined) {
+          // Aceita ficheiros csv, xls, xlsx
+          Papa.parse(event.file.originFileObj, {
+            complete: function (results) {
+              let newGames = results.data;
+              // console.log("NEW GAMES", newGames);
+              if (selectVal === "Campeonato Universitário") {
+                // console.log(
+                //   "ENTRAS???????????????????????????????????????????"
+                // );
+                Meteor.call(
+                  "adicionaJogosUniversitarios",
+                  newGames,
+                  (err, result) => {
+                    if (err) {
+                      //console.log("Error: " + err);
+                      return;
+                    }
+                    if (result) {
+                      message.success(
+                        "Novos jogos do Campeonato Universitário carregados!"
+                      );
+                    }
+                  }
+                );
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
+              } else if (selectVal === "Campeonato Regional / Nacional") {
+                Meteor.call(
+                  "adicionaJogosSemanais",
+                  newGames,
+                  (err, result) => {
+                    // console.log(
+                    //   "ENTRAS REGIONAL???????????????????????????????????????????"
+                    // );
+                    if (err) {
+                      //console.log("Error: " + err);
+                      return;
+                    }
+                    if (result) {
+                      message.success(
+                        "Novos jogos do Campeonato Regional / Nacional carregados!"
+                      );
+                    }
+                  }
+                );
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
+              }
+            },
+          });
+        } else {
+          message.error("Não indicou o campeonato!");
+        }
+      }
+    },
+  };
 
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -867,7 +948,7 @@ export function CampeonatoRegionalNacional({ user }) {
         //console.log("key", key);
 
         Meteor.call(
-          "addNomeacaoCalendarioArbitro",
+          "adicionaNomeacaoCalendarioArbitro",
           currNomeArbitro,
           currJogo,
           key.key,
@@ -924,7 +1005,7 @@ export function CampeonatoRegionalNacional({ user }) {
         //console.log("key", key);
 
         Meteor.call(
-          "addNomeacaoCalendarioArbitro",
+          "adicionaNomeacaoCalendarioArbitro",
           currNomeArbitro,
           currJogo,
           key.key,
@@ -1013,7 +1094,7 @@ export function CampeonatoRegionalNacional({ user }) {
     // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
     else {
       Meteor.call(
-        "jogosForamUpdated",
+        "getJogosAtualizados",
         Meteor.user(),
         dataSource,
         false,
@@ -1452,17 +1533,60 @@ export function CampeonatoRegionalNacional({ user }) {
 
       {dataSource.length === 0 ? (
         <>
-          <br></br>
-          <h2 className="blue">Não carregou ainda o ficheiro de jogos.</h2>
-          <Button
-            type="primary"
-            shape="round"
-            onClick={() => {
-              navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
+          <div
+            style={{
+              margin: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "1%",
             }}
           >
-            Carregar Jogos Novos
-          </Button>
+            <div className="input">
+              <label className="labels">
+                <Select
+                  onChange={(e) => setSelectVal(e)}
+                  value="Campeonato Regional / Nacional"
+                  style={{
+                    position: "sticky",
+                    top: "0",
+                    left: "0",
+                    width: "300px",
+                    flexDirection: "none",
+                    justifyContent: "space-evenly",
+                  }}
+                  disabled
+                >
+                  {/* <Select.Option
+                key="cev"
+                value="Confederação Europeia de Voleibol"
+              >
+                Confederação Europeia de Voleibol
+              </Select.Option> */}
+                </Select>
+              </label>
+              <br></br>
+            </div>
+
+            <span>
+              <Dragger
+                {...props}
+                accept=".csv, .xlsx, .xls"
+                style={{ width: "500px" }}
+              >
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Selecione ou arraste um ficheiro para esta área para o
+                  carregar
+                </p>
+                <p className="ant-upload-hint">
+                  Formato do ficheiro {"("} .csv {")"}.
+                </p>
+              </Dragger>
+            </span>
+          </div>
         </>
       ) : (
         <div
