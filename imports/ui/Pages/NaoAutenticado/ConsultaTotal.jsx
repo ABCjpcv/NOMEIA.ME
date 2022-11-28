@@ -436,7 +436,7 @@ export function ConsultaTotal() {
             dataSource={filteredData}
             columns={colunasNomeacoes}
             scroll={{
-              y: "70vh",
+              y: (6.5 * window.screen.height) / 10,
             }}
             rowKey="key"
             pagination={false}
