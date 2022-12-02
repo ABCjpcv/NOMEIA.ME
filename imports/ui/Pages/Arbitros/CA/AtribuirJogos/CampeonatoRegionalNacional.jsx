@@ -840,8 +840,8 @@ export function CampeonatoRegionalNacional({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    // console.log("value", value);
-    // console.log("key", key);
+    console.log("value", value);
+    console.log("key", key);
 
     let indexAux = key.key.split("_");
 
@@ -870,10 +870,14 @@ export function CampeonatoRegionalNacional({ user }) {
 
     // console.log("prevNomeArbitro", prevNomeArbitro);
 
+    console.log("value.length", value.length);
+
     if (prevNomeArbitro === "" && value === " ") {
       return;
     } else {
       if (value.length === 1) {
+        console.log("ENTRAS AQUI????");
+
         // remover a nomeacao anterior
         Meteor.call(
           "removeNomeacaoCalendarioArbitro",
@@ -892,6 +896,8 @@ export function CampeonatoRegionalNacional({ user }) {
           }
         );
       } else if (prevNomeArbitro.length > 0) {
+        console.log("ENTRAS AFINAL AQUI????");
+
         Meteor.call(
           "removeNomeacaoCalendarioArbitro",
           prevNomeArbitro,

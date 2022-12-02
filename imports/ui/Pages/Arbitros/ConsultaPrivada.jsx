@@ -362,12 +362,6 @@ function handleConfirmationResultado(record, index) {
       message.success("Resultado submetido " + user.username);
     }
   });
-
-  let newDS = [];
-  for (let index = 0; index < dataSource.length; index++) {
-    if (dataSource[index] != record) newDS.push(dataSource[index]);
-  }
-  setDataSource(newDS);
 }
 
 function handleAddResultadoNovo(record, index) {
@@ -529,6 +523,7 @@ function handleAddResultadoNovo(record, index) {
 
     onOk() {
       handleConfirmationResultado(record, index);
+      close();
 
       // }
     },

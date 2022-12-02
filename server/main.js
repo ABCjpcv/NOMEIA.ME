@@ -36,7 +36,7 @@ let CONSELHO_DE_ARBITRAGEM = [
 ];
 
 /*********************************************************************************************
- ******************************** SCHEMA TABLE ************************************************
+ ******************************** SCHEMA TABLE ***********************************************
  ********************************************************************************************
  */
 
@@ -100,7 +100,7 @@ definicoesPessoais.schema = new SimpleSchema({
   emiteRecibo: { type: Boolean, optional: false },
 });
 
-//Schema Arbitros:
+//Schema  Arbitros:
 arbitros.schema = new SimpleSchema({
   nome: { type: String, optional: false },
   email: { type: String, optional: false },
@@ -853,7 +853,7 @@ Meteor.methods({
 
       indisponibilidades.insert({
         arbitro: a,
-        disponibilidades: "",
+        disponibilidades: [],
       });
 
       restricoes.insert({
@@ -2277,12 +2277,12 @@ Meteor.methods({
       draggable: false,
     };
 
-    // console.log("novoEvento", novoEvento);
+    // console.log("novoEvent o", novoEvento);
 
     const a = arbitros.findOne({ nome: nomeArbitro });
-    // console.log("a", a);
+    //console.log("a", a);
     let i = indisponibilidades.findOne({ arbitro: a });
-    // console.log("i", i);
+    //console.log("i", i);
 
     let events = i.disponibilidades;
     // console.log("events", events);
@@ -2421,7 +2421,7 @@ Meteor.methods({
       console.log("TITULO DO JOGO DA BD: ", events[index].title);
       console.log("TITULO RECEBIDO A COMPARAR:", titulo);
 
-      console.log("SÃO IGUAIS?", titulo == tituloJogo);
+      console.log("SÃO IGUAIS?", titulo === tituloJogo);
 
       let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
 
@@ -2493,12 +2493,12 @@ Meteor.methods({
           },
           { $set: { preNomeacoesUniversitarias: newGames } }
         );
-        conselhoDeArbitragem.update(
-          {
-            arbitrosCA: arbitroCA,
-          },
-          { $set: { enviadoUniversitarias: true } }
-        );
+        // conselhoDeArbitragem.update(
+        //   {
+        //     arbitrosCA: arbitroCA,
+        //   },
+        //   { $set: { enviadoUniversitarias: true } }
+        // );
       }
       // if (europeias) {
       //   conselhoDeArbitragem.update(
@@ -2521,12 +2521,12 @@ Meteor.methods({
           },
           { $set: { preNomeacoesRegionais: newGames } }
         );
-        conselhoDeArbitragem.update(
-          {
-            arbitrosCA: arbitroCA,
-          },
-          { $set: { enviadoRegionais: true } }
-        );
+        // conselhoDeArbitragem.update(
+        //   {
+        //     arbitrosCA: arbitroCA,
+        //   },
+        //   { $set: { enviadoRegionais: true } }
+        // );
       }
     }
     return true;
@@ -3425,7 +3425,7 @@ function hasDST(str) {
       }
       Date.prototype.stdTimezoneOffset.cache[fy] = maxOffset;
       console.log(
-        "   Date.prototype.stdTimezoneOffset.cache[fy]",
+        "  Date.prototype.stdTimezoneOffset.cache[fy]",
         Date.prototype.stdTimezoneOffset.cache[fy]
       );
     }
