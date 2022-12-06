@@ -71,6 +71,31 @@ function comparaAminhaLindaString(a, b) {
     }
   } catch (error) {
     console.log("O ERRO FOI: -> a", a);
+    a = x;
+
+    try {
+      b.length;
+    } catch (error) {
+      b = x;
+    }
+
+    let tamanho = 0;
+
+    try {
+      tamanho = a.length > b.length ? b.length : a.length;
+    } catch (error) {
+      tamanho = a > b ? b : a;
+    }
+    for (let index = 0; index < tamanho; index++) {
+      posA = a.charCodeAt(index);
+      posB = b.charCodeAt(index);
+
+      if (posA != posB) {
+        x = posB - posA;
+        break;
+      }
+    }
+    return x;
   }
 
   let tamanho = a.length > b.length ? b.length : a.length;
@@ -107,7 +132,7 @@ function comparaAminhaLindaData(a, b) {
 let currJogo = {};
 
 let currNomeArbitro = "";
-let prevNomeArbitro = "";
+let prevNomeArbitro = " ";
 
 export function CampeonatoRegionalNacional({ user }) {
   let navigate = useNavigate();
@@ -282,7 +307,7 @@ export function CampeonatoRegionalNacional({ user }) {
       />
     ),
     onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      (record[dataIndex] + "").toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
@@ -413,6 +438,7 @@ export function CampeonatoRegionalNacional({ user }) {
             showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
+              console.log(arbitrosDisponiveis);
               return (
                 <Select.Option
                   className="select-ref-choice"
@@ -891,7 +917,7 @@ export function CampeonatoRegionalNacional({ user }) {
             if (err) {
               console.error(err);
             } else if (result) {
-              // console.log(result);
+              setDataSource(result);
             }
           }
         );
@@ -910,7 +936,7 @@ export function CampeonatoRegionalNacional({ user }) {
             if (err) {
               console.error(err);
             } else if (result) {
-              // console.log(result);
+              setDataSource(result);
             }
           }
         );
@@ -1459,7 +1485,7 @@ export function CampeonatoRegionalNacional({ user }) {
           valido = false;
         }
 
-        setFormValido(valido);
+        //setFormValido(valido);
 
         // console.log(
         //   "id",
@@ -1666,6 +1692,18 @@ export function CampeonatoRegionalNacional({ user }) {
                     display: "flex",
                     alignItems: "center",
                     height: "30px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (naoTemTransporte) {
+                      setTemTransporte(!temTransporte);
+                      setNaoTemTransporte(!naoTemTransporte);
+                      // message.warn(
+                      //   "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                      // );
+                    } else {
+                      setTemTransporte(!temTransporte);
+                    }
                   }}
                 >
                   <input
@@ -1685,6 +1723,7 @@ export function CampeonatoRegionalNacional({ user }) {
                     style={{
                       height: "30px",
                       marginRight: "2%",
+                      cursor: "pointer",
                     }}
                     checked={temTransporte}
                   ></input>
@@ -1698,6 +1737,18 @@ export function CampeonatoRegionalNacional({ user }) {
                     marginTop: "-3.5%",
                     alignItems: "center",
                     height: "30px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (temTransporte) {
+                      setNaoTemTransporte(!naoTemTransporte);
+                      setTemTransporte(!temTransporte);
+                      // message.warn(
+                      //   "Selecione apenas uma das opções disponíveis sobre Transporte Próprio."
+                      // );
+                    } else {
+                      setNaoTemTransporte(!naoTemTransporte);
+                    }
                   }}
                 >
                   <input
@@ -1717,6 +1768,7 @@ export function CampeonatoRegionalNacional({ user }) {
                     style={{
                       height: "30px",
 
+                      cursor: "pointer",
                       marginRight: "2%",
                     }}
                     checked={naoTemTransporte}
@@ -1733,6 +1785,18 @@ export function CampeonatoRegionalNacional({ user }) {
                     alignItems: "center",
                     height: "30px",
                     marginLeft: "5%",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (naoTemRecibo) {
+                      setTemRecibo(!temRecibo);
+                      setNaoTemRecibo(!naoTemRecibo);
+                      // message.info(
+                      //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                      // );
+                    } else {
+                      setTemRecibo(!temRecibo);
+                    }
                   }}
                 >
                   <input
@@ -1752,6 +1816,7 @@ export function CampeonatoRegionalNacional({ user }) {
                     style={{
                       height: "30px",
                       marginRight: "2%",
+                      cursor: "pointer",
                     }}
                     checked={temRecibo}
                   ></input>
@@ -1766,6 +1831,18 @@ export function CampeonatoRegionalNacional({ user }) {
 
                     marginTop: "-3.5%",
                     height: "30px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (temRecibo) {
+                      setNaoTemRecibo(!naoTemRecibo);
+                      setTemRecibo(!temRecibo);
+                      // message.info(
+                      //   "Selecione apenas uma das opções disponíveis sobre Emissão de Recibos."
+                      // );
+                    } else {
+                      setNaoTemRecibo(!naoTemRecibo);
+                    }
                   }}
                 >
                   <input
@@ -1785,6 +1862,7 @@ export function CampeonatoRegionalNacional({ user }) {
                     style={{
                       height: "25px",
 
+                      cursor: "pointer",
                       marginRight: "2%",
                     }}
                     checked={naoTemRecibo}

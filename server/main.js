@@ -18,7 +18,7 @@ let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = true;
+let DROP_ALL_TABLES = false;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -28,12 +28,6 @@ let DROP_INDISPONIBILIDADES = false;
 let DROP_RESTRICOES = false;
 let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
-
-let CONSELHO_DE_ARBITRAGEM = [
-  "sergiosp@netcabo.pt",
-  "danieljafernandes@gmail.com",
-  "silvacvoleibol@gmail.com",
-];
 
 /*********************************************************************************************
  ******************************** SCHEMA TABLE ***********************************************
@@ -173,82 +167,46 @@ Meteor.startup(() => {
     console.log("***********   DATABASE FOR ARBITROS   ***************");
     console.log("*****************************************************");
 
-    var utilizadores = Meteor.users.find();
-
     arbitros.rawCollection().drop();
+    definicoesPessoais.rawCollection().drop();
 
-    let nivel1 = [
-      "andre.21carvalho@gmail.com",
-      "danielcborga9@gmail.com",
-      "diogosilva.ovc@gmail.com",
-      "riquelopes03@gmail.com",
-      "inespereira04@gmail.com",
-      "jjustocaldeira@gmail.com",
-      "mariacferreira98@hotmail.com",
-      "clatoven.musica@gmail.com",
-      "matilde.maranha@gmail.com",
-      "ricardo03fernandes@hotmail.com",
-      "ricardo.madeira11@hotmail.com",
-      "andrecruz5094@gmail.com",
-      "rodrigo.omitti@gmail.com",
-      "marianatimoteo33@gmail.com",
-      "ruicastanheira0708@gmail.com",
-      "ion.andrusenco1@gmail.com",
-      "gctramos@gmail.com",
-      "jscanelas15@gmail.com",
-    ];
-    let nivel2 = [
-      "analoidearbitragem@gmail.com",
-      "aca.pereira@campus.fct.unl.pt",
-      "catarinafiliparodrigues@hotmail.com",
-      "gabrielaciriani@gmail.com",
-      "eliz.munteanu@gmail.com",
-      "hugocruz116@gmail.com",
-      "joaopmateus@hotmail.com",
-      "margaridapformiga@gmail.com",
-      "ralha.marta19@gmail.com",
-      "sousanicky@gmail.com",
-      "samuelpatrao@gmail.com",
-      "mtvaleria20@gmail.com",
-    ];
-    let nivel3 = [
-      "danieljafernandes@gmail.com",
-      "sergiosp@netcabo.pt",
-      "aninhasfranco@gmail.com",
-      "brunoescorpiao1984@gmail.com",
-      "silvacvoleibol@gmail.com",
-      "diogo.rcgeraldes@gmail.com",
-      "goncalomonteiro.arbitragem@gmail.com",
-      "jorgereis1995@gmail.com",
-      "ralha.madalena18@gmail.com",
-      "michellecferreira@yahoo.com",
-      "rui.costa.reis@gmail.com",
-      "sandra.deveza@gmail.com",
-      "sofiarodrcosta@gmail.com",
-      "andrebrascorreia.42@gmail.com",
-    ];
+    //Get the c sv Text:
+    var arbitrosCSV = Assets.getText("arbitrosInscritos.csv");
+    var rows = Papa.parse(arbitrosCSV).data;
 
-    let u = 0;
-
-    utilizadores.forEach((user) => {
-      let nivel = 1;
-      if (nivel2.includes(user.emails[0].address)) {
-        nivel = 2;
-      } else if (nivel3.includes(user.emails[0].address)) {
-        nivel = 3;
-      }
-
+    let x = 0;
+    //Setup the database, by adding games...
+    for (let index = 1; index < rows.length - 1; index++) {
+      // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
       arbitros.insert({
-        nome: user.username,
-        email: user.emails[0].address,
-        licenca: 0,
-        nivel: nivel,
-        isAdmin: false,
+        nome: rows[index][0],
+        email: rows[index][1],
+        licenca: rows[index][2],
+        nivel:
+          rows[index][3] === "I"
+            ? 1
+            : rows[index][3] === "II"
+            ? 2
+            : rows[index][3] === "III"
+            ? 3
+            : 4,
+        isAdmin: rows[index][4] === "SIM" ? true : false,
       });
-      u = u + 1;
-    });
+      //console.log("inserted ARBITRO " + rows[index][0]);
+      x = index;
+    }
 
-    console.log("INSERT INTO ARBITROS: " + u);
+    for (let index = 1; index < rows.length - 1; index++) {
+      let a = arbitros.findOne({ nome: rows[index][0] });
+      // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
+      definicoesPessoais.insert({
+        arbitro: a,
+        temCarro: rows[index][5] === "SIM" ? true : false,
+        emiteRecibo: rows[index][6] === "SIM" ? true : false,
+      });
+      //console.log("inserted ARBITRO " + rows[index][0]);
+      x = index;
+    }
 
     console.log("*****************************************************");
     console.log("******   DATABASE CONSELHO DE ARBITRAGEM   *********");
@@ -256,19 +214,14 @@ Meteor.startup(() => {
 
     conselhoDeArbitragem.rawCollection().drop();
 
-    var currCA = CONSELHO_DE_ARBITRAGEM;
     let ca = "";
 
-    for (let index = 0; index < currCA.length; index++) {
-      var mail = currCA[index];
-      var a = arbitros.findOne({ email: mail });
+    var arbs = arbitros.find({ isAdmin: true });
 
-      let isAdmin = true;
-
-      if (a != undefined) {
-        a.isAdmin = isAdmin;
+    arbs.forEach((element) => {
+      if (element.isAdmin) {
         conselhoDeArbitragem.insert({
-          arbitrosCA: a,
+          arbitrosCA: element,
           preNomeacoesRegionais: [],
           enviadoRegionais: false,
           // preNomeacoesEuropeias: [],
@@ -276,11 +229,9 @@ Meteor.startup(() => {
           preNomeacoesUniversitarias: [],
           enviadoUniversitarias: false,
         });
-        arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
-
-        ca = ca + " " + a.nome;
+        ca = ca + " " + element.nome;
       }
-    }
+    });
 
     console.log("INSERT INTO CONSELHO DE ARBITRAGEM: ");
     console.log(ca);
@@ -326,23 +277,23 @@ Meteor.startup(() => {
 
     console.log("INSERT INTO RESTRICOES: " + res);
 
-    console.log("*****************************************************");
-    console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
-    console.log("*****************************************************");
+    // console.log("*****************************************************");
+    // console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
+    // console.log("*****************************************************");
 
-    definicoesPessoais.rawCollection().drop();
+    // definicoesPessoais.rawCollection().drop();
 
-    let def = 0;
-    arb.forEach((arbitro) => {
-      definicoesPessoais.insert({
-        arbitro: arbitro,
-        temCarro: false,
-        emiteRecibo: false,
-      });
-      def = def + 1;
-    });
+    // let def = 0;
+    // arb.forEach((arbitro) => {
+    //   definicoesPessoais.insert({
+    //     arbitro: arbitro,
+    //     temCarro: false,
+    //     emiteRecibo: false,
+    //   });
+    //   def = def + 1;
+    // });
 
-    console.log("INSERT INTO DEFINICOES PESSOAIS: " + def);
+    // console.log("INSERT INTO DEFINICOES PESSOAIS: " + def);
 
     console.log("****************************************************");
     console.log("************   DATABASE FOR JOGOS   *****************");
@@ -475,78 +426,37 @@ Meteor.startup(() => {
     console.log("***********   DATABASE FOR ARBITROS   ***************");
     console.log("*****************************************************");
 
-    var utilizadores = Meteor.users.find();
-
     arbitros.rawCollection().drop();
 
-    let nivel1 = [
-      "andre.21carvalho@gmail.com",
-      "danielcborga9@gmail.com",
-      "diogosilva.ovc@gmail.com",
-      "riquelopes03@gmail.com",
-      "inespereira04@gmail.com",
-      "jjustocaldeira@gmail.com",
-      "mariacferreira98@hotmail.com",
-      "clatoven.musica@gmail.com",
-      "matilde.maranha@gmail.com",
-      "ricardo03fernandes@hotmail.com",
-      "ricardo.madeira11@hotmail.com",
-      "andrecruz5094@gmail.com",
-      "rodrigo.omitti@gmail.com",
-      "marianatimoteo33@gmail.com",
-      "ruicastanheira0708@gmail.com",
-      "ion.andrusenco1@gmail.com",
-      "gctramos@gmail.com",
-      "jscanelas15@gmail.com",
-    ];
-    let nivel2 = [
-      "analoidearbitragem@gmail.com",
-      "aca.pereira@campus.fct.unl.pt",
-      "catarinafiliparodrigues@hotmail.com",
-      "gabrielaciriani@gmail.com",
-      "eliz.munteanu@gmail.com",
-      "hugocruz116@gmail.com",
-      "joaopmateus@hotmail.com",
-      "margaridapformiga@gmail.com",
-      "ralha.marta19@gmail.com",
-      "sousanicky@gmail.com",
-      "samuelpatrao@gmail.com",
-      "mtvaleria20@gmail.com",
-    ];
-    let nivel3 = [
-      "danieljafernandes@gmail.com",
-      "sergiosp@netcabo.pt",
-      "aninhasfranco@gmail.com",
-      "brunoescorpiao1984@gmail.com",
-      "silvacvoleibol@gmail.com",
-      "diogo.rcgeraldes@gmail.com",
-      "goncalomonteiro.arbitragem@gmail.com",
-      "jorgereis1995@gmail.com",
-      "ralha.madalena18@gmail.com",
-      "michellecferreira@yahoo.com",
-      "rui.costa.reis@gmail.com",
-      "sandra.deveza@gmail.com",
-      "sofiarodrcosta@gmail.com",
-      "andrebrascorreia.42@gmail.com",
-    ];
+    //Get the c sv Text:
+    var csvFile = Assets.getText("Arbitros_inscritos.csv");
+    var rows = Papa.parse(csvFile).data;
 
-    utilizadores.forEach((user) => {
-      let nivel = 1;
-      if (nivel2.includes(user.emails[0].address)) {
-        nivel = 2;
-      } else if (nivel3.includes(user.emails[0].address)) {
-        nivel = 3;
+    function titleCase(str) {
+      var splitStr = str.toLowerCase().split(" ");
+      for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] =
+          splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
       }
+      // Directly return the joined string
+      return splitStr.join(" ");
+    }
+
+    //Setup the database, by adding games...
+    for (let index = 1; index < rows.length - 1; index++) {
+      // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
 
       arbitros.insert({
-        nome: user.username,
-        email: user.emails[0].address,
-        licenca: 0,
-        nivel: nivel,
-        isAdmin: false,
+        nome: rows[index][0],
+        email: rows[index][1],
+        licenca: rows[index][2],
+        nivel: rows[index][3],
+        isAdmin: rows[index][4],
       });
-      console.log("inserted: " + user.username);
-    });
+      console.log("inserted ARBITRO " + rows[index][0]);
+    }
   }
 
   if (DROP_CONSELHO_DE_ARBITRAGEM) {
@@ -556,18 +466,14 @@ Meteor.startup(() => {
 
     conselhoDeArbitragem.rawCollection().drop();
 
-    var currCA = CONSELHO_DE_ARBITRAGEM;
+    let ca = "";
 
-    for (let index = 0; index < currCA.length; index++) {
-      var mail = currCA[index];
-      var a = arbitros.findOne({ email: mail });
+    var arbs = arbitros.find({ isAdmin: true });
 
-      let isAdmin = true;
-
-      if (a != undefined) {
-        a.isAdmin = isAdmin;
+    arbs.forEach((element) => {
+      if (element.isAdmin) {
         conselhoDeArbitragem.insert({
-          arbitrosCA: a,
+          arbitrosCA: element,
           preNomeacoesRegionais: [],
           enviadoRegionais: false,
           // preNomeacoesEuropeias: [],
@@ -575,9 +481,11 @@ Meteor.startup(() => {
           preNomeacoesUniversitarias: [],
           enviadoUniversitarias: false,
         });
-        arbitros.update({ email: a.email }, { $set: { isAdmin: true } });
+        ca = ca + " " + element.nome;
       }
-    }
+    });
+
+    console.log("inserted: " + ca);
   }
 
   if (DROP_INDISPONIBILIDADES) {
@@ -1354,14 +1262,48 @@ Meteor.methods({
     username,
     events
   ) {
-    // console.log("events recebidos", events);
+    console.log("events recebidos", events);
+
+    let novosEvents = [];
+
+    events.forEach((element) => {
+      if (element.id.includes("feriado")) {
+        let feriado = {
+          id: element.id,
+          title: element.title,
+          start: element.start,
+          end: element.end,
+          color: "#666666",
+          editable: false,
+          className: "hideCalendarTime",
+          draggable: false,
+        };
+
+        novosEvents.push(feriado);
+      } else if (element.id.includes("jogo")) {
+        let jogo = {
+          id: element.id,
+          title: element.title,
+          start: element.start,
+          end: element.end,
+          editable: false,
+          className: "hideCalendarTime",
+          draggable: false,
+          color: "#000000",
+        };
+        novosEvents.push(jogo);
+      } else {
+        novosEvents.push(element);
+      }
+    });
 
     try {
       const a = arbitros.findOne({ nome: username });
       indisponibilidades.update(
         { arbitro: a },
-        { $set: { disponibilidades: events } }
+        { $set: { disponibilidades: novosEvents } }
       );
+      console.log("novosEvents", novosEvents);
       return true;
     } catch (error) {
       return false;
@@ -2216,7 +2158,7 @@ Meteor.methods({
     //console.log(" currJogo: ", currJogo);
 
     let titulo =
-      "Jogo nº" +
+      "Jogo nº " +
       currJogo.Jogo +
       " " +
       // currJogo.Prova +
@@ -2388,7 +2330,7 @@ Meteor.methods({
 
   removeNomeacaoCalendarioArbitro: function removeNomeacaoCalendarioArbitro(
     nomeArbitro,
-    tituloJogo,
+    tituloJogoRecebido,
     currJogo,
     funcao,
     universitario,
@@ -2407,7 +2349,12 @@ Meteor.methods({
 
     let events = i.disponibilidades;
 
-    // console.lo g("events", events);
+    let tituloEventos = [];
+    events.forEach((element) => {
+      tituloEventos.push(element.title);
+    });
+
+    console.log("eventos ", tituloEventos);
 
     if (events === "") {
       events = [];
@@ -2416,28 +2363,29 @@ Meteor.methods({
 
     let novosEvents = [];
     for (let index = 0; index < events.length; index++) {
-      const titulo = events[index].title;
+      let titulo = events[index].title + "";
+      let tituloJogo = tituloJogoRecebido + "";
 
-      console.log("TITULO DO JOGO DA BD: ", events[index].title);
-      console.log("TITULO RECEBIDO A COMPARAR:", titulo);
+      if (titulo.split(" ")[0] === "Jogo") {
+        titulo = titulo.split(" ")[2];
+        tituloJogo = tituloJogoRecebido.split(" ")[2];
+      }
+      // console.log("TITULO DO JOGO DA BD: ", titulo);
+      // console.log("TITULO RECEBIDO A COMPARAR: ", tituloJogo);
 
-      console.log("SÃO IGUAIS?", titulo === tituloJogo);
+      // console.log("SÃO IGUAIS? ===", titulo === tituloJogo);
+      // console.log("SÃO IGUAIS? ==", titulo == tituloJogo);
 
-      let numeroJogoDaBD = parseInt(titulo.split(" ")[2]);
-
-      let numeroJogoRecebido = parseInt(tituloJogo.split(" ")[2]);
-
-      console.log("numeroJogoDaBD : ", numeroJogoDaBD);
-      console.log("numeroJogoRecebido:", numeroJogoRecebido);
-
-      console.log("SÃO IGUAIS?", numeroJogoDaBD == numeroJogoRecebido);
-
-      if (numeroJogoDaBD != numeroJogoRecebido) {
+      if (titulo != tituloJogo) {
         novosEvents.push(events[index]);
       }
     }
 
-    // console.log("novosEvents", novosEvents);
+    let tituloEventosNovos = [];
+    novosEvents.forEach((element) => {
+      tituloEventosNovos.push(element.title);
+    });
+    console.log("novosEvents", tituloEventosNovos);
 
     indisponibilidades.update(
       { arbitro: a },
@@ -2529,7 +2477,7 @@ Meteor.methods({
         // );
       }
     }
-    return true;
+    return newGames;
   },
 
   adicionaJogosUniversitarios: function adicionaJogosUniversitarios(jogos) {
@@ -2687,7 +2635,7 @@ Meteor.methods({
       "-" +
       diaDeJogo[0] +
       "T" +
-      (horaPavilhao + 1) + // NAO FACO IDEIA  PORQUE, MAS TEVE DE SER
+      horaPavilhao +
       ":" +
       horaDeJogo[1] +
       ":00";
@@ -2707,7 +2655,7 @@ Meteor.methods({
       "-" +
       diaDeJogo[0] +
       "T" +
-      (horaFimDeJogo + 1) + // NAO FACO IDEIA PORQUE, MAS TEVE DE SER
+      horaFimDeJogo +
       ":" +
       horaDeJogo[1] +
       ":00";
@@ -3018,7 +2966,7 @@ Meteor.methods({
 
     let newGame = {
       id: id,
-      dia: d[0] + "/" + d[1] + "/" + d[2],
+      dia: d[2] + "/" + d[1] + "/" + d[0],
       hora: hora,
 
       prova: prova,
@@ -3294,14 +3242,44 @@ function validDate(disponibilidades, inicioDoJogo, fimDoJogo, jogo) {
   if (disponibilidades.length === 0) return true;
   else {
     let resultado = true;
-    // console.log("disponibilidades", disponibilidades);
-    // console.log("inicioDoJogo", inicioDoJogo);
-    // console.log("fimDoJogo", fimDoJogo);
+    console.log("*****************************************");
+    //console.log("disponibilidades", disponibilidades);
+    // console.log(
+    //   "jogo começa",
+    //   inicioDoJogo.split("-")[2] +
+    //     "/" +
+    //     inicioDoJogo.split("-")[1] +
+    //     " " +
+    //     inicioDoJogo.split("T")[1] +
+    //     ":00"
+    // );
+    // console.log(
+    //   "fimDoJogo",
+    //   fimDoJogo.split("-")[2] +
+    //     "/" +
+    //     fimDoJogo.split("-")[1] +
+    //     " " +
+    //     fimDoJogo.split("T")[1] +
+    //     ":00"
+    // );
+
     for (var element of disponibilidades) {
+      let indisponibilidadeComeca = new Date(element.start);
+      let indisponibilidadeAcaba = new Date(element.end);
+
+      if (
+        inicioDoJogo > indisponibilidadeComeca &&
+        inicioDoJogo < indisponibilidadeAcaba &&
+        fimDoJogo > indisponibilidadeComeca &&
+        fimDoJogo < indisponibilidadeAcaba
+      )
+        console.log("INDISPONIVEL");
+      else return resultado;
+
       // hora de jogo começa antes que indisponibilidade a ser verificada
-      if (inicioDoJogo < new Date(element.start)) {
+      if (inicioDoJogo <= new Date(element.start)) {
         // jogo termina (contando 2 horas) antes de indisponibilidade a ser verficada
-        if (fimDoJogo < new Date(element.start)) {
+        if (fimDoJogo <= new Date(element.start)) {
           resultado = true;
         } // jogo termina depois de uma indisponibilidade já marcada!
         else {

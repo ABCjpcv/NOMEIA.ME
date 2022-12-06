@@ -504,7 +504,7 @@ export class Calendario extends React.Component {
         console.log("ERRRRROOOOO", { err });
       } else if (result) {
         let r = result.disponibilidades;
-        //console.log("r", r);
+        console.log("r", r);
         const { state: currentState } = this;
         const newState = { ...currentState, resultado: r, loaded: true };
         this.setState(newState);
