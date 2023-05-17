@@ -438,7 +438,7 @@ export function CampeonatoRegionalNacional({ user }) {
             showArrow={false}
           >
             {arbitrosDisponiveis.map((arb) => {
-              console.log(arbitrosDisponiveis);
+              //console.log(arbitrosDisponiveis);
               return (
                 <Select.Option
                   className="select-ref-choice"
@@ -2096,10 +2096,10 @@ export function CampeonatoRegionalNacional({ user }) {
                               clubesRelacionados,
                               nivelDeArbitro,
                               (err, result) => {
-                                // console.log(
-                                //   "result arbitros disponiveis: ",
-                                //   result
-                                // );
+                                console.log(
+                                  "result arbitros disponiveis: ",
+                                  result
+                                );
                                 if (err) {
                                   console.log("ERRRRROOOOO", { err });
                                 } else if (result.length != 0) {

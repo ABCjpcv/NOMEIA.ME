@@ -18,7 +18,7 @@ let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = false;
+let DROP_ALL_TABLES = true;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -204,11 +204,11 @@ Meteor.startup(() => {
         temCarro: rows[index][5] === "SIM" ? true : false,
         emiteRecibo: rows[index][6] === "SIM" ? true : false,
       });
-      //console.log("inserted ARBITRO " + rows[index][0]);
+      console.log("inserted ARBITRO " + rows[index][0]);
       x = index;
     }
 
-    console.log("*****************************************************");
+    console.log("***************************************************");
     console.log("******   DATABASE CONSELHO DE ARBITRAGEM   *********");
     console.log("*****************************************************");
 
@@ -1262,7 +1262,7 @@ Meteor.methods({
     username,
     events
   ) {
-    console.log("events recebidos", events);
+    //console.log("events recebidos", events);
 
     let novosEvents = [];
 
@@ -1303,7 +1303,7 @@ Meteor.methods({
         { arbitro: a },
         { $set: { disponibilidades: novosEvents } }
       );
-      console.log("novosEvents", novosEvents);
+      //console.log("novosEvents", novosEvents);
       return true;
     } catch (error) {
       return false;
@@ -2624,9 +2624,14 @@ Meteor.methods({
     }); //Vai buscar todas as indisponibilidades
 
     let diaDeJogo = (jogo.Dia + "").split("/");
+    console.log("DIA recolhido", diaDeJogo);
+
     let horaDeJogo = (jogo.Hora + "").split(":");
+    console.log("horaDeJogo recolhido", horaDeJogo);
 
     let horaPavilhao = parseInt(horaDeJogo[0]) - 1;
+
+    console.log("horaPavilhao recolhido", horaPavilhao);
 
     let dataInicio =
       diaDeJogo[2] +
@@ -2638,15 +2643,19 @@ Meteor.methods({
       horaPavilhao +
       ":" +
       horaDeJogo[1] +
-      ":00";
+      ":00.00Z";
 
-    // console.log("dataInicio", dataInicio);
+    // NAO SEI PK TIVE DE ADICIONAR .00Z
+
+    console.log("dataInicio", dataInicio);
 
     let inicioDoJogo = new Date(dataInicio);
 
+    console.log("inicioDoJogo: ", inicioDoJogo);
+
     let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
-    // console.log("horaINICIODeJogo: ", inicioDoJogo);
-    // console.log("horaFimDeJogo: ", horaFimDeJogo);
+
+    console.log("horaFimDeJogo: ", horaFimDeJogo);
 
     let dataFim =
       diaDeJogo[2] +
@@ -2658,9 +2667,10 @@ Meteor.methods({
       horaFimDeJogo +
       ":" +
       horaDeJogo[1] +
-      ":00";
+      ":00.00Z";
 
     let fimDoJogo = new Date(dataFim);
+    console.log("fimDoJogo: ", fimDoJogo);
 
     //Primeiro passo:
 
@@ -2669,21 +2679,27 @@ Meteor.methods({
     todasIndisponibilidades.forEach((indisponibilidade) => {
       let disponibilidades = indisponibilidade.disponibilidades; //Vai buscar o array de disponibilidades
 
+      console.log("VOU VER AS DISPONIBILIDADES::::");
+
+      disponibilidades.forEach((element) => {
+        console.log(element);
+      });
+
       if (disponibilidades.length == 0) {
-        // console.log("Disponivel.");
+        console.log("Disponivel.");
         nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
       } else {
         let v = validDate(disponibilidades, inicioDoJogo, fimDoJogo, jogo);
         if (!v) {
           // Nao esta disponivel
         } else if (v) {
-          //console.log("Disponivel.");
+          console.log("Disponivel.");
           nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
         }
       }
     });
 
-    // console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
+    console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
 
     let auxiliarNivel = [];
 
@@ -3239,42 +3255,52 @@ Meteor.methods({
 });
 
 function validDate(disponibilidades, inicioDoJogo, fimDoJogo, jogo) {
+  console.log("ENTREI NO VALID DATE");
+
   if (disponibilidades.length === 0) return true;
   else {
     let resultado = true;
-    console.log("*****************************************");
-    //console.log("disponibilidades", disponibilidades);
+    console.log("*********************************");
+    console.log("disponibilidades", disponibilidades);
     // console.log(
     //   "jogo começa",
-    //   inicioDoJogo.split("-")[2] +
+    //   inicioDoJogo.toString().split("-")[2] +
     //     "/" +
-    //     inicioDoJogo.split("-")[1] +
+    //     inicioDoJogo.toString().split("-")[1] +
     //     " " +
-    //     inicioDoJogo.split("T")[1] +
+    //     inicioDoJogo.toString().split("T")[1] +
     //     ":00"
     // );
     // console.log(
     //   "fimDoJogo",
-    //   fimDoJogo.split("-")[2] +
+    //   fimDoJogo.toString().split("-")[2] +
     //     "/" +
-    //     fimDoJogo.split("-")[1] +
+    //     fimDoJogo.toString().split("-")[1] +
     //     " " +
-    //     fimDoJogo.split("T")[1] +
+    //     fimDoJogo.toString().split("T")[1] +
     //     ":00"
     // );
 
+    console.log("inicio do jogo", inicioDoJogo);
+    console.log("fim do jogo", fimDoJogo);
+
     for (var element of disponibilidades) {
       let indisponibilidadeComeca = new Date(element.start);
+
+      console.log("indisponibilidadeComeca", indisponibilidadeComeca);
+
       let indisponibilidadeAcaba = new Date(element.end);
 
+      console.log("indisponibilidadeAcaba", indisponibilidadeAcaba);
+
       if (
-        inicioDoJogo > indisponibilidadeComeca &&
-        inicioDoJogo < indisponibilidadeAcaba &&
-        fimDoJogo > indisponibilidadeComeca &&
-        fimDoJogo < indisponibilidadeAcaba
-      )
+        inicioDoJogo >= indisponibilidadeComeca &&
+        inicioDoJogo <= indisponibilidadeAcaba &&
+        fimDoJogo >= indisponibilidadeComeca &&
+        fimDoJogo <= indisponibilidadeAcaba
+      ) {
         console.log("INDISPONIVEL");
-      else return resultado;
+      } else resultado; // RETIREI UM RETURN QUE ESTAVA AQUI
 
       // hora de jogo começa antes que indisponibilidade a ser verificada
       if (inicioDoJogo <= new Date(element.start)) {

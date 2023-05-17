@@ -393,7 +393,7 @@ export class Calendario extends React.Component {
                     day: "Dia",
                   }}
                   allDaySlot={false}
-                  height={(20 * window.screen.height) / 33}
+                  height={(20 * window.screen.height) / 48}
                   dayMinWidth={"8px"}
                   firstDay={1}
                   slotDuration={"00:60:00"}
