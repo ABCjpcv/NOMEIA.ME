@@ -29,8 +29,8 @@ let DROP_RESTRICOES = false;
 let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
 
-/*********************************************************************************************
- ******************************** SCHEMA TABLE ***********************************************
+/**********************************************************************************************
+ ******************************* SCHEMA TABLE ************************************************
  ********************************************************************************************
  */
 
@@ -514,6 +514,9 @@ Meteor.startup(() => {
     console.log("**********   DATABASE FOR RESTRICOES    *************");
     console.log("*****************************************************");
 
+
+      var arb = arbitros.find();
+
     restricoes.rawCollection().drop();
 
     arb.forEach((arbitro) => {
@@ -528,7 +531,10 @@ Meteor.startup(() => {
   if (DROP_DEFINICOES_PESSOAIS) {
     console.log("*****************************************************");
     console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
-    console.log("*****************************************************");
+      console.log("*****************************************************");
+
+
+      var arb = arbitros.find();
 
     definicoesPessoais.rawCollection().drop();
 
@@ -593,8 +599,11 @@ Meteor.startup(() => {
 
   if (DROP_NOMEACOES) {
     console.log("*****************************************************");
-    console.log("***********   DATABASE FOR NOMEACOES   **************");
-    console.log("*****************************************************");
+    console.log("***********   DATABASE FOR NOMEACOES   *************");
+      console.log("*****************************************************");
+
+
+      var arb = arbitros.find();
 
     nomeacoes.rawCollection().drop();
 
@@ -629,7 +638,10 @@ Meteor.startup(() => {
   if (DROP_JOGOS_PASSADOS) {
     console.log("*****************************************************");
     console.log("*********   DATABASE FOR JOGOS PASSADOS  ************");
-    console.log("*****************************************************");
+      console.log("*****************************************************");
+
+
+      var arb = arbitros.find();
 
     jogosPassados.rawCollection().drop();
 
@@ -1030,8 +1042,9 @@ Meteor.methods({
 
     let arbConfirmacaoJogo = [];
 
-    for (let index = 0; index < games.length; index++) {
-      console.log("TEM ID?", games[index].id);
+      for (let index = 0; index < games.length; index++) {
+      //console.log("games[index]", games[index])
+      //console.log("TEM ID?", games[index].id);
 
       let jogo;
 
