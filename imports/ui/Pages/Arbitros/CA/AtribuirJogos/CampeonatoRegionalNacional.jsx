@@ -437,7 +437,7 @@ export function CampeonatoRegionalNacional({ user }) {
             size="small"
             showArrow={false}
           >
-            {arbitrosDisponiveis.map((arb) => {
+            {["", ...arbitrosDisponiveis].map((arb) => {
               //console.log(arbitrosDisponiveis);
               return (
                 <Select.Option
@@ -487,7 +487,7 @@ export function CampeonatoRegionalNacional({ user }) {
             size="small"
             showArrow={false}
           >
-            {arbitrosDisponiveis.map((arb) => {
+            {["", ...arbitrosDisponiveis].map((arb) => {
               return (
                 <Select.Option
                   className="select-ref-choice"
@@ -536,7 +536,7 @@ export function CampeonatoRegionalNacional({ user }) {
             size="small"
             showArrow={false}
           >
-            {arbitrosDisponiveis.map((arb) => {
+            {["", ...arbitrosDisponiveis].map((arb) => {
               return (
                 <Select.Option
                   className="select-ref-choice"
@@ -585,7 +585,7 @@ export function CampeonatoRegionalNacional({ user }) {
             size="small"
             showArrow={false}
           >
-            {arbitrosDisponiveis.map((arb) => {
+            {["", ...arbitrosDisponiveis].map((arb) => {
               return (
                 <Select.Option
                   className="select-ref-choice"
@@ -634,7 +634,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //         size="small"
     //         showArrow={false}
     //       >
-    //         {arbitrosDisponiveis.map((arb) => {
+    //         {["", ...arbitrosDisponiveis].map((arb) => {
     //           return (
     //             <Select.Option
     //               className="select-ref-choice"
@@ -680,7 +680,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //         size="small"
     //         showArrow={false}
     //       >
-    //         {arbitrosDisponiveis.map((arb) => {
+    //         {["", ...arbitrosDisponiveis].map((arb) => {
     //           return (
     //             <Select.Option
     //               className="select-ref-choice"
@@ -781,7 +781,7 @@ export function CampeonatoRegionalNacional({ user }) {
                   message.warn("Não foi detetada alteração!");
                   setDisabledDataSource(dataSource);
                 } else {
-                  Meteor.call("alteraNomeacao", record, user, (err, result) => {
+                  Meteor.call("alteraNomeacao", record, user, false, true, (err, result) => {
                     if (err) console.log("Error", err);
                     if (result == 1)
                       message.success("Alteração registada com sucesso!");

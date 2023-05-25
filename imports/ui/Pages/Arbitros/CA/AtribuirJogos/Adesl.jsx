@@ -650,7 +650,7 @@ export function Adesl({ user }) {
                   message.warn("Não foi detetada alteração!");
                   setDisabledDataSource(dataSource);
                 } else {
-                  Meteor.call("alteraNomeacao", record, user, (err, result) => {
+                    Meteor.call("alteraNomeacao", record, user, true, false, (err, result) => {
                     if (err) console.log("Error", err);
                     if (result == 1)
                       message.success("Alteração registada com sucesso!");
