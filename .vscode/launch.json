@@ -1,12 +1,17 @@
 {
+    "version": "0.2.0",
     "configurations": [
-        
-
-        {
-            "type": "pwa-msedge",
-            "name": "nomeia_me",
-            "request": "launch",
-            "url": "localhost:3000"
-        }
+      {
+        "name": "Debug Meteor",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceRoot}",
+        "runtimeExecutable": "meteor",
+        "runtimeArgs": [
+          "run"
+        ],
+        "port": 9229
+      }
     ]
-}
+  }
+  

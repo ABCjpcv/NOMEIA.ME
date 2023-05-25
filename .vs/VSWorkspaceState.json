@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\private",
+    "\\server"
   ],
+  "SelectedNode": "\\private\\arbitrosInscritos.csv",
   "PreviewInSolutionExplorer": false
 }
