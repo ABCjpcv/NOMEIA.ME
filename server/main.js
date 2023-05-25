@@ -1323,157 +1323,31 @@ Meteor.methods({
     }
   },
 
-  adicionaIndisponibilidadeRecorrente:
-    function adicionaIndisponibilidadeRecorrente(
-      username,
-      hora,
-      frequencia,
-      diaInicio
-    ) {
-      //console.log("diaInicio", diaInicio);
+    adicionaIndisponibilidadeRecorrente:
+        function adicionaIndisponibilidadeRecorrente(username, hora, frequencia, diaInicio) {
+            let inicio = hora[0];
+            let fim = hora[1];
 
-      let inicio = hora[0];
-      let fim = hora[1];
-
-      //console.log("inicio", inicio);
-      //console.log("fim", fim);
-
-      //diaInico -> 2022-11-10T15:44:45+00:00 algo deste genero!!!
-
-      let anoFinal = new Date(diaInicio).getFullYear() + 1;
-
-      //console.log("anoFinal", anoFinal);
-
-      let dataSplitada = diaInicio.split("T");
-      let final = dataSplitada[0].split("-");
-      let diaFinal = final[2];
-      let mesFinal = final[1];
-
-      //console.log("final", final);
-
-      // formatar para 2022-11-11T10:00:00Z
-      let dataAposUmAnoInicial =
-        anoFinal + "-" + final[1] + "-" + final[2] + "T" + inicio + ":00Z";
-      let dataAposUmAnoFinal =
-        anoFinal + "-" + +"-" + diaFinal + "T" + fim + "Z";
-      let dataInicialA =
-        new Date(diaInicio).getFullYear() +
-        "-" +
-        mesFinal +
-        "-" +
-        diaFinal +
-        "T" +
-        inicio +
-        ":00Z";
-      let dataInicialB =
-        new Date(diaInicio).getFullYear() +
-        "-" +
-        mesFinal +
-        "-" +
-        diaFinal +
-        "T" +
-        fim +
-        ":00Z";
-
-      let events = [];
-      let stopAdding = true;
-      let startStr;
-      let endStr;
-
-      if (frequencia === "todosDias") {
-        // Adiciona a events a indisponibilidade diaria
-        while (stopAdding) {
-          startStr = dataInicialA;
-          endStr = dataInicialB;
-
-          console.log("startStr", startStr);
-          console.log("dataAposUmAnoInicial", dataAposUmAnoInicial);
-
-          console.log("MIAU");
-
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-
-          console.log(
-            "startStr === dataAposUmAnoInicial",
-            startStr === dataAposUmAnoInicial
-          );
-
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-          console.log("******************************************************");
-
-          if (startStr === dataAposUmAnoInicial) {
-            // Adiciona o ultimo evento
-
-            let evento = {
-              title: " Indisponível ",
-              id: _("recorrente"),
-              start: startStr,
-              end: dataAposUmAnoFinal,
-              color: "#eb3434",
+            // Armazene apenas a frequência e a data de início
+            let recorrencia = {
+                frequencia: frequencia,
+                diaInicio: diaInicio,
             };
 
-            console.log("ULTIMO EVENTO", evento);
-
-            events.push(evento);
-
-            // Quebra o ciclo
-            stopAdding = false;
-          } else {
-            // Adiciona evento
-            let evento = {
-              title: " Indisponível ",
-              id: _("recorrente"),
-              start: startStr,
-              end: endStr,
-              color: "#eb3434",
+            const a = arbitros.findOne({ nome: username });
+            const indisponibilidade = {
+                inicio: inicio,
+                fim: fim,
+                recorrencia: recorrencia,
             };
 
-            console.log("eventoooooooooooooooo", evento);
+            console.log("a",a.nome)
+            
+            // Chame a função para adicionar as indisponibilidades individuais com base na recorrência
+            adicionarIndisponibilidadesIndividuais(a, indisponibilidade);
 
-            events.push(evento);
-
-            let nDataA = new Date(dataInicialA);
-            nDataA.setDate(new Date(dataInicialA).getDate() + 1);
-
-            dataInicialA = nDataA;
-
-            let nDataB = new Date(dataInicialB);
-            nDataB.setDate(new Date(dataInicialB).getDate() + 1);
-
-            dataInicialB = nDataB;
-          }
-        }
-      } else if (frequencia === "diasUteis") {
-        // Adiciona a events a indisponibilidade util
-        for (let index = 0; stopAdding; index++) {
-          const element = array[index];
-        }
-      } else if (frequencia === "semanalmente") {
-        // Adiciona a events a indisponibilidade semanalmente
-        for (let index = 0; stopAdding; index++) {
-          const element = array[index];
-        }
-      } else if (frequencia === "mensalmente") {
-        // Adiciona a events a indisponibilidade mensalmente
-        for (let index = 0; stopAdding; index++) {
-          const element = array[index];
-        }
-      }
-
-      const a = arbitros.findOne({ nome: username });
-      indisponibilidades.update(
-        { arbitro: a },
-        { $set: { disponibilidades: events } }
-      );
-      return true;
-    },
+            return true;
+        },
 
   carregaHorario: function carregaHorario(username) {
     const a = arbitros.findOne({ nome: username });
@@ -3696,4 +3570,120 @@ function adicionaFeriados(r) {
     r.push(novoEvento);
   }
   return r;
+}
+
+
+// Função para adicionar as indisponibilidades individuais com base na recorrência
+function adicionarIndisponibilidadesIndividuais(arbitro, indisponibilidadeRecorrente) {
+
+    console.log("chega aqui?")
+
+    const { inicio, fim, recorrencia } = indisponibilidadeRecorrente;
+    const { frequencia, diaInicio } = recorrencia;
+
+    const diasIndisponiveis = calcularDiasIndisponiveis(frequencia, diaInicio);
+
+    let indisponibilidadesExistentes = [];
+
+    let i = indisponibilidades.findOne({ arbitro: arbitro });
+
+    indisponibilidadesExistentes = i.disponibilidades;
+
+    diasIndisponiveis.forEach((dia) => {
+        const indisponibilidadeIndividual = {
+            title: ' Indisponível ',
+            id: _('recorrente'),
+            start: `${dia}T${inicio}:00Z`,
+            end: `${dia}T${fim}:00Z`,
+            color: '#eb3434',
+        };
+
+        indisponibilidadesExistentes.push(indisponibilidadeIndividual);
+    });
+
+    // Atualize o árbitro na base de dados
+    arbitros.update({ nome: arbitro.nome }, { $set: { disponibilidades: indisponibilidadesExistentes } });
+}
+
+
+// Função para calcular os dias indisponíveis com base na recorrência
+function calcularDiasIndisponiveis(frequencia, diaInicio, inicio, fim) {
+    const diasIndisponiveis = [];
+
+    if (frequencia === 'todosDias') {
+        // Adicionar indisponibilidades diárias para um ano
+        let dataAtual = new Date(diaInicio);
+        const dataFinal = adicionarAno(dataAtual);
+
+        while (dataAtual.getTime() <= dataFinal.getTime()) {
+            diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
+            dataAtual = adicionarDia(dataAtual);
+        }
+    } else if (frequencia === 'diasUteis') {
+        // Adicionar indisponibilidades nos dias úteis para um ano
+        let dataAtual = new Date(diaInicio);
+        const dataFinal = adicionarAno(dataAtual);
+
+        while (dataAtual.getTime() <= dataFinal.getTime()) {
+            if (ehDiaUtil(dataAtual)) {
+                diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
+            }
+            dataAtual = adicionarDia(dataAtual);
+        }
+    } else if (frequencia === 'semanalmente') {
+        // Adicionar indisponibilidades semanais para um ano
+        let dataAtual = new Date(diaInicio);
+        const dataFinal = adicionarAno(dataAtual);
+
+        while (dataAtual.getTime() <= dataFinal.getTime()) {
+            diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
+            dataAtual = adicionarSemana(dataAtual);
+        }
+    } else if (frequencia === 'mensalmente') {
+        // Adicionar indisponibilidades mensais para um ano
+        let dataAtual = new Date(diaInicio);
+        const dataFinal = adicionarAno(dataAtual);
+
+        while (dataAtual.getTime() <= dataFinal.getTime()) {
+            diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
+            dataAtual = adicionarMes(dataAtual);
+        }
+    }
+
+    return diasIndisponiveis;
+}
+
+
+// Função para adicionar um dia à data
+function adicionarDia(data) {
+    const dataAtual = new Date(data);
+    dataAtual.setDate(dataAtual.getDate() + 1);
+    return dataAtual;
+}
+
+// Função para adicionar uma semana à data
+function adicionarSemana(data) {
+    const dataAtual = new Date(data);
+    dataAtual.setDate(dataAtual.getDate() + 7);
+    return dataAtual;
+}
+
+// Função para adicionar um mês à data
+function adicionarMes(data) {
+    const dataAtual = new Date(data);
+    dataAtual.setMonth(dataAtual.getMonth() + 1);
+    return dataAtual;
+}
+
+// Função para adicionar um ano à data
+function adicionarAno(data) {
+    const dataAtual = new Date(data);
+    dataAtual.setFullYear(dataAtual.getFullYear() + 1);
+    return dataAtual;
+}
+
+// Função para verificar se um dia é útil (dias da semana de segunda a sexta)
+function ehDiaUtil(data) {
+    const diaSemana = data.getDay();
+    return diaSemana >= 1 && diaSemana <= 5;
 }

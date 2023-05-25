@@ -414,7 +414,7 @@ export class Calendario extends React.Component {
                 />
               </div>
               <br></br>
-              {/* <Button
+               <Button
                 onClick={() => {
                   recorrente();
                 }}
@@ -424,7 +424,7 @@ export class Calendario extends React.Component {
                 }}
               >
                 Indisponibilidade recorrente
-              </Button> */}
+              </Button> 
               <Button
                 onClick={() => {
                   let curr = this.state.currentEvents;

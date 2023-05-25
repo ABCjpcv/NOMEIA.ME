@@ -2,13 +2,13 @@
   "ExpandedNodes": [
     "",
     "\\.meteor",
+    "\\imports",
     "\\imports\\ui",
     "\\imports\\ui\\Pages",
     "\\imports\\ui\\Pages\\Arbitros",
-    "\\imports\\ui\\Pages\\Arbitros\\CA",
-    "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos",
     "\\private",
     "\\server"
   ],
+  "SelectedNode": "\\imports\\ui\\Pages\\Arbitros\\Calendario.jsx",
   "PreviewInSolutionExplorer": false
 }
