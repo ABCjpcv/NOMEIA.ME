@@ -1,9 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\.meteor",
+    "\\imports\\ui",
+    "\\imports\\ui\\Pages",
+    "\\imports\\ui\\Pages\\Arbitros",
+    "\\imports\\ui\\Pages\\Arbitros\\CA",
+    "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\private\\arbitrosInscritos.csv",
   "PreviewInSolutionExplorer": false
 }
