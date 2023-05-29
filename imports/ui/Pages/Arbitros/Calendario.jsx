@@ -240,9 +240,9 @@ export class Calendario extends React.Component {
                       <Select.Option value="semanalmente">
                         Semanalmente
                       </Select.Option>
-                      <Select.Option value="mensalmente">
-                        Mensalmente
-                      </Select.Option>
+                      {/*<Select.Option value="mensalmente">*/}
+                      {/*  Mensalmente*/}
+                      {/*</Select.Option>*/}
                     </Select>
                   </Form.Item>
                   <Form.Item label="Começa:">
@@ -258,7 +258,7 @@ export class Calendario extends React.Component {
                   </Form.Item>
                   <Form.Item label="Nota: ">
                     {" "}
-                    Será registada até ao próximo ano.
+                    Será registada até ao próximo mês.
                   </Form.Item>
                 </Form>
               </>
@@ -267,9 +267,9 @@ export class Calendario extends React.Component {
           keyboard: false,
           okText: "Adicionar indisponibilidades",
           onOk() {
-            console.log("hora", horasI + "   " + horasF);
-            console.log("freq", frequencia);
-            console.log("diaInicioRecorrente", diaInicioRecorrente);
+            //console.log("hora", horasI + "   " + horasF);
+            //console.log("freq", frequencia);
+            //console.log("diaInicioRecorrente", diaInicioRecorrente);
 
             if (horasI == "" || horasF == "") {
               message.warn("Não colocou as horas!");
@@ -296,9 +296,9 @@ export class Calendario extends React.Component {
         freq,
         diaInicioRecorrente
       ) {
-        console.log("hora", hora);
-        console.log("freq", freq);
-        console.log("diaInicioRecorrente", diaInicioRecorrente);
+        //console.log("hora", hora);
+        //console.log("freq", freq);
+        //console.log("diaInicioRecorrente", diaInicioRecorrente);
 
         Meteor.call(
           "adicionaIndisponibilidadeRecorrente",
@@ -313,10 +313,12 @@ export class Calendario extends React.Component {
             } else if (result) {
               message.success(
                 "Indisponibilidades registadas " + Meteor.user().username + "!"
-              );
+                );
+                window.location.reload();
             }
           }
-        );
+          );
+
 
         // Meteor.call(
         //   "carregaHorario",
@@ -462,6 +464,7 @@ export class Calendario extends React.Component {
                         //Fazer aparecer mensagem de texto de credenciais erradas.
                         console.log(err);
                       } else if (result) {
+
                         return message.success(
                           "Indisponibilidades registadas " +
                             Meteor.user().username +
@@ -469,7 +472,8 @@ export class Calendario extends React.Component {
                         );
                       }
                     }
-                  );
+                              );
+
                 }}
                 type="primary"
                 style={{

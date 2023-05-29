@@ -18,7 +18,7 @@ let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = false;
+let DROP_ALL_TABLES = true;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -1223,7 +1223,7 @@ Meteor.methods({
   //   // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
 
   //   if (data.length != nomeacoesArbitro.nomeacoesPrivadas.length) {
-  //     return true;
+  //     return true; 
   //   } else {
   //     for (
   //       let index = 0;
@@ -1325,8 +1325,11 @@ Meteor.methods({
 
     adicionaIndisponibilidadeRecorrente:
         function adicionaIndisponibilidadeRecorrente(username, hora, frequencia, diaInicio) {
-            let inicio = hora[0];
-            let fim = hora[1];
+            let inicio = retiraHora(hora[0]);
+            let fim = retiraHora(hora[1]);
+
+            console.log("inicio", inicio);
+            console.log("fim", fim)
 
             // Armazene apenas a frequência e a data de início
             let recorrencia = {
@@ -1524,7 +1527,7 @@ Meteor.methods({
     let email = utilizador.emails[0].address;
     var arb = arbitros.findOne({ email: email });
     var result = arb.nivel;
-    //  console.log("NIVEL DE ARBITRO NA BD?", result);
+    //console.log("NIVEL DE ARBITRO NA BD?", result);
     return result;
   },
 
@@ -3404,7 +3407,7 @@ function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
 
     if (arbitroAntigo.length === 0) {
 
-        console.log("ENTRAS AQUI???")
+        //console.log("ENTRAS AQUI???")
 
     // Não havia 1º Arbitro designado
     let arb = arbitros.findOne({ nome: arbitroNovo });
@@ -3576,7 +3579,7 @@ function adicionaFeriados(r) {
 // Função para adicionar as indisponibilidades individuais com base na recorrência
 function adicionarIndisponibilidadesIndividuais(arbitro, indisponibilidadeRecorrente) {
 
-    console.log("chega aqui?")
+    //console.log("chega aqui?")
 
     const { inicio, fim, recorrencia } = indisponibilidadeRecorrente;
     const { frequencia, diaInicio } = recorrencia;
@@ -3597,12 +3600,13 @@ function adicionarIndisponibilidadesIndividuais(arbitro, indisponibilidadeRecorr
             end: `${dia}T${fim}:00Z`,
             color: '#eb3434',
         };
+        console.log("MAIS UMA", dia)
 
         indisponibilidadesExistentes.push(indisponibilidadeIndividual);
     });
 
     // Atualize o árbitro na base de dados
-    arbitros.update({ nome: arbitro.nome }, { $set: { disponibilidades: indisponibilidadesExistentes } });
+    indisponibilidades.update({ arbitro: arbitro }, { $set: { disponibilidades: indisponibilidadesExistentes } });
 }
 
 
@@ -3610,19 +3614,20 @@ function adicionarIndisponibilidadesIndividuais(arbitro, indisponibilidadeRecorr
 function calcularDiasIndisponiveis(frequencia, diaInicio, inicio, fim) {
     const diasIndisponiveis = [];
 
+
     if (frequencia === 'todosDias') {
-        // Adicionar indisponibilidades diárias para um ano
+        // Adicionar indisponibilidades diárias para um mes
         let dataAtual = new Date(diaInicio);
-        const dataFinal = adicionarAno(dataAtual);
+        const dataFinal = adicionarMes(dataAtual);
 
         while (dataAtual.getTime() <= dataFinal.getTime()) {
             diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
             dataAtual = adicionarDia(dataAtual);
         }
     } else if (frequencia === 'diasUteis') {
-        // Adicionar indisponibilidades nos dias úteis para um ano
+        // Adicionar indisponibilidades nos dias úteis para um mes
         let dataAtual = new Date(diaInicio);
-        const dataFinal = adicionarAno(dataAtual);
+        const dataFinal = adicionarMes(dataAtual);
 
         while (dataAtual.getTime() <= dataFinal.getTime()) {
             if (ehDiaUtil(dataAtual)) {
@@ -3631,18 +3636,18 @@ function calcularDiasIndisponiveis(frequencia, diaInicio, inicio, fim) {
             dataAtual = adicionarDia(dataAtual);
         }
     } else if (frequencia === 'semanalmente') {
-        // Adicionar indisponibilidades semanais para um ano
+        // Adicionar indisponibilidades semanais para um mes
         let dataAtual = new Date(diaInicio);
-        const dataFinal = adicionarAno(dataAtual);
+        const dataFinal = adicionarMes(dataAtual);
 
         while (dataAtual.getTime() <= dataFinal.getTime()) {
             diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
             dataAtual = adicionarSemana(dataAtual);
         }
     } else if (frequencia === 'mensalmente') {
-        // Adicionar indisponibilidades mensais para um ano
+        // Adicionar indisponibilidades mensais para um mes
         let dataAtual = new Date(diaInicio);
-        const dataFinal = adicionarAno(dataAtual);
+        
 
         while (dataAtual.getTime() <= dataFinal.getTime()) {
             diasIndisponiveis.push(dataAtual.toISOString().split('T')[0]);
@@ -3686,4 +3691,26 @@ function adicionarAno(data) {
 function ehDiaUtil(data) {
     const diaSemana = data.getDay();
     return diaSemana >= 1 && diaSemana <= 5;
+}
+
+function retiraHora(horaString) {
+    // Extrair a hora e os minutos da string
+    var partes = horaString.split(":");
+    var hora = parseInt(partes[0]);
+    var minutos = parseInt(partes[1]);
+
+    // Converter a hora para minutos e subtrair 60 minutos
+    var totalMinutos = hora * 60 + minutos - 60;
+
+    // Verificar se o total de minutos se tornou negativo
+    if (totalMinutos < 0) {
+        totalMinutos += 24 * 60; // Adicionar 24 horas em minutos
+    }
+
+    // Calcular a nova hora e minutos
+    var novaHora = Math.floor(totalMinutos / 60);
+    var novosMinutos = totalMinutos % 60;
+
+    // Formatar a hora e minutos de volta para uma string
+    return ("0" + novaHora).slice(-2) + ":" + ("0" + novosMinutos).slice(-2);
 }
