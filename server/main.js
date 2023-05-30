@@ -212,7 +212,9 @@ pagamentosCRCN.schema = new SimpleSchema({
 
 Meteor.startup(() => {
   process.env.MAIL_URL =
-    "smtp://nomeia_me_ponav@hotmail.com:2*qzEB)eKR*KZ6gn@smtp.live.com:587/";
+        "smtp://nomeia_me_ponav@hotmail.com:2*qzEB)eKR*KZ6gn@smtp.live.com:587/";
+
+//#region DROP TABLES
 
   if (DROP_ALL_TABLES) {
     clubes.rawCollection().drop();
@@ -810,13 +812,14 @@ Meteor.startup(() => {
         console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
     }
 
+
+    //#endregion
 });
 
 Meteor.methods({
-  /*************************************************************
-   ************************** METODOS DO UTILIZADOR *************
-   ***************************************************************
-   */
+
+
+    //#region METODOS DO UTILIZADOR 
   loginArbitro: function loginArbitro(user_email, password) {
     if (user_email.length == 0) throw new Meteor.Error("Must insert an email.");
     if (password.length == 0) throw new Meteor.Error("Must insert a password.");
@@ -828,15 +831,6 @@ Meteor.methods({
       return user;
     }
 
-    // //Verificar ambiguidade dos Hashes, Hash nao inserido manualmente em registo.
-    // var result = Accounts._checkPassword(user, {
-    //   digest: password,
-    //   algorithm: "sha-256",
-    // });
-
-    // console.log("RESULT", result.error);
-    // if (result.error) return user;
-    // else return "Passwords do not match";
   },
 
   adicionaArbitro: function adicionaArbitro(
@@ -868,19 +862,6 @@ Meteor.methods({
       })
       .join(" ");
 
-    // let userName = user_name.split(" ");
-    // user_name = "";
-
-    // for (let index = 0; index < userName.length; index++) {
-    //   user_name =
-    //     user_name +
-    //     (userName[index].substring(0, 1).toUpperCase() +
-    //       userName[index].substring(1).toLowerCase()) +
-    //     " ";
-    // }
-
-    // user_name = user_name.substring(0, userName.length - 1);
-
     let u = Meteor.users.findOne({ username: user_name });
     let u2 = Accounts.findUserByEmail(user_email);
 
@@ -889,18 +870,13 @@ Meteor.methods({
     } else if (u2 != undefined) {
       throw new Meteor.Error("User already exists.");
     } else {
-      //Accounts.verifyEmail(user_email, (error) => {
-      //  if (!error) {
-      //    return
+
       Accounts.createUser({
         username: user_name,
         email: user_email,
         password: user_password,
       });
-      //   } else {
-      //     throw new Meteor.Error("Email is invalid.");
-      //   }
-      // });
+
 
       let a = {
         nome: user_name,
@@ -1369,35 +1345,6 @@ Meteor.methods({
     return result;
   },
 
-  // nomeacoesForamUpdated: function nomeacoesForamUpdated(user, data) {
-  //   let arb = arbitros.findOne({ email: user.emails[0].address });
-  //   let nomeacoesArbitro = nomeacoes.findOne({ arbitro: arb });
-
-  //   // console.log("data", data);
-  //   // console.log("atuaisPreNomeacoes[0]", atuaisPreNomeacoes[0]);
-
-  //   // console.log("atuaisPreNomeacoes.length", atuaisPreNomeacoes.length);
-
-  //   if (data.length != nomeacoesArbitro.nomeacoesPrivadas.length) {
-  //     return true; 
-  //   } else {
-  //     for (
-  //       let index = 0;
-  //       index < nomeacoesArbitro.nomeacoesPrivadas.length;
-  //       index++
-  //     ) {
-  //       let numeroJogoDaBD = parseInt(
-  //         nomeacoesArbitro.nomeacoesPrivadas[index].jogo.id
-  //       );
-  //       let numeroJogoRecebido = parseInt(data[index].Jogo);
-  //       if (numeroJogoDaBD != numeroJogoRecebido) {
-  //         return true;
-  //       }
-  //     }
-  //   }
-
-  //   return false;
-  // },
 
   carregaResultadosJogosPassados: function (email) {
     var arb = arbitros.findOne({ email: email });
@@ -1421,12 +1368,41 @@ Meteor.methods({
         }
     });
     return result.sort();
-  },
+    },
 
-  /*****************************************************************
-   **************** METODOS DAS INDISPONIBILIDADES *************
-   *****************************************************************
-   */
+    carregaDadosGestaoPagamentos: function () {
+        var arb = arbitros.find();
+        let result = [];
+        arb.forEach((element) => {
+            var prelimResult = pagamentosUniversitario.findOne({ arbitro: element });
+            if (prelimResult != undefined)
+                if (prelimResult.pagamentos != undefined) {
+                    prelimResult = prelimResult.pagamentos;
+                    if (prelimResult.length > 0) {
+                        for (let index = 0; index < prelimResult.length; index++) {
+                            result.push(prelimResult[index]);
+                        }
+                    }
+                }
+
+            prelimResult = pagamentosCRCN.findOne({ arbitro: element });
+            if (prelimResult != undefined)
+                if (prelimResult.pagamentos != undefined) {
+                    prelimResult = prelimResult.pagamentos;
+                    if (prelimResult.length > 0) {
+                        for (let index = 0; index < prelimResult.length; index++) {
+                            result.push(prelimResult[index]);
+                        }
+                    }
+                }
+        });
+        return result.sort();
+    },
+
+    //#endregion
+
+
+    //#region  METODOS DAS INDISPONIBILIDADES 
   adicionaIndisponibilidade: function adicionaIndisponibilidade(
     username,
     events
@@ -1511,12 +1487,11 @@ Meteor.methods({
   carregaHorario: function carregaHorario(username) {
     const a = arbitros.findOne({ nome: username });
     return indisponibilidades.findOne({ arbitro: a });
-  },
+    },
 
-  /*****************************************************************
-   **************** METODOS DAS RESTRICOES_PRIVADAS *************
-   *****************************************************************
-   */
+    //#endregion
+
+    //#region  METODOS DAS RESTRICOES_PRIVADAS 
 
   adicionaIncompatibilidade: function adicionaIncompatibilidade(
     username,
@@ -1599,12 +1574,11 @@ Meteor.methods({
   carregaIncompatibilidades: function carregaIncompatibilidades(username) {
     const a = arbitros.findOne({ nome: username });
     return restricoes.findOne({ arbitro: a });
-  },
+    },
 
-  /*****************************************************************
-   **************** METODOS DAS DEFINICOES PESSOAIS  *************
-   *****************************************************************
-   */
+    //#endregion
+
+  //#region METODOS DAS DEFINICOES PESSOAIS  
 
   adicionaRecibo: function adicionaRecibo(user) {
     try {
@@ -1695,10 +1669,9 @@ Meteor.methods({
     return result;
   },
 
-  /*****************************************************************
-   **************** METODOS DO CONSELHO DE ARBITRAGEM *************
-   ****************************************************************
-   */
+    //#endregion 
+
+//#region    METODOS DO CONSELHO DE ARBITRAGEM 
 
   getJogosAtualizados: function getJogosAtualizados(
     user,
@@ -3415,7 +3388,9 @@ Meteor.methods({
         { $set: { nomeacoesPrivadas: nNovas } }
       );
     });
-  },
+    },
+
+    //#endregion
 });
 
 //function validDate(disponibilidades, inicioDoJogo, fimDoJogo, jogo) {
@@ -3601,7 +3576,7 @@ function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
     n = nomeacoes.findOne({ arbitro: arb });
       nPriv = n.nomeacoesPrivadas;
 
-      console.log("nPriv: ", nPriv)
+      //console.log("nPriv: ", nPriv)
       nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
       console.log("nPriv: ", nPriv)
     nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
