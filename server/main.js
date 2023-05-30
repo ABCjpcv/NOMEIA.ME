@@ -15,10 +15,12 @@ let restricoes = new Mongo.Collection("restricoes");
 let definicoesPessoais = new Mongo.Collection("definicoesPessoais");
 let jogosPassados = new Mongo.Collection("jogosPassados");
 let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
+let pagamentosUniversitario = new Mongo.Collection("pagamentosUniversitario");
+let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = true;
+let DROP_ALL_TABLES = false;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -28,117 +30,185 @@ let DROP_INDISPONIBILIDADES = false;
 let DROP_RESTRICOES = false;
 let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
+let DROP_PAGAMENTOS_UNIVERSITARIOS = false;
+let DROP_PAGAMENTOS_CR_CN = false;
+
+
+//#region SCHEMA TABLE
 
 /**********************************************************************************************
  ******************************* SCHEMA TABLE ************************************************
  ********************************************************************************************
  */
 
-//Schema restricoes
+//#region RESTRICOES
+
 const relacoesSchema = new SimpleSchema({
-  key: { type: Number, optional: false },
-  // key ==  linha da table
-  clube: { type: String, optional: false },
-  cargo: { type: Array, optional: true },
-  "cargo.$": { type: Boolean },
-  descricao: { type: String, optional: true },
+    key: { type: Number, optional: false },
+    // key ==  linha da table
+    clube: { type: String, optional: false },
+    cargo: { type: Array, optional: true },
+    "cargo.$": { type: Boolean },
+    descricao: { type: String, optional: true },
 });
 restricoes.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  relacoes: [relacoesSchema],
+    arbitro: { type: arbitros, optional: false },
+    relacoes: [relacoesSchema],
 });
 
-//Schema indisponibilidades
+//#endregion
+
+//#region INDISPONIBILIDADES
+
+// Schema indisponibilidades
 const eventSchema = new SimpleSchema({
-  id: { type: Number, optional: false },
-  start: { type: String, optional: false },
-  end: { type: String, optional: false },
+    id: { type: Number, optional: false },
+    start: { type: String, optional: false },
+    end: { type: String, optional: false },
 });
 indisponibilidades.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  disponibilidades: [eventSchema],
+    arbitro: { type: arbitros, optional: false },
+    disponibilidades: [eventSchema],
 });
 
-//Schema nomeacoes:
+//#endregion
+
+//#region NOMEACOES
+
+// Schema nomeacoes
 const parciais = new SimpleSchema({
-  pontos: { type: Number, optional: false },
+    pontos: { type: Number, optional: false },
 });
 const resultado = new SimpleSchema({
-  total: [parciais],
-  set1: [parciais],
-  set2: [parciais],
-  set3: [parciais],
-  set4: [parciais],
-  set5: [parciais],
+    total: [parciais],
+    set1: [parciais],
+    set2: [parciais],
+    set3: [parciais],
+    set4: [parciais],
+    set5: [parciais],
 });
 const nomSchema = new SimpleSchema({
-  jogo: { type: jogos, optional: false },
-  resultado: [resultado],
-  confirmacao: { type: String, optional: false },
+    jogo: { type: jogos, optional: false },
+    resultado: [resultado],
+    confirmacao: { type: String, optional: false },
 });
 nomeacoes.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  nomeacoesPrivadas: [nomSchema],
+    arbitro: { type: arbitros, optional: false },
+    nomeacoesPrivadas: [nomSchema],
 });
 
-//Schema jogosPassados
+//#endregion
+
+//#region JOGOS PASSADOS
+
+// Schema jogosPassados
 jogosPassados.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  nomeacoesPrivadas: [nomSchema],
+    arbitro: { type: arbitros, optional: false },
+    nomeacoesPrivadas: [nomSchema],
 });
 
-//Schema Definicoes:
+//#endregion
+
+//#region DEFINICOES
+
+// Schema Definicoes
 definicoesPessoais.schema = new SimpleSchema({
-  arbitro: { type: arbitros, optional: false },
-  temCarro: { type: Boolean, optional: false },
-  emiteRecibo: { type: Boolean, optional: false },
+    arbitro: { type: arbitros, optional: false },
+    temCarro: { type: Boolean, optional: false },
+    emiteRecibo: { type: Boolean, optional: false },
 });
 
-//Schema  Arbitros:
+//#endregion
+
+//#region ARBITROS
+
+// Schema Arbitros
 arbitros.schema = new SimpleSchema({
-  nome: { type: String, optional: false },
-  email: { type: String, optional: false },
-  licenca: { type: Number, optional: false },
-  nivel: { type: Number, optional: false },
-  isAdmin: { type: Boolean, optional: false },
+    nome: { type: String, optional: false },
+    email: { type: String, optional: false },
+    licenca: { type: Number, optional: false },
+    nivel: { type: Number, optional: false },
+    isAdmin: { type: Boolean, optional: false },
 });
 
-//Schema Jogos importados de um dado csv.
+//#endregion
+
+//#region JOGOS
+
+// Schema Jogos importados de um dado csv
 jogos.schema = new SimpleSchema({
-  id: { type: Number, optional: false }, //Retirar Unique no futuro
-  dia: { type: String, optional: false },
-  hora: { type: String, optional: false },
-  prova: { type: String, optional: false },
-  serie: { type: String, optional: false },
-  equipas: { type: String, optional: false },
-  pavilhao: { type: String, optional: false },
-  arbitro_1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro.
-  arbitro_2: { type: String, optional: true }, //Mesmo que acima.
-  juiz_linha: [String],
-  key: { type: Number, optional: true },
+    id: { type: Number, optional: false }, // Retirar Unique no futuro
+    dia: { type: String, optional: false },
+    hora: { type: String, optional: false },
+    prova: { type: String, optional: false },
+    serie: { type: String, optional: false },
+    equipas: { type: String, optional: false },
+    pavilhao: { type: String, optional: false },
+    arbitro_1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro
+    arbitro_2: { type: String, optional: true }, // Mesmo que acima
+    juiz_linha: [String],
+    key: { type: Number, optional: true },
 });
 
-//Schema ConselhoDeArbitragem
+//#endregion
+
+//#region CONSELHO DE ARBITRAGEM
+
+// Schema ConselhoDeArbitragem
 conselhoDeArbitragem.schema = new SimpleSchema({
-  arbitrosCA: { type: arbitros, optional: false },
-  preNomeacoesRegionais: [jogos],
-  enviadoRegionais: { type: Boolean, optional: false },
-  preNomeacoesUniversitarias: [jogos],
-  enviadoUniversitarias: { type: Boolean, optional: false },
-  // preNomeacoesEuropeias: [jogos],
-  // enviadoEuropeias: { type: Boolean, optional: false },
+    arbitrosCA: { type: arbitros, optional: false },
+    preNomeacoesRegionais: [jogos],
+    enviadoRegionais: { type: Boolean, optional: false },
+    preNomeacoesUniversitarias: [jogos],
+    enviadoUniversitarias: { type: Boolean, optional: false },
+    // preNomeacoesEuropeias: [jogos],
+    // enviadoEuropeias: { type: Boolean, optional: false },
 });
 
-//Schema Clubes:
+//#endregion
+
+//#region CLUBES
+
+// Schema Clubes
 clubes.schema = new SimpleSchema({
-  clube: { type: String, optional: false },
-  localizacao: { type: String, optional: false },
-  email: { type: String, optional: false },
-  email_2: { type: String, optional: true },
-  telemovel: { type: String, optional: true },
-  telemovel_2: { type: String, optional: true },
-  telefone: { type: String, optional: true },
+    clube: { type: String, optional: false },
+    localizacao: { type: String, optional: false },
+    email: { type: String, optional: false },
+    email_2: { type: String, optional: true },
+    telemovel: { type: String, optional: true },
+    telemovel_2: { type: String, optional: true },
+    telefone: { type: String, optional: true },
 });
+
+//#endregion
+
+//#region PAGAMETOS UNIVERSITARIOS
+
+const jogo_pagamento = new SimpleSchema({
+    id: { type: Number, optional: false }, // Retirar Unique no futuro
+    dia: { type: String, optional: false },
+    hora: { type: String, optional: false },
+    pavilhao: { type: String, optional: false },
+    key: { type: Number, optional: true },
+});
+
+pagamentosUniversitario.schema = new SimpleSchema({
+    arbitro: { type: arbitros, optional: false },
+    pagamentos: [jogo_pagamento],
+});
+
+//#endregion
+
+//#region PAGAMETOS CR CN
+
+pagamentosCRCN.schema = new SimpleSchema({
+    arbitro: { type: arbitros, optional: false },
+    pagamentos: [jogo_pagamento],
+});
+
+//#endregion
+
+//#endregion
 
 Meteor.startup(() => {
   process.env.MAIL_URL =
@@ -397,7 +467,49 @@ Meteor.startup(() => {
       //console.log("inserted jogosPassados a: " + arbitro.nome);
     });
 
-    console.log("INSERT INTO JOGOS PASSADOS: " + j);
+      console.log("INSERT INTO JOGOS PASSADOS: " + j);
+
+      console.log("*****************************************************");
+      console.log("****   DATABASE FOR PAGAMENTOS UNIVERSITARIOS  *******");
+      console.log("*****************************************************");
+
+      pagamentosUniversitario.rawCollection().drop();
+
+      j = 0;
+      arb.forEach((arbitro) => {
+          pagamentosUniversitario.insert({
+              arbitro: arbitro,
+              pagamentos: [],
+          });
+          j = j + 1;
+          //console.log("inserted jogosPassados a: " + arbitro.nome);
+      });
+
+      console.log("INSERT INTO PAGAMENTOS UNIVERSITARIOS: " + j);
+
+
+      console.log("*****************************************************");
+      console.log("*******   DATABASE FOR PAGAMENTOS  CR CN  **********");
+      console.log("*****************************************************");
+
+      pagamentosCRCN.rawCollection().drop();
+
+      j = 0;
+
+      arb.forEach((arbitro) => {
+          pagamentosCRCN.insert({
+              arbitro: arbitro,
+              pagamentos: [],
+          });
+          j = j + 1;
+          //console.log("inserted jogosPassados a: " + arbitro.nome);
+      });
+
+
+      console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
+
+
+
   } else {
     console.log("*****************************************************");
     console.log("*****************   SERVIDOR LIGADO       ***********");
@@ -654,6 +766,50 @@ Meteor.startup(() => {
       console.log("inserted jogosPassados a: " + arbitro.nome);
     });
   }
+
+    if (DROP_PAGAMENTOS_UNIVERSITARIOS) {
+        pagamentosUniversitario.rawCollection().drop();
+
+        let j = 0;
+
+        var arb = arbitros.find();
+
+        arb.forEach((arbitro) => {
+            pagamentosUniversitario.insert({
+                arbitro: arbitro,
+                pagamentos: [],
+            });
+            j = j + 1;
+            //console.log("inserted jogosPassados a: " + arbitro.nome);
+        });
+
+        console.log("INSERT INTO PAGAMENTOS UNIVERSITARIOS: " + j);
+    }
+
+    if (DROP_PAGAMENTOS_CR_CN) {
+        console.log("*****************************************************");
+        console.log("*******   DATABASE FOR PAGAMENTOS  CR CN  **********");
+        console.log("*****************************************************");
+
+        pagamentosCRCN.rawCollection().drop();
+
+        let j = 0;
+
+        var arb = arbitros.find();
+
+        arb.forEach((arbitro) => {
+            pagamentosCRCN.insert({
+                arbitro: arbitro,
+                pagamentos: [],
+            });
+            j = j + 1;
+            //console.log("inserted jogosPassados a: " + arbitro.nome);
+        });
+
+
+        console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
+    }
+
 });
 
 Meteor.methods({
@@ -1641,7 +1797,7 @@ Meteor.methods({
         }
       });
 
-      console.log("jogos associados", jogosAssociados);
+      //console.log("jogos associados", jogosAssociados);
 
       let final = [];
       let finalIds = [];
@@ -1655,18 +1811,18 @@ Meteor.methods({
         }
       }
 
-      console.log("******************************************");
+      //console.log("******************************************");
 
-      console.log("finalIds: ", finalIds);
+      //console.log("finalIds: ", finalIds);
 
       for (let i = 0; i < jogosAssociados.length; i++) {
         let jogo = jogosAssociados[i];
         if (nAntigas != undefined && nAntigas.length > 0) {
           // Já possuia nomeações antigas, que podem ter confirmação atual diferente de 'pendente'
 
-          console.log("******************************************");
+          //console.log("******************************************");
 
-          console.log("nAntigas", nAntigas);
+          //console.log("nAntigas", nAntigas);
 
           if (!finalIds.includes(parseInt(jogo.id))) {
             final.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
@@ -1683,7 +1839,7 @@ Meteor.methods({
         { $set: { nomeacoesPrivadas: final } }
       );
 
-      console.log("inserted nomeacoes a: " + arbitro.nome);
+      //console.log("inserted nomeacoes a: " + arbitro.nome);
     });
 
     let ca = conselhoDeArbitragem.find();
