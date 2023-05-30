@@ -2,6 +2,10 @@ import React from "react";
 import { Meteor } from "meteor/meteor";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate, Outlet } from "react-router";
+import { useEffect, useState } from 'react';
+
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import "../../Pages/app.css";
 
@@ -31,6 +35,41 @@ import { Adesl } from "../Arbitros/CA/AtribuirJogos/Adesl";
 import { CampeonatoRegionalNacional } from "../Arbitros/CA/AtribuirJogos/CampeonatoRegionalNacional";
 
 const { Link } = require("react-router-dom");
+
+const antIcon = (
+    <div
+        style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: "fit-content",
+        }}
+    >
+        <LoadingOutlined
+            style={{
+                fontSize: "24px",
+                justifyContent: "center",
+            }}
+            spin
+        />
+        <br></br>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                width: "fit-content",
+            }}
+        >
+            <span
+                style={{ display: "flex", width: "fit-content", whiteSpace: "nowrap" }}
+            >
+                {" "}
+                A carregar...{" "}
+            </span>
+        </div>
+    </div>
+);
 
 export const App = () => {
   const user = useTracker(() => Meteor.user());
@@ -139,14 +178,53 @@ export const App = () => {
 };
 
 export const ProtectedRoute = ({
-  component: Comp,
-  loggedIn,
-  path,
-  ...rest
+    component: Comp,
+    loggedIn,
+    path,
+    ...rest
 }) => {
-  const auth = Meteor.user(); // determine if authorized, from context or however you're doing it
+    const [auth, setAuth] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-  // If authorized, return an outlet that will render child elements
-  // If not, return element that will navigate to login page
-  return auth ? <Outlet /> : <Navigate to="/Autenticar" />;
+    useEffect(() => {
+        const fetchData = async () => {
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Atraso de 1 segundo
+
+            const user = Meteor.user(); // Determine se está autorizado, a partir do contexto ou de qualquer outra forma que esteja utilizando
+            setAuth(user);
+            setIsLoading(false);
+        };
+
+        fetchData();
+
+        return () => {
+            // Limpar algo, se necessário
+        };
+    }, []);
+
+    if (isLoading) {
+        // Retorna null ou um componente vazio enquanto o valor de auth está sendo buscado
+        return (
+            <Spin
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "15%",
+                }}
+                indicator={antIcon}
+            />
+        );
+    }
+
+    // Se autorizado, retorna um outlet que irá renderizar os elementos filhos
+    // Se não autorizado, retorna um elemento que irá navegar para a página de login
+    return auth ? <Outlet /> : <Navigate to="/Autenticar" />;
 };
+
+
+
+
+
+
+
+
