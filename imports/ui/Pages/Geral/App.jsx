@@ -33,6 +33,7 @@ import { useTracker } from "meteor/react-meteor-data";
 import { EditarConta } from "../Arbitros/CA/EditarConta";
 import { Adesl } from "../Arbitros/CA/AtribuirJogos/Adesl";
 import { CampeonatoRegionalNacional } from "../Arbitros/CA/AtribuirJogos/CampeonatoRegionalNacional";
+import { GestaoPagamentos } from "../Arbitros/GestaoPagamentos";
 
 const { Link } = require("react-router-dom");
 
@@ -127,7 +128,9 @@ export const App = () => {
             <Route
               path="Profile/Jogos_Passados"
               element={<JogosPassados user={user} />}
-            ></Route>
+                      ></Route>
+
+                      <Route path="Profile/Gestao_Pagamentos" element={<GestaoPagamentos user={user} />}></Route>
 
             <Route path="ProfileCA" element={<ProfileCA user={user} />}></Route>
             <Route

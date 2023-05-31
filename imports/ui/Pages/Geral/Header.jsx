@@ -14,7 +14,8 @@ import {
   UserDeleteOutlined,
   UploadOutlined,
   SelectOutlined,
-  HomeOutlined,
+    HomeOutlined,
+    EuroOutlined
 } from "@ant-design/icons";
 
 import { Button, Drawer, Space } from "antd";
@@ -678,7 +679,22 @@ const MenuPrivado = () => {
           >
             <UserOutlined /> Perfil
           </p>
-        </a>
+              </a>
+
+              <a className="menu-item">
+                  <p
+                      style={{ fontSize: "15px", marginLeft: "5%" }}
+                      onClick={() => {
+                          if (location.pathname != "Conta/Profile/Gestao_Pagamentos") {
+                              (location.pathname = "/Conta/Profile/Gestao_Pagamentos"),
+                                  navigate("/Conta/Profile/Gestao_Pagamentos");
+                          }
+                      }}
+                  >
+                      <EuroOutlined /> Gestão de Pagamentos
+                  </p>
+              </a>
+
       </Drawer>
     </>
   );
@@ -788,7 +804,22 @@ const MenuPrivadoCA = () => {
           >
             <UserOutlined /> Perfil
           </p>
-        </a>
+              </a>
+
+              <a className="menu-item">
+                  <p
+                      style={{ fontSize: "15px", marginLeft: "5%" }}
+                      onClick={() => {
+                          if (location.pathname != "Conta/ProfileCA/Gestao_Pagamentos") {
+                              (location.pathname = "/Conta/ProfileCA/Gestao_Pagamentos"),
+                                  navigate("/Conta/ProfileCA/Gestao_Pagamentos");
+                          }
+                      }}
+                  >
+                      <EuroOutlined /> Gestão de Pagamentos
+                  </p>
+              </a>
+
         <p>
           {" "}
           <b> Conselho de Arbitragem: </b>{" "}

@@ -2,13 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\.meteor",
+    "\\client",
     "\\imports",
     "\\imports\\ui",
     "\\imports\\ui\\Pages",
     "\\imports\\ui\\Pages\\Arbitros",
+    "\\imports\\ui\\Pages\\Geral",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\server\\main.js",
+  "SelectedNode": "\\imports\\ui\\Pages\\Geral\\Header.jsx",
   "PreviewInSolutionExplorer": false
 }
