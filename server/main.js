@@ -18,6 +18,9 @@ let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 let pagamentosUniversitario = new Mongo.Collection("pagamentosUniversitario");
 let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
+let valorDeslocacoesRegionais = new Mongo.Collection("valorDeslocacoesRegionais");
+let valorPremioAlimentacao = new Mongo.Collection("valorPremioAlimentacao");
+
 let CURRENT_YEAR = new Date().getFullYear();
 
 let DROP_ALL_TABLES = false;
@@ -32,6 +35,8 @@ let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
 let DROP_PAGAMENTOS_UNIVERSITARIOS = false;
 let DROP_PAGAMENTOS_CR_CN = false;
+let DROP_VALOR_DESLOCACOES = true;
+let DROP_VALOR_PREMIO_ALIMENTACAO = true;
 
 
 //#region SCHEMA TABLE
@@ -205,6 +210,29 @@ pagamentosCRCN.schema = new SimpleSchema({
     arbitro: { type: arbitros, optional: false },
     pagamentos: [jogo_pagamento],
 });
+
+//#endregion
+
+//#region VALOR DESLOCACOES REGIONAIS
+
+valorDeslocacoesRegionais.schema = new SimpleSchema({
+    origem: { type: String, optional: false },
+    destino: { type: String, optional: false },
+    subsidio: { type: Number, optional: false },
+});
+
+//endregion
+
+//#region VALOR PREMIO ALIMENTACAO
+
+valorDeslocacoesRegionais.schema = new SimpleSchema({
+    tipo: { type: String, optional: false },
+    competicao: { type: String, optional: false },
+    premio: { type: Number, optional: false },
+    funcao: { type: String, optional: false },
+    alimentacao: { type: Number, optional: false },
+});
+
 
 //#endregion
 
@@ -511,6 +539,52 @@ Meteor.startup(() => {
       console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
 
 
+      console.log("*****************************************************");
+      console.log("*******   DATABASE FOR TABELAS DESLOCACOES  **********");
+      console.log("*****************************************************");
+
+      //Get the csv Text:
+      csvFile = Assets.getText("ValorDeslocacoesRegionaisAVL.csv");
+      rows = Papa.parse(csvFile).data;
+
+      valorDeslocacoesRegionais.rawCollection().drop();
+
+     
+      //Setup the database
+      for (let index = 1; index < rows.length - 1; index++) {
+          valorDeslocacoesRegionais.insert({
+              origem: titleCase(rows[index][0]),
+              destino: titleCase(rows[index][1]),
+              subsidio: rows[index][2],
+          });
+      }
+
+      console.log("*****************************************************");
+      console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
+      console.log("*****************************************************");
+
+      //Get the csv Text:
+      csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+      rows = Papa.parse(csvFile).data;
+
+      valorPremioAlimentacao.rawCollection().drop();
+
+
+      //Setup the database
+      for (let index = 1; index < rows.length - 1; index++) {
+
+          valorPremioAlimentacao.insert({
+              tipo: titleCase(rows[index][0]),
+              competicao: titleCase(rows[index][1]),
+              premio: rows[index][2],
+              funcao: rows[index][3],
+              alimentacao: rows[index][4],
+          });
+      }
+
+
+
+
 
   } else {
     console.log("*****************************************************");
@@ -810,6 +884,82 @@ Meteor.startup(() => {
 
 
         console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
+    }
+
+    if (DROP_VALOR_DESLOCACOES) {
+        console.log("*****************************************************");
+        console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
+        console.log("*****************************************************");
+
+        valorPremioAlimentacao.rawCollection().drop();
+
+        //Get the csv Text:
+        csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+        rows = Papa.parse(csvFile).data;
+
+        valorPremioAlimentacao.rawCollection().drop();
+
+        function titleCase(str) {
+            var splitStr = str.toLowerCase().split(" ");
+            for (var i = 0; i < splitStr.length; i++) {
+                // You do not need to check if i is larger than splitStr length, as your for does that for you
+                // Assign it back to the array
+                splitStr[i] =
+                    splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+            }
+            // Directly return the joined string
+            return splitStr.join(" ");
+        }
+
+        //Setup the database
+        for (let index = 1; index < rows.length - 1; index++) {
+
+            valorPremioAlimentacao.insert({
+                tipo: titleCase(rows[index][0]),
+                competicao: titleCase(rows[index][1]),
+                premio: rows[index][2],
+                funcao: rows[index][3],
+                alimentacao: rows[index][4],
+            });
+        }
+    }
+
+    if (DROP_VALOR_PREMIO_ALIMENTACAO) {
+        console.log("*****************************************************");
+        console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
+        console.log("*****************************************************");
+
+        valorPremioAlimentacao.rawCollection().drop();
+
+        //Get the csv Text:
+        csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+        rows = Papa.parse(csvFile).data;
+
+        valorPremioAlimentacao.rawCollection().drop();
+
+        function titleCase(str) {
+            var splitStr = str.toLowerCase().split(" ");
+            for (var i = 0; i < splitStr.length; i++) {
+                // You do not need to check if i is larger than splitStr length, as your for does that for you
+                // Assign it back to the array
+                splitStr[i] =
+                    splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+            }
+            // Directly return the joined string
+            return splitStr.join(" ");
+        }
+
+        //Setup the database
+        for (let index = 1; index < rows.length - 1; index++) {
+
+            valorPremioAlimentacao.insert({
+                tipo: titleCase(rows[index][0]),
+                competicao: titleCase(rows[index][1]),
+                premio: rows[index][2],
+                funcao: rows[index][3],
+                alimentacao: rows[index][4],
+            });
+        }
     }
 
 
