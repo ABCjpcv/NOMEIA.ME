@@ -18,9 +18,6 @@ let jogosPassadosCA = new Mongo.Collection("jogosPassadosCA");
 let pagamentosUniversitario = new Mongo.Collection("pagamentosUniversitario");
 let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
-let valorDeslocacoesRegionais = new Mongo.Collection("valorDeslocacoesRegionais");
-let valorPremioAlimentacao = new Mongo.Collection("valorPremioAlimentacao");
-
 let CURRENT_YEAR = new Date().getFullYear();
 
 let DROP_ALL_TABLES = false;
@@ -35,15 +32,19 @@ let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
 let DROP_PAGAMENTOS_UNIVERSITARIOS = false;
 let DROP_PAGAMENTOS_CR_CN = false;
-let DROP_VALOR_DESLOCACOES = true;
-let DROP_VALOR_PREMIO_ALIMENTACAO = true;
+let DROP_VALOR_DESLOCACOES = false;
+let DROP_VALOR_PREMIO_ALIMENTACAO = false;
 
+
+const UNIVERSITARY_DESLOCATION_PRIZE = 12.5;
+const CN_DESLOCATION_PRIZE = 19.11;
+const CN_MEAL_PRIZE = 4.27;
 
 //#region SCHEMA TABLE
 
 /**********************************************************************************************
  ******************************* SCHEMA TABLE ************************************************
- ********************************************************************************************
+ *********************************************************************************************
  */
 
 //#region RESTRICOES
@@ -121,6 +122,7 @@ definicoesPessoais.schema = new SimpleSchema({
     arbitro: { type: arbitros, optional: false },
     temCarro: { type: Boolean, optional: false },
     emiteRecibo: { type: Boolean, optional: false },
+    concelho: {type: String, optional: false}
 });
 
 //#endregion
@@ -213,28 +215,6 @@ pagamentosCRCN.schema = new SimpleSchema({
 
 //#endregion
 
-//#region VALOR DESLOCACOES REGIONAIS
-
-valorDeslocacoesRegionais.schema = new SimpleSchema({
-    origem: { type: String, optional: false },
-    destino: { type: String, optional: false },
-    subsidio: { type: Number, optional: false },
-});
-
-//endregion
-
-//#region VALOR PREMIO ALIMENTACAO
-
-valorDeslocacoesRegionais.schema = new SimpleSchema({
-    tipo: { type: String, optional: false },
-    competicao: { type: String, optional: false },
-    premio: { type: Number, optional: false },
-    funcao: { type: String, optional: false },
-    alimentacao: { type: Number, optional: false },
-});
-
-
-//#endregion
 
 //#endregion
 
@@ -302,7 +282,8 @@ Meteor.startup(() => {
       definicoesPessoais.insert({
         arbitro: a,
         temCarro: rows[index][5] === "SIM" ? true : false,
-        emiteRecibo: rows[index][6] === "SIM" ? true : false,
+          emiteRecibo: rows[index][6] === "SIM" ? true : false,
+        concelho: rows[index][7],
       });
       console.log("inserted ARBITRO " + rows[index][0]);
       x = index;
@@ -405,17 +386,7 @@ Meteor.startup(() => {
 
     jogos.rawCollection().drop();
 
-    function titleCase(str) {
-      var splitStr = str.toLowerCase().split(" ");
-      for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] =
-          splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-      }
-      // Directly return the joined string
-      return splitStr.join(" ");
-    }
+    
 
     //Setup the database, by adding games...
     for (let index = 1; index < rows.length - 1; index++) {
@@ -539,52 +510,6 @@ Meteor.startup(() => {
       console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
 
 
-      console.log("*****************************************************");
-      console.log("*******   DATABASE FOR TABELAS DESLOCACOES  **********");
-      console.log("*****************************************************");
-
-      //Get the csv Text:
-      csvFile = Assets.getText("ValorDeslocacoesRegionaisAVL.csv");
-      rows = Papa.parse(csvFile).data;
-
-      valorDeslocacoesRegionais.rawCollection().drop();
-
-     
-      //Setup the database
-      for (let index = 1; index < rows.length - 1; index++) {
-          valorDeslocacoesRegionais.insert({
-              origem: titleCase(rows[index][0]),
-              destino: titleCase(rows[index][1]),
-              subsidio: rows[index][2],
-          });
-      }
-
-      console.log("*****************************************************");
-      console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
-      console.log("*****************************************************");
-
-      //Get the csv Text:
-      csvFile = Assets.getText("ValorPremioAlimentacao.csv");
-      rows = Papa.parse(csvFile).data;
-
-      valorPremioAlimentacao.rawCollection().drop();
-
-
-      //Setup the database
-      for (let index = 1; index < rows.length - 1; index++) {
-
-          valorPremioAlimentacao.insert({
-              tipo: titleCase(rows[index][0]),
-              competicao: titleCase(rows[index][1]),
-              premio: rows[index][2],
-              funcao: rows[index][3],
-              alimentacao: rows[index][4],
-          });
-      }
-
-
-
-
 
   } else {
     console.log("*****************************************************");
@@ -619,18 +544,6 @@ Meteor.startup(() => {
     //Get the c sv Text:
     var csvFile = Assets.getText("Arbitros_inscritos.csv");
     var rows = Papa.parse(csvFile).data;
-
-    function titleCase(str) {
-      var splitStr = str.toLowerCase().split(" ");
-      for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] =
-          splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-      }
-      // Directly return the joined string
-      return splitStr.join(" ");
-    }
 
     //Setup the database, by adding games...
     for (let index = 1; index < rows.length - 1; index++) {
@@ -724,13 +637,20 @@ Meteor.startup(() => {
 
       var arb = arbitros.find();
 
-    definicoesPessoais.rawCollection().drop();
+      definicoesPessoais.rawCollection().drop();
+
+      let concelhos = [
+          'ALCOCHETE', 'ALMADA', 'AMADORA', 'BARREIRO', 'CASCAIS', 'LISBOA', 'LOURES', 'MAFRA',
+          'ODIVELAS', 'OEIRAS', 'SEIXAL', 'SESIMBRA', 'SETUBAL', 'SINTRA', 'TORRES VEDRAS', 'VILA FRANCA DE XIRA'
+      ];
+
 
     arb.forEach((arbitro) => {
       definicoesPessoais.insert({
         arbitro: arbitro,
         temCarro: false,
-        emiteRecibo: false,
+          emiteRecibo: false,
+          concelho: concelhos[Math.floor(Math.random() * concelhos.length)],
       });
       console.log("inserted : DEFINICOES PESSOAIS BASE ");
     });
@@ -746,18 +666,6 @@ Meteor.startup(() => {
     var rows = Papa.parse(csvFile).data;
 
     jogos.rawCollection().drop();
-
-    function titleCase(str) {
-      var splitStr = str.toLowerCase().split(" ");
-      for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] =
-          splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-      }
-      // Directly return the joined string
-      return splitStr.join(" ");
-    }
 
     //Setup the database, by adding games...
     for (let index = 1; index < rows.length - 1; index++) {
@@ -886,82 +794,7 @@ Meteor.startup(() => {
         console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
     }
 
-    if (DROP_VALOR_DESLOCACOES) {
-        console.log("*****************************************************");
-        console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
-        console.log("*****************************************************");
-
-        valorPremioAlimentacao.rawCollection().drop();
-
-        //Get the csv Text:
-        csvFile = Assets.getText("ValorPremioAlimentacao.csv");
-        rows = Papa.parse(csvFile).data;
-
-        valorPremioAlimentacao.rawCollection().drop();
-
-        function titleCase(str) {
-            var splitStr = str.toLowerCase().split(" ");
-            for (var i = 0; i < splitStr.length; i++) {
-                // You do not need to check if i is larger than splitStr length, as your for does that for you
-                // Assign it back to the array
-                splitStr[i] =
-                    splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-            }
-            // Directly return the joined string
-            return splitStr.join(" ");
-        }
-
-        //Setup the database
-        for (let index = 1; index < rows.length - 1; index++) {
-
-            valorPremioAlimentacao.insert({
-                tipo: titleCase(rows[index][0]),
-                competicao: titleCase(rows[index][1]),
-                premio: rows[index][2],
-                funcao: rows[index][3],
-                alimentacao: rows[index][4],
-            });
-        }
-    }
-
-    if (DROP_VALOR_PREMIO_ALIMENTACAO) {
-        console.log("*****************************************************");
-        console.log("****   DATABASE FOR TABELAS PREMIO ALIMENTACAO  *****");
-        console.log("*****************************************************");
-
-        valorPremioAlimentacao.rawCollection().drop();
-
-        //Get the csv Text:
-        csvFile = Assets.getText("ValorPremioAlimentacao.csv");
-        rows = Papa.parse(csvFile).data;
-
-        valorPremioAlimentacao.rawCollection().drop();
-
-        function titleCase(str) {
-            var splitStr = str.toLowerCase().split(" ");
-            for (var i = 0; i < splitStr.length; i++) {
-                // You do not need to check if i is larger than splitStr length, as your for does that for you
-                // Assign it back to the array
-                splitStr[i] =
-                    splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-            }
-            // Directly return the joined string
-            return splitStr.join(" ");
-        }
-
-        //Setup the database
-        for (let index = 1; index < rows.length - 1; index++) {
-
-            valorPremioAlimentacao.insert({
-                tipo: titleCase(rows[index][0]),
-                competicao: titleCase(rows[index][1]),
-                premio: rows[index][2],
-                funcao: rows[index][3],
-                alimentacao: rows[index][4],
-            });
-        }
-    }
-
+    
 
     //#endregion
 });
@@ -970,575 +803,546 @@ Meteor.methods({
 
 
     //#region METODOS DO UTILIZADOR 
-  loginArbitro: function loginArbitro(user_email, password) {
-    if (user_email.length == 0) throw new Meteor.Error("Must insert an email.");
-    if (password.length == 0) throw new Meteor.Error("Must insert a password.");
-    var user = Accounts.findUserByEmail(user_email);
-    if (user == undefined) {
-      return "User does not exist.";
-    } else {
-      //console.log("User found by email.");
-      return user;
-    }
-
-  },
-
-  adicionaArbitro: function adicionaArbitro(
-    user_name,
-    user_email,
-    nivelArbitro,
-    licencaArbitro,
-    user_password,
-    password_repeat,
-    isAdmin
-  ) {
-    if (
-      (user_name.length == 0 ||
-        user_email.length == 0 ||
-        user_password.length == 0,
-      password_repeat.length == 0)
-    ) {
-      // console.log("Must insert fields");
-      throw new Meteor.Error("Fields Missing");
-    }
-    if (user_password != password_repeat)
-      throw new Meteor.Error("Passwords do not match.");
-    // console.log("Passwords match.");
-
-    user_name = user_name
-      .split(" ")
-      .map((word) => {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-      })
-      .join(" ");
-
-    let u = Meteor.users.findOne({ username: user_name });
-    let u2 = Accounts.findUserByEmail(user_email);
-
-    if (u != undefined) {
-      throw new Meteor.Error("User already exists.");
-    } else if (u2 != undefined) {
-      throw new Meteor.Error("User already exists.");
-    } else {
-
-      Accounts.createUser({
-        username: user_name,
-        email: user_email,
-        password: user_password,
-      });
-
-
-      let a = {
-        nome: user_name,
-        email: user_email,
-        licenca: parseInt(licencaArbitro),
-        nivel: parseInt(nivelArbitro),
-        isAdmin: isAdmin,
-      };
-      arbitros.insert(a);
-
-      console.log("inserted: " + user_name);
-
-      if (isAdmin) {
-        let ca = conselhoDeArbitragem.findOne();
-
-        conselhoDeArbitragem.insert({
-          arbitrosCA: a,
-          preNomeacoesRegionais: ca.preNomeacoesRegionais,
-          enviadoRegionais: false,
-          // preNomeacoesEuropeias: [],
-          // enviadoEuropeias: false,
-          preNomeacoesUniversitarias: [],
-          enviadoUniversitarias: false,
-        });
-      }
-
-      indisponibilidades.insert({
-        arbitro: a,
-        disponibilidades: [],
-      });
-
-      restricoes.insert({
-        arbitro: a,
-        relacoes: [],
-      });
-
-      definicoesPessoais.insert({
-        arbitro: a,
-        temCarro: false,
-        emiteRecibo: false,
-      });
-
-      let nomeacoesAuxiliares = [];
-
-      let games = jogos.find();
-
-      // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
-      games.forEach((jogo) => {
-        if (
-          jogo.arbitro_1 === a.nome ||
-          jogo.arbitro_2 === a.nome ||
-          jogo.juiz_linha.includes(a.nome)
-        ) {
-          nomeacoesAuxiliares.push({
-            jogo: jogo,
-            confirmacaoAtual: ["pendente"],
-          });
-        }
-      });
-      nomeacoes.insert({
-        arbitro: a,
-        nomeacoesPrivadas: nomeacoesAuxiliares,
-      });
-
-      return true;
-    }
-  },
-
-  editarArbitro: function (
-    username,
-    emailNovo,
-    nivelNovo,
-    licencaNova,
-    CAnovo
-  ) {
-    try {
-      let user = Meteor.users.findOne({ username: username });
-      let arb = arbitros.findOne({ nome: username });
-
-      if (user.emails[0].address !== emailNovo) {
-        // ALTERA O EMAIL:
-        Meteor.users.update(
-          { username: username },
-          { $set: { "emails.0.address": emailNovo } }
-        );
-        arbitros.update({ nome: username }, { $set: { email: emailNovo } });
-      }
-
-      if (arb.nivel !== nivelNovo) {
-        // ALTERA O NIVEL:
-        arbitros.update({ nome: username }, { $set: { nivel: nivelNovo } });
-      }
-
-      if (arb.licenca !== licencaNova) {
-        // ALTERA O LIBENCAO:
-        arbitros.update({ nome: username }, { $set: { licenca: licencaNova } });
-      }
-
-      // Altera as permissoes de admin
-      if (arb.isAdmin != CAnovo) {
-        // ERA ADMIN, JA NAO EH
-        if (arb.isAdmin) {
-          conselhoDeArbitragem.remove({ arbitrosCA: arb });
+    loginArbitro: function loginArbitro(user_email, password) {
+        if (user_email.length == 0) throw new Meteor.Error("Must insert an email.");
+        if (password.length == 0) throw new Meteor.Error("Must insert a password.");
+        var user = Accounts.findUserByEmail(user_email);
+        if (user == undefined) {
+            return "User does not exist.";
         } else {
-          //PASSOU A SER ADMIN
-          let ca = conselhoDeArbitragem.find();
-
-          let ca1;
-          ca.forEach((ca) => {
-            ca1 = ca;
-          });
-
-          let atuaisPreNomeacoesRegionais = ca1.preNomeacoesRegionais;
-          let atuaisPreNomeacoesUniversitarias = ca1.preNomeacoesUniversitarias;
-          conselhoDeArbitragem.insert({
-            arbitrosCA: arb,
-            preNomeacoesRegionais: atuaisPreNomeacoesRegionais,
-            enviadoRegionais: false,
-            // preNomeacoesEuropeias: [],
-            // enviadoEuropeias: false,
-            preNomeacoesUniversitarias: atuaisPreNomeacoesUniversitarias,
-            enviadoUniversitarias: false,
-          });
+            //console.log("User found by email.");
+            return user;
         }
-        arbitros.update({ nome: username }, { $set: { isAdmin: CAnovo } });
-      }
-    } catch (error) {
-      //console.log("Error", error);
-      return -1;
-    }
-    return 1;
-  },
 
-  eliminarArbitro: function eliminarArbitro(username) {
-    Meteor.users.remove({ username: username });
-    let a = arbitros.findOne({ nome: username });
-    indisponibilidades.remove({ arbitro: a });
-    restricoes.remove({ arbitro: a });
-    definicoesPessoais.remove({ arbitro: a });
-    nomeacoes.remove({ arbitro: a });
-    if (a.isAdmin) conselhoDeArbitragem.remove({ arbitrosCA: a });
-    arbitros.remove({ nome: username });
-    return 1;
-  },
-
-  getArbitros: function getArbitros() {
-    let todosArbitros = [];
-    let arb = arbitros.find();
-    arb.forEach((element) => {
-      todosArbitros.push(element.nome);
-    });
-    return todosArbitros.sort();
-  },
-
-  getArbitroPorNome: function getArbitroPorNome(username) {
-    let user = arbitros.findOne({ nome: username });
-    return user;
-  },
-
-  esqueceuPassword: function esqueceuPassword(email) {
-    let u = Accounts.findUserByEmail(email);
-
-    if (u === undefined) {
-      return false;
-    }
-
-    let newDefaultPassword = randomPassword(10);
-
-    try {
-      let transporter = nodemailer.createTransport({
-        host: "smtp-mail.outlook.com", // hostname
-        secureConnection: false, // TLS requires secureConnection to be false
-        port: 587, // port for secure SMTP
-        tls: {
-          rejectUnauthorized: false,
-        },
-        //requireTLS: true, //this parameter solved problem for me
-        // service: "Hotmail", // no need to set host or port etc.
-        auth: {
-          user: "nomeia_me_ponav@hotmail.com",
-          pass: "2*qzEB)eKR*KZ6gn",
-        },
-      });
-
-      transporter.sendMail({
-        from: "nomeia_me_ponav@hotmail.com",
-        to: email,
-        subject: "Recuperação de password de " + u.username + "",
-        text:
-          u.username +
-          ", \n\n A sua password foi alterada para: " +
-          newDefaultPassword +
-          "\n Por favor altere a mesma na sua conta através da plataforma" +
-          " Nomeia.Me acedendo ao seu Perfil." +
-          "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
-      });
-
-      Accounts.setPassword(u._id, newDefaultPassword);
-    } catch (error) {
-      return false;
-    }
-
-    return true;
-  },
-
-  alteraPassword: function alteraPassword(user, novaPass) {
-    let utilizador = Meteor.users.findOne({ username: user.username });
-    Accounts.setPassword(utilizador._id, novaPass);
-    return 1;
-  },
-
-  isAdmin: function isAdmin(user, loggado) {
-    user === null ? (user = Meteor.user()) : (user = user);
-
-    if (user === null) loggado = !loggado;
-
-    if (loggado != null) {
-      var arbitro = arbitros.findOne({ email: user.emails[0].address });
-      var admin = arbitro.isAdmin;
-      return admin ? 1 : 0;
-    }
-    return -1;
-  },
-
-  // BONECO
-  adicionaResultadoJogo: function adicionaResultadoJogo(
-    email,
-    game,
-    resultado
-  ) {
-    let confirmacao = "realizado";
-    let resultadoJogo = resultado.split("-");
-    let total = [resultadoJogo[0], resultadoJogo[1]];
-    let set1 = [resultadoJogo[2], resultadoJogo[3]];
-    let set2 = [resultadoJogo[4], resultadoJogo[5]];
-    let set3 = [resultadoJogo[6], resultadoJogo[7]];
-    let set4 = [resultadoJogo[8], resultadoJogo[9]];
-    let set5 = [resultadoJogo[10], resultadoJogo[11]];
-
-    var arb = arbitros.findOne({ email: email });
-    let jogo = jogos.findOne({ key: game.key });
-
-    var resultado = {
-      total: total,
-      set1: set1,
-      set2: set2,
-      set3: set3,
-      set4: set4,
-      set5: set5,
-    };
-
-    var nomeacao = {
-      jogo: jogo,
-      resultado: resultado,
-      confirmacaoAtual: confirmacao,
-    };
-
-    var alteraNomeacoes = nomeacoes.findOne({ arbitro: arb });
-
-    var atuais = alteraNomeacoes.nomeacoesPrivadas;
-    var novas = [];
-
-    // console.log("JOGO", jogo);
-
-    // console.log("game.key", game.key);
-
-    atuais.forEach((element) => {
-      if (element.jogo.key !== game.key) novas.push(element);
-    });
-
-    // console.log("NOVAS", novas);
-
-    nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novas } });
-
-    var jogosAntigos = jogosPassados.findOne({ arbitro: arb });
-
-    var gamesJogosAntigos = jogosAntigos.nomeacoesPrivadas;
-
-    gamesJogosAntigos.push(nomeacao);
-
-    jogosPassados.update(
-      { arbitro: arb },
-      { $set: { nomeacoesPrivadas: gamesJogosAntigos } }
-    );
-  },
-
-  adicionaConfirmacaoNomeacao: function adicionaConfirmacaoNomeacao(
-    email,
-    games,
-    confirmacoes
-  ) {
-    var arb = arbitros.findOne({ email: email });
-
-    let nomeacoesAuxiliares = [];
-
-    let arbConfirmacaoJogo = [];
-
-      for (let index = 0; index < games.length; index++) {
-      //console.log("games[index]", games[index])
-      //console.log("TEM ID?", games[index].id);
-
-      let jogo;
-
-      if (games[index].id === undefined) {
-        jogo = jogos.findOne({ id: games[index].Jogo });
-      } else {
-        jogo = jogos.findOne({ id: games[index].id });
-      }
-      console.log("*********************************************");
-
-      let confirmacaoAtual = confirmacoes[index];
-
-      var nomeacao = { jogo: jogo, confirmacaoAtual: confirmacaoAtual };
-      nomeacoesAuxiliares.push(nomeacao);
-      console.log(
-        "Arbitro " +
-          arb.nome +
-          " indicou " +
-          confirmacaoAtual +
-          " do jogo " +
-          jogo.id
-      );
-      arbConfirmacaoJogo.push({
-        arbitro: arb.nome,
-        confirmacaoAtual: confirmacaoAtual[0],
-        jogo: jogo.id,
-      });
-    }
-
-    nomeacoes.update(
-      { arbitro: arb },
-      { $set: { nomeacoesPrivadas: nomeacoesAuxiliares } }
-    );
-
-    let preNomeacoesRegionais =
-      conselhoDeArbitragem.findOne().preNomeacoesRegionais;
-    let preNomeacoesUniversitarias =
-      conselhoDeArbitragem.findOne().preNomeacoesUniversitarias;
-
-    for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
-      let jogoId = arbConfirmacaoJogo[i].jogo;
-      for (let j = 0; j < preNomeacoesRegionais.length; j++) {
-        if (preNomeacoesRegionais[j].id == jogoId) {
-          if (
-            preNomeacoesRegionais[j].arbitro_1 == arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[0] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesRegionais[j].arbitro_2 == arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[1] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesRegionais[j].juiz_linha[0] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[2] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesRegionais[j].juiz_linha[1] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[3] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesRegionais[j].juiz_linha[2] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[4] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesRegionais[j].juiz_linha[3] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesRegionais[j].tags[5] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-        }
-      }
-    }
-
-    for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
-      let jogoId = arbConfirmacaoJogo[i].jogo;
-      for (let j = 0; j < preNomeacoesUniversitarias.length; j++) {
-        if (preNomeacoesUniversitarias[j].id == jogoId) {
-          if (
-            preNomeacoesUniversitarias[j].arbitro_1 ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[0] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesUniversitarias[j].arbitro_2 ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[1] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesUniversitarias[j].juiz_linha[0] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[2] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesUniversitarias[j].juiz_linha[1] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[3] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesUniversitarias[j].juiz_linha[2] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[4] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-          if (
-            preNomeacoesUniversitarias[j].juiz_linha[3] ==
-            arbConfirmacaoJogo[i].arbitro
-          ) {
-            preNomeacoesUniversitarias[j].tags[5] =
-              arbConfirmacaoJogo[i].confirmacaoAtual;
-          }
-        }
-      }
-    }
-
-    let ca = conselhoDeArbitragem.find();
-    ca.forEach((ca) => {
-      conselhoDeArbitragem.update(
-        { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoesRegionais: preNomeacoesRegionais } }
-      );
-    });
-
-    ca.forEach((ca) => {
-      conselhoDeArbitragem.update(
-        { arbitrosCA: ca.arbitrosCA },
-        { $set: { preNomeacoesUniversitarias: preNomeacoesUniversitarias } }
-      );
-    });
-  },
-
-  carregaNomeacoesTotal: function carregaNomeacoesTotal() {
-    let n = [];
-    var j = jogos.find();
-    j.forEach((element) => {
-      n.push(element);
-    });
-    return n;
-  },
-
-  carregaNomeacoes: function carregaNomeacoes(email) {
-    var arb = arbitros.findOne({ email: email });
-    var result = nomeacoes.findOne({ arbitro: arb });
-    return result;
-  },
-
-
-  carregaResultadosJogosPassados: function (email) {
-    var arb = arbitros.findOne({ email: email });
-    var result = jogosPassados.findOne({ arbitro: arb });
-    return result;
-  },
-
-  carregaResultadosJogosPassadosCA: function () {
-    var arb = arbitros.find();
-    let result = [];
-    arb.forEach((element) => {
-      var prelimResult = jogosPassados.findOne({ arbitro: element });
-      if (prelimResult != undefined)
-        if (prelimResult.nomeacoesPrivadas != undefined) {
-          prelimResult = prelimResult.nomeacoesPrivadas;
-          if (prelimResult.length > 0) {
-            for (let index = 0; index < prelimResult.length; index++) {
-              result.push(prelimResult[index]);
-            }
-          }
-        }
-    });
-    return result.sort();
     },
 
-    carregaDadosGestaoPagamentos: function () {
+    adicionaArbitro: function adicionaArbitro(
+        user_name,
+        user_email,
+        nivelArbitro,
+        licencaArbitro,
+        user_password,
+        password_repeat,
+        isAdmin
+    ) {
+        if (
+            (user_name.length == 0 ||
+                user_email.length == 0 ||
+                user_password.length == 0,
+                password_repeat.length == 0)
+        ) {
+            // console.log("Must insert fields");
+            throw new Meteor.Error("Fields Missing");
+        }
+        if (user_password != password_repeat)
+            throw new Meteor.Error("Passwords do not match.");
+        // console.log("Passwords match.");
+
+        user_name = user_name
+            .split(" ")
+            .map((word) => {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(" ");
+
+        let u = Meteor.users.findOne({ username: user_name });
+        let u2 = Accounts.findUserByEmail(user_email);
+
+        if (u != undefined) {
+            throw new Meteor.Error("User already exists.");
+        } else if (u2 != undefined) {
+            throw new Meteor.Error("User already exists.");
+        } else {
+
+            Accounts.createUser({
+                username: user_name,
+                email: user_email,
+                password: user_password,
+            });
+
+
+            let a = {
+                nome: user_name,
+                email: user_email,
+                licenca: parseInt(licencaArbitro),
+                nivel: parseInt(nivelArbitro),
+                isAdmin: isAdmin,
+            };
+            arbitros.insert(a);
+
+            console.log("inserted: " + user_name);
+
+            if (isAdmin) {
+                let ca = conselhoDeArbitragem.findOne();
+
+                conselhoDeArbitragem.insert({
+                    arbitrosCA: a,
+                    preNomeacoesRegionais: ca.preNomeacoesRegionais,
+                    enviadoRegionais: false,
+                    // preNomeacoesEuropeias: [],
+                    // enviadoEuropeias: false,
+                    preNomeacoesUniversitarias: [],
+                    enviadoUniversitarias: false,
+                });
+            }
+
+            indisponibilidades.insert({
+                arbitro: a,
+                disponibilidades: [],
+            });
+
+            restricoes.insert({
+                arbitro: a,
+                relacoes: [],
+            });
+
+            definicoesPessoais.insert({
+                arbitro: a,
+                temCarro: false,
+                emiteRecibo: false,
+            });
+
+            let nomeacoesAuxiliares = [];
+
+            let games = jogos.find();
+
+            // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
+            games.forEach((jogo) => {
+                if (
+                    jogo.arbitro_1 === a.nome ||
+                    jogo.arbitro_2 === a.nome ||
+                    jogo.juiz_linha.includes(a.nome)
+                ) {
+                    nomeacoesAuxiliares.push({
+                        jogo: jogo,
+                        confirmacaoAtual: ["pendente"],
+                    });
+                }
+            });
+            nomeacoes.insert({
+                arbitro: a,
+                nomeacoesPrivadas: nomeacoesAuxiliares,
+            });
+
+            return true;
+        }
+    },
+
+    editarArbitro: function (
+        username,
+        emailNovo,
+        nivelNovo,
+        licencaNova,
+        CAnovo
+    ) {
+        try {
+            let user = Meteor.users.findOne({ username: username });
+            let arb = arbitros.findOne({ nome: username });
+
+            if (user.emails[0].address !== emailNovo) {
+                // ALTERA O EMAIL:
+                Meteor.users.update(
+                    { username: username },
+                    { $set: { "emails.0.address": emailNovo } }
+                );
+                arbitros.update({ nome: username }, { $set: { email: emailNovo } });
+            }
+
+            if (arb.nivel !== nivelNovo) {
+                // ALTERA O NIVEL:
+                arbitros.update({ nome: username }, { $set: { nivel: nivelNovo } });
+            }
+
+            if (arb.licenca !== licencaNova) {
+                // ALTERA O LIBENCAO:
+                arbitros.update({ nome: username }, { $set: { licenca: licencaNova } });
+            }
+
+            // Altera as permissoes de admin
+            if (arb.isAdmin != CAnovo) {
+                // ERA ADMIN, JA NAO EH
+                if (arb.isAdmin) {
+                    conselhoDeArbitragem.remove({ arbitrosCA: arb });
+                } else {
+                    //PASSOU A SER ADMIN
+                    let ca = conselhoDeArbitragem.find();
+
+                    let ca1;
+                    ca.forEach((ca) => {
+                        ca1 = ca;
+                    });
+
+                    let atuaisPreNomeacoesRegionais = ca1.preNomeacoesRegionais;
+                    let atuaisPreNomeacoesUniversitarias = ca1.preNomeacoesUniversitarias;
+                    conselhoDeArbitragem.insert({
+                        arbitrosCA: arb,
+                        preNomeacoesRegionais: atuaisPreNomeacoesRegionais,
+                        enviadoRegionais: false,
+                        // preNomeacoesEuropeias: [],
+                        // enviadoEuropeias: false,
+                        preNomeacoesUniversitarias: atuaisPreNomeacoesUniversitarias,
+                        enviadoUniversitarias: false,
+                    });
+                }
+                arbitros.update({ nome: username }, { $set: { isAdmin: CAnovo } });
+            }
+        } catch (error) {
+            //console.log("Error", error);
+            return -1;
+        }
+        return 1;
+    },
+
+    eliminarArbitro: function eliminarArbitro(username) {
+        Meteor.users.remove({ username: username });
+        let a = arbitros.findOne({ nome: username });
+        indisponibilidades.remove({ arbitro: a });
+        restricoes.remove({ arbitro: a });
+        definicoesPessoais.remove({ arbitro: a });
+        nomeacoes.remove({ arbitro: a });
+        if (a.isAdmin) conselhoDeArbitragem.remove({ arbitrosCA: a });
+        arbitros.remove({ nome: username });
+        return 1;
+    },
+
+    getArbitros: function getArbitros() {
+        let todosArbitros = [];
+        let arb = arbitros.find();
+        arb.forEach((element) => {
+            todosArbitros.push(element.nome);
+        });
+        return todosArbitros.sort();
+    },
+
+    getArbitroPorNome: function getArbitroPorNome(username) {
+        let user = arbitros.findOne({ nome: username });
+        return user;
+    },
+
+    esqueceuPassword: function esqueceuPassword(email) {
+        let u = Accounts.findUserByEmail(email);
+
+        if (u === undefined) {
+            return false;
+        }
+
+        let newDefaultPassword = randomPassword(10);
+
+        try {
+            let transporter = nodemailer.createTransport({
+                host: "smtp-mail.outlook.com", // hostname
+                secureConnection: false, // TLS requires secureConnection to be false
+                port: 587, // port for secure SMTP
+                tls: {
+                    rejectUnauthorized: false,
+                },
+                //requireTLS: true, //this parameter solved problem for me
+                // service: "Hotmail", // no need to set host or port etc.
+                auth: {
+                    user: "nomeia_me_ponav@hotmail.com",
+                    pass: "2*qzEB)eKR*KZ6gn",
+                },
+            });
+
+            transporter.sendMail({
+                from: "nomeia_me_ponav@hotmail.com",
+                to: email,
+                subject: "Recuperação de password de " + u.username + "",
+                text:
+                    u.username +
+                    ", \n\n A sua password foi alterada para: " +
+                    newDefaultPassword +
+                    "\n Por favor altere a mesma na sua conta através da plataforma" +
+                    " Nomeia.Me acedendo ao seu Perfil." +
+                    "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
+            });
+
+            Accounts.setPassword(u._id, newDefaultPassword);
+        } catch (error) {
+            return false;
+        }
+
+        return true;
+    },
+
+    alteraPassword: function alteraPassword(user, novaPass) {
+        let utilizador = Meteor.users.findOne({ username: user.username });
+        Accounts.setPassword(utilizador._id, novaPass);
+        return 1;
+    },
+
+    isAdmin: function isAdmin(user, loggado) {
+        user === null ? (user = Meteor.user()) : (user = user);
+
+        if (user === null) loggado = !loggado;
+
+        if (loggado != null) {
+            var arbitro = arbitros.findOne({ email: user.emails[0].address });
+            var admin = arbitro.isAdmin;
+            return admin ? 1 : 0;
+        }
+        return -1;
+    },
+
+    // BONECO
+    adicionaResultadoJogo: function adicionaResultadoJogo(
+        email,
+        game,
+        resultado
+    ) {
+        let confirmacao = "realizado";
+        let resultadoJogo = resultado.split("-");
+        let total = [resultadoJogo[0], resultadoJogo[1]];
+        let set1 = [resultadoJogo[2], resultadoJogo[3]];
+        let set2 = [resultadoJogo[4], resultadoJogo[5]];
+        let set3 = [resultadoJogo[6], resultadoJogo[7]];
+        let set4 = [resultadoJogo[8], resultadoJogo[9]];
+        let set5 = [resultadoJogo[10], resultadoJogo[11]];
+
+        var arb = arbitros.findOne({ email: email });
+        let jogo = jogos.findOne({ key: game.key });
+
+        var resultado = {
+            total: total,
+            set1: set1,
+            set2: set2,
+            set3: set3,
+            set4: set4,
+            set5: set5,
+        };
+
+        var nomeacao = {
+            jogo: jogo,
+            resultado: resultado,
+            confirmacaoAtual: confirmacao,
+        };
+
+        var alteraNomeacoes = nomeacoes.findOne({ arbitro: arb });
+
+        var atuais = alteraNomeacoes.nomeacoesPrivadas;
+        var novas = [];
+
+        // console.log("JOGO", jogo);
+
+        // console.log("game.key", game.key);
+
+        atuais.forEach((element) => {
+            if (element.jogo.key !== game.key) novas.push(element);
+        });
+
+        // console.log("NOVAS", novas);
+
+        nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novas } });
+
+        var jogosAntigos = jogosPassados.findOne({ arbitro: arb });
+
+        var gamesJogosAntigos = jogosAntigos.nomeacoesPrivadas;
+
+        gamesJogosAntigos.push(nomeacao);
+
+        jogosPassados.update(
+            { arbitro: arb },
+            { $set: { nomeacoesPrivadas: gamesJogosAntigos } }
+        );
+    },
+
+    adicionaConfirmacaoNomeacao: function adicionaConfirmacaoNomeacao(
+        email,
+        games,
+        confirmacoes
+    ) {
+        var arb = arbitros.findOne({ email: email });
+
+        let nomeacoesAuxiliares = [];
+
+        let arbConfirmacaoJogo = [];
+
+        for (let index = 0; index < games.length; index++) {
+            //console.log("games[index]", games[index])
+            //console.log("TEM ID?", games[index].id);
+
+            let jogo;
+
+            if (games[index].id === undefined) {
+                jogo = jogos.findOne({ id: games[index].Jogo });
+            } else {
+                jogo = jogos.findOne({ id: games[index].id });
+            }
+            console.log("*********************************************");
+
+            let confirmacaoAtual = confirmacoes[index];
+
+            var nomeacao = { jogo: jogo, confirmacaoAtual: confirmacaoAtual };
+            nomeacoesAuxiliares.push(nomeacao);
+            console.log(
+                "Arbitro " +
+                arb.nome +
+                " indicou " +
+                confirmacaoAtual +
+                " do jogo " +
+                jogo.id
+            );
+            arbConfirmacaoJogo.push({
+                arbitro: arb.nome,
+                confirmacaoAtual: confirmacaoAtual[0],
+                jogo: jogo.id,
+            });
+        }
+
+        nomeacoes.update(
+            { arbitro: arb },
+            { $set: { nomeacoesPrivadas: nomeacoesAuxiliares } }
+        );
+
+        let preNomeacoesRegionais =
+            conselhoDeArbitragem.findOne().preNomeacoesRegionais;
+        let preNomeacoesUniversitarias =
+            conselhoDeArbitragem.findOne().preNomeacoesUniversitarias;
+
+        for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
+            let jogoId = arbConfirmacaoJogo[i].jogo;
+            for (let j = 0; j < preNomeacoesRegionais.length; j++) {
+                if (preNomeacoesRegionais[j].id == jogoId) {
+                    if (
+                        preNomeacoesRegionais[j].arbitro_1 == arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[0] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesRegionais[j].arbitro_2 == arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[1] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesRegionais[j].juiz_linha[0] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[2] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesRegionais[j].juiz_linha[1] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[3] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesRegionais[j].juiz_linha[2] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[4] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesRegionais[j].juiz_linha[3] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesRegionais[j].tags[5] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
+            let jogoId = arbConfirmacaoJogo[i].jogo;
+            for (let j = 0; j < preNomeacoesUniversitarias.length; j++) {
+                if (preNomeacoesUniversitarias[j].id == jogoId) {
+                    if (
+                        preNomeacoesUniversitarias[j].arbitro_1 ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[0] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesUniversitarias[j].arbitro_2 ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[1] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesUniversitarias[j].juiz_linha[0] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[2] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesUniversitarias[j].juiz_linha[1] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[3] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesUniversitarias[j].juiz_linha[2] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[4] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                    if (
+                        preNomeacoesUniversitarias[j].juiz_linha[3] ==
+                        arbConfirmacaoJogo[i].arbitro
+                    ) {
+                        preNomeacoesUniversitarias[j].tags[5] =
+                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    }
+                }
+            }
+        }
+
+        let ca = conselhoDeArbitragem.find();
+        ca.forEach((ca) => {
+            conselhoDeArbitragem.update(
+                { arbitrosCA: ca.arbitrosCA },
+                { $set: { preNomeacoesRegionais: preNomeacoesRegionais } }
+            );
+        });
+
+        ca.forEach((ca) => {
+            conselhoDeArbitragem.update(
+                { arbitrosCA: ca.arbitrosCA },
+                { $set: { preNomeacoesUniversitarias: preNomeacoesUniversitarias } }
+            );
+        });
+    },
+
+    carregaNomeacoesTotal: function carregaNomeacoesTotal() {
+        let n = [];
+        var j = jogos.find();
+        j.forEach((element) => {
+            n.push(element);
+        });
+        return n;
+    },
+
+    carregaNomeacoes: function carregaNomeacoes(email) {
+        var arb = arbitros.findOne({ email: email });
+        var result = nomeacoes.findOne({ arbitro: arb });
+        return result;
+    },
+
+
+    carregaResultadosJogosPassados: function (email) {
+        var arb = arbitros.findOne({ email: email });
+        var result = jogosPassados.findOne({ arbitro: arb });
+        return result;
+    },
+
+    carregaResultadosJogosPassadosCA: function () {
         var arb = arbitros.find();
         let result = [];
         arb.forEach((element) => {
-            var prelimResult = pagamentosUniversitario.findOne({ arbitro: element });
+            var prelimResult = jogosPassados.findOne({ arbitro: element });
             if (prelimResult != undefined)
-                if (prelimResult.pagamentos != undefined) {
-                    prelimResult = prelimResult.pagamentos;
-                    if (prelimResult.length > 0) {
-                        for (let index = 0; index < prelimResult.length; index++) {
-                            result.push(prelimResult[index]);
-                        }
-                    }
-                }
-
-            prelimResult = pagamentosCRCN.findOne({ arbitro: element });
-            if (prelimResult != undefined)
-                if (prelimResult.pagamentos != undefined) {
-                    prelimResult = prelimResult.pagamentos;
+                if (prelimResult.nomeacoesPrivadas != undefined) {
+                    prelimResult = prelimResult.nomeacoesPrivadas;
                     if (prelimResult.length > 0) {
                         for (let index = 0; index < prelimResult.length; index++) {
                             result.push(prelimResult[index]);
@@ -1547,6 +1351,34 @@ Meteor.methods({
                 }
         });
         return result.sort();
+    },
+
+    carregaDadosGestaoPagamentos: function (user) {
+
+        var email = user.emails[0].address;
+
+        var arb = arbitros.findOne({ email: email });
+
+let def = definicoesPessoais.findOne({ arbitro: arb });
+        let concelhoDoArbitro = def.concelho;
+
+        let records = jogosPassados.findOne({ arbitro: arb });
+
+        records = records.nomeacoesPrivadas;
+
+        if (records !== undefined) {
+            let resultadoPagamentos = processGames(records, concelhoDoArbitro, user.username);
+
+            console.log("RESULTADO: ", resultadoPagamentos)
+            return resultadoPagamentos;
+        }
+
+        
+
+        
+       
+        
+        return [];
     },
 
     //#endregion
@@ -1817,9 +1649,20 @@ Meteor.methods({
     var arb = arbitros.findOne({ email: email });
     var result = arb.licenca;
     return result;
-  },
+    },
 
-    //#endregion 
+    getConcelho: function getConcelho(user) {
+        let utilizador = Meteor.users.findOne(user);
+        let email = utilizador.emails[0].address;
+        var arb = arbitros.findOne({ email: email });
+        var def = definicoesPessoais.findOne({ arbitro: arb });
+        var result = def.concelho;
+        return result;
+    },
+
+    //#endregion
+
+  
 
 //#region    METODOS DO CONSELHO DE ARBITRAGEM 
 
@@ -3994,4 +3837,223 @@ function retiraHora(horaString) {
 
     // Formatar a hora e minutos de volta para uma string
     return ("0" + novaHora).slice(-2) + ":" + ("0" + novosMinutos).slice(-2);
+}
+
+const date = require('date-and-time');
+
+function processGames(records, concelhoDoArbitro, username) {
+    let previousGame = undefined;
+    let maxMealPrize = 0;
+    let totalPrizeGame = 0;
+    let totalDeslocacao = 0;
+    let totalAlimentacao = 0;
+    
+    let origem = concelhoDoArbitro;
+
+    let resultado = [];
+
+    console.log("records", records)
+
+    for (let index = 0; index < records.length; index++) {
+        const element = records[index].jogo;
+        const dia = element.dia;
+        const hora = element.hora;
+        const concelhoB = getConcelhoFromPavilhao(element.pavilhao);
+
+        const nextGame = records[index + 1];
+        const nextGameDay = nextGame ? nextGame.dia : undefined;
+
+        // Prêmio de deslocamento
+        let prizeDeslocacao = 0;
+
+        if (previousGame === undefined) { // Primeiro jogo
+            if (nextGameDay === undefined || element.dia!== nextGameDay) {
+                if (element.prova.startsWith('I', 0)) { // Universitário
+                    prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
+                } else {
+                    prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
+                }
+                origem = concelhoB;
+            }
+        } else {
+            if (dia !== nextGameDay) {
+                origem = concelhoDoArbitro;
+
+                if (nextGameDay === undefined) {
+                    if (element.prova.startsWith('I', 0)) { // Universitário
+                        prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
+                    } else {
+                        if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                            console.log("ENNTRA?????????????")
+                            prizeDeslocacao = CN_DESLOCATION_PRIZE;
+                        } else {
+                            prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
+                        }
+                        origem = concelhoB;
+                    }
+                } else {
+                    if (element.prova.startsWith('I', 0)) { // Universitário
+                        prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
+                    } else {
+                        if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                            console.log("ENNTRA?????????????")
+                            prizeDeslocacao = CN_DESLOCATION_PRIZE;
+                        } else {
+                            prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Prêmio de alimentação
+        let prizeMeal = 0;
+
+        if (previousGame === undefined) { // Primeiro jogo
+            maxMealPrize = element.prize_meal;
+            if (nextGameDay === undefined || element.dia!== nextGameDay) {
+                if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                    prizeMeal = CN_MEAL_PRIZE;
+                } else {
+                    prizeMeal = maxMealPrize;
+                }
+            }
+        } else {
+            if (previousGame.dia=== element.dia) {
+                maxMealPrize = Math.max(maxMealPrize, element.prize_meal);
+                if (nextGameDay === undefined || dia !== nextGameDay) {
+                    if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+
+                        
+
+                        prizeMeal = CN_MEAL_PRIZE;
+                    } else {
+                        prizeMeal = maxMealPrize;
+                    }
+                }
+            } else {
+                maxMealPrize = element.prize_meal;
+                if (nextGameDay === element.dia) {
+                    if (element.prova.startsWith('CR')) {
+                        if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N')) {
+                            prizeMeal = maxMealPrize;
+                        }
+                    }
+                }
+            }
+        }
+
+        resultado.push({ element: element, prizeDeslocacao: prizeDeslocacao, prizeMeal: prizeMeal, prizeGame: getPremio(element, username) })
+
+        previousGame = element;
+        totalPrizeGame += parseFloat(getPremio(element, username));
+        totalDeslocacao += parseFloat(prizeDeslocacao);
+        totalAlimentacao += parseFloat(prizeMeal);
+    }
+
+    return resultado;
+}
+
+
+function getConcelhoFromPavilhao(pavilhao) {
+
+    let concelhoDoPavilhao = "NOT_FOUND";
+
+    // Get the CSV Text:
+    var csvFile = Assets.getText("PavilhoesConcelhos.csv");
+    var rows = Papa.parse(csvFile).data;
+
+    // Find the pavilhao and get the concelho
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var pavilhaoCSV = (row[0]);
+
+        if (pavilhaoCSV === pavilhao) {
+            concelhoDoPavilhao = row[1];
+            break;
+        }
+    }
+
+    return concelhoDoPavilhao;
+}
+
+function getValorDeslocacao(origem, destino) {
+    let valor = 0;
+
+    // Get the CSV Text:
+    var csvFile = Assets.getText("ValorDeslocacoesRegionaisAVL.csv");
+    var rows = Papa.parse(csvFile).data;
+
+
+    // Find the origem e destino e obter o valor da deslocação
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var origemCSV = row[0];
+        var destinoCSV = row[1];
+
+        //console.log("origemCSV", origemCSV);
+        //console.log("destinoCSV", destinoCSV)
+
+        //console.log("ORIGEM", origem)
+
+        //console.log("DESTINO", destino)
+
+        //console.log("(origemCSV === origem && destinoCSV === destino)", (origemCSV === origem && destinoCSV === destino))
+
+        if ((origemCSV === origem && destinoCSV === destino) || (origemCSV === destino && destinoCSV === origem)) {
+            valor = parseFloat(row[2]);
+            break;
+        }
+    }
+
+    return valor;
+}
+
+
+function getPremio(jogo, username) {
+    let valorPremio = 0;
+    const prova = jogo.prova;
+    let funcao = 'JL';
+
+    if (jogo.arbitro_1 === username)
+        funcao = '1';
+    if (jogo.arbitro_2 === username)
+        funcao = '2';
+
+    // Get the CSV Text:
+    const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+    const rows = Papa.parse(csvFile).data;
+
+    console.log("username", username)
+    console.log("jogo.arbitro_1", jogo.arbitro_1)
+    console.log("jogo.arbitro_1 === username", jogo.arbitro_1 === username)
+    console.log("jogo recebido", jogo);
+    console.log("prova", prova)
+    console.log("funcao", funcao)
+
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+            var competicao = row[1];
+            var funcaoCSV = row[3];
+
+            if (competicao === prova && funcaoCSV === funcao) {
+                valorPremio = parseFloat(row[2]);;
+                break;
+            }
+        }
+    
+
+    return valorPremio;
+}
+
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(" ");
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] =
+            splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    // Directly return the joined string
+    return splitStr.join(" ");
 }

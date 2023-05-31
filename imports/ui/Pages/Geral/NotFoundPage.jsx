@@ -24,7 +24,8 @@ export function NotFoundPage() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
       <div
         style={{

@@ -105,7 +105,8 @@ export function FileInput() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
 
       {/* <h1 className="blue"> Inserir ficheiro com tabela de jogos </h1> */}

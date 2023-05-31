@@ -23,7 +23,8 @@ export const Sobre = () => {
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <h1 className="blue" style={{ fontWeight: "100", fontSize: "22px" }}>
         Sobre:

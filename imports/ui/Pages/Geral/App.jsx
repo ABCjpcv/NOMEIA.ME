@@ -172,7 +172,8 @@ export const App = () => {
             <Route
               path="ProfileCA/Jogos_Passados"
               element={<JogosPassadosCA user={user} />}
-            ></Route>
+                      ></Route>
+                      <Route path="ProfileCA/Gestao_Pagamentos" element={<GestaoPagamentos user={user} />}></Route>
           </Route>
         </Routes>
       </div>

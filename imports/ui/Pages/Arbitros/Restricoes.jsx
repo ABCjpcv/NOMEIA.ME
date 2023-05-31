@@ -660,7 +660,8 @@ export function Restricoes({ user }) {
         restricoesPrivadas={false}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
 
       {data.length === 0 ? loadData() : null}

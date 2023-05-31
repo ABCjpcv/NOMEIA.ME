@@ -77,7 +77,8 @@ export function ForgotPassword() {
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={false}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <div>
         <div

@@ -391,7 +391,8 @@ export function ConsultaTotal() {
         forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={false}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <div
       // style={{

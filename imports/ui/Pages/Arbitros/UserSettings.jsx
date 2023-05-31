@@ -48,7 +48,9 @@ export function UserSettings({ user }) {
 
   let [nivel, setNivel] = useState(() => getNivel(user));
 
-  let [licenca, setLicenca] = useState(() => getLicenca(user));
+    let [licenca, setLicenca] = useState(() => getLicenca(user));
+
+    let [concelho, setConcelho] = useState(() => getConcelho(user));
 
   let [passAtual, setPassAtual] = useState("");
   let [passNova, setPassNova] = useState("");
@@ -64,7 +66,13 @@ export function UserSettings({ user }) {
     Meteor.call("getLicenca", user, (err, result) => {
       setLicenca(result);
     });
-  }
+    }
+
+    function getConcelho(user) {
+        Meteor.call("getConcelho", user, (err, result) => {
+            setConcelho(result);
+        });
+    }
 
   function adicionaTransporteProprioUserSettings(user) {
     Meteor.call("adicionaTransporte", user, (err, result) => {
@@ -186,24 +194,25 @@ export function UserSettings({ user }) {
 
   return (
     <div>
-      <Header
-        user={user}
-        titulo={true}
-        consultaPrivada={true}
-        menuPrivado={isCA}
-        menuPrivadoCA={!isCA}
-        atribuirArbitrosAdesl={true}
-        atribuirArbitrosCev={true}
-        atribuirArbitrosCR_CN={true}
-        carregarJogos={true}
-        criarContaNova={true}
-        removerConta={true}
-        indisponibilidadePrivadas={true}
-        restricoesPrivadas={true}
-        definicoes={false}
-        historico={true}
-        forgotPasswordHeader={true}
-      />
+          <Header
+              user={user}
+              titulo={true}
+              consultaPrivada={true}
+              menuPrivado={isCA}
+              menuPrivadoCA={!isCA}
+              atribuirArbitrosAdesl={true}
+              atribuirArbitrosCev={true}
+              atribuirArbitrosCR_CN={true}
+              carregarJogos={true}
+              criarContaNova={true}
+              removerConta={true}
+              indisponibilidadePrivadas={true}
+              restricoesPrivadas={true}
+              definicoes={true}
+              historico={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
+          />
       <div
         style={{
           margin: "auto",
@@ -298,7 +307,19 @@ export function UserSettings({ user }) {
             </div>
           </div>
 
-          <p></p>
+                  <p></p>
+                  <div className="input" style={{ justifyContent: "flex-start" }}>
+                      <label className="labels">Concelho</label>
+                      <Input
+                          type={"text"}
+                          id="concelhoUserSettings"
+                          style={{ borderRadius: "10px" }}
+                          value={concelho}
+                          disabled
+                      ></Input>
+                  </div>
+
+                  <p></p>
 
           <div className="input" style={{ display: "flex" }}>
             <div style={{ display: "flex" }}>

@@ -359,7 +359,8 @@ export class Calendario extends React.Component {
             restricoesPrivadas={true}
             definicoes={true}
             historico={true}
-            forgotPasswordHeader={true}
+                  forgotPasswordHeader={true}
+                  gestaoPagamentos={true}
           />
           {/* <ul>
             <li>

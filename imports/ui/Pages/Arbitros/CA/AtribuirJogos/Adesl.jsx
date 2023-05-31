@@ -1341,7 +1341,8 @@ export function Adesl({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
       {reloadData()}
 

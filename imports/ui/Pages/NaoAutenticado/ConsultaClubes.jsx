@@ -236,7 +236,8 @@ export function ConsultaClubes() {
         forgotPasswordHeader={true}
         clubesAfiliadosAVL={false}
         consultaNomeacoesSemanais={true}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <div
       // style={{ marginTop: "0.5%" }}

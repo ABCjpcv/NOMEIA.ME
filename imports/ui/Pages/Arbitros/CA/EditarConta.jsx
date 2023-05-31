@@ -174,7 +174,8 @@ export function EditarConta() {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
       <div>
         {/* <h1 className="blue">Informações do Árbitro: </h1> */}

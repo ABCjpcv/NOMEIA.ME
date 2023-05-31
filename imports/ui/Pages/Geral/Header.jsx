@@ -39,7 +39,8 @@ export const Header = ({
   clubesAfiliadosAVL,
   consultaNomeacoesSemanais,
   forgotPasswordHeader,
-  sobreHeader,
+    sobreHeader,
+  gestaoPagamentos
 }) => {
   let navigate = useNavigate();
   let location = useLocation();
@@ -304,7 +305,19 @@ export const Header = ({
               >
                 {/* 🙍‍♂️ Perfil  */}
                 {Meteor.user().username}
-              </p>
+                          </p>
+
+                          <p
+                              id="gestaoPagamentos"
+                              style={{
+                                  width: "100%",
+                                  marginTop: "1%",
+                                  fontSize: "smaller",
+                              }}
+                              hidden={gestaoPagamentos}
+                          >
+                              Gestão de Pagamentos
+                          </p>
 
               <p
                 id="historico"

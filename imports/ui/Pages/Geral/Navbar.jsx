@@ -30,7 +30,8 @@ export function Navbar() {
         forgotPasswordHeader={true}
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <div>
         <div

@@ -46,7 +46,6 @@ export function GestaoPagamentos({ user }) {
             sorter: (a, b) => a.Jogo - b.Jogo,
             sortDirections: ["descend", "ascend"],
             width: "5%",
-            fixed: "left",
         },
         {
             title: "Dia",
@@ -54,8 +53,7 @@ export function GestaoPagamentos({ user }) {
             key: "Dia",
             sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
             sortDirections: ["descend", "ascend"],
-            width: "8%",
-            fixed: "left",
+
         },
         {
             title: "Hora",
@@ -63,8 +61,6 @@ export function GestaoPagamentos({ user }) {
             key: "Hora",
             sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
             sortDirections: ["descend", "ascend"],
-            width: "5%",
-            fixed: "left",
         },
         {
             title: "Pavilhão",
@@ -72,10 +68,32 @@ export function GestaoPagamentos({ user }) {
             key: "Pavilhao",
             sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
             sortDirections: ["descend", "ascend"],
-
-            fixed: "left",
-        
         },
+        {
+            title: "Prémio",
+            dataIndex: "Premio",
+            key: "Premio",
+            sorter: (a, b) => comparaAminhaLindaString(a.Premio, b.Premio),
+            sortDirections: ["descend", "ascend"],
+
+        },
+        {
+            title: "Deslocação",
+            dataIndex: "Deslocacao",
+            key: "Deslocacao",
+            sorter: (a, b) => comparaAminhaLindaString(a.Deslocacao, b.Deslocacao),
+            sortDirections: ["descend", "ascend"],
+
+        },
+        {
+            title: "Alimentação",
+            dataIndex: "Alimentacao",
+            key: "Alimentacao",
+            sorter: (a, b) => comparaAminhaLindaString(a.Alimentacao, b.Alimentacao),
+            sortDirections: ["descend", "ascend"],
+
+        }
+
     ];
 
     /**
@@ -95,59 +113,44 @@ export function GestaoPagamentos({ user }) {
 
     function loadData() {
         user = Meteor.user();
-        let email = user.emails[0].address;
 
         //console.log("email", email);
-        Meteor.call("carregaDadosGestaoPagamentos", email, (err, result) => {
+        Meteor.call("carregaDadosGestaoPagamentos", user, (err, result) => {
             //console.log("resultado de carregaNomeacoes da BD:", result);
             if (err) {
                 console.log("ERRRRROOOOO", err);
             } else if (result) {
                 console.log("resultado de carrega", result);
-                if (result.nomeacoesPrivadas.length > 0) {
+                if (result.length > 0) {
                     let dataFromDB = [];
-                    let resultadosFromDB = [];
                     for (
                         let index = 0;
-                        index < result.nomeacoesPrivadas.length;
+                        index < result.length;
                         index++
                     ) {
-                        let jogoLido = result.nomeacoesPrivadas[index].jogo;
+                        let jogoLido = result[index].element;
+                        let premio = result[index].prizeGame;
+                        let deslocacao = result[index].prizeDeslocacao;
+                        let alimentacao = result[index].prizeMeal;
 
-                        let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
 
                         let obj = {
                             Jogo: jogoLido.id,
                             Dia: jogoLido.dia,
                             Hora: jogoLido.hora,
-                            Prova: jogoLido.prova,
-                            Serie: jogoLido.serie,
-                            Equipas: jogoLido.equipas,
                             Pavilhao: jogoLido.pavilhao,
-                            Arbitro1: jogoLido.arbitro_1,
-                            Arbitro2: jogoLido.arbitro_2,
-                            JL1: jogoLido.juiz_linha_1,
-                            JL2: jogoLido.juiz_linha_2,
-                            // JL3: jogoLido.juiz_linha_3,
-                            // JL4: jogoLido.juiz_linha_4,
-                            key: jogoLido.key,
-                            tags: [tags],
+                            Premio: premio,
+                            Deslocacao: deslocacao,
+                            Alimentacao: alimentacao,
                         };
+
+                        console.log("ooo", obj)
 
                         dataFromDB.push(obj);
 
-                        let resultadoLido = result.nomeacoesPrivadas[index].resultado;
-
-                        resultadosFromDB.push({
-                            total: resultadoLido.total,
-                            set1: resultadoLido.set1,
-                            set2: resultadoLido.set2,
-                            set3: resultadoLido.set3,
-                            set4: resultadoLido.set4,
-                            set5: resultadoLido.set5,
-                        });
+                        
                     }
-                    setResultados(resultadosFromDB);
+                    
                     setDataSource(dataFromDB);
                 } else {
                     setDataSource([]);
@@ -181,8 +184,9 @@ export function GestaoPagamentos({ user }) {
                                 indisponibilidadePrivadas={true}
                                 restricoesPrivadas={true}
                                 definicoes={true}
-                                historico={false}
+                                historico={true}
                                 forgotPasswordHeader={true}
+                                gestaoPagamentos={false}
                             />
 
                             {dataSource.length != 0 ? (
@@ -198,10 +202,10 @@ export function GestaoPagamentos({ user }) {
                                     <Table
                                         className="consultaPrivadaTabela"
                                         dataSource={dataSource}
-                                        columns={colunasJogosPassados}
+                                        columns={colunasGestaoPagamentos}
                                         style={{
                                             width: "100%",
-                                            height: "37vw",
+                                            
                                         }}
                                         size="small"
                                         pagination={false}

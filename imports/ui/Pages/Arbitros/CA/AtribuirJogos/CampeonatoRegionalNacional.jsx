@@ -1567,7 +1567,8 @@ export function CampeonatoRegionalNacional({ user }) {
         restricoesPrivadas={true}
         definicoes={true}
         historico={true}
-        forgotPasswordHeader={true}
+              forgotPasswordHeader={true}
+              gestaoPagamentos={true}
       />
       {reloadData()}
 

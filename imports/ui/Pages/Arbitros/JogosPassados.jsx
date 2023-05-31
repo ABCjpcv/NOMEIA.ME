@@ -355,7 +355,8 @@ export function JogosPassados({ user }) {
                 restricoesPrivadas={true}
                 definicoes={true}
                 historico={false}
-                forgotPasswordHeader={true}
+                              forgotPasswordHeader={true}
+                              gestaoPagamentos={true}
               />
 
               {dataSource.length != 0 ? (
@@ -374,7 +375,7 @@ export function JogosPassados({ user }) {
                     columns={colunasJogosPassados}
                     style={{
                       width: "100%",
-                      height: "37vw",
+                      height: "100%",
                     }}
                     size="small"
                     pagination={false}

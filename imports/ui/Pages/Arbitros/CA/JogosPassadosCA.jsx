@@ -352,7 +352,8 @@ export function JogosPassadosCA({ user }) {
                 restricoesPrivadas={true}
                 definicoes={true}
                 historico={false}
-                forgotPasswordHeader={true}
+                              forgotPasswordHeader={true}
+                              gestaoPagamentos={true}
               />
 
               {dataSource.length != 0 ? (

@@ -100,7 +100,8 @@ export function Autenticar({ user }) {
         clubesAfiliadosAVL={true}
         consultaNomeacoesSemanais={true}
         forgotPasswordHeader={true}
-        sobreHeader={true}
+              sobreHeader={true}
+              gestaoPagamentos={true}
       />
       <div>
         {/* {user != null ? Meteor.logout() : null} */}
