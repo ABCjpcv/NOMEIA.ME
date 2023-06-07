@@ -1,16 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\.meteor",
     "\\client",
     "\\imports",
     "\\imports\\ui",
     "\\imports\\ui\\Pages",
     "\\imports\\ui\\Pages\\Arbitros",
+    "\\imports\\ui\\Pages\\Arbitros\\CA",
     "\\imports\\ui\\Pages\\Geral",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\.meteor\\release",
+  "SelectedNode": "\\imports\\ui\\Pages\\Arbitros\\GestaoPagamentos.jsx",
   "PreviewInSolutionExplorer": false
 }

@@ -208,7 +208,7 @@ export function UserSettings({ user }) {
               removerConta={true}
               indisponibilidadePrivadas={true}
               restricoesPrivadas={true}
-              definicoes={true}
+              definicoes={false}
               historico={true}
               forgotPasswordHeader={true}
               gestaoPagamentos={true}

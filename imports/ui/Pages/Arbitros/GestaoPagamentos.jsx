@@ -53,12 +53,20 @@ export function GestaoPagamentos({ user }) {
             key: "Dia",
             sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
             sortDirections: ["descend", "ascend"],
-
+            width: "8%",
         },
         {
             title: "Hora",
             dataIndex: "Hora",
             key: "Hora",
+            sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+            sortDirections: ["descend", "ascend"],
+            width: "5%",
+        },
+        {
+            title: "Prova",
+            dataIndex: "Prova",
+            key: "Prova",
             sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
             sortDirections: ["descend", "ascend"],
         },
@@ -138,6 +146,7 @@ export function GestaoPagamentos({ user }) {
                             Jogo: jogoLido.id,
                             Dia: jogoLido.dia,
                             Hora: jogoLido.hora,
+                            Prova: jogoLido.prova + " " + jogoLido.serie,
                             Pavilhao: jogoLido.pavilhao,
                             Premio: premio,
                             Deslocacao: deslocacao,
@@ -162,6 +171,8 @@ export function GestaoPagamentos({ user }) {
     if (dataSource.length === 0) {
         loadData();
     }
+
+
 
     return (
         <>
@@ -205,6 +216,7 @@ export function GestaoPagamentos({ user }) {
                                         columns={colunasGestaoPagamentos}
                                         style={{
                                             width: "100%",
+                                            height: "100%",
                                             
                                         }}
                                         size="small"

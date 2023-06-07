@@ -20,7 +20,7 @@ let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = false;
+let DROP_ALL_TABLES = true;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -32,8 +32,6 @@ let DROP_DEFINICOES_PESSOAIS = false;
 let DROP_JOGOS_PASSADOS = false;
 let DROP_PAGAMENTOS_UNIVERSITARIOS = false;
 let DROP_PAGAMENTOS_CR_CN = false;
-let DROP_VALOR_DESLOCACOES = false;
-let DROP_VALOR_PREMIO_ALIMENTACAO = false;
 
 
 const UNIVERSITARY_DESLOCATION_PRIZE = 12.5;
@@ -216,7 +214,7 @@ pagamentosCRCN.schema = new SimpleSchema({
 //#endregion
 
 
-//#endregion
+//#endregion 
 
 Meteor.startup(() => {
   process.env.MAIL_URL =
@@ -272,7 +270,7 @@ Meteor.startup(() => {
             : 4,
         isAdmin: rows[index][4] === "SIM" ? true : false,
       });
-      //console.log("inserted ARBITRO " + rows[index][0]);
+      //console.log("inserted ARBITRO " + rows[index][0]); 
       x = index;
     }
 
@@ -1359,7 +1357,7 @@ Meteor.methods({
 
         var arb = arbitros.findOne({ email: email });
 
-let def = definicoesPessoais.findOne({ arbitro: arb });
+        let def = definicoesPessoais.findOne({ arbitro: arb });
         let concelhoDoArbitro = def.concelho;
 
         let records = jogosPassados.findOne({ arbitro: arb });
@@ -1373,10 +1371,6 @@ let def = definicoesPessoais.findOne({ arbitro: arb });
             return resultadoPagamentos;
         }
 
-        
-
-        
-       
         
         return [];
     },
@@ -3871,9 +3865,14 @@ function processGames(records, concelhoDoArbitro, username) {
                 if (element.prova.startsWith('I', 0)) { // Universitário
                     prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                 } else {
-                    prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
+                    if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                        console.log("ENNTRA?????????????")
+                        prizeDeslocacao = CN_DESLOCATION_PRIZE;
+                    } else {
+                        prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
+                    }
+                    origem = concelhoB;
                 }
-                origem = concelhoB;
             }
         } else {
             if (dia !== nextGameDay) {
@@ -3910,33 +3909,30 @@ function processGames(records, concelhoDoArbitro, username) {
         let prizeMeal = 0;
 
         if (previousGame === undefined) { // Primeiro jogo
-            maxMealPrize = element.prize_meal;
+            maxMealPrize = getValorAlimentacao(element.prova);
             if (nextGameDay === undefined || element.dia!== nextGameDay) {
                 if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
                     prizeMeal = CN_MEAL_PRIZE;
                 } else {
-                    prizeMeal = maxMealPrize;
+                    prizeMeal = getValorAlimentacao(element.prova);
                 }
             }
         } else {
-            if (previousGame.dia=== element.dia) {
-                maxMealPrize = Math.max(maxMealPrize, element.prize_meal);
+            if (previousGame.dia === element.dia) {
+                maxMealPrize = Math.max(maxMealPrize, getValorAlimentacao(element.prova));
                 if (nextGameDay === undefined || dia !== nextGameDay) {
                     if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
-
-                        
-
                         prizeMeal = CN_MEAL_PRIZE;
                     } else {
-                        prizeMeal = maxMealPrize;
+                        prizeMeal = getValorAlimentacao(element.prova);
                     }
                 }
             } else {
-                maxMealPrize = element.prize_meal;
+                maxMealPrize = getValorAlimentacao(element.prova);
                 if (nextGameDay === element.dia) {
                     if (element.prova.startsWith('CR')) {
                         if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N')) {
-                            prizeMeal = maxMealPrize;
+                            prizeMeal = getValorAlimentacao(element.prova);
                         }
                     }
                 }
@@ -3963,10 +3959,20 @@ function getConcelhoFromPavilhao(pavilhao) {
     var csvFile = Assets.getText("PavilhoesConcelhos.csv");
     var rows = Papa.parse(csvFile).data;
 
+    pavilhao = removerAcentos(pavilhao);
+
+    
+
     // Find the pavilhao and get the concelho
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
-        var pavilhaoCSV = (row[0]);
+        var pavilhaoCSV = ((row[0]) + "").replace(/\º./g, "");
+
+        pavilhaoCSV = removerAcentos(pavilhaoCSV);
+
+        //console.log("PAVILHAO LISTA:", pavilhaoCSV)
+        //console.log("PAVILHAO RECEBIDO", pavilhao)
+        //console.log("SÃO IGUAIS??", pavilhaoCSV === pavilhao)
 
         if (pavilhaoCSV === pavilhao) {
             concelhoDoPavilhao = row[1];
@@ -3974,6 +3980,7 @@ function getConcelhoFromPavilhao(pavilhao) {
         }
     }
 
+    console.log("concelho do pavilhão:", concelhoDoPavilhao)
     return concelhoDoPavilhao;
 }
 
@@ -3991,14 +3998,13 @@ function getValorDeslocacao(origem, destino) {
         var origemCSV = row[0];
         var destinoCSV = row[1];
 
-        //console.log("origemCSV", origemCSV);
-        //console.log("destinoCSV", destinoCSV)
+        console.log("origemCSV", origemCSV);
+        console.log("ORIGEM", origem)
 
-        //console.log("ORIGEM", origem)
+        console.log("DESTINO", destino)
+        console.log("destinoCSV", destinoCSV)
 
-        //console.log("DESTINO", destino)
-
-        //console.log("(origemCSV === origem && destinoCSV === destino)", (origemCSV === origem && destinoCSV === destino))
+        console.log("(origemCSV === origem && destinoCSV === destino)", (origemCSV === origem && destinoCSV === destino))
 
         if ((origemCSV === origem && destinoCSV === destino) || (origemCSV === destino && destinoCSV === origem)) {
             valor = parseFloat(row[2]);
@@ -4008,7 +4014,6 @@ function getValorDeslocacao(origem, destino) {
 
     return valor;
 }
-
 
 function getPremio(jogo, username) {
     let valorPremio = 0;
@@ -4024,17 +4029,11 @@ function getPremio(jogo, username) {
     const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
     const rows = Papa.parse(csvFile).data;
 
-    console.log("username", username)
-    console.log("jogo.arbitro_1", jogo.arbitro_1)
-    console.log("jogo.arbitro_1 === username", jogo.arbitro_1 === username)
-    console.log("jogo recebido", jogo);
-    console.log("prova", prova)
-    console.log("funcao", funcao)
 
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
             var competicao = row[1];
-            var funcaoCSV = row[3];
+        var funcaoCSV = row[3];
 
             if (competicao === prova && funcaoCSV === funcao) {
                 valorPremio = parseFloat(row[2]);;
@@ -4046,8 +4045,32 @@ function getPremio(jogo, username) {
     return valorPremio;
 }
 
+
+function getValorAlimentacao(prova) {
+
+    let valorPremio = 0;
+
+    // Get the CSV Text:
+    const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+    const rows = Papa.parse(csvFile).data;
+
+    for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var competicao = row[1];
+
+        if (competicao === prova) {
+            valorPremio = parseFloat(row[4]);;
+            break;
+        }
+    }
+
+
+    return valorPremio;
+
+}
+
 function titleCase(str) {
-    var splitStr = str.toLowerCase().split(" ");
+    var splitStr = (str + "").toLowerCase().split(" ");
     for (var i = 0; i < splitStr.length; i++) {
         // You do not need to check if i is larger than splitStr length, as your for does that for you
         // Assign it back to the array
@@ -4057,3 +4080,31 @@ function titleCase(str) {
     // Directly return the joined string
     return splitStr.join(" ");
 }
+
+
+function removerAcentos(texto) {
+    const mapaAcentosHex = {
+        a: /[\xE0-\xE6]/g,
+        e: /[\xE8-\xEB]/g,
+        i: /[\xEC-\xEF]/g,
+        o: /[\xF2-\xF6]/g,
+        u: /[\xF9-\xFC]/g,
+        c: /\xE7/g,
+        n: /\xF1/g,
+        A: /[\xC0-\xC6]/g,
+        E: /[\xC8-\xCB]/g,
+        I: /[\xCC-\xCF]/g,
+        O: /[\xD2-\xD6]/g,
+        U: /[\xD9-\xDC]/g,
+        C: /\xC7/g,
+        N: /\xD1/g,
+    };
+
+    for (let letra in mapaAcentosHex) {
+        const expressaoRegular = mapaAcentosHex[letra];
+        texto = (texto+"").replace(expressaoRegular, letra);
+    }
+
+    return texto;
+}
+

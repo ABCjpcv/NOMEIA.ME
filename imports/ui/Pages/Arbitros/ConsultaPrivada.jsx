@@ -359,7 +359,8 @@ function handleConfirmationResultado(record, index) {
     if (err) {
       console.log("ERRRRROOOOO", { err });
     } else {
-      message.success("Resultado submetido " + user.username);
+        message.success("Resultado submetido " + user.username);
+        window.location.reload();
     }
   });
 }
