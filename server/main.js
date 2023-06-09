@@ -1883,140 +1883,154 @@ Meteor.methods({
     }
   },
 
-  alteraNomeacao: function alteraNomeacao(jogo, user, universitario, regional) {
-    jogo = {
-      id: jogo.Jogo,
-      dia: jogo.Dia,
-      equipas: jogo.Equipas,
-      hora: jogo.Hora,
-      prova: jogo.Prova,
-      serie: jogo.Serie,
-      pavilhao: jogo.Pavilhao,
-      arbitro_1: jogo.Arbitro1,
-      arbitro_2: jogo.Arbitro2,
-      juiz_linha: [
-        jogo.JL1,
-        jogo.JL2,
-        // , jogo.JL3, jogo.JL4
-      ],
-      key: jogo.key,
-    };
+    alteraNomeacao: function alteraNomeacao(jogo, user, universitario, regional) {
+        // Verifica se os parâmetros obrigatórios estão presentes
+        if (!jogo || !user || universitario === undefined || regional === undefined) {
+            throw new Error('Parâmetros inválidos.');
+        }
 
-      // 1º PASSO: Encontra o jogo em Jogos pelo id
-      let jogoId = jogo.Jogo;
-      let jogoAntigo = jogos.findOne({ id: jogoId });
+        // 1º PASSO: Encontra o jogo em Jogos pelo id
+        const jogoId = jogo.Jogo;
+        const jogoAnterior = jogos.findOne({ id: jogoId });
 
-      if (!jogoAntigo) {
-          return false; // Jogo não encontrado
-      }
+        if (!jogoAnterior) {
+            throw new Error('Jogo não encontrado.');
+        }
 
-      // Atualiza o jogo existente com os dados atualizados
-      jogos.update({ id: jogoId }, { $set: jogo });
+        // Atualiza o jogo existente com os dados atualizados
+        jogos.update({ id: jogoId }, { $set: jogo });
 
-      // 2º PASSO: Altera os membros da equipa de arbitragem associada ao jogo
-      let arbitro1Antigo = jogoAntigo.arbitro_1;
-      let arbitro2Antigo = jogoAntigo.arbitro_2;
-      let jl1Antigo = jogoAntigo.juiz_linha ? jogoAntigo.juiz_linha[0] : null;
-      let jl2Antigo = jogoAntigo.juiz_linha ? jogoAntigo.juiz_linha[1] : null;
+        // 2º PASSO: Altera os membros da equipa de arbitragem associada ao jogo
+        const arbitro1Anterior = jogoAnterior.arbitro_1;
+        const arbitro2Anterior = jogoAnterior.arbitro_2;
+        const jl1Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[0] : null;
+        const jl2Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[1] : null;
 
-      let arbitro1Novo = jogo.arbitro_1;
-      let arbitro2Novo = jogo.arbitro_2;
-      let jl1Novo = jogo.juiz_linha ? jogo.juiz_linha[0] : null;
-      let jl2Novo = jogo.juiz_linha ? jogo.juiz_linha[1] : null;
+        const arbitro1Novo = jogo.arbitro_1;
+        const arbitro2Novo = jogo.arbitro_2;
+        const jl1Novo = jogo.juiz_linha ? jogo.juiz_linha[0] : null;
+        const jl2Novo = jogo.juiz_linha ? jogo.juiz_linha[1] : null;
 
-      // Verifica as diferenças entre as equipas de arbitragem e altera a confirmação para pendente
+        // Verifica as diferenças entre as equipas de arbitragem e altera a confirmação para pendente
+        const arb = arbitros.findOne({ email: user.emails[0].address });
+        const ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+        const caPreGames = universitario ? ca.preNomeacoesUniversitarias : ca.preNomeacoesRegionais;
+        const caPosGames = caPreGames.slice(); // Copia o array para evitar alterações indesejadas
 
-      let arb = arbitros.findOne({ email: user.emails[0].address });
-      let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-      let caPreGames = [];
+        function updateTag(index, tagName) {
+            const element = caPreGames[index];
+            if (element.id === jogo.id) {
+                element.tags[index] = tagName;
+                caPosGames[index] = element;
+            }
+        }
 
-      if (universitario) {
-          caPreGames = ca.preNomeacoesUniversitarias;
-      }
+        function mudaArbitro(arbitroAnterior, arbitroNovo, jogo) {
+            // Lógica para atualizar o árbitro
 
-      if (regional) {
-          caPreGames = ca.preNomeacoesRegionais;
-      }
+            if (arbitroAnterior.length === 0) {
+                // Não havia 1º Arbitro designado
+                let arb = arbitros.findOne({ nome: arbitroNovo });
+                let n = nomeacoes.findOne({ arbitro: arb });
 
-      const caPosGames = caPreGames.slice(); // Copia o array para evitar alterações indesejadas
+                let nPriv = n.nomeacoesPrivadas;
 
-      if (arbitro1Antigo !== arbitro1Novo) {
-          // Nomeação foi alterada no 1º Arbitro
-          mudaArbitro(arbitro1Antigo, arbitro1Novo, jogo);
+                nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
 
-          for (let index = 0; index < caPreGames.length; index++) {
-              const element = caPreGames[index];
+                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
+            } else {
+                // Havia arbitro designado
 
-              if (element.id === jogo.id) {
-                  element.tags[0] = "pendente";
-                  caPosGames[index] = element;
-              }
-          }
-      }
+                // Remove a nomeacao ao arbitro designado anterior
+                let arb = arbitros.findOne({ nome: arbitroAnterior });
+                let n = nomeacoes.findOne({ arbitro: arb });
 
-      if (arbitro2Antigo !== arbitro2Novo) {
-          // Nomeação foi alterada no 2º Arbitro
-          mudaArbitro(arbitro2Antigo, arbitro2Novo, jogo);
+                let nPriv = n.nomeacoesPrivadas;
+                let novasNpriv = [];
 
-          for (let index = 0; index < caPreGames.length; index++) {
-              const element = caPreGames[index];
+                for (let index = 0; index < nPriv.length; index++) {
+                    if (nPriv[index].jogo.id != jogo.id) {
+                        novasNpriv.push(nPriv[index]);
+                    }
+                }
+                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novasNpriv } });
 
-              if (element.id === jogo.id) {
-                  element.tags[1] = "pendente";
-                  caPosGames[index] = element;
-              }
-          }
-      }
+                // Adiciona a nomeação ao novo arbitro designado
+                arb = arbitros.findOne({ nome: arbitroNovo });
+                n = nomeacoes.findOne({ arbitro: arb });
+                nPriv = n.nomeacoesPrivadas;
 
-      if (jl1Antigo !== jl1Novo) {
-          // Nomeação foi alterada no JL1
-          mudaArbitro(jl1Antigo, jl1Novo, jogo);
+                nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
+                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
 
-          for (let index = 0; index < caPreGames.length; index++) {
-              const element = caPreGames[index];
+                // Modifica as nomeações de modo a incluir o novo membro da equipa de arbitragem
+                let nTotal = nomeacoes.find();
 
-              if (element.id === jogo.id) {
-                  element.tags[2] = "pendente";
-                  caPosGames[index] = element;
-              }
-          }
-      }
+                nTotal.forEach((element) => {
+                    if (element.nomeacoesPrivadas.length > 0) {
+                        let newPrivNom = [];
+                        for (let index = 0; index < element.nomeacoesPrivadas.length; index++) {
+                            if (element.nomeacoesPrivadas[index].jogo.key !== jogo.key) {
+                                newPrivNom.push(element.nomeacoesPrivadas[index]);
+                            } else {
+                                let confirmacao = element.nomeacoesPrivadas[index].confirmacaoAtual;
+                                newPrivNom.push({ jogo: jogo, confirmacaoAtual: confirmacao });
+                            }
+                        }
+                        nomeacoes.update({ arbitro: element.arbitro }, { $set: { nomeacoesPrivadas: newPrivNom } });
+                    }
+                });
+            }
+        }
 
-      if (jl2Antigo !== jl2Novo) {
-          // Nomeação foi alterada no JL2
-          mudaArbitro(jl2Antigo, jl2Novo, jogo);
+        if (arbitro1Anterior !== arbitro1Novo) {
+            // Nomeação foi alterada no 1º Arbitro
+            mudaArbitro(arbitro1Anterior, arbitro1Novo, jogo);
+            updateTag(0, 'pendente');
+            enviaMailAlteracaoNomeacao(arbitro1Anterior, arbitro1Novo, jogoId);
+        }
 
-          for (let index = 0; index < caPreGames.length; index++) {
-              const element = caPreGames[index];
+        if (arbitro2Anterior !== arbitro2Novo) {
+            // Nomeação foi alterada no 2º Arbitro
+            mudaArbitro(arbitro2Anterior, arbitro2Novo, jogo);
+            updateTag(1, 'pendente');
+            enviaMailAlteracaoNomeacao(arbitro2Anterior, arbitro2Novo, jogoId);
+        }
 
-              if (element.id === jogo.id) {
-                  element.tags[3] = "pendente";
-                  caPosGames[index] = element;
-              }
-          }
-      }
+        if (jl1Anterior !== jl1Novo) {
+            // Nomeação foi alterada no JL1
+            mudaArbitro(jl1Anterior, jl1Novo, jogo);
+            updateTag(2, 'pendente');
+            enviaMailAlteracaoNomeacao(jl1Anterior, jl1Novo, jogoId);
+        }
 
-    ca = conselhoDeArbitragem.find();
-    if (universitario) {
-      ca.forEach((ca) => {
-        conselhoDeArbitragem.update(
-          { arbitrosCA: ca.arbitrosCA },
-            { $set: { preNomeacoesUniversitarias: caPosGames } }
-        );
-      });
+        if (jl2Anterior !== jl2Novo) {
+            // Nomeação foi alterada no JL2
+            mudaArbitro(jl2Anterior, jl2Novo, jogo);
+            updateTag(3, 'pendente');
+            enviaMailAlteracaoNomeacao(jl2Anterior, jl2Novo, jogoId);
+        }
+
+        const allCA = conselhoDeArbitragem.find();
+        allCA.forEach((ca) => {
+            if (universitario) {
+                conselhoDeArbitragem.update(
+                    { arbitrosCA: ca.arbitrosCA },
+                    { $set: { preNomeacoesUniversitarias: caPosGames } }
+                );
+            }
+
+            if (regional) {
+                conselhoDeArbitragem.update(
+                    { arbitrosCA: ca.arbitrosCA },
+                    { $set: { preNomeacoesRegionais: caPosGames } }
+                );
+            }
+        });
+
+        return true;
     }
-
-    if (regional) {
-      ca.forEach((ca) => {
-        conselhoDeArbitragem.update(
-          { arbitrosCA: ca.arbitrosCA },
-            { $set: { preNomeacoesRegionais: caPosGames } }
-        );
-      });
-    }
-
-    return true;
-  },
+,
 
   getClubesDisponiveis: function getClubesDisponiveis() {
     let clubesDisponiveis = [];
@@ -3516,76 +3530,55 @@ function randomPassword(length) {
   return result;
 }
 
-function mudaArbitro(arbitroAntigo, arbitroNovo, jogo) {
+function enviaMailAlteracaoNomeacao(antigo, novo, jogo) {
 
-    //console.log("ARBITRO ANTIGO A ALTERAR NOMEACAO: ", "'" + arbitroAntigo + "'");
-    //console.log("arbitroAntigo.length: ", arbitroAntigo.length)
+    let arbAntigo = arbitros.findOne({ nome: antigo });
+    let arbNovo = arbitros.findOne({ nome: novo });
 
-    //console.log("ARBITRO novo A ALTERAR NOMEACAO: ", arbitroNovo);
+    let emails = [];
 
-    if (arbitroAntigo.length === 0) {
+    emails.push({ nome: arbAntigo.nome, email: arbAntigo.email });
+    emails.push({ nome: arbNovo.nome, email: arbNovo.email });
 
-        //console.log("ENTRAS AQUI???")
+    for (let index = 0; index < emails.length; index++) {
+        const element = (emails[index]).email;
+        const nome = (emails[index]).nome;
 
-    // Não havia 1º Arbitro designado
-    let arb = arbitros.findOne({ nome: arbitroNovo });
-    let n = nomeacoes.findOne({ arbitro: arb });
+        try {
+            let transporter = nodemailer.createTransport({
+                host: "smtp-mail.outlook.com", // hostname
+                secureConnection: false, // TLS requires secureConnection to be false
+                port: 587, // port for secure SMTP
+                tls: {
+                    rejectUnauthorized: false,
+                },
+                //requireTLS: true, //this parameter solved problem for me
+                // service: "Hotmail", // no need to set host or port etc.
+                auth: {
+                    user: "nomeia_me_ponav@hotmail.com",
+                    pass: "2*qzEB)eKR*KZ6gn",
+                },
+            });
 
-        let nPriv = n.nomeacoesPrivadas;
-
-        //console.log("nPriv: ", nPriv)
-
-        nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
-        //console.log("nPriv: ", nPriv)
-
-
-    nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
-  } else {
-    // Havia arbitro designado
-
-    // Remove a nomeacao ao arbitro designado anterior
-    let arb = arbitros.findOne({ nome: arbitroAntigo });
-    let n = nomeacoes.findOne({ arbitro: arb });
-
-    let nPriv = n.nomeacoesPrivadas;
-    let novasNpriv = [];
-
-    for (let index = 0; index < nPriv.length; index++) {
-      if (nPriv[index].jogo.id != jogos.id) {
-        novasNpriv.push(nPriv[index]);
-      }
-    }
-    nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
-
-    // Adiciona a nomeação ao novo arbitro designado
-
-    arb = arbitros.findOne({ nome: arbitroNovo });
-    n = nomeacoes.findOne({ arbitro: arb });
-      nPriv = n.nomeacoesPrivadas;
-
-      //console.log("nPriv: ", nPriv)
-      nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
-      console.log("nPriv: ", nPriv)
-    nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
-
-    // Falta modificar as nomeações de modo a incluir o novo membro da equipa de arbitragem
-
-    let nTotal = nomeacoes.find();
-
-    nTotal.forEach((element) => {
-      if (element.nomeacoesPrivadas.length > 0) {
-        let newPrivNom = [];
-        for (let index = 0; index < element.nomeacoesPrivadas.length; index++) {
-          if (element.nomeacoesPrivadas[index].jogo.key !== jogo.key) {
-            newPrivNom.push(element.nomeacoesPrivadas[index]);
-          } else {
-            let confirmacao = element.nomeacoesPrivadas[index].confirmacaoAtual;
-            newPrivNom.push({ jogo: jogo, confirmacaoAtual: confirmacao });
-          }
+            transporter.sendMail({
+                from: "nomeia_me_ponav@hotmail.com",
+                to: element,
+                subject:
+                    "[TESTE] Alteração de nomeação do jogo: " + jogo + "",
+                text:
+                    nome +
+                    ", \n\n Recebeu uma alteração de nomeação " +
+                    "\n Por favor confirme ou recuse nomeações na sua conta através da plataforma" +
+                    " Nomeia.Me acedendo às suas nomeações." +
+                    "\n\n Saudações Desportivas, \n A equipa Nomeia.Me",
+            });
+        } catch (error) {
+            console.log("error: " + error);
+            return -1;
         }
-      }
-    });
-  }
+    }
+
+    return 0;
 }
 
 function hasDST(str) {
