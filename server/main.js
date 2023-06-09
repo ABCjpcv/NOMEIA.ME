@@ -2498,7 +2498,7 @@ Meteor.methods({
   },
 
 
-    arbitrosDisponiveis(
+    arbitrosDisponiveis: function arbitrosDisponiveis(
         jogo,
         temRecibo,
         naoTemRecibo,
@@ -2507,21 +2507,13 @@ Meteor.methods({
         clubesRelacionados,
         nivel
     ) {
-        //console.log("JOGO: ", jogo);
         const { Dia, Hora, Pavilhao } = jogo;
         const [dia, mes, ano] = Dia.split("/");
         const [hora, minutos] = Hora.split(":");
         const horaPavilhao = (parseInt(hora) - 1).toString().padStart(2, "0");
-        //console.log("HORA DO PAVILHAO", horaPavilhao);
 
-        const dataInicio = (new Date(ano, mes - 1, dia, horaPavilhao, minutos)).toLocaleString();
-        //console.log("dataInicio: ", dataInicio);
-
-        const horaFimDeJogo = (parseInt(hora) + 2).toString();
-        //console.log("HORA SAIDA: ", horaFimDeJogo);
-
-        const dataFim = (new Date(ano, mes - 1, dia, horaFimDeJogo, minutos)).toLocaleString();
-        //console.log("dataFim: ", dataFim);
+        const dataInicio = new Date(ano, mes - 1, dia, horaPavilhao, minutos).toLocaleString();
+        const dataFim = new Date(ano, mes - 1, dia, parseInt(hora) + 2, minutos).toLocaleString();
 
         const arbitrosDisponiveis = arbitros
             .find()
@@ -2529,123 +2521,97 @@ Meteor.methods({
             .filter((nomeArbitro) => {
                 const arb = arbitros.findOne({ nome: nomeArbitro });
 
-                // Inicialmente, considera o árbitro como disponível
                 let disponivel = true;
 
-                // Filtrar por nível, se necessário
                 if ([1, 2, 3].includes(parseInt(nivel))) {
-                    if (parseInt(arb.nivel) - parseInt(nivel) !== 0) {
-                        disponivel = false; // Árbitro é considerado indisponível
+                    if (parseInt(arb.nivel) !== parseInt(nivel)) {
+                        disponivel = false;
                     }
                 }
 
-                // Filtrar por recibos e transporte
                 const def = definicoesPessoais.findOne({ arbitro: arb });
 
                 if (temRecibo && !def.emiteRecibo) {
-                    disponivel = false; 
+                    disponivel = false;
                 }
 
                 if (naoTemRecibo && def.emiteRecibo) {
-                    disponivel = false; 
+                    disponivel = false;
                 }
 
                 if (temTransporte && !def.temCarro) {
-                    disponivel = false; 
+                    disponivel = false;
                 }
 
                 if (naoTemTransporte && def.temCarro) {
-                    disponivel = false; 
+                    disponivel = false;
                 }
 
-                // Verificar disponibilidade de jogos no mesmo pavilhão
                 const indisponibilidadesArbitro = indisponibilidades.findOne({
                     arbitro: arb,
                 });
-
 
                 if (indisponibilidadesArbitro) {
                     const { disponibilidades } = indisponibilidadesArbitro;
 
                     if (disponibilidades) {
-                        const jogosIndisponiveis = disponibilidades.filter((disponibilidade) => {
-
+                        const jogosIndisponiveis = disponibilidades.filter(
+                            (disponibilidade) => {
                                 const { id, title, start, end } = disponibilidade;
 
-                                // Verificar se é uma indisponibilidade que corresponde a um jogo nomeado
                                 if (id.startsWith("jogo")) {
+                                    const indisponibilidadeComeca = new Date(start).toLocaleString();
 
-                                    const indisponibilidadeComeca = (new Date(start)).toLocaleString();
+                                    const pavilhaoJogoNomeado = title.split(" ").slice(3).join(" ");
 
-                                    //console.log("****************************************")
+                                    const diaDataInicio = parseInt(dataInicio.split("/")[0]);
+                                    const mesDataInicio = parseInt(dataInicio.split("/")[1]);
+                                    const anoDataInicio = parseInt(dataInicio.split("/")[2].substring(0, 4));
 
-                                    const pavilhaoJogoNomeado = ((title.split(" ")).slice(3)).join(" ");
+                                    const diaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[0]);
+                                    const mesIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[1]);
+                                    const anoIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[2].substring(0, 4));
 
-                                    //console.log("pavilhaoJogoNomeado", pavilhaoJogoNomeado)
+                                    const horaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[0]);
+                                    const minutosIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[1]);
 
-
-                                    let diaDataInicio = parseInt((dataInicio.split("/")[0]))
-                                    //console.log("diaDataInicio", diaDataInicio)
-                                    let mesDataInicio = parseInt((dataInicio.split("/")[1]))
-                                    //console.log("mesDataInicio", mesDataInicio)
-                                    let anoDataInicio = parseInt((dataInicio.split("/")[2]).substring(0, 4))
-                                    //console.log("anoDataInicio", anoDataInicio)
-
-
-                                    let diaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[0])
-                                    //console.log("diaIndisponibilidadeInicio", diaIndisponibilidadeInicio)
-                                    let mesIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[1])
-                                    //console.log("mesIndisponibilidadeInicio", mesIndisponibilidadeInicio)
-                                    let anoIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[2].substring(0, 4))
-                                    //console.log("anoIndisponibilidadeInicio", anoIndisponibilidadeInicio)
-
-                                    let horaIndisponibilidadeInicio = parseInt((indisponibilidadeComeca.split(",")[1]).split(":")[0])
-                                    let minutosIndisponibilidadeInicio = parseInt((indisponibilidadeComeca.split(",")[1]).split(":")[1])
-
-                                    //console.log("horaIndisponibilidadeInicio", horaIndisponibilidadeInicio, "minutosIndisponibilidadeInicio", minutosIndisponibilidadeInicio)
-                                    //console.log("hora", hora, "minutos", minutos)
-
-                                    // Verificar se o jogo está no mesmo dia e hora que outro jogo já nomeado
-                                    // Se o árbitro for considerado indisponível, altera o valor da variável de controle
-                                    if (diaDataInicio === diaIndisponibilidadeInicio &&
+                                    if (
+                                        diaDataInicio === diaIndisponibilidadeInicio &&
                                         mesDataInicio === mesIndisponibilidadeInicio &&
                                         anoDataInicio === anoIndisponibilidadeInicio &&
                                         parseInt(hora) === horaIndisponibilidadeInicio &&
-                                        parseInt(minutos) === minutosIndisponibilidadeInicio) {
-                                        disponivel = false; // Árbitro é considerado indisponível
+                                        parseInt(minutos) === minutosIndisponibilidadeInicio
+                                    ) {
+                                        disponivel = false;
                                     }
 
-                                    // Verificar se o jogo está no mesmo dia e pavilhão
-                                    if (diaDataInicio === diaIndisponibilidadeInicio &&
+                                    if (
+                                        diaDataInicio === diaIndisponibilidadeInicio &&
                                         mesDataInicio === mesIndisponibilidadeInicio &&
                                         anoDataInicio === anoIndisponibilidadeInicio &&
-                                        Pavilhao === pavilhaoJogoNomeado) {
-
+                                        Pavilhao === pavilhaoJogoNomeado
+                                    ) {
                                         const intervaloMinimo = 2; // 2 horas em milissegundos
-                                        const tempoEntreJogos = parseInt(hora) - parseInt(horaIndisponibilidadeInicio);
-
-                                        //console.log("horaFim", parseInt((dataFim.split(",")[1]).split(":")[0]))
-
-                                        //console.log("tempo", tempoEntreJogos)
+                                        const tempoEntreJogos =
+                                            parseInt(hora) - horaIndisponibilidadeInicio;
 
                                         if (tempoEntreJogos < intervaloMinimo) {
                                             disponivel = false;
                                         }
                                     }
 
-                                    // Verificar se há outro jogo no mesmo dia e hora, mas em pavilhão diferente
-                                    if (diaDataInicio === diaIndisponibilidadeInicio &&
+                                    if (
+                                        diaDataInicio === diaIndisponibilidadeInicio &&
                                         mesDataInicio === mesIndisponibilidadeInicio &&
-                                        anoDataInicio ===
-                                        anoIndisponibilidadeInicio &&
+                                        anoDataInicio === anoIndisponibilidadeInicio &&
                                         parseInt(hora) === horaIndisponibilidadeInicio &&
                                         parseInt(minutos) === minutosIndisponibilidadeInicio &&
-                                        Pavilhao !== pavilhaoJogoNomeado) {
+                                        Pavilhao !== pavilhaoJogoNomeado
+                                    ) {
                                         disponivel = false;
                                     }
                                 }
-
-                                                            }
+                            }
                         );
 
                         if (jogosIndisponiveis.length > 0) {
@@ -2656,292 +2622,9 @@ Meteor.methods({
 
                 return disponivel;
             });
-            
-        
 
         return arbitrosDisponiveis;
-    }
-
-
-,
-
-  //arbitrosDisponiveis: function arbitrosDisponiveis(
-  //  jogo,
-  //  temRecibo,
-  //  naoTemRecibo,
-  //  temTransporte,
-  //  naoTemTransporte,
-  //  clubesRelacionados,
-  //  nivel
-  //) {
-  //  // ESTA DISPONIVEL NAQUELE HORARIO?
-
-  //  console.log("jogo", jogo);
-
-  //  let todasIndisponibilidades = [];
-
-  //  indisponibilidades.find().forEach((indisponibilidade) => {
-  //    todasIndisponibilidades.push(indisponibilidade);
-  //  }); //Vai buscar todas as indisponibilidades
-
-  //  let diaDeJogo = (jogo.Dia + "").split("/");
-  //  console.log("DIA recolhido", diaDeJogo);
-
-  //  let horaDeJogo = (jogo.Hora + "").split(":");
-  //  console.log("horaDeJogo recolhido", horaDeJogo);
-
-  //  let horaPavilhao = parseInt(horaDeJogo[0]) - 1;
-
-  //  console.log("horaPavilhao recolhido", horaPavilhao);
-
-  //  let dataInicio =
-  //    diaDeJogo[2] +
-  //    "-" +
-  //    diaDeJogo[1] +
-  //    "-" +
-  //    diaDeJogo[0] +
-  //    "T" +
-  //    horaPavilhao +
-  //    ":" +
-  //    horaDeJogo[1] +
-  //    ":00.00Z";
-
-  //  // NAO SEI PK TIVE DE ADICIONAR .00Z
-
-  //  console.log("dataInicio", dataInicio);validDate
-
-  //  let inicioDoJogo = new Date(dataInicio);
-
-  //  console.log("inicioDoJogo: ", inicioDoJogo);
-
-  //  let horaFimDeJogo = parseInt(horaDeJogo[0]) + 2;
-
-  //  console.log("horaFimDeJogo: ", horaFimDeJogo);
-
-  //  let dataFim =
-  //    diaDeJogo[2] +
-  //    "-" +
-  //    diaDeJogo[1] +
-  //    "-" +
-  //    diaDeJogo[0] +
-  //    "T" +
-  //    horaFimDeJogo +
-  //    ":" +
-  //    horaDeJogo[1] +
-  //    ":00.00Z";
-
-  //  let fimDoJogo = new Date(dataFim);
-  //  console.log("fimDoJogo: ", fimDoJogo);
-
-  //  //Primeiro passo:
-
-  //  let nomesArbitrosDisponiveis = [];
-
-  //  todasIndisponibilidades.forEach((indisponibilidade) => {
-  //    let disponibilidades = indisponibilidade.disponibilidades; //Vai buscar o array de disponibilidades
-
-  //    //console.log("VOU VER AS DISPONIBILIDADES::::");
-
-  //    //disponibilidades.forEach((element) => {
-  //     // console.log(element);
-  //    //});
-
-  //    if (disponibilidades.length == 0) {
-  //      console.log("Disponivel.");
-  //      nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
-  //    } else {
-  //      let v = validDate(disponibilidades, inicioDoJogo, fimDoJogo, jogo);
-  //      if (!v) {
-  //        // Nao esta disponivel
-  //      } else if (v) {
-  //        console.log("Disponivel.");
-  //        nomesArbitrosDisponiveis.push(indisponibilidade.arbitro.nome);
-  //      }
-  //    }
-  //  });
-
-  //  console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
-
-  //  let auxiliarNivel = [];
-
-  //  if (
-  //    parseInt(nivel) === 1 ||
-  //    parseInt(nivel) === 2 ||
-  //    parseInt(nivel) === 3
-  //  ) {
-  //    nomesArbitrosDisponiveis.forEach((nomeArbitro) => {
-  //      let arb = arbitros.findOne({ nome: nomeArbitro });
-  //      // console.log("nivel do Arbitro", arb.nivel);
-  //      if (parseInt(arb.nivel) - parseInt(nivel) == 0) {
-  //        auxiliarNivel.push(nomeArbitro);
-  //      }
-  //    });
-
-  //    nomesArbitrosDisponiveis = auxiliarNivel;
-  //  }
-
-  //  // Segundo passo:
-  //  // QUERO SABER DE MAIS ALGUMA COISA????
-
-  //  // console.log("tem recibo?", temRecibo);
-  //  // console.log("não tem recibo?", naoTemRecibo);
-  //  // console.log("tem transporte", temTransporte);
-  //  // console.log("não tem transporte?", naoTemTransporte);
-
-  //  let filtrosAtivos =
-  //    temRecibo || naoTemRecibo || temTransporte || naoTemTransporte;
-
-  //  if (!filtrosAtivos)
-  //    if (clubesRelacionados.length === 0) {
-  //      // NAO QUERO SABER DAS RELACOES COM CLUBES
-  //      nomesArbitrosDisponiveis.push(" ");
-  //      return nomesArbitrosDisponiveis.sort();
-  //    }
-
-  //  // QUERO RECIBOS:
-
-  //  let arbitrosDisponiveisComRecibo = [];
-  //  let arbitrosDisponiveisSemRecibo = [];
-
-  //  let arbitrosDisponiveisRecibos = [];
-
-  //  // console.log("nomesArbitrosDisponiveis", nomesArbitrosDisponiveis);
-
-  //  if (temRecibo) {
-  //    for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
-  //      let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
-  //      //console.log("arb", arb);
-  //      let def = definicoesPessoais.findOne({ arbitro: arb });
-  //      //console.log("def", def);
-  //      if (def.emiteRecibo) {
-  //        arbitrosDisponiveisComRecibo.push(arb.nome);
-  //      }
-  //    }
-  //    arbitrosDisponiveisRecibos = arbitrosDisponiveisComRecibo;
-  //  } else if (naoTemRecibo) {
-  //    for (let index = 0; index < nomesArbitrosDisponiveis.length; index++) {
-  //      let arb = arbitros.findOne({ nome: nomesArbitrosDisponiveis[index] });
-  //      let def = definicoesPessoais.findOne({ arbitro: arb });
-  //      if (!def.emiteRecibo) {
-  //        arbitrosDisponiveisSemRecibo.push(arb.nome);
-  //      }
-  //    }
-  //    arbitrosDisponiveisRecibos = arbitrosDisponiveisSemRecibo;
-  //  }
-
-  //  // NAO QUERO RECIBOS
-  //  if (!temRecibo && !naoTemRecibo) {
-  //    arbitrosDisponiveisRecibos = nomesArbitrosDisponiveis;
-  //  }
-
-  //  //console.log("arbitrosDisponiveisRecibos", arbitrosDisponiveisRecibos);
-
-  //  // Depois de adicionar os arbitros que tem ou nao recibo
-
-  //  // QUERO TRANSPORTES
-
-  //  let arbitrosDisponiveisComTransporte = [];
-  //  let arbitrosDisponiveisSemTransporte = [];
-
-  //  let arbitrosDisponiveisTransportes = [];
-
-  //  if (temTransporte) {
-  //    for (let index = 0; index < arbitrosDisponiveisRecibos.length; index++) {
-  //      let arb = arbitros.findOne({ nome: arbitrosDisponiveisRecibos[index] });
-  //      let def = definicoesPessoais.findOne({ arbitro: arb });
-  //      if (def.temCarro) {
-  //        arbitrosDisponiveisComTransporte.push(arb.nome);
-  //      }
-  //    }
-  //    arbitrosDisponiveisTransportes = arbitrosDisponiveisComTransporte;
-  //  } else if (naoTemTransporte) {
-  //    for (let index = 0; index < arbitrosDisponiveisRecibos.length; index++) {
-  //      let arb = arbitros.findOne({ nome: arbitrosDisponiveisRecibos[index] });
-  //      let def = definicoesPessoais.findOne({ arbitro: arb });
-  //      if (!def.temCarro) {
-  //        arbitrosDisponiveisSemTransporte.push(arb.nome);
-  //      }
-  //    }
-  //    arbitrosDisponiveisTransportes = arbitrosDisponiveisSemTransporte;
-  //  }
-
-  //  if (!temTransporte && !naoTemTransporte) {
-  //    arbitrosDisponiveisTransportes = arbitrosDisponiveisRecibos;
-  //  }
-
-  //  // Terceiro Passo:
-
-  //  //console.log("clubesRelacionados", clubesRelacionados);
-
-  //  // VAMOS ASSUMIR QUE NINGUEM TEM RELACOES COM CLUBES
-  //  let relacoes = [];
-  //  for (
-  //    let index = 0;
-  //    index < arbitrosDisponiveisTransportes.length;
-  //    index++
-  //  ) {
-  //    relacoes.push(false);
-  //  }
-
-  //  //console.log("Array com relacoes", relacoes);
-
-  //  let arbitrosDisponiveisSemRelacoes = [];
-
-  //  // TENHO CLUBES PARA VERIFICAR:
-  //  if (clubesRelacionados.length != 0) {
-  //    clubesRelacionados.forEach((element) => {
-  //      let index = clubesRelacionados.indexOf(element);
-  //      clubesRelacionados[index] = element.toUpperCase();
-  //    });
-  //    // DENTRO DOS ARBITROS DISPONIVEIS PROCURA OS QUE NAO TEM RELACOES COM OS CLUBES RECEBIDOS
-  //    for (let i = 0; i < arbitrosDisponiveisTransportes.length; i++) {
-  //      let arb = arbitros.findOne({ nome: arbitrosDisponiveisTransportes[i] });
-
-  //      //console.log("Vou verificar Restricoes do Arbitro:", arb.nome);
-
-  //      let restricoesArb = restricoes.findOne({ arbitro: arb });
-
-  //      // console.log("As Restricoes:", restricoesArb.relacoes);
-
-  //      // VOU PESQUISAR CADA UMA DAS RELACOES EXISTENTES DO ARBITRO A SER REVISTO ATUALMENTE
-  //      for (let j = 0; j < restricoesArb.relacoes.length; j++) {
-  //        let currentRelacao = restricoesArb.relacoes[j];
-
-  //        //console.log("currentRelacao:", currentRelacao);
-
-  //        //console.log("clube da CurrentRelacao", currentRelacao.Clube);
-
-  //        // NESTA RELACAO TENHO O CLUBE PEDIDO?
-  //        if (clubesRelacionados.includes(currentRelacao.Clube.toUpperCase())) {
-  //          let temRelacao = false;
-  //          for (let index = 0; index < 3 && !temRelacao; index++) {
-  //            if (currentRelacao.Cargo[index]) {
-  //              // TEM RELACOES COM O CLUBE
-  //              relacoes[i] = true;
-  //              temRelacao = true;
-  //            } else {
-  //              // NAO TEM RELACOES COM O CLUBE
-  //            }
-  //          }
-  //        }
-  //      }
-  //    }
-
-  //    for (let index = 0; index < relacoes.length; index++) {
-  //      if (!relacoes[index]) {
-  //        arbitrosDisponiveisSemRelacoes.push(
-  //          arbitrosDisponiveisTransportes[index]
-  //        );
-  //      }
-  //    }
-
-  //    arbitrosDisponiveisSemRelacoes.push(" ");
-  //    return arbitrosDisponiveisSemRelacoes.sort();
-  //  } else {
-  //    arbitrosDisponiveisTransportes.push(" ");
-  //    return arbitrosDisponiveisTransportes.sort();
-  //  }
-  //},
+    },
 
   enviaMailAlerta: function enviaMailAlerta(dataSource) {
     let arbitrosComJogosPendentes = [];
@@ -3026,7 +2709,8 @@ Meteor.methods({
       return emails.length;
     }
     return 0;
-  },
+    },
+
   adicionaJogoNovo: function adicionaJogoNovo(
     id,
     dia,
