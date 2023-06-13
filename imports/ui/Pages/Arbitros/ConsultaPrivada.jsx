@@ -16,6 +16,8 @@ import { Meteor } from "meteor/meteor";
 
 import { QuestionCircleOutlined } from "@ant-design/icons";
 
+const hoje = new Date();
+
 function comparaAminhaLindaString(a, b) {
   let x = 0;
   let tamanho = a.length > b.length ? b.length : a.length;
@@ -631,7 +633,7 @@ export function ConsultaPrivada({ user }) {
       fixed: "right",
       width: "9%",
       render: (_, record, index) =>
-        dataSource.length > 0 && handleJogoPassou(record) ? (
+        dataSource.length > 0 && handleJogoPassou(record, hoje) ? (
           <>
             <div>
               <Button
@@ -763,24 +765,31 @@ export function ConsultaPrivada({ user }) {
 
   useEffect(() => {}, [dataSource]);
 
-  function handleJogoPassou(record) {
-    let horario = addHours(
-      1,
-      new Date(
-        record.Dia.split("/")[2] +
-          "-" +
-          record.Dia.split("/")[1] +
-          "-" +
-          record.Dia.split("/")[0] +
-          " " +
-          record.Hora.split(":")[0] +
-          ":" +
-          record.Hora.split(":")[1] +
-          ":00"
-      )
-    );
-    return horario < new Date();
-  }
+    function handleJogoPassou(record, today) {
+        // Função auxiliar para adicionar zeros à esquerda de um número
+        function padLeft(number) {
+            return number.toString().padStart(2, '0');
+        }
+
+        // Dividir a data e a hora em partes individuais
+        const [dia, mes, ano] = record.Dia.split('/');
+        const [hora, minuto] = record.Hora.split(':');
+
+        // Construir a data no formato "mm/dd/aa" e a hora no formato "hh:mm:ss"
+        const dataHoraString = `${padLeft(mes)}/${padLeft(dia)}/${ano} ${padLeft(hora)}:${padLeft(minuto)}:00`;
+
+        // Criar o objeto Date com a data e hora corretas
+        const horario = new Date(dataHoraString);
+        horario.setHours(horario.getHours() + 1); // Adicionar uma hora
+
+        console.log("RECORD:", record);
+        console.log(dataHoraString);
+        console.log("horario", horario);
+        console.log("today", today);
+        console.log(horario > today);
+
+        return horario < today;
+    }
 
   const handleConfirmation = (record) => {
     const newData = dataSource.filter((item) => {
@@ -1000,11 +1009,12 @@ export function ConsultaPrivada({ user }) {
     loadData();
   }
 
-  let passaramTodos = true;
+    let passaramTodos = true;
+
 
   for (let index = 0; index < dataSource.length; index++) {
     const element = dataSource[index];
-    passaramTodos = passaramTodos && handleJogoPassou(element);
+    passaramTodos = passaramTodos && handleJogoPassou(element, hoje);
     // if (passaramTodos) break;
   }
 

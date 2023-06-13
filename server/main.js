@@ -226,7 +226,7 @@ Meteor.startup(() => {
     clubes.rawCollection().drop();
 
     //Read the clubs:
-    var clubsCsv = Assets.getText("Clubes_AVL.csv");
+    var clubsCsv = Assets.getText("ClubesAVL.csv");
     var rows = Papa.parse(clubsCsv).data;
 
     console.log("*****************************************************");
@@ -356,7 +356,7 @@ Meteor.startup(() => {
 
     console.log("INSERT INTO RESTRICOES: " + res);
 
-    // console.log("*****************************************************");
+    // console.log("****************************************************");
     // console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
     // console.log("*****************************************************");
 
@@ -379,7 +379,7 @@ Meteor.startup(() => {
     console.log("*****************************************************");
 
     //Get the c sv Text:
-    var csvFile = Assets.getText("Livro1.csv");
+    var csvFile = Assets.getText("teste.csv");
     var rows = Papa.parse(csvFile).data;
 
     jogos.rawCollection().drop();
@@ -519,7 +519,7 @@ Meteor.startup(() => {
     clubes.rawCollection().drop();
 
     //Read the clubs:
-    var clubsCsv = Assets.getText("Clubes_AVL.csv");
+    var clubsCsv = Assets.getText("ClubesAVL.csv");
     var rows = Papa.parse(clubsCsv).data;
 
     console.log("*****************************************************");
@@ -1966,28 +1966,28 @@ Meteor.methods({
             // Nomeação foi alterada no 1º Arbitro
             mudaArbitro(arbitro1Anterior, arbitro1Novo, jogo);
             updateTag(0, 'pendente');
-            enviaMailAlteracaoNomeacao(arbitro1Anterior, arbitro1Novo, jogoId);
+            //enviaMailAlteracaoNomeacao(arbitro1Anterior, arbitro1Novo, jogoId);
         }
 
         if (arbitro2Anterior !== arbitro2Novo) {
             // Nomeação foi alterada no 2º Arbitro
             mudaArbitro(arbitro2Anterior, arbitro2Novo, jogo);
             updateTag(1, 'pendente');
-            enviaMailAlteracaoNomeacao(arbitro2Anterior, arbitro2Novo, jogoId);
+            //enviaMailAlteracaoNomeacao(arbitro2Anterior, arbitro2Novo, jogoId);
         }
 
         if (jl1Anterior !== jl1Novo) {
             // Nomeação foi alterada no JL1
             mudaArbitro(jl1Anterior, jl1Novo, jogo);
             updateTag(2, 'pendente');
-            enviaMailAlteracaoNomeacao(jl1Anterior, jl1Novo, jogoId);
+            //enviaMailAlteracaoNomeacao(jl1Anterior, jl1Novo, jogoId);
         }
 
         if (jl2Anterior !== jl2Novo) {
             // Nomeação foi alterada no JL2
             mudaArbitro(jl2Anterior, jl2Novo, jogo);
             updateTag(3, 'pendente');
-            enviaMailAlteracaoNomeacao(jl2Anterior, jl2Novo, jogoId);
+            //enviaMailAlteracaoNomeacao(jl2Anterior, jl2Novo, jogoId);
         }
 
         const allCA = conselhoDeArbitragem.find();
@@ -3435,18 +3435,18 @@ function retiraHora(horaString) {
 
 const date = require('date-and-time');
 
-function processGames(records, concelhoDoArbitro, username) {
+async function processGames(records, concelhoDoArbitro, username) {
     let previousGame = undefined;
     let maxMealPrize = 0;
     let totalPrizeGame = 0;
     let totalDeslocacao = 0;
     let totalAlimentacao = 0;
-    
+
     let origem = concelhoDoArbitro;
 
     let resultado = [];
 
-    console.log("records", records)
+    console.log("records", records);
 
     for (let index = 0; index < records.length; index++) {
         const element = records[index].jogo;
@@ -3461,12 +3461,11 @@ function processGames(records, concelhoDoArbitro, username) {
         let prizeDeslocacao = 0;
 
         if (previousGame === undefined) { // Primeiro jogo
-            if (nextGameDay === undefined || element.dia!== nextGameDay) {
+            if (nextGameDay === undefined || element.dia !== nextGameDay) {
                 if (element.prova.startsWith('I', 0)) { // Universitário
                     prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                 } else {
                     if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
-                        console.log("ENNTRA?????????????")
                         prizeDeslocacao = CN_DESLOCATION_PRIZE;
                     } else {
                         prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3483,7 +3482,6 @@ function processGames(records, concelhoDoArbitro, username) {
                         prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                     } else {
                         if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
-                            console.log("ENNTRA?????????????")
                             prizeDeslocacao = CN_DESLOCATION_PRIZE;
                         } else {
                             prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3495,7 +3493,6 @@ function processGames(records, concelhoDoArbitro, username) {
                         prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                     } else {
                         if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
-                            console.log("ENNTRA?????????????")
                             prizeDeslocacao = CN_DESLOCATION_PRIZE;
                         } else {
                             prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3508,23 +3505,26 @@ function processGames(records, concelhoDoArbitro, username) {
         // Prêmio de alimentação
         let prizeMeal = 0;
 
-        if (previousGame === undefined) { // Primeiro jogo
+        if (previousGame === undefined || dia !== nextGameDay) { // Primeiro jogo ou mudança de dia
             maxMealPrize = getValorAlimentacao(element.prova);
-            if (nextGameDay === undefined || element.dia!== nextGameDay) {
-                if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
-                    prizeMeal = CN_MEAL_PRIZE;
-                } else {
-                    prizeMeal = getValorAlimentacao(element.prova);
-                }
+            if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                prizeMeal = CN_MEAL_PRIZE;
+                console.log("PRIZE MEAL :1", prizeMeal);
+            } else {
+                prizeMeal = getValorAlimentacao(element.prova);
+                console.log("PRIZE MEAL :2", prizeMeal);
             }
-        } else {
-            if (previousGame.dia === element.dia) {
+        }
+ else {
+            if (dia !== nextGameDay) {
                 maxMealPrize = Math.max(maxMealPrize, getValorAlimentacao(element.prova));
                 if (nextGameDay === undefined || dia !== nextGameDay) {
                     if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
                         prizeMeal = CN_MEAL_PRIZE;
+                        console.log("PRIZE MEAL :3", prizeMeal);
                     } else {
                         prizeMeal = getValorAlimentacao(element.prova);
+                        console.log("PRIZE MEAL :4", prizeMeal);
                     }
                 }
             } else {
@@ -3533,25 +3533,38 @@ function processGames(records, concelhoDoArbitro, username) {
                     if (element.prova.startsWith('CR')) {
                         if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N')) {
                             prizeMeal = getValorAlimentacao(element.prova);
+                            console.log("PRIZE MEAL :5", prizeMeal);
                         }
                     }
                 }
             }
         }
 
-        resultado.push({ element: element, prizeDeslocacao: prizeDeslocacao, prizeMeal: prizeMeal, prizeGame: getPremio(element, username) })
+        // Aguardar conclusão de tarefas assíncronas
+        await Promise.all([
+            getValorDeslocacao(origem, concelhoB),
+            getValorAlimentacao(element.prova)
+        ]);
+
+
+        let jogoComPremios = { element: element, prizeDeslocacao: prizeDeslocacao, prizeMeal: prizeMeal, prizeGame: getPremio(element, username) };
+        console.log("ooo", jogoComPremios);
+
+        resultado.push(jogoComPremios);
 
         previousGame = element;
-        totalPrizeGame += parseFloat(getPremio(element, username));
-        totalDeslocacao += parseFloat(prizeDeslocacao);
-        totalAlimentacao += parseFloat(prizeMeal);
+        //totalPrizeGame += parseFloat(getPremio(element, username));
+        //totalDeslocacao += parseFloat(prizeDeslocacao);
+        //totalAlimentacao += parseFloat(prizeMeal);
     }
 
     return resultado;
 }
 
 
+
 function getConcelhoFromPavilhao(pavilhao) {
+
 
     let concelhoDoPavilhao = "NOT_FOUND";
 
@@ -3559,9 +3572,7 @@ function getConcelhoFromPavilhao(pavilhao) {
     var csvFile = Assets.getText("PavilhoesConcelhos.csv");
     var rows = Papa.parse(csvFile).data;
 
-    pavilhao = removerAcentos(pavilhao);
-
-    
+    pavilhao = removerAcentos(pavilhao);  
 
     // Find the pavilhao and get the concelho
     for (var i = 1; i < rows.length; i++) {
@@ -3580,35 +3591,30 @@ function getConcelhoFromPavilhao(pavilhao) {
         }
     }
 
-    console.log("concelho do pavilhão:", concelhoDoPavilhao)
+    console.log("O concelho do pavilhão:", pavilhao, "eh o seguinte:", concelhoDoPavilhao)
     return concelhoDoPavilhao;
 }
 
 function getValorDeslocacao(origem, destino) {
     let valor = 0;
-
-    // Get the CSV Text:
     var csvFile = Assets.getText("ValorDeslocacoesRegionaisAVL.csv");
     var rows = Papa.parse(csvFile).data;
 
-
-    // Find the origem e destino e obter o valor da deslocação
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
         var origemCSV = row[0];
         var destinoCSV = row[1];
 
-        console.log("origemCSV", origemCSV);
-        console.log("ORIGEM", origem)
+        //console.log("origemCSV", origemCSV);
+        //console.log("ORIGEM", origem);
 
-        console.log("DESTINO", destino)
-        console.log("destinoCSV", destinoCSV)
-
-        console.log("(origemCSV === origem && destinoCSV === destino)", (origemCSV === origem && destinoCSV === destino))
+        //console.log("DESTINO", destino);
+        //console.log("destinoCSV", destinoCSV);
 
         if ((origemCSV === origem && destinoCSV === destino) || (origemCSV === destino && destinoCSV === origem)) {
-            valor = parseFloat(row[2]);
-            break;
+            valor = (row[2]);
+            console.log("Encontrado valor de deslocação de", origem, "para", destino, ":", valor);
+            return valor;
         }
     }
 
@@ -3625,32 +3631,33 @@ function getPremio(jogo, username) {
     if (jogo.arbitro_2 === username)
         funcao = '2';
 
-    // Get the CSV Text:
     const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
     const rows = Papa.parse(csvFile).data;
 
-
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
-            var competicao = row[1];
+        var competicao = row[1];
         var funcaoCSV = row[3];
 
-            if (competicao === prova && funcaoCSV === funcao) {
-                valorPremio = parseFloat(row[2]);;
-                break;
-            }
+        //console.log("competicao", competicao);
+        //console.log("prova", prova);
+        //console.log("funcaoCSV", funcaoCSV);
+        //console.log("funcao", funcao);
+
+        if (competicao === prova && funcaoCSV === funcao) {
+            valorPremio = (row[2]);
+            console.log("Encontrado prêmio para", prova, "e função", funcao, ":", valorPremio);
+            return valorPremio;
         }
-    
+    }
 
     return valorPremio;
 }
 
 
+
 function getValorAlimentacao(prova) {
-
     let valorPremio = 0;
-
-    // Get the CSV Text:
     const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
     const rows = Papa.parse(csvFile).data;
 
@@ -3659,14 +3666,13 @@ function getValorAlimentacao(prova) {
         var competicao = row[1];
 
         if (competicao === prova) {
-            valorPremio = parseFloat(row[4]);;
-            break;
+            valorPremio = (row[4]);
+            console.log("Encontrado valor de alimentação para", prova, ":", valorPremio);
+            return valorPremio;
         }
     }
 
-
     return valorPremio;
-
 }
 
 function titleCase(str) {
@@ -3680,7 +3686,6 @@ function titleCase(str) {
     // Directly return the joined string
     return splitStr.join(" ");
 }
-
 
 function removerAcentos(texto) {
     const mapaAcentosHex = {
@@ -3702,9 +3707,10 @@ function removerAcentos(texto) {
 
     for (let letra in mapaAcentosHex) {
         const expressaoRegular = mapaAcentosHex[letra];
-        texto = (texto+"").replace(expressaoRegular, letra);
+        texto = (texto + "").replace(expressaoRegular, letra);
+        texto = texto.replace(/\./g, "");
     }
 
-    return texto;
+    return texto.toUpperCase();
 }
 

@@ -38,6 +38,32 @@ function comparaAminhaLindaData(a, b) {
 }
 
 export function GestaoPagamentos({ user }) {
+
+
+    user === null ? (user = Meteor.user()) : (user = user);
+    let [isCA, setIsCA] = useState(null);
+
+    let myPromise = new Promise((resolve, reject) => {
+        Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
+            if (result == 1 || result == 0) {
+                resolve(result);
+            } else {
+                reject();
+            }
+
+            return result === 1;
+        });
+    });
+
+    setTimeout(() => {
+        myPromise.then(function (result) {
+            const admin = result === 1;
+            setIsCA(admin);
+        });
+    }, 200);
+
+
+
     const colunasGestaoPagamentos = [
         {
             title: "Jogo",
@@ -113,11 +139,6 @@ export function GestaoPagamentos({ user }) {
      */
 
     const [dataSource, setDataSource] = useState([]);
-
-
-    let isCA = Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
-        return result;
-    });
 
     function loadData() {
         user = Meteor.user();
