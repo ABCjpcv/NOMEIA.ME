@@ -3622,7 +3622,7 @@ function getValorDeslocacao(origem, destino) {
 
 function getPremio(jogo, username) {
     let valorPremio = 0;
-    const prova = jogo.prova;
+    const prova = ((jogo.prova)+"").toUpperCase();
     let funcao = 'JL';
 
     if (jogo.arbitro_1 === username)
