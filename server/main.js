@@ -354,7 +354,7 @@ Meteor.startup(() => {
       res = res + 1;
     });
 
-    console.log("INSERT INTO RESTRICOES: " + res);
+    console.log("INSERT INTO RESTRICOES : " + res);
 
     // console.log("****************************************************");
     // console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
@@ -379,7 +379,7 @@ Meteor.startup(() => {
     console.log("*****************************************************");
 
     //Get the c sv Text:
-    var csvFile = Assets.getText("teste.csv");
+    var csvFile = Assets.getText("teste2.csv");
     var rows = Papa.parse(csvFile).data;
 
     jogos.rawCollection().drop();
@@ -387,7 +387,7 @@ Meteor.startup(() => {
     
 
     //Setup the database, by adding games...
-    for (let index = 1; index < rows.length - 1; index++) {
+     for (let index = 1; index < rows.length - 1; index++) {
       // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
 
       jogos.insert({
@@ -418,18 +418,17 @@ Meteor.startup(() => {
 
     nomeacoes.rawCollection().drop();
 
-    var jog = jogos.find();
-
-    let n = 0;
+      var jog = jogos.find();
+        let n = 0;
 
     arb.forEach((arbitro) => {
       let nomeacoesAuxiliares = [];
 
       jog.forEach((jogo) => {
         if (
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_2 == arbitro.nome ||
+          jogo.arbitro_1 === arbitro.nome ||
+          jogo.arbitro_1 === arbitro.nome ||
+          jogo.arbitro_2 === arbitro.nome ||
           jogo.juiz_linha.includes(arbitro.nome)
         ) {
           nomeacoesAuxiliares.push({
@@ -445,7 +444,7 @@ Meteor.startup(() => {
       });
 
       n = n + 1;
-      // console.log("inserted nomeacoes a: " + arbitro.nome);
+       console.log("inserted nomeacoes a: " + arbitro.nome);
     });
 
     console.log("INSERT INTO NOMEACOES: " + n);
@@ -770,7 +769,7 @@ Meteor.startup(() => {
 
     if (DROP_PAGAMENTOS_CR_CN) {
         console.log("*****************************************************");
-        console.log("*******   DATABASE FOR PAGAMENTOS  CR CN  **********");
+        console.log("********   DATABASE FOR PAGAMENTOS  CR CN  **********");
         console.log("*****************************************************");
 
         pagamentosCRCN.rawCollection().drop();

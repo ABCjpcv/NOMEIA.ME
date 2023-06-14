@@ -13,8 +13,8 @@ Meteor.startup(() => {
   const container = document.getElementById("react-target");
   const root = createRoot(container); // createRoot(container!) if you use TypeScript
   root.render(
-    <ConfigProvider locale={pt_PT}>
-      <App tab="navbar" />{" "}
+      <ConfigProvider locale={pt_PT}>
+          <App tab="navbar" locale={pt_PT} /> { " "}
     </ConfigProvider>
   );
 });
