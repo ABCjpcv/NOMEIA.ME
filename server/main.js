@@ -20,7 +20,7 @@ let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = true;
+let DROP_ALL_TABLES = false;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -1350,7 +1350,7 @@ Meteor.methods({
         return result.sort();
     },
 
-    carregaDadosGestaoPagamentos: function (user) {
+    carregaDadosGestaoPagamentos: async function (user) {
 
         var email = user.emails[0].address;
 
@@ -1362,16 +1362,20 @@ Meteor.methods({
         let records = jogosPassados.findOne({ arbitro: arb });
 
         records = records.nomeacoesPrivadas;
+        let resultadoPagamentos = [];
 
         if (records !== undefined) {
-            let resultadoPagamentos = processGames(records, concelhoDoArbitro, user.username);
+            resultadoPagamentos = await processGames(records, concelhoDoArbitro, user.username);
 
-            console.log("RESULTADO: ", resultadoPagamentos)
-            return resultadoPagamentos;
+            //console.log("RESULTADO: ", resultadoPagamentos)
+            
+
+            
         }
 
-        
-        return [];
+        return resultadoPagamentos;
+
+        //return resultadoFiltrado;
     },
 
     //#endregion
@@ -3445,7 +3449,7 @@ async function processGames(records, concelhoDoArbitro, username) {
 
     let resultado = [];
 
-    console.log("records", records);
+    //console.log("records", records);
 
     for (let index = 0; index < records.length; index++) {
         const element = records[index].jogo;
@@ -3508,10 +3512,10 @@ async function processGames(records, concelhoDoArbitro, username) {
             maxMealPrize = getValorAlimentacao(element.prova);
             if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
                 prizeMeal = CN_MEAL_PRIZE;
-                console.log("PRIZE MEAL :1", prizeMeal);
+                //console.log("PRIZE MEAL :1", prizeMeal);
             } else {
                 prizeMeal = getValorAlimentacao(element.prova);
-                console.log("PRIZE MEAL :2", prizeMeal);
+                //console.log("PRIZE MEAL :2", prizeMeal);
             }
         }
  else {
@@ -3520,10 +3524,10 @@ async function processGames(records, concelhoDoArbitro, username) {
                 if (nextGameDay === undefined || dia !== nextGameDay) {
                     if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
                         prizeMeal = CN_MEAL_PRIZE;
-                        console.log("PRIZE MEAL :3", prizeMeal);
+                        //console.log("PRIZE MEAL :3", prizeMeal);
                     } else {
                         prizeMeal = getValorAlimentacao(element.prova);
-                        console.log("PRIZE MEAL :4", prizeMeal);
+                        //console.log("PRIZE MEAL :4", prizeMeal);
                     }
                 }
             } else {
@@ -3532,7 +3536,7 @@ async function processGames(records, concelhoDoArbitro, username) {
                     if (element.prova.startsWith('CR')) {
                         if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N')) {
                             prizeMeal = getValorAlimentacao(element.prova);
-                            console.log("PRIZE MEAL :5", prizeMeal);
+                            //console.log("PRIZE MEAL :5", prizeMeal);
                         }
                     }
                 }
@@ -3547,7 +3551,7 @@ async function processGames(records, concelhoDoArbitro, username) {
 
 
         let jogoComPremios = { element: element, prizeDeslocacao: prizeDeslocacao, prizeMeal: prizeMeal, prizeGame: getPremio(element, username) };
-        console.log("ooo", jogoComPremios);
+        //console.log("ooo", jogoComPremios);
 
         resultado.push(jogoComPremios);
 
@@ -3590,7 +3594,22 @@ function getConcelhoFromPavilhao(pavilhao) {
         }
     }
 
-    console.log("O concelho do pavilhão:", pavilhao, "eh o seguinte:", concelhoDoPavilhao)
+    if (concelhoDoPavilhao === "NOT_FOUND") {
+        // Try to find the substring for pavilhao and get the concelho
+        for (var i = 1; i < rows.length; i++) {
+            var row = rows[i];
+            var pavilhaoCSV = ((row[0]) + "").replace(/\º./g, "");
+
+            pavilhaoCSV = removerAcentos(pavilhaoCSV);
+
+            if (pavilhao.includes(pavilhaoCSV)) {
+                concelhoDoPavilhao = row[1];
+                break;
+            }
+        }
+    }
+
+    //console.log("O concelho do pavilhão:", pavilhao, "eh o seguinte:", concelhoDoPavilhao)
     return concelhoDoPavilhao;
 }
 
@@ -3612,7 +3631,7 @@ function getValorDeslocacao(origem, destino) {
 
         if ((origemCSV === origem && destinoCSV === destino) || (origemCSV === destino && destinoCSV === origem)) {
             valor = (row[2]);
-            console.log("Encontrado valor de deslocação de", origem, "para", destino, ":", valor);
+            //console.log("Encontrado valor de deslocação de", origem, "para", destino, ":", valor);
             return valor;
         }
     }
@@ -3645,7 +3664,7 @@ function getPremio(jogo, username) {
 
         if (competicao === prova && funcaoCSV === funcao) {
             valorPremio = (row[2]);
-            console.log("Encontrado prêmio para", prova, "e função", funcao, ":", valorPremio);
+            //console.log("Encontrado prêmio para", prova, "e função", funcao, ":", valorPremio);
             return valorPremio;
         }
     }
@@ -3666,7 +3685,7 @@ function getValorAlimentacao(prova) {
 
         if (competicao === prova) {
             valorPremio = (row[4]);
-            console.log("Encontrado valor de alimentação para", prova, ":", valorPremio);
+            //console.log("Encontrado valor de alimentação para", prova, ":", valorPremio);
             return valorPremio;
         }
     }

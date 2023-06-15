@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useEffect } from "react";
 
 import { Header } from "../Geral/Header";
 import { Table } from "antd";
@@ -153,6 +153,7 @@ export function GestaoPagamentos({ user }) {
      */
 
     const [dataSource, setDataSource] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
     const [summaryRow, setSummaryRow] = useState(null);
 
     const [mesDisplay, setMesDisplay] = useState((numeroMesNome((new Date()).getMonth())));
@@ -220,20 +221,47 @@ export function GestaoPagamentos({ user }) {
     }
 
     function changeMes(numero) {
-        let mes = mesDisplay;
+        setMesDisplay((mesAtual) => {
+            const novoMes = parseInt(mesAtual, 10) + numero;
+            return numeroMesNome(novoMes);
+        });
 
-
-
-        console.log("mes", mes)
-
-        let proxMes = numeroMesNome(nomeMesNumero(mes) + numero);
-        console.log("proximo mes", proxMes)
-
-        setMesDisplay(proxMes);
-        loadData();
+        setFilteredData((dados) => filtraDados(dados, parseInt(mesDisplay, 10) + numero));
     }
 
-    
+
+
+    function resetMes() {
+        let mes = ((new Date()).getMonth())
+        console.log("mes aqui", mes);
+
+        setMesDisplay(numeroMesNome(mes));
+        setFilteredData(filtraDados(dataSource, mes));
+    }
+
+    function filtraDados(dados, mes) {
+
+        console.log("MES", mes);
+
+        const filteredData = dados.filter((item) => {
+            const dataSplitada = item.Dia.split("/");
+
+            console.log("dataSplitada", dataSplitada)
+
+            const mesItem = parseInt(dataSplitada[1], 10);
+
+            console.log("mesItem", mesItem);
+
+            return mesItem === mes;
+        });
+        return filteredData.length > 0 ? filteredData : [{Premio: 0, Deslocacao: 0, Alimentacao: 0}];
+    }
+
+    useEffect(() => {
+        console.log("current Data Source:", dataSource);
+
+        console.log("current data filtered: ", filteredData);
+    }, [mesDisplay, dataSource, filteredData]);
 
     return (
         <>
@@ -268,18 +296,18 @@ export function GestaoPagamentos({ user }) {
                                     <div style={{display:"flex",justifyContent: "space-between",    alignItems: "center",    borderTopLeftRadius: "2px",    borderTopRightRadius: "2px",    marginTop: "1%",    marginLeft: "1%",   marginRight: "1%"}}>
                                         <div style={{display: "flex", justifyContent: "space-between",     alignItems: "center"} }>
                                             <div style={{ position: "relative", display: "inline-flex", verticalAlign: "middle" }}>
-                                                <button type="button" title="Previous Semana" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px", borderTopRightRadius: "0", borderBottomRightRadius: "0" }}>
+                                                <button type="button" title="Mês Anterior" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px", borderTopRightRadius: "0", borderBottomRightRadius: "0" }}>
                                                     <span class="fc-icon fc-icon-chevron-left" style={{ fontSize: "1.5em" }} onClick={() => changeMes(-1) 
 
                                                     }></span>
                                                 </button>
-                                                <button type="button" title="Mês Atual" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px",  borderBottomLeftRadius: "0", borderTopLeftRadius: "0" }}>
+                                                <button type="button" title="Mês Seguinte" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px",  borderBottomLeftRadius: "0", borderTopLeftRadius: "0" }}>
                                                     <span class="fc-icon fc-icon-chevron-right" style={{ fontSize: "1.5em" }} onClick={() => changeMes(+1)
 
                                                     }></span> 
                                                 </button>
                                             </div>
-                                            <button type="button" title="Mês Atual" style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Mês Atual </button>
+                                            <button type="button" title="Mês Atual" onClick={() => resetMes()}  style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Mês Atual </button>
                                         </div>
                                         <div class="fc-toolbar-chunk">
                                             <h2 class="fc-toolbar-title" id="fc-dom-1">{mesDisplay}</h2>
@@ -296,8 +324,8 @@ export function GestaoPagamentos({ user }) {
                                     }}
                                 >
                                     <Table
-                                        className="consultaPrivadaTabela"
-                                        dataSource={dataSource}
+                                            className="consultaPrivadaTabela"
+                                            dataSource={filteredData.length !== 0 ? filteredData : dataSource}
                                         columns={colunasGestaoPagamentos}
                                         style={{
                                             width: "100%",
