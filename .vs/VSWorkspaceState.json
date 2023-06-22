@@ -1,16 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\client",
     "\\imports",
     "\\imports\\ui",
     "\\imports\\ui\\Pages",
     "\\imports\\ui\\Pages\\Arbitros",
     "\\imports\\ui\\Pages\\Arbitros\\CA",
+    "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos",
     "\\imports\\ui\\Pages\\Geral",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\imports\\ui\\Pages\\Geral\\App.jsx",
+  "SelectedNode": "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos\\CampeonatoRegionalNacional.jsx",
   "PreviewInSolutionExplorer": false
 }

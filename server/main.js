@@ -1875,12 +1875,33 @@ Meteor.methods({
         const jogoId = jogo.Jogo;
         const jogoAnterior = jogos.findOne({ id: jogoId });
 
+        console.log("jogo a ser alterado: ", jogoAnterior);
+
+        console.log("******************************")
+        console.log("jogo novo: ", jogo)
+
         if (!jogoAnterior) {
             throw new Error('Jogo não encontrado.');
         }
 
+        let jogoNovo = {
+            id : jogo.id,
+            dia : jogo.Dia,
+            hora : jogo.Hora,
+            prova : jogo.Prova,
+            serie : jogo.Serie,
+            equipas : jogo.Equipas,
+            pavilhao : jogo.Pavilhao,
+            arbitro_1 : jogo.Arbitro1,
+            arbitro_2 : jogo.Arbitro2,
+            juiz_linha : [jogo.JL1, jogo.JL2, "", ""
+            ],
+            key : jogoAnterior.key
+        }
+
         // Atualiza o jogo existente com os dados atualizados
-        jogos.update({ id: jogoId }, { $set: jogo });
+        jogos.remove({ jogoAnterior });
+        jogos.insert({ jogoNovo })
 
         // 2º PASSO: Altera os membros da equipa de arbitragem associada ao jogo
         const arbitro1Anterior = jogoAnterior.arbitro_1;
@@ -1933,6 +1954,7 @@ Meteor.methods({
                 for (let index = 0; index < nPriv.length; index++) {
                     if (nPriv[index].jogo.id != jogo.id) {
                         novasNpriv.push(nPriv[index]);
+                        //console.log("nPriv[index]:::", nPriv[index])
                     }
                 }
                 nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novasNpriv } });
@@ -1959,6 +1981,14 @@ Meteor.methods({
                                 newPrivNom.push({ jogo: jogo, confirmacaoAtual: confirmacao });
                             }
                         }
+                        nomeacoes.update({ arbitro: element.arbitro }, { $set: { nomeacoesPrivadas: newPrivNom } });
+                    }
+                    else {
+                        let newPrivNom = [];
+                        
+                        newPrivNom.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
+                            
+                        
                         nomeacoes.update({ arbitro: element.arbitro }, { $set: { nomeacoesPrivadas: newPrivNom } });
                     }
                 });
@@ -3468,7 +3498,7 @@ async function processGames(records, concelhoDoArbitro, username) {
                 if (element.prova.startsWith('I', 0)) { // Universitário
                     prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                 } else {
-                    if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                    if (element.prova.startsWith('CN') || element.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                         prizeDeslocacao = CN_DESLOCATION_PRIZE;
                     } else {
                         prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3484,7 +3514,7 @@ async function processGames(records, concelhoDoArbitro, username) {
                     if (element.prova.startsWith('I', 0)) { // Universitário
                         prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                     } else {
-                        if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                        if (element.prova.startsWith('CN') || element.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                             prizeDeslocacao = CN_DESLOCATION_PRIZE;
                         } else {
                             prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3495,7 +3525,7 @@ async function processGames(records, concelhoDoArbitro, username) {
                     if (element.prova.startsWith('I', 0)) { // Universitário
                         prizeDeslocacao = UNIVERSITARY_DESLOCATION_PRIZE;
                     } else {
-                        if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                        if (element.prova.startsWith('CN') || element.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                             prizeDeslocacao = CN_DESLOCATION_PRIZE;
                         } else {
                             prizeDeslocacao = getValorDeslocacao(origem, concelhoB);
@@ -3510,7 +3540,7 @@ async function processGames(records, concelhoDoArbitro, username) {
 
         if (previousGame === undefined || dia !== nextGameDay) { // Primeiro jogo ou mudança de dia
             maxMealPrize = getValorAlimentacao(element.prova);
-            if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+            if (element.prova.startsWith('CN') || element.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                 prizeMeal = CN_MEAL_PRIZE;
                 //console.log("PRIZE MEAL :1", prizeMeal);
             } else {
@@ -3522,7 +3552,7 @@ async function processGames(records, concelhoDoArbitro, username) {
             if (dia !== nextGameDay) {
                 maxMealPrize = Math.max(maxMealPrize, getValorAlimentacao(element.prova));
                 if (nextGameDay === undefined || dia !== nextGameDay) {
-                    if (element.prova.startsWith('CN') || element.prova.startsWith('N')) {
+                    if (element.prova.startsWith('CN') || element.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                         prizeMeal = CN_MEAL_PRIZE;
                         //console.log("PRIZE MEAL :3", prizeMeal);
                     } else {
@@ -3534,7 +3564,7 @@ async function processGames(records, concelhoDoArbitro, username) {
                 maxMealPrize = getValorAlimentacao(element.prova);
                 if (nextGameDay === element.dia) {
                     if (element.prova.startsWith('CR')) {
-                        if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N')) {
+                        if (nextGame.prova.startsWith('CN') || nextGame.prova.startsWith('N') || element.prova.startsWith("TPM") || element.prova.startsWith("TPF")) {
                             prizeMeal = getValorAlimentacao(element.prova);
                             //console.log("PRIZE MEAL :5", prizeMeal);
                         }
@@ -3678,6 +3708,8 @@ function getValorAlimentacao(prova) {
     let valorPremio = 0;
     const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
     const rows = Papa.parse(csvFile).data;
+
+    //prova = (prova+"").toUpperCase();
 
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];

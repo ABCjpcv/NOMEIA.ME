@@ -829,10 +829,12 @@ export function CampeonatoRegionalNacional({ user }) {
   let [editableRow, setEditableRow] = useState("");
   let [edit, setEdit] = useState(Boolean);
 
-  useEffect(() => {
-    // console.log("disabledDataSource", disabledDataSource);
-    // console.log("dataSource", dataSource);
-  }, [disabledDataSource, dataSource]);
+    useEffect(() => {
+        // console.log("disabledDataSource", disabledDataSource);
+        // console.log("dataSource", dataSource);
+    }, [disabledDataSource]);
+
+useEffect(() => {}, [dataSource]);
 
   function handleSubmissionConfirmation() {
     Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {

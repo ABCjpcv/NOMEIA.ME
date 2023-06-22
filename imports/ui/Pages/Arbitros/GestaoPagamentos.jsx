@@ -39,11 +39,25 @@ function comparaAminhaLindaData(a, b) {
     return 0;
 }
 
+function comparaAminhaLindaDinheiro(a, b) {
+    let x = parseFloat(a);
+    let y = parseFloat(b);
+
+    if (isNaN(x)) x = 0;
+    if (isNaN(y)) y = 0;
+
+    return x - y;
+}
+
+
 export function GestaoPagamentos({ user }) {
 
 
     user === null ? (user = Meteor.user()) : (user = user);
     let [isCA, setIsCA] = useState(null);
+    const [mesDisplay, setMesDisplay] = useState(
+        `${numeroMesNome(new Date().getMonth())}`+ "," + `${(new Date().getFullYear())}`
+    );
 
     let myPromise = new Promise((resolve, reject) => {
         Meteor.call("isAdmin", Meteor.user(), true, (err, result) => {
@@ -95,7 +109,7 @@ export function GestaoPagamentos({ user }) {
             title: "Prova",
             dataIndex: "Prova",
             key: "Prova",
-            sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+            sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
             sortDirections: ["descend", "ascend"],
         },
         {
@@ -109,7 +123,7 @@ export function GestaoPagamentos({ user }) {
             title: "Prémio",
             dataIndex: "Premio",
             key: "Premio",
-            sorter: (a, b) => comparaAminhaLindaString(a.Premio, b.Premio),
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Premio, b.Premio),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -121,7 +135,7 @@ export function GestaoPagamentos({ user }) {
             title: "Deslocação",
             dataIndex: "Deslocacao",
             key: "Deslocacao",
-            sorter: (a, b) => comparaAminhaLindaString(a.Deslocacao, b.Deslocacao),
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Deslocacao, b.Deslocacao),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -133,7 +147,7 @@ export function GestaoPagamentos({ user }) {
             title: "Alimentação",
             dataIndex: "Alimentacao",
             key: "Alimentacao",
-            sorter: (a, b) => comparaAminhaLindaString(a.Alimentacao, b.Alimentacao),
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Alimentacao, b.Alimentacao),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -155,8 +169,6 @@ export function GestaoPagamentos({ user }) {
     const [dataSource, setDataSource] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [summaryRow, setSummaryRow] = useState(null);
-
-    const [mesDisplay, setMesDisplay] = useState((numeroMesNome((new Date()).getMonth())));
 
     function loadData() {
         user = Meteor.user();
@@ -221,47 +233,91 @@ export function GestaoPagamentos({ user }) {
     }
 
     function changeMes(numero) {
-        setMesDisplay((mesAtual) => {
-            const novoMes = parseInt(mesAtual, 10) + numero;
-            return numeroMesNome(novoMes);
-        });
+        const [mes, ano] = mesDisplay.split(", ");
+        let novoMes = parseInt(nomeMesNumero(mes) + numero);
+        let novoAno = parseInt(ano);
 
-        setFilteredData((dados) => filtraDados(dados, parseInt(mesDisplay, 10) + numero));
+        console.log("novo mes!!!", novoMes)
+        console.log("novo ano!!!", novoAno)
+
+        if (novoMes === 0) {
+            novoAno = novoAno - 1;
+            novoMes = 12;
+        } else if (novoMes === 13) {
+            novoAno = novoAno + 1;
+            novoMes = 1;
+        }
+
+        setMesDisplay(`${numeroMesNome(novoMes)}, ${novoAno}`);
+    }
+
+
+
+
+    function mostraTudo() {
+        setFilteredData(dataSource);
     }
 
 
 
     function resetMes() {
-        let mes = ((new Date()).getMonth())
-        console.log("mes aqui", mes);
+        const mesIndex = new Date().getMonth();
+        const mes = numeroMesNome(mesIndex);
+        const ano = new Date().getFullYear();
 
-        setMesDisplay(numeroMesNome(mes));
-        setFilteredData(filtraDados(dataSource, mes));
+        setMesDisplay(`${mes}, ${ano}`);
+        // ...
     }
 
-    function filtraDados(dados, mes) {
 
-        console.log("MES", mes);
 
+    function filtraDados(dados, mes, ano) {
         const filteredData = dados.filter((item) => {
             const dataSplitada = item.Dia.split("/");
-
-            console.log("dataSplitada", dataSplitada)
-
-            const mesItem = parseInt(dataSplitada[1], 10);
-
-            console.log("mesItem", mesItem);
-
-            return mesItem === mes;
+            const mesItem = parseInt(dataSplitada[1], 10).toString(); // Converter para string
+            const anoItem = parseInt(dataSplitada[2], 10).toString(); // Converter para string
+            return mesItem === mes.toString() && anoItem === ano.toString();
         });
-        return filteredData.length > 0 ? filteredData : [{Premio: 0, Deslocacao: 0, Alimentacao: 0}];
+        return filteredData.length > 0 ? filteredData : [{ Premio: 0, Deslocacao: 0, Alimentacao: 0 }];
     }
+
 
     useEffect(() => {
         console.log("current Data Source:", dataSource);
+        setFilteredData(filtraDados(dataSource, nomeMesNumero(mesDisplay.split(",")[0]), parseInt(mesDisplay.split(",")[1])));
 
         console.log("current data filtered: ", filteredData);
-    }, [mesDisplay, dataSource, filteredData]);
+    }, [mesDisplay, dataSource]);
+
+    useEffect(() => {
+        updateSummaryRow();
+    }, [filteredData]);
+
+    function updateSummaryRow() {
+        // Calcule os valores totais com base nos dados filtrados
+        let premioTotal = 0;
+        let deslocacaoTotal = 0;
+        let alimentacaoTotal = 0;
+
+        for (let index = 0; index < filteredData.length; index++) {
+            const item = filteredData[index];
+            premioTotal += parseFloat(item.Premio);
+            deslocacaoTotal += parseFloat(item.Deslocacao);
+            alimentacaoTotal += parseFloat(item.Alimentacao);
+        }
+
+        // Atualize o estado summaryRow com os novos valores
+        setSummaryRow({
+            Jogo: 'TOTAL:',
+            Dia: '',
+            Hora: '',
+            Prova: '',
+            Pavilhao: '',
+            Premio: premioTotal.toFixed(2) + " €",
+            Deslocacao: deslocacaoTotal.toFixed(2) + " €",
+            Alimentacao: alimentacaoTotal.toFixed(2) + " €",
+        });
+    }
 
     return (
         <>
@@ -308,6 +364,7 @@ export function GestaoPagamentos({ user }) {
                                                 </button>
                                             </div>
                                             <button type="button" title="Mês Atual" onClick={() => resetMes()}  style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Mês Atual </button>
+                                            <button type="button" title="Época Inteira" onClick={() => mostraTudo()} style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Época Inteira </button>
                                         </div>
                                         <div class="fc-toolbar-chunk">
                                             <h2 class="fc-toolbar-title" id="fc-dom-1">{mesDisplay}</h2>
@@ -375,7 +432,7 @@ function nomeMesNumero(nome_mes) {
     ];
 
     for (let i = 0; i < meses.length; i++) {
-        if (meses[i].toLowerCase() === nome_mes.toLowerCase()) {
+        if (meses[i].toLowerCase() === (nome_mes+"").toLowerCase()) {
             return i + 1;
         }
     }
