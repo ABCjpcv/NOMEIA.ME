@@ -370,7 +370,7 @@ function handleConfirmationResultado(record, index) {
 function handleAddResultadoNovo(record, index) {
   console.log("ertyuiolk,mnbg", record);
   Modal.confirm({
-    title: "Resultado do jogo:\r\n" + record.Equipas,
+    title: "Resultado do jogo:\r\n" + record.equipas,
     content: (
       <div className="divResultado">
         <Form
@@ -541,81 +541,81 @@ export function ConsultaPrivada({ user }) {
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
-      dataIndex: "Jogo",
-      key: "Jogo",
+      dataIndex: "numerojogo",
+          key: "numerojogo",
       width: "4%",
-      sorter: (a, b) => a.Jogo - b.Jogo,
+      sorter: (a, b) => a.numerojogo - b.numerojogo,
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Dia",
-      dataIndex: "Dia",
-      key: "Dia",
+      dataIndex: "dia",
+      key: "dia",
       width: "7%",
-      sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+      sorter: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Hora",
-      dataIndex: "Hora",
-      key: "Hora",
+      dataIndex: "hora",
+      key: "hora",
       width: "5%",
-      sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+      sorter: (a, b) => comparaAminhaLindaString(a.hora, b.hora),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Prova",
-      dataIndex: "Prova",
-      key: "Prova",
+      dataIndex: "prova",
+      key: "prova",
       width: "7%",
-      sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+      sorter: (a, b) => comparaAminhaLindaString(a.prova, b.prova),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Série",
-      dataIndex: "Serie",
-      key: "Serie",
+      dataIndex: "serie",
+      key: "serie",
       width: "5%",
-      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+      sorter: (a, b) => comparaAminhaLindaString(a.serie, b.serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Equipas",
-      dataIndex: "Equipas",
-      key: "Equipas",
+      dataIndex: "equipas",
+      key: "equipas",
       width: "12%",
-      sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+      sorter: (a, b) => comparaAminhaLindaString(a.equipas, b.equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "Pavilhão",
-      dataIndex: "Pavilhao",
-      key: "Pavilhao",
+      dataIndex: "pavilhao",
+      key: "pavilhao",
       width: "15%",
-      sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+      sorter: (a, b) => comparaAminhaLindaString(a.pavilhao, b.pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
     },
     {
       title: "1º Árbitro",
-      dataIndex: "Arbitro1",
-      key: "Arbitro1",
+      dataIndex: "arbitro1",
+      key: "arbitro1",
 
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "2º Árbitro",
-      dataIndex: "Arbitro2",
-      key: "Arbitro2",
+      dataIndex: "arbitro2",
+      key: "arbitro2",
 
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -772,8 +772,8 @@ export function ConsultaPrivada({ user }) {
         }
 
         // Dividir a data e a hora em partes individuais
-        const [dia, mes, ano] = record.Dia.split('/');
-        const [hora, minuto] = record.Hora.split(':');
+        const [dia, mes, ano] = record.dia.split('/');
+        const [hora, minuto] = record.hora.split(':');
 
         // Construir a data no formato "mm/dd/aa" e a hora no formato "hh:mm:ss"
         const dataHoraString = `${padLeft(mes)}/${padLeft(dia)}/${ano} ${padLeft(hora)}:${padLeft(minuto)}:00`;
@@ -883,24 +883,21 @@ export function ConsultaPrivada({ user }) {
 
             tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
 
-            // console.log("jogoLido", jogoLido);
+             console.log("jogoLido", jogoLido);
 
-            let jl =
-              jogoLido.juiz_linha[0].length == 0
-                ? ""
-                : jogoLido.juiz_linha.toString().replaceAll(",", "\n");
+           
 
-            let obj = {
-              Jogo: jogoLido.id,
-              Dia: jogoLido.dia,
-              Hora: jogoLido.hora,
-              Prova: jogoLido.prova,
-              Serie: jogoLido.serie,
-              Equipas: jogoLido.equipas,
-              Pavilhao: jogoLido.pavilhao,
-              Arbitro1: jogoLido.arbitro_1,
-              Arbitro2: jogoLido.arbitro_2,
-              JL: jogoLido.juiz_linha[0] + " " + jogoLido.juiz_linha[1],
+              let obj = {
+                  numerojogo: jogoLido.numerojogo,
+              dia: jogoLido.dia,
+              hora: jogoLido.hora,
+              prova: jogoLido.prova,
+              serie: jogoLido.serie,
+              equipas: jogoLido.equipas,
+              pavilhao: jogoLido.pavilhao,
+              arbitro1: jogoLido.arbitro1,
+                arbitro2: jogoLido.arbitro2,
+                JL: jogoLido.JL1 === undefined ? "" : jogoLido.JL1 + " " + jogoLido.JL2 === undefined ? "" : jogoLido.JL2,
               key: jogoLido.key,
               tags: [tags],
             };

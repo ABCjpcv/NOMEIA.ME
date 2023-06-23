@@ -163,27 +163,7 @@ export function CampeonatoRegionalNacional({ user }) {
             complete: function (results) {
               let newGames = results.data;
               // console.log("NEW GAMES", newGames);
-              if (selectVal === "Campeonato Universitário") {
-                // console.log(
-                //   "ENTRAS???????????????????????????????????????????"
-                // );
-                Meteor.call(
-                  "adicionaJogosUniversitarios",
-                  newGames,
-                  (err, result) => {
-                    if (err) {
-                      //console.log("Error: " + err);
-                      return;
-                    }
-                    if (result) {
-                      message.success(
-                        "Novos jogos do Campeonato Universitário carregados!"
-                      );
-                    }
-                  }
-                );
-                navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
-              } else if (selectVal === "Campeonato Regional / Nacional") {
+              if (selectVal === "Campeonato Regional / Nacional") {
                 Meteor.call(
                   "adicionaJogosSemanais",
                   newGames,
@@ -201,9 +181,10 @@ export function CampeonatoRegionalNacional({ user }) {
                       );
                     }
                   }
-                );
-                navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
-              }
+                  );
+                  
+                  }
+                  loadData();
             },
           });
         } else {
@@ -332,83 +313,83 @@ export function CampeonatoRegionalNacional({ user }) {
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
-      dataIndex: "Jogo",
-      key: "Jogo",
-      sorter: (a, b) => parseInt(a.Jogo) - parseInt(b.Jogo),
+          dataIndex: "numerojogo",
+          key: "numerojogo",
+      sorter: (a, b) => parseInt(a.numerojogo) - parseInt(b.numerojogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.8%",
-      ...getColumnSearchProps("Jogo"),
+      ...getColumnSearchProps("numerojogo"),
     },
     {
       title: "Dia",
-      dataIndex: "Dia",
-      key: "Dia",
-      sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+      dataIndex: "dia",
+      key: "dia",
+      sorter: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "6.3%",
-      ...getColumnSearchProps("Dia"),
+      ...getColumnSearchProps("dia"),
     },
     {
       title: "Hora",
-      dataIndex: "Hora",
-      key: "Hora",
-      sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+      dataIndex: "hora",
+      key: "hora",
+      sorter: (a, b) => comparaAminhaLindaString(a.hora, b.hora),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.8%",
-      ...getColumnSearchProps("Hora"),
+      ...getColumnSearchProps("hora"),
     },
     {
       title: "Prova",
-      dataIndex: "Prova",
-      key: "Prova",
-      sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+      dataIndex: "prova",
+      key: "prova",
+      sorter: (a, b) => comparaAminhaLindaString(a.prova, b.prova),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "6%",
 
-      ...getColumnSearchProps("Prova"),
+      ...getColumnSearchProps("prova"),
     },
     {
       title: "Série",
-      dataIndex: "Serie",
-      key: "Serie",
-      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+      dataIndex: "serie",
+      key: "serie",
+      sorter: (a, b) => comparaAminhaLindaString(a.serie, b.serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.5%",
 
-      ...getColumnSearchProps("Serie"),
+      ...getColumnSearchProps("serie"),
     },
     {
       title: "Equipas",
-      dataIndex: "Equipas",
-      key: "Equipas",
-      sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+      dataIndex: "equipas",
+      key: "equipas",
+      sorter: (a, b) => comparaAminhaLindaString(a.equipas, b.equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
 
-      ...getColumnSearchProps("Equipas"),
+      ...getColumnSearchProps("equipas"),
     },
     {
       title: "Pavilhão",
-      dataIndex: "Pavilhao",
-      key: "Pavilhao",
-      sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+      dataIndex: "pavilhao",
+      key: "pavilhao",
+      sorter: (a, b) => comparaAminhaLindaString(a.pavilhao, b.pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
 
-      ...getColumnSearchProps("Pavilhao"),
+      ...getColumnSearchProps("pavilhao"),
     },
     {
       title: "1º Árbitro",
-      dataIndex: "Arbitro1",
-      key: "Arbitro1",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      dataIndex: "arbitro1",
+      key: "arbitro1",
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("Arbitro1"),
+      ...getColumnSearchProps("arbitro1"),
       render: (text, record, index) => (
         <>
           <Select
@@ -432,7 +413,7 @@ export function CampeonatoRegionalNacional({ user }) {
             key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Arbitro1 != "" ? record.Arbitro1 : null}
+            value={record.arbitro1 != "" ? record.arbitro1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -455,11 +436,11 @@ export function CampeonatoRegionalNacional({ user }) {
     },
     {
       title: "2º Árbitro",
-      dataIndex: "Arbitro2",
-      key: "Arbitro2",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+      dataIndex: "arbitro2",
+      key: "arbitro2",
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("Arbitro2"),
+      ...getColumnSearchProps("arbitro2"),
       render: (text, record, index) => (
         <>
           <Select
@@ -482,7 +463,7 @@ export function CampeonatoRegionalNacional({ user }) {
             key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Arbitro2 != "" ? record.Arbitro2 : null}
+            value={record.arbitro2 != "" ? record.arbitro2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -813,7 +794,9 @@ export function CampeonatoRegionalNacional({ user }) {
 
   let [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
-  let [clubesDisponiveis, setClubesDisponiveis] = useState([]);
+    let [clubesDisponiveis, setClubesDisponiveis] = useState([]);
+
+    let [loaded, setLoaded] = useState(false);
 
   let [dataSource, setDataSource] = useState([]);
 
@@ -827,23 +810,35 @@ export function CampeonatoRegionalNacional({ user }) {
   let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
   let [editableRow, setEditableRow] = useState("");
-  let [edit, setEdit] = useState(Boolean);
+    let [edit, setEdit] = useState(Boolean);
+
+    let [enviaDisabled, setEnviaDisabled] = useState(false);
 
     useEffect(() => {
-        // console.log("disabledDataSource", disabledDataSource);
-        // console.log("dataSource", dataSource);
-    }, [disabledDataSource]);
+         console.log("dataSource", dataSource);
+    }, [disabledDataSource])
 
-useEffect(() => {}, [dataSource]);
+
+    useEffect(() => {
+        console.log("dataSource", dataSource); }
+        , [dataSource]);
+
+    useEffect(() => {
+        console.log("editing??", edit)
+    }, [edit]);
+
+    useEffect(() => {
+        console.log("loaded??", enviaDisabled)
+    }, [enviaDisabled]);
 
   function handleSubmissionConfirmation() {
     Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
       if (err) {
         console.log(err);
       } else if (result) {
-        // console.log("BANANANAANANNANNANNAN", result);
+         console.log("BANANANAANANNANNANNAN", result);
 
-        let preNomeacoesRealizadas = result;
+          let preNomeacoesRealizadas = result.preNomeacoesRegionais;
 
         Meteor.call(
           "submeteJogosComNomeacoes",
@@ -864,7 +859,9 @@ useEffect(() => {}, [dataSource]);
     let disabledData = dataSource;
 
     setDisabledDataSource(disabledData);
-    setDataSource(dataSource);
+      setDataSource(dataSource);
+
+     // loadData(true);
   }
 
   function handleChangeSelecaoArbitro(value, key) {
@@ -884,15 +881,15 @@ useEffect(() => {}, [dataSource]);
 
     let titulo =
       "Jogo nº " +
-      currJogo.Jogo +
+      currJogo.numerojogo +
       " " +
-      currJogo.Prova +
+      currJogo.prova +
       " Serie " +
-      currJogo.Serie +
+      currJogo.serie +
       " " +
-      currJogo.Equipas +
+      currJogo.equipas +
       " " +
-      currJogo.Pavilhao;
+      currJogo.pavilhao;
 
     console.log("titulo", titulo);
 
@@ -952,15 +949,6 @@ useEffect(() => {}, [dataSource]);
           (err, result) => {
             let condicoesArbitro = JSON.parse(JSON.stringify(result));
             let relacoes = condicoesArbitro.relacaoComEquipas;
-
-            // let mensagemRestricoes =
-            //   currNomeArbitro +
-            //   (!temCarro ? " não tem carro." : " tem carro.") +
-            //   "\n" +
-            //   currNomeArbitro +
-            //   (!emiteRecibo ? " não emite recibo." : " emite recibo.") +
-            //   "\n";
-
             let mensagemRelacoesClubes = currNomeArbitro;
             if (relacoes.length > 0) {
               for (let index = 0; index < relacoes.length; index++) {
@@ -1081,17 +1069,19 @@ useEffect(() => {}, [dataSource]);
         let preNomeacoes = result[0];
 
         for (let index = 0; index < preNomeacoes.length; index++) {
-          let jogoLido = preNomeacoes[index];
-          let obj = {
-            Jogo: jogoLido.id,
-            Dia: jogoLido.dia,
-            Hora: jogoLido.hora,
-            Prova: jogoLido.prova,
-            Serie: jogoLido.serie,
-            Equipas: jogoLido.equipas,
-            Pavilhao: jogoLido.pavilhao,
-            Arbitro1: jogoLido.arbitro_1,
-            Arbitro2: jogoLido.arbitro_2,
+            let jogoLido = preNomeacoes[index];
+
+            console.log("jogoLido", jogoLido)
+            let obj = {
+                numerojogo: jogoLido.numerojogo,
+            dia: jogoLido.dia,
+            hora: jogoLido.hora,
+            prova: jogoLido.prova,
+            serie: jogoLido.serie,
+            equipas: jogoLido.equipas,
+            pavilhao: jogoLido.pavilhao,
+            arbitro1: jogoLido.arbitro1,
+            arbitro2: jogoLido.arbitro2,
             JL1: jogoLido.juiz_linha[0],
             JL2: jogoLido.juiz_linha[1],
             // JL3: jogoLido.juiz_linha[2],
@@ -1122,34 +1112,63 @@ useEffect(() => {}, [dataSource]);
         }
       } else {
         setDataSource([]);
-      }
-    });
-  }
-
-  function reloadData() {
-    //console.log("Entrei no metodo!! ");
-
-    // Carrega pela primeira vez
-    if (dataSource.length === 0) {
-      loadData();
-    }
-    // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
-    else {
-      Meteor.call(
-        "getJogosAtualizados",
-        Meteor.user(),
-        dataSource,
-        false,
-        true,
-        (err, result) => {
-          //console.log("jogos atualizados???", result);
-          if (result === true) {
-            loadData();
-          }
         }
-      );
+    });
     }
-  }
+
+    function checkBD(dataSource) {
+        Meteor.call("getPreNomeacoesRealizadas", Meteor.user(), (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if (result) {
+                console.log("MIAU", result);
+
+                let preNomeacoesRegionais = result.preNomeacoesRegionais;
+
+                if (preNomeacoesRegionais.length === 0) {
+                    setLoaded(true);
+                } else {
+                    if (dataSource.length !== preNomeacoesRegionais.length) {
+                        setLoaded(true);
+                        setEnviaDisabled(result.enviado);
+                        if (result.enviado) {
+                            setDisabledDataSource(preNomeacoesRegionais);
+                            setDataSource(preNomeacoesRegionais);
+                        } else {
+                            setDataSource(preNomeacoesRegionais);
+                        }
+
+                    } else {
+                        const array1Ids = Array.isArray(dataSource) ? dataSource.map(obj => obj.numerojogo) : [];
+                        const array2Ids = Array.isArray(preNomeacoesRegionais) ? preNomeacoesRegionais.map(obj => obj.numerojogo) : [];
+
+                        for (let i = 0; i < array1Ids.length; i++) {
+                            const currentId = array1Ids[i].numerojogo;
+                            const indexInArray2 = array2Ids.indexOf(currentId);
+
+                            if (indexInArray2 === -1) {
+                                setLoaded(true);
+                            }
+
+                            array2Ids.splice(indexInArray2, 1);
+                        }
+
+                        if (array2Ids.length === 0) {
+                            setLoaded(true);
+                            setEnviaDisabled(result.enviado);
+                            if (result.enviado) {
+                                setDisabledDataSource(preNomeacoesRegionais);
+                                setDataSource(preNomeacoesRegionais);
+                            } 
+                            
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+  
 
   function handleChangeClubes(value) {
     setClubesRelacionados(value);
@@ -1181,7 +1200,7 @@ useEffect(() => {}, [dataSource]);
   let [isModalVisible, setModalVisible] = useState();
 
   // let [novoJogoID, setNovoJogoID] = useState();
-  // let [novoJogoDia, setNovoJogoDia] = useState();
+  // let [novoJogodia, setNovoJogodia] = useState();
   // let [novoJogoHora, setNovoJogoHora] = useState();
   let novoJogoProva = "";
   // let [novoJogoSerie, setNovoJogoSerie] = useState();
@@ -1196,8 +1215,8 @@ useEffect(() => {}, [dataSource]);
   };
 
   let [idJogo, setIdJogo] = useState("");
-  let [idDia, setIdDia] = useState("");
-  let [idHora, setIdHora] = useState("");
+  let [idia, setIddia] = useState("");
+  let [idhora, setIdHora] = useState("");
   let [idSerie, setIdSerie] = useState("");
   let [idEquipaA, setIdEquipaA] = useState("");
   let [idEquipaB, setIdEquipaB] = useState("");
@@ -1239,7 +1258,7 @@ useEffect(() => {}, [dataSource]);
                     style={{ width: "100%" }}
                     id="newGameDate"
                     disabledDate={disabledDate}
-                    onChange={(e) => setIdDia(e.target.value)}
+                    onChange={(e) => setIddia(e.target.value)}
                     // showTime={{
                     //   defaultValue: moment("00:00:00"),
                     // }}
@@ -1571,10 +1590,12 @@ useEffect(() => {}, [dataSource]);
         historico={true}
               forgotPasswordHeader={true}
               gestaoPagamentos={true}
-      />
-      {reloadData()}
+          
+          />
 
-      {dataSource.length === 0 ? (
+          {!loaded ? checkBD(dataSource) : 
+
+      dataSource.length === 0 ? (
         <>
           <div
             style={{
@@ -1651,8 +1672,8 @@ useEffect(() => {}, [dataSource]);
             }}
           >
             {/* <h2 className="blue">
-                {currJogo.Jogo != undefined
-                  ? "Jogo nº: " + currJogo.Jogo
+                {currJogo.numerojogo != undefined
+                  ? "Jogo nº: " + currJogo.numerojogo
                   : "Clique num jogo para o selecionar."}
               </h2> */}
             <div
@@ -2050,10 +2071,11 @@ useEffect(() => {}, [dataSource]);
                           "Nomeações regionais e nacionais enviadas para os Árbitros."
                         );
                       }, 200);
-                      document.getElementById("enviaNomeacoes").disabled = true;
+                        document.getElementById("enviaNomeacoes").disabled = true;
+                       
                     }}
-                    type="primary"
-                    disabled={disabledDataSource.length > 0 ? true : false}
+                                              type="primary"
+                                              disabled={disabledDataSource.length !== 0 ? true : false}
                   >
                     Enviar Nomeações
                   </Button>
@@ -2090,7 +2112,7 @@ useEffect(() => {}, [dataSource]);
 
                           if (event.target != "div.ant-select-selector") {
                             Meteor.call(
-                              "arbitrosDisponiveis",
+                              "getArbitrosDisponiveis",
                               record,
                               temRecibo,
                               naoTemRecibo,
@@ -2106,7 +2128,7 @@ useEffect(() => {}, [dataSource]);
                                 if (err) {
                                   console.log("ERRRRROOOOO", { err });
                                 } else if (result.length != 0) {
-                                  return setArbitrosDisponiveis(result);
+                                  setArbitrosDisponiveis(result);
                                 }
 
                                 // console.log("RESULTADO***", result);

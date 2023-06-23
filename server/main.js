@@ -20,11 +20,11 @@ let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = false;
-let DROP_JOGOS = false;
+let DROP_ALL_TABLES = true;
+let DROP_JOGOS = true;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
-let DROP_CONSELHO_DE_ARBITRAGEM = false;
+let DROP_CONSELHO_DE_ARBITRAGEM = true;
 let DROP_NOMEACOES = false;
 let DROP_INDISPONIBILIDADES = false;
 let DROP_RESTRICOES = false;
@@ -41,7 +41,7 @@ const CN_MEAL_PRIZE = 4.27;
 //#region SCHEMA TABLE
 
 /**********************************************************************************************
- ******************************* SCHEMA TABLE ************************************************
+ ****************************** SCHEMA TABLE ************************************************
  *********************************************************************************************
  */
 
@@ -142,15 +142,15 @@ arbitros.schema = new SimpleSchema({
 
 // Schema Jogos importados de um dado csv
 jogos.schema = new SimpleSchema({
-    id: { type: Number, optional: false }, // Retirar Unique no futuro
+    numerojogo: { type: Number, optional: false }, // Retirar Unique no futuro
     dia: { type: String, optional: false },
     hora: { type: String, optional: false },
     prova: { type: String, optional: false },
     serie: { type: String, optional: false },
     equipas: { type: String, optional: false },
     pavilhao: { type: String, optional: false },
-    arbitro_1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro
-    arbitro_2: { type: String, optional: true }, // Mesmo que acima
+    arbitro1: { type: String, optional: false }, // Verificar se possivel colocar Objecto Arbitro
+    arbitro2: { type: String, optional: true }, // Mesmo que acima
     juiz_linha: [String],
     key: { type: Number, optional: true },
 });
@@ -190,7 +190,7 @@ clubes.schema = new SimpleSchema({
 //#region PAGAMETOS UNIVERSITARIOS
 
 const jogo_pagamento = new SimpleSchema({
-    id: { type: Number, optional: false }, // Retirar Unique no futuro
+    numerojogo: { type: Number, optional: false }, // Retirar Unique no futuro
     dia: { type: String, optional: false },
     hora: { type: String, optional: false },
     pavilhao: { type: String, optional: false },
@@ -249,7 +249,7 @@ Meteor.startup(() => {
     definicoesPessoais.rawCollection().drop();
 
     //Get the c sv Text:
-    var arbitrosCSV = Assets.getText("arbitrosInscritos.csv");
+    var arbitrosCSV = Assets.getText("teste6arbitros.csv");
     var rows = Papa.parse(arbitrosCSV).data;
 
     let x = 0;
@@ -390,16 +390,16 @@ Meteor.startup(() => {
      for (let index = 1; index < rows.length - 1; index++) {
       // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
 
-      jogos.insert({
-        id: rows[index][0],
+         jogos.insert({
+             numerojogo: rows[index][0],
         dia: rows[index][1],
         hora: rows[index][2],
         prova: rows[index][3],
         serie: rows[index][4],
         equipas: rows[index][5],
         pavilhao: rows[index][6],
-        arbitro_1: titleCase(rows[index][7]),
-        arbitro_2: titleCase(rows[index][8]),
+        arbitro1: titleCase(rows[index][7]),
+        arbitro2: titleCase(rows[index][8]),
         juiz_linha: [
           titleCase(rows[index][9]),
           titleCase(rows[index][10]),
@@ -426,9 +426,9 @@ Meteor.startup(() => {
 
       jog.forEach((jogo) => {
         if (
-          jogo.arbitro_1 === arbitro.nome ||
-          jogo.arbitro_1 === arbitro.nome ||
-          jogo.arbitro_2 === arbitro.nome ||
+          jogo.arbitro1 === arbitro.nome ||
+          jogo.arbitro1 === arbitro.nome ||
+          jogo.arbitro2 === arbitro.nome ||
           jogo.juiz_linha.includes(arbitro.nome)
         ) {
           nomeacoesAuxiliares.push({
@@ -669,15 +669,15 @@ Meteor.startup(() => {
       // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
 
       jogos.insert({
-        id: rows[index][0],
+        numerojogo: rows[index][0],
         dia: rows[index][1],
         hora: rows[index][2],
         prova: rows[index][3],
         serie: rows[index][4],
         equipas: rows[index][5],
         pavilhao: rows[index][6],
-        arbitro_1: titleCase(rows[index][7]),
-        arbitro_2: titleCase(rows[index][8]),
+        arbitro1: titleCase(rows[index][7]),
+        arbitro2: titleCase(rows[index][8]),
         juiz_linha: [
           titleCase(rows[index][9]),
           titleCase(rows[index][10]),
@@ -707,9 +707,9 @@ Meteor.startup(() => {
 
       jog.forEach((jogo) => {
         if (
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_1 == arbitro.nome ||
-          jogo.arbitro_2 == arbitro.nome ||
+          jogo.arbitro1 == arbitro.nome ||
+          jogo.arbitro1 == arbitro.nome ||
+          jogo.arbitro2 == arbitro.nome ||
           jogo.juiz_linha.includes(arbitro.nome)
         ) {
           nomeacoesAuxiliares.push({
@@ -906,8 +906,8 @@ Meteor.methods({
             // VERIFICA PARA CADA JOGO QUE ARBITRO(S) ESTA(O) ASSOCIADO(S) A ELE
             games.forEach((jogo) => {
                 if (
-                    jogo.arbitro_1 === a.nome ||
-                    jogo.arbitro_2 === a.nome ||
+                    jogo.arbitro1 === a.nome ||
+                    jogo.arbitro2 === a.nome ||
                     jogo.juiz_linha.includes(a.nome)
                 ) {
                     nomeacoesAuxiliares.push({
@@ -1143,11 +1143,7 @@ Meteor.methods({
         );
     },
 
-    adicionaConfirmacaoNomeacao: function adicionaConfirmacaoNomeacao(
-        email,
-        games,
-        confirmacoes
-    ) {
+    adicionaConfirmacaoNomeacao: function (email, games, confirmacoes) {
         var arb = arbitros.findOne({ email: email });
 
         let nomeacoesAuxiliares = [];
@@ -1155,90 +1151,64 @@ Meteor.methods({
         let arbConfirmacaoJogo = [];
 
         for (let index = 0; index < games.length; index++) {
-            //console.log("games[index]", games[index])
-            //console.log("TEM ID?", games[index].id);
-
             let jogo;
 
-            if (games[index].id === undefined) {
-                jogo = jogos.findOne({ id: games[index].Jogo });
+            if (games[index].numerojogo !== undefined) {
+                jogo = jogos.findOne({ numerojogo: games[index].numerojogo });
             } else {
-                jogo = jogos.findOne({ id: games[index].id });
+                jogo = jogos.findOne({ numerojogo: games[index].id });
             }
-            console.log("*********************************************");
 
             let confirmacaoAtual = confirmacoes[index];
 
             var nomeacao = { jogo: jogo, confirmacaoAtual: confirmacaoAtual };
             nomeacoesAuxiliares.push(nomeacao);
+
             console.log(
                 "Arbitro " +
                 arb.nome +
                 " indicou " +
                 confirmacaoAtual +
                 " do jogo " +
-                jogo.id
+                jogo.numerojogo
             );
+
             arbConfirmacaoJogo.push({
                 arbitro: arb.nome,
                 confirmacaoAtual: confirmacaoAtual[0],
-                jogo: jogo.id,
+                jogo: jogo.numerojogo,
             });
         }
 
         nomeacoes.update(
-            { arbitro: arb },
+            { arbitro: arb.nome },
             { $set: { nomeacoesPrivadas: nomeacoesAuxiliares } }
         );
 
-        let preNomeacoesRegionais =
-            conselhoDeArbitragem.findOne().preNomeacoesRegionais;
-        let preNomeacoesUniversitarias =
-            conselhoDeArbitragem.findOne().preNomeacoesUniversitarias;
+        let preNomeacoesRegionais = conselhoDeArbitragem.findOne().preNomeacoesRegionais;
+        let preNomeacoesUniversitarias = conselhoDeArbitragem.findOne().preNomeacoesUniversitarias;
 
         for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
             let jogoId = arbConfirmacaoJogo[i].jogo;
             for (let j = 0; j < preNomeacoesRegionais.length; j++) {
-                if (preNomeacoesRegionais[j].id == jogoId) {
-                    if (
-                        preNomeacoesRegionais[j].arbitro_1 == arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[0] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                if (preNomeacoesRegionais[j].numerojogo == jogoId) {
+                    if (preNomeacoesRegionais[j].arbitro1 == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[0] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesRegionais[j].arbitro_2 == arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[1] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesRegionais[j].arbitro2 == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[1] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesRegionais[j].juiz_linha[0] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[2] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesRegionais[j].juiz_linha[0] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[2] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesRegionais[j].juiz_linha[1] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[3] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesRegionais[j].juiz_linha[1] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[3] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesRegionais[j].juiz_linha[2] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[4] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesRegionais[j].juiz_linha[2] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[4] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesRegionais[j].juiz_linha[3] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesRegionais[j].tags[5] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesRegionais[j].juiz_linha[3] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesRegionais[j].tags[5] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
                 }
             }
@@ -1247,48 +1217,24 @@ Meteor.methods({
         for (let i = 0; i < arbConfirmacaoJogo.length; i++) {
             let jogoId = arbConfirmacaoJogo[i].jogo;
             for (let j = 0; j < preNomeacoesUniversitarias.length; j++) {
-                if (preNomeacoesUniversitarias[j].id == jogoId) {
-                    if (
-                        preNomeacoesUniversitarias[j].arbitro_1 ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[0] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                if (preNomeacoesUniversitarias[j].numerojogo == jogoId) {
+                    if (preNomeacoesUniversitarias[j].arbitro1 == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[0] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesUniversitarias[j].arbitro_2 ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[1] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesUniversitarias[j].arbitro2 == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[1] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesUniversitarias[j].juiz_linha[0] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[2] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesUniversitarias[j].juiz_linha[0] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[2] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesUniversitarias[j].juiz_linha[1] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[3] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesUniversitarias[j].juiz_linha[1] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[3] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesUniversitarias[j].juiz_linha[2] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[4] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesUniversitarias[j].juiz_linha[2] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[4] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
-                    if (
-                        preNomeacoesUniversitarias[j].juiz_linha[3] ==
-                        arbConfirmacaoJogo[i].arbitro
-                    ) {
-                        preNomeacoesUniversitarias[j].tags[5] =
-                            arbConfirmacaoJogo[i].confirmacaoAtual;
+                    if (preNomeacoesUniversitarias[j].juiz_linha[3] == arbConfirmacaoJogo[i].arbitro) {
+                        preNomeacoesUniversitarias[j].tags[5] = arbConfirmacaoJogo[i].confirmacaoAtual;
                     }
                 }
             }
@@ -1308,7 +1254,8 @@ Meteor.methods({
                 { $set: { preNomeacoesUniversitarias: preNomeacoesUniversitarias } }
             );
         });
-    },
+    }
+,
 
     carregaNomeacoesTotal: function carregaNomeacoesTotal() {
         let n = [];
@@ -1682,8 +1629,8 @@ Meteor.methods({
       return true;
     } else {
       for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
-        let numeroJogoDaBD = parseInt(atuaisPreNomeacoes[index].id);
-        let numeroJogoRecebido = parseInt(data[index].Jogo);
+        let numeroJogoDaBD = parseInt(atuaisPreNomeacoes[index].numerojogo);
+        let numeroJogoRecebido = parseInt(data[index].numerojogo);
         if (numeroJogoDaBD != numeroJogoRecebido) {
           return true;
         }
@@ -1696,8 +1643,9 @@ Meteor.methods({
   getPreNomeacoesRealizadas: function getPreNomeacoesRealizadas(user) {
     try {
       let arb = arbitros.findOne({ nome: user.username });
-      let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-      return ca.preNomeacoesRegionais;
+        let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+      //console.log("ca", ca)
+        return { preNomeacoesRegionais: ca.preNomeacoesRegionais, enviado: ca.enviadoRegionais };
     } catch (error) {
       return -1;
     }
@@ -1723,15 +1671,15 @@ Meteor.methods({
             }
 
             jogos.insert({
-                id: jogo.id,
+                numerojogo: jogo.numerojogo,
                 dia: jogo.dia,
                 hora: jogo.hora,
                 prova: jogo.prova,
                 serie: jogo.serie,
                 equipas: jogo.equipas,
                 pavilhao: jogo.pavilhao,
-                arbitro_1: jogo.arbitro_1,
-                arbitro_2: jogo.arbitro_2,
+                arbitro1: jogo.arbitro1,
+                arbitro2: jogo.arbitro2,
                 juiz_linha: jogo.juiz_linha,
                 key: k + jogo.key,
             });
@@ -1746,8 +1694,8 @@ Meteor.methods({
             // Verifica para cada jogo que arbitro(s) está(o) associado(s) a ele
             games.forEach((jogo) => {
                 if (
-                    jogo.arbitro_1 === arbitro.nome ||
-                    jogo.arbitro_2 === arbitro.nome ||
+                    jogo.arbitro1 === arbitro.nome ||
+                    jogo.arbitro2 === arbitro.nome ||
                     jogo.juiz_linha.includes(arbitro.nome)
                 ) {
                     if (!jogosAssociados.includes(jogo)) jogosAssociados.push(jogo);
@@ -1762,7 +1710,7 @@ Meteor.methods({
             if (nAntigas.length != undefined) {
                 for (let index = 0; index < nAntigas.length; index++) {
                     final.push(nAntigas[index]);
-                    finalIds.push(parseInt(nAntigas[index].jogo.id));
+                    finalIds.push(parseInt(nAntigas[index].jogo.numerojogo));
                 }
             }
 
@@ -1770,7 +1718,7 @@ Meteor.methods({
                 const jogo = jogosAssociados[i];
                 if (nAntigas != undefined && nAntigas.length > 0) {
                     // Já possuia nomeações antigas, que podem ter confirmação atual diferente de 'pendente'
-                    if (!finalIds.includes(parseInt(jogo.id))) {
+                    if (!finalIds.includes(parseInt(jogo.numerojogo))) {
                         final.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
                     }
                 } else {
@@ -1810,11 +1758,11 @@ Meteor.methods({
         for (let index = 0; index < games_ca.length; index++) {
             let element = games_ca[index];
 
-            if (element.arbitro_1 !== "") {
+            if (element.arbitro1 !== "") {
                 element.tags[0] = "pendente";
                 games_ca[index] = element;
             }
-            if (element.arbitro_2 !== "") {
+            if (element.arbitro2 !== "") {
                 element.tags[1] = "pendente";
                 games_ca[index] = element;
             }
@@ -1865,180 +1813,150 @@ Meteor.methods({
     }
 ,
 
-    alteraNomeacao: function alteraNomeacao(jogo, user, universitario, regional) {
-        // Verifica se os parâmetros obrigatórios estão presentes
-        if (!jogo || !user || universitario === undefined || regional === undefined) {
+    alteraNomeacao: function (jogo, user, universitario, regional) {
+        if (!jogo || !user || typeof universitario === 'undefined' || typeof regional === 'undefined') {
             throw new Error('Parâmetros inválidos.');
         }
 
-        // 1º PASSO: Encontra o jogo em Jogos pelo id
-        const jogoId = jogo.Jogo;
-        const jogoAnterior = jogos.findOne({ id: jogoId });
 
-        console.log("jogo a ser alterado: ", jogoAnterior);
+        console.log("jogoooo", jogo)
 
-        console.log("******************************")
-        console.log("jogo novo: ", jogo)
+        const jogoId = jogo.numerojogo;
+        const jogoAnterior = jogos.findOne({ numerojogo: jogoId });
 
         if (!jogoAnterior) {
             throw new Error('Jogo não encontrado.');
         }
 
-        let jogoNovo = {
-            id : jogo.id,
-            dia : jogo.Dia,
-            hora : jogo.Hora,
-            prova : jogo.Prova,
-            serie : jogo.Serie,
-            equipas : jogo.Equipas,
-            pavilhao : jogo.Pavilhao,
-            arbitro_1 : jogo.Arbitro1,
-            arbitro_2 : jogo.Arbitro2,
-            juiz_linha : [jogo.JL1, jogo.JL2, "", ""
-            ],
-            key : jogoAnterior.key
-        }
+        console.log("jogoAnterior", jogoAnterior)
 
-        // Atualiza o jogo existente com os dados atualizados
-        jogos.remove({ jogoAnterior });
-        jogos.insert({ jogoNovo })
+        const jogoNovo = {
+            numerojogo: jogo.numerojogo,
+            dia: jogo.dia,
+            hora: jogo.hora,
+            prova: jogo.prova,
+            serie: jogo.serie,
+            equipas: jogo.equipas,
+            pavilhao: jogo.pavilhao,
+            arbitro1: jogo.arbitro1,
+            arbitro2: jogo.arbitro2,
+            juiz_linha: [jogo.JL1, jogo.JL2, "", ""],
+            key: jogoAnterior.key
+        };
 
-        // 2º PASSO: Altera os membros da equipa de arbitragem associada ao jogo
-        const arbitro1Anterior = jogoAnterior.arbitro_1;
-        const arbitro2Anterior = jogoAnterior.arbitro_2;
-        const jl1Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[0] : null;
-        const jl2Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[1] : null;
+        jogos.update({ numerojogo: jogoId }, jogoNovo);
 
-        const arbitro1Novo = jogo.arbitro_1;
-        const arbitro2Novo = jogo.arbitro_2;
-        const jl1Novo = jogo.juiz_linha ? jogo.juiz_linha[0] : null;
-        const jl2Novo = jogo.juiz_linha ? jogo.juiz_linha[1] : null;
+        const arbitro1Anterior = jogoAnterior.arbitro1;
+        console.log("arbitro1Anterior", arbitro1Anterior)
+        const arbitro2Anterior = jogoAnterior.arbitro2;
+        console.log("arbitro2Anterior", arbitro2Anterior)
+        const jl1Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[0] : "";
+        console.log("jl1Anterior", jl1Anterior)
+        const jl2Anterior = jogoAnterior.juiz_linha ? jogoAnterior.juiz_linha[1] : "";
+        console.log("jl2Anterior", jl2Anterior)
 
-        // Verifica as diferenças entre as equipas de arbitragem e altera a confirmação para pendente
-        const arb = arbitros.findOne({ email: user.emails[0].address });
-        const ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
-        const caPreGames = universitario ? ca.preNomeacoesUniversitarias : ca.preNomeacoesRegionais;
-        const caPosGames = caPreGames.slice(); // Copia o array para evitar alterações indesejadas
+        const arbitro1Novo = jogo.arbitro1;
+        console.log("arbitro1Novo", arbitro1Novo)
+        const arbitro2Novo = jogo.arbitro2;
+        console.log("arbitro2Novo", arbitro2Novo)
+        const jl1Novo = jogo.juiz_linha ? jogo.juiz_linha[0] : "";
+        console.log("jl1Novo", jl1Novo)
+        const jl2Novo = jogo.juiz_linha ? jogo.juiz_linha[1] : "";
+        console.log("jl2Novo", jl2Novo)
 
-        function updateTag(index, tagName) {
-            const element = caPreGames[index];
-            if (element.id === jogo.id) {
-                element.tags[index] = tagName;
-                caPosGames[index] = element;
+
+
+        function atualizarNomeacoes(arbitroAnterior, arbitroNovo, jogo) {
+
+            console.log("ARBITROOOO ANTERIOR : *", arbitroAnterior + "*")
+            console.log("ARBITROOOO NOVO : ", arbitroNovo + "*")
+
+            console.log("jogoooo", jogo)
+
+            if (arbitroNovo.length === 0) {
+                // Não há novo árbitro designado
+                return;
             }
-        }
 
-        function mudaArbitro(arbitroAnterior, arbitroNovo, jogo) {
-            // Lógica para atualizar o árbitro
+            let arbAntigo = arbitros.findOne({ nome: arbitroAnterior });
+            let arbNovo = arbitros.findOne({ nome: arbitroNovo });
 
-            if (arbitroAnterior.length === 0) {
-                // Não havia 1º Arbitro designado
-                let arb = arbitros.findOne({ nome: arbitroNovo });
-                let n = nomeacoes.findOne({ arbitro: arb });
+            const nPriv = nomeacoes.findOne({ arbitro: arbAntigo }) === undefined ? "*" : nomeacoes.findOne({ arbitro: arbAntigo }).nomeacoesPrivadas;
 
-                let nPriv = n.nomeacoesPrivadas;
+            console.log("nPRIv:::", nPriv)
 
-                nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
 
-                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
+            //arbitro anterior === ""
+            if (nPriv === "*") {
+
+                arbitroAnterior = "";
+
+                // Adiciona a nomeação ao novo árbitro designado
+
+                const nRef = nomeacoes.findOne({ arbitro: arbNovo });
+
+                console.log("nRef", nRef)
+
+                const nPrivNovo = nRef.nomeacoesPrivadas === undefined ? [] : nRef.nomeacoesPrivadas;
+
+                nPrivNovo.push({ jogo: jogo, confirmacaoAtual: ['pendente'] });
+
+                nomeacoes.update({ arbitro: arbNovo }, { $set: { nomeacoesPrivadas: nPrivNovo } });
             } else {
-                // Havia arbitro designado
 
-                // Remove a nomeacao ao arbitro designado anterior
-                let arb = arbitros.findOne({ nome: arbitroAnterior });
-                let n = nomeacoes.findOne({ arbitro: arb });
+                // Remove a nomeação do árbitro anterior
+                const novasNpriv = nPriv.filter(n => n.jogo.numerojogo !== jogo.numerojogo);
 
-                let nPriv = n.nomeacoesPrivadas;
-                let novasNpriv = [];
+                nomeacoes.update({ arbitro: arbAntigo }, { $set: { nomeacoesPrivadas: novasNpriv } });
 
-                for (let index = 0; index < nPriv.length; index++) {
-                    if (nPriv[index].jogo.id != jogo.id) {
-                        novasNpriv.push(nPriv[index]);
-                        //console.log("nPriv[index]:::", nPriv[index])
-                    }
-                }
-                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: novasNpriv } });
+                // Adiciona a nomeação ao novo árbitro designado
+                const nPrivNovo = nomeacoes.findOne({ arbitro: arbNovo }).nomeacoesPrivadas;
 
-                // Adiciona a nomeação ao novo arbitro designado
-                arb = arbitros.findOne({ nome: arbitroNovo });
-                n = nomeacoes.findOne({ arbitro: arb });
-                nPriv = n.nomeacoesPrivadas;
+                nPrivNovo.push({ jogo: jogo, confirmacaoAtual: ['pendente'] });
 
-                nPriv.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
-                nomeacoes.update({ arbitro: arb }, { $set: { nomeacoesPrivadas: nPriv } });
+                nomeacoes.update({ arbitro: arbNovo }, { $set: { nomeacoesPrivadas: nPrivNovo } });
 
-                // Modifica as nomeações de modo a incluir o novo membro da equipa de arbitragem
-                let nTotal = nomeacoes.find();
-
-                nTotal.forEach((element) => {
-                    if (element.nomeacoesPrivadas.length > 0) {
-                        let newPrivNom = [];
-                        for (let index = 0; index < element.nomeacoesPrivadas.length; index++) {
-                            if (element.nomeacoesPrivadas[index].jogo.key !== jogo.key) {
-                                newPrivNom.push(element.nomeacoesPrivadas[index]);
-                            } else {
-                                let confirmacao = element.nomeacoesPrivadas[index].confirmacaoAtual;
-                                newPrivNom.push({ jogo: jogo, confirmacaoAtual: confirmacao });
-                            }
-                        }
-                        nomeacoes.update({ arbitro: element.arbitro }, { $set: { nomeacoesPrivadas: newPrivNom } });
-                    }
-                    else {
-                        let newPrivNom = [];
-                        
-                        newPrivNom.push({ jogo: jogo, confirmacaoAtual: ["pendente"] });
-                            
-                        
-                        nomeacoes.update({ arbitro: element.arbitro }, { $set: { nomeacoesPrivadas: newPrivNom } });
-                    }
-                });
             }
+
+            
+
+            // Modifica as nomeações existentes para incluir o novo membro da equipe de arbitragem
+            const todasNomeacoes = nomeacoes.find();
+
+            todasNomeacoes.forEach(nomeacao => {
+                if (nomeacao.nomeacoesPrivadas.length > 0) {
+                    const novasNomeacoesPrivadas = nomeacao.nomeacoesPrivadas.map(n => {
+                        if (n.jogo.key === jogo.key) {
+                            return { jogo: jogo, confirmacaoAtual: n.confirmacaoAtual };
+                        } else {
+                            return n;
+                        }
+                    });
+
+                    nomeacoes.update({ arbitro: nomeacao.arbitro }, { $set: { nomeacoesPrivadas: novasNomeacoesPrivadas } });
+                } else {
+                    nomeacoes.update({ arbitro: nomeacao.arbitro }, { $push: { nomeacoesPrivadas: { jogo: jogo, confirmacaoAtual: ['pendente'] } } });
+                }
+            });
         }
 
         if (arbitro1Anterior !== arbitro1Novo) {
-            // Nomeação foi alterada no 1º Arbitro
-            mudaArbitro(arbitro1Anterior, arbitro1Novo, jogo);
-            updateTag(0, 'pendente');
-            //enviaMailAlteracaoNomeacao(arbitro1Anterior, arbitro1Novo, jogoId);
+            atualizarNomeacoes(arbitro1Anterior, arbitro1Novo, jogo);
         }
 
         if (arbitro2Anterior !== arbitro2Novo) {
-            // Nomeação foi alterada no 2º Arbitro
-            mudaArbitro(arbitro2Anterior, arbitro2Novo, jogo);
-            updateTag(1, 'pendente');
-            //enviaMailAlteracaoNomeacao(arbitro2Anterior, arbitro2Novo, jogoId);
+            atualizarNomeacoes(arbitro2Anterior, arbitro2Novo, jogo);
         }
 
         if (jl1Anterior !== jl1Novo) {
-            // Nomeação foi alterada no JL1
-            mudaArbitro(jl1Anterior, jl1Novo, jogo);
-            updateTag(2, 'pendente');
-            //enviaMailAlteracaoNomeacao(jl1Anterior, jl1Novo, jogoId);
+            atualizarNomeacoes(jl1Anterior, jl1Novo, jogo);
         }
 
         if (jl2Anterior !== jl2Novo) {
-            // Nomeação foi alterada no JL2
-            mudaArbitro(jl2Anterior, jl2Novo, jogo);
-            updateTag(3, 'pendente');
-            //enviaMailAlteracaoNomeacao(jl2Anterior, jl2Novo, jogoId);
+            atualizarNomeacoes(jl2Anterior, jl2Novo, jogo);
         }
 
-        const allCA = conselhoDeArbitragem.find();
-        allCA.forEach((ca) => {
-            if (universitario) {
-                conselhoDeArbitragem.update(
-                    { arbitrosCA: ca.arbitrosCA },
-                    { $set: { preNomeacoesUniversitarias: caPosGames } }
-                );
-            }
-
-            if (regional) {
-                conselhoDeArbitragem.update(
-                    { arbitrosCA: ca.arbitrosCA },
-                    { $set: { preNomeacoesRegionais: caPosGames } }
-                );
-            }
-        });
+        
 
         return true;
     }
@@ -2141,24 +2059,24 @@ Meteor.methods({
 
     let titulo =
       "Jogo nº " +
-      currJogo.Jogo +
+      currJogo.numerojogo +
       " " +
-      // currJogo.Prova +
+      // currJogo.prova +
       // " " +
-      // currJogo.Serie +
+      // currJogo.serie +
       // " " +
-      // currJogo.Equipas
+      // currJogo.equipas
       // +
       // " " +
-      currJogo.Pavilhao;
+      currJogo.pavilhao;
     // console.log("titulo: ", titulo);
 
     // FORMAT  -> 2022-07-17T11:00:00+01:00
 
     // DIA DE JOGO : "24/07/2022"
 
-    let diaDeJogo = currJogo.Dia;
-    let horaDeJogo = currJogo.Hora;
+    let diaDeJogo = currJogo.dia;
+    let horaDeJogo = currJogo.hora;
 
     let diaDividido = diaDeJogo.split("/");
     let horaDividido = horaDeJogo.split(":");
@@ -2250,21 +2168,39 @@ Meteor.methods({
 
     //console.log("ATUAIS, PRE NOMEACOES", atuaisPreNomeacoes);
 
-    for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
-      if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
-        if (funcao.toString().includes("option_1_arbitro")) {
-          atuaisPreNomeacoes[index].arbitro_1 = nomeArbitro;
-        } else if (funcao.toString().includes("option_2_arbitro")) {
-          atuaisPreNomeacoes[index].arbitro_2 = nomeArbitro;
-        } else if (funcao.toString().includes("option_1_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha[0] = nomeArbitro;
-        } else if (funcao.toString().includes("option_2_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha[1] = nomeArbitro;
-        } else if (funcao.toString().includes("option_3_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha[2] = nomeArbitro;
-        } else if (funcao.toString().includes("option_4_jl")) {
-          atuaisPreNomeacoes[index].juiz_linha[3] = nomeArbitro;
-        }
+        for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
+            if (atuaisPreNomeacoes[index].numerojogo === currJogo.numerojogo && nomeArbitro.length > 1) {
+
+                console.log("funcao", funcao)
+                console.log("atuaisPreNomeacoes[index]", atuaisPreNomeacoes[index])
+
+                if (funcao.toString().includes("option_1_arbitro")) {
+                    atuaisPreNomeacoes[index].arbitro1 = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[0] = "pendente";
+                }
+
+                if (funcao.toString().includes("option_2_arbitro")) {
+                     atuaisPreNomeacoes[index].arbitro2 = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[1] = "pendente";
+                }
+                if (funcao.toString().includes("option_1_jl")) {
+                    atuaisPreNomeacoes[index].juiz_linha[0] = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[2] = "pendente";
+                }
+                if (funcao.toString().includes("option_2_jl")) {
+                    atuaisPreNomeacoes[index].juiz_linha[1] = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[3] = "pendente";
+                }
+                if (funcao.toString().includes("option_3_jl")) {
+                        atuaisPreNomeacoes[index].juiz_linha[2] = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[4] = "pendente";
+                }
+                if (funcao.toString().includes("option_4_jl")) {
+                    atuaisPreNomeacoes[index].juiz_linha[3] = nomeArbitro;
+                    atuaisPreNomeacoes[index].tags[5] = "pendente";
+                }
+
+                console.log("atuaisPreNomeacoes[index]", atuaisPreNomeacoes[index])
       }
     }
     let newGames = atuaisPreNomeacoes;
@@ -2366,11 +2302,11 @@ Meteor.methods({
         }
 
         for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
-            if (atuaisPreNomeacoes[index].id === currJogo.Jogo) {
+            if (atuaisPreNomeacoes[index].numerojogo === currJogo.numerojogo) {
                 if (funcao.toString().includes("option_1_arbitro")) {
-                    atuaisPreNomeacoes[index].arbitro_1 = "";
+                    atuaisPreNomeacoes[index].arbitro1 = "";
                 } else if (funcao.toString().includes("option_2_arbitro")) {
-                    atuaisPreNomeacoes[index].arbitro_2 = "";
+                    atuaisPreNomeacoes[index].arbitro2 = "";
                 } else if (funcao.toString().includes("option_1_jl")) {
                     atuaisPreNomeacoes[index].juiz_linha[0] = "";
                 } else if (funcao.toString().includes("option_2_jl")) {
@@ -2417,15 +2353,15 @@ Meteor.methods({
 
     for (let index = 1; index < jogos.length; index++) {
       if (jogos[index][0] != "") {
-        let game = {
-          id: jogos[index][0],
+          let game = {
+              numerojogo: jogos[index][0],
           dia: jogos[index][1],
           hora: jogos[index][2],
           prova: jogos[index][3],
           equipas: jogos[index][4],
           pavilhao: jogos[index][5] + " Campo: " + jogos[index][6],
-          arbitro_1: jogos[index][7],
-          arbitro_2: jogos[index][8],
+          arbitro1: jogos[index][7],
+          arbitro2: jogos[index][8],
           juiz_linha: [
             jogos[index][9],
             jogos[index][10],
@@ -2478,16 +2414,16 @@ Meteor.methods({
 
     for (let index = 1; index < jogos.length; index++) {
       if (jogos[index][0] != "") {
-        let game = {
-          id: jogos[index][0],
+          let game = {
+              numerojogo: jogos[index][0],
           dia: jogos[index][1],
           hora: jogos[index][2],
           prova: jogos[index][3],
           serie: jogos[index][4],
           equipas: jogos[index][5],
           pavilhao: jogos[index][6],
-          arbitro_1: jogos[index][7],
-          arbitro_2: jogos[index][8],
+          arbitro1: jogos[index][7],
+          arbitro2: jogos[index][8],
           juiz_linha: [
             jogos[index][9],
             jogos[index][10],
@@ -2531,133 +2467,143 @@ Meteor.methods({
   },
 
 
-    arbitrosDisponiveis: function arbitrosDisponiveis(
-        jogo,
-        temRecibo,
-        naoTemRecibo,
-        temTransporte,
-        naoTemTransporte,
-        clubesRelacionados,
-        nivel
-    ) {
-        const { Dia, Hora, Pavilhao } = jogo;
-        const [dia, mes, ano] = Dia.split("/");
-        const [hora, minutos] = Hora.split(":");
-        const horaPavilhao = (parseInt(hora) - 1).toString().padStart(2, "0");
+    getArbitrosDisponiveis: function getArbitrosDisponiveis(jogo, temRecibo, naoTemRecibo, temTransporte, naoTemTransporte, clubesRelacionados, nivel) {
+        const { dia, hora, pavilhao } = jogo;
+        const [diaFormatado, mesFormatado, anoFormatado] = dia.split("/");
+        const [horaFormatada, minutosFormatados] = hora.split(":");
+        const horaPavilhao = (parseInt(horaFormatada) - 1).toString().padStart(2, "0");
 
-        const dataInicio = new Date(ano, mes - 1, dia, horaPavilhao, minutos).toLocaleString();
-        const dataFim = new Date(ano, mes - 1, dia, parseInt(hora) + 2, minutos).toLocaleString();
+        const dataInicio = new Date(anoFormatado, parseInt(mesFormatado) - 1, diaFormatado, horaPavilhao, minutosFormatados).toLocaleString();
+        const dataFim = new Date(anoFormatado, parseInt(mesFormatado) - 1, diaFormatado, parseInt(horaFormatada) + 2, minutosFormatados).toLocaleString();
 
-        const arbitrosDisponiveis = arbitros
-            .find()
-            .map((arb) => arb.nome)
-            .filter((nomeArbitro) => {
-                const arb = arbitros.findOne({ nome: nomeArbitro });
+        let arbs = arbitros.find();
 
-                let disponivel = true;
+        let arbsArray = [];
 
-                if ([1, 2, 3].includes(parseInt(nivel))) {
-                    if (parseInt(arb.nivel) !== parseInt(nivel)) {
-                        disponivel = false;
-                    }
-                }
+        arbs.forEach((e) => {
+            arbsArray.push(e)
+        })
 
-                const def = definicoesPessoais.findOne({ arbitro: arb });
+        const arbitrosDisponiveis = arbsArray.filter((arb) => {
+            let disponivel = true;
 
-                if (temRecibo && !def.emiteRecibo) {
+            if ([1, 2, 3].includes(parseInt(nivel))) {
+                if (parseInt(arb.nivel) !== parseInt(nivel)) {
                     disponivel = false;
                 }
+            }
 
-                if (naoTemRecibo && def.emiteRecibo) {
-                    disponivel = false;
-                }
+            const def = definicoesPessoais.findOne({ arbitro: arb });
 
-                if (temTransporte && !def.temCarro) {
-                    disponivel = false;
-                }
+            if (temRecibo && (!def || !def.emiteRecibo)) {
+                disponivel = false;
+            }
 
-                if (naoTemTransporte && def.temCarro) {
-                    disponivel = false;
-                }
+            if (naoTemRecibo && def && def.emiteRecibo) {
+                disponivel = false;
+            }
 
-                const indisponibilidadesArbitro = indisponibilidades.findOne({
-                    arbitro: arb,
-                });
+            if (temTransporte && (!def || !def.temCarro)) {
+                disponivel = false;
+            }
 
-                if (indisponibilidadesArbitro) {
-                    const { disponibilidades } = indisponibilidadesArbitro;
+            if (naoTemTransporte && def && def.temCarro) {
+                disponivel = false;
+            }
 
-                    if (disponibilidades) {
-                        const jogosIndisponiveis = disponibilidades.filter(
-                            (disponibilidade) => {
-                                const { id, title, start, end } = disponibilidade;
+            const indisponibilidadesArbitro = indisponibilidades.findOne({ arbitro: arb });
 
-                                if (id.startsWith("jogo")) {
-                                    const indisponibilidadeComeca = new Date(start).toLocaleString();
+            if (indisponibilidadesArbitro) {
+                const { disponibilidades } = indisponibilidadesArbitro;
 
-                                    const pavilhaoJogoNomeado = title.split(" ").slice(3).join(" ");
+                if (disponibilidades) {
+                    const jogosIndisponiveis = disponibilidades.filter((disponibilidade) => {
+                        const { id, title, start, end } = disponibilidade;
 
-                                    const diaDataInicio = parseInt(dataInicio.split("/")[0]);
-                                    const mesDataInicio = parseInt(dataInicio.split("/")[1]);
-                                    const anoDataInicio = parseInt(dataInicio.split("/")[2].substring(0, 4));
+                        if (id.startsWith("jogo")) {
+                            const indisponibilidadeComeca = new Date(start).toLocaleString();
 
-                                    const diaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[0]);
-                                    const mesIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[1]);
-                                    const anoIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[2].substring(0, 4));
+                            const pavilhaoJogoNomeado = id.startsWith("jogo") ? title.split(" ").slice(3).join(" ") : "";
 
-                                    const horaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[0]);
-                                    const minutosIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[1]);
+                            console.log("**************************");
+                            console.log("pavilhaoJogoNomeado", pavilhaoJogoNomeado);
 
-                                    if (
-                                        diaDataInicio === diaIndisponibilidadeInicio &&
-                                        mesDataInicio === mesIndisponibilidadeInicio &&
-                                        anoDataInicio === anoIndisponibilidadeInicio &&
-                                        parseInt(hora) === horaIndisponibilidadeInicio &&
-                                        parseInt(minutos) === minutosIndisponibilidadeInicio
-                                    ) {
-                                        disponivel = false;
-                                    }
+                            const diaDataInicio = parseInt(dataInicio.split("/")[0]);
+                            const mesDataInicio = parseInt(dataInicio.split("/")[1]);
+                            const anoDataInicio = parseInt(dataInicio.split("/")[2].substring(0, 4));
 
-                                    if (
-                                        diaDataInicio === diaIndisponibilidadeInicio &&
-                                        mesDataInicio === mesIndisponibilidadeInicio &&
-                                        anoDataInicio === anoIndisponibilidadeInicio &&
-                                        Pavilhao === pavilhaoJogoNomeado
-                                    ) {
-                                        const intervaloMinimo = 2; // 2 horas em milissegundos
-                                        const tempoEntreJogos =
-                                            parseInt(hora) - horaIndisponibilidadeInicio;
+                            console.log("diaDataInicio: ", diaDataInicio);
+                            console.log("mesDataInicio: ", mesDataInicio);
+                            console.log("anoDataInicio: ", anoDataInicio);
 
-                                        if (tempoEntreJogos < intervaloMinimo) {
-                                            disponivel = false;
-                                        }
-                                    }
+                            const diaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[0]);
+                            const mesIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[1]);
+                            const anoIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split("/")[2].substring(0, 4));
 
-                                    if (
-                                        diaDataInicio === diaIndisponibilidadeInicio &&
-                                        mesDataInicio === mesIndisponibilidadeInicio &&
-                                        anoDataInicio === anoIndisponibilidadeInicio &&
-                                        parseInt(hora) === horaIndisponibilidadeInicio &&
-                                        parseInt(minutos) === minutosIndisponibilidadeInicio &&
-                                        Pavilhao !== pavilhaoJogoNomeado
-                                    ) {
-                                        disponivel = false;
-                                    }
+                            console.log("diaIndisponibilidadeInicio: ", diaIndisponibilidadeInicio);
+                            console.log("mesIndisponibilidadeInicio: ", mesIndisponibilidadeInicio);
+                            console.log("anoIndisponibilidadeInicio: ", anoIndisponibilidadeInicio);
+
+                            const horaIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[0]);
+                            const minutosIndisponibilidadeInicio = parseInt(indisponibilidadeComeca.split(",")[1].split(":")[1]);
+
+                            console.log("horaIndisp: ", horaIndisponibilidadeInicio);
+                            console.log("minutosInds: ", minutosIndisponibilidadeInicio);
+
+                            if (
+                                diaDataInicio === diaIndisponibilidadeInicio &&
+                                mesDataInicio === mesIndisponibilidadeInicio &&
+                                anoDataInicio === anoIndisponibilidadeInicio &&
+                                parseInt(horaFormatada) === horaIndisponibilidadeInicio &&
+                                parseInt(minutosFormatados) === minutosIndisponibilidadeInicio &&
+                                pavilhao === pavilhaoJogoNomeado
+                            ) {
+                                disponivel = false;
+                                console.log("INDISPONIVEL");
+                            } else if (
+                                diaDataInicio === diaIndisponibilidadeInicio &&
+                                mesDataInicio === mesIndisponibilidadeInicio &&
+                                anoDataInicio === anoIndisponibilidadeInicio &&
+                                pavilhao === pavilhaoJogoNomeado
+                            ) {
+                                const intervaloMinimo = 2; // 2 horas em milissegundos
+
+                                const tempoEntreJogos = (new Date(dataInicio).getTime() - new Date(start).getTime()) / (1000 * 60 * 60);
+
+                                console.log("tempo entre jogos:", tempoEntreJogos);
+
+                                if (tempoEntreJogos < intervaloMinimo) {
+                                    disponivel = false;
+                                    console.log("INDISPONIVEL");
                                 }
+                            } else if (
+                                diaDataInicio === diaIndisponibilidadeInicio &&
+                                mesDataInicio === mesIndisponibilidadeInicio &&
+                                anoDataInicio === anoIndisponibilidadeInicio &&
+                                parseInt(horaFormatada) === horaIndisponibilidadeInicio &&
+                                parseInt(minutosFormatados) === minutosIndisponibilidadeInicio &&
+                                pavilhao !== pavilhaoJogoNomeado
+                            ) {
+                                disponivel = false;
+                                console.log("INDISPONIVEL");
                             }
-                        );
-
-                        if (jogosIndisponiveis.length > 0) {
-                            disponivel = false;
                         }
+                    });
+
+                    if (jogosIndisponiveis.length > 0) {
+                        disponivel = false;
+                        console.log("INDISPONIVEL");
                     }
                 }
+            }
 
-                return disponivel;
-            });
+            return disponivel;
+        }).map((arb) => arb.nome);
 
         return arbitrosDisponiveis;
-    },
+    }
+
+,
 
   enviaMailAlerta: function enviaMailAlerta(dataSource) {
     let arbitrosComJogosPendentes = [];
@@ -2668,12 +2614,12 @@ Meteor.methods({
       // console.log(element);
 
       if (element.tags[0] === "pendente") {
-        if (!arbitrosComJogosPendentes.includes(element.Arbitro1))
-          arbitrosComJogosPendentes.push(element.Arbitro1);
+        if (!arbitrosComJogosPendentes.includes(element.arbitro1))
+          arbitrosComJogosPendentes.push(element.arbitro1);
       }
       if (element.tags[1] === "pendente") {
-        if (!arbitrosComJogosPendentes.includes(element.Arbitro2))
-          arbitrosComJogosPendentes.push(element.Arbitro2);
+        if (!arbitrosComJogosPendentes.includes(element.arbitro2))
+          arbitrosComJogosPendentes.push(element.arbitro2);
       }
       if (element.tags[2] === "pendente") {
         if (!arbitrosComJogosPendentes.includes(element.JL1))
@@ -2759,7 +2705,7 @@ Meteor.methods({
     let d = dia.split("-");
 
     let newGame = {
-      id: id,
+      numerojogo: id,
       dia: d[2] + "/" + d[1] + "/" + d[0],
       hora: hora,
 
@@ -2768,8 +2714,8 @@ Meteor.methods({
       equipas: equipaA + " - " + equipaB,
 
       pavilhao: pavilhao,
-      arbitro_1: "",
-      arbitro_2: "",
+      arbitro1: "",
+      arbitro2: "",
       juiz_linha: ["", "", "", ""],
       key: "r" + _("novo"),
     };
@@ -2791,8 +2737,8 @@ Meteor.methods({
 
     // console.log("games_ca", games_ca);
 
-    games_ca.push({
-      id: id,
+      games_ca.push({
+          numerojogo: id,
       dia: newGame.dia,
       hora: hora,
 
@@ -2801,8 +2747,8 @@ Meteor.methods({
       equipas: equipaA + " - " + equipaB,
 
       pavilhao: pavilhao,
-      arbitro_1: "",
-      arbitro_2: "",
+      arbitro1: "",
+      arbitro2: "",
       juiz_linha: ["", "", "", ""],
       key: newGame.key,
       tags: ["", "", "", "", "", ""],
@@ -2831,8 +2777,8 @@ Meteor.methods({
 
     let d = dia.split("-");
 
-    let newGame = {
-      id: id,
+      let newGame = {
+          numerojogo: id,
       dia: d[0] + "/" + d[1] + "/" + d[2],
       hora: hora,
 
@@ -2840,8 +2786,8 @@ Meteor.methods({
       equipas: equipaA + " - " + equipaB,
 
       pavilhao: pavilhao,
-      arbitro_1: "",
-      arbitro_2: "",
+      arbitro1: "",
+      arbitro2: "",
       juiz_linha: ["", "", "", ""],
       key: "u" + _("novo"),
     };
@@ -2863,8 +2809,8 @@ Meteor.methods({
 
     // console.log("games_ca", games_ca);
 
-    games_ca.push({
-      id: id,
+      games_ca.push({
+          numerojogo: id,
       dia: newGame.dia,
       hora: hora,
 
@@ -2872,8 +2818,8 @@ Meteor.methods({
       equipas: equipaA + " - " + equipaB,
 
       pavilhao: pavilhao,
-      arbitro_1: "",
-      arbitro_2: "",
+      arbitro1: "",
+      arbitro2: "",
       juiz_linha: ["", "", "", ""],
       key: newGame.key,
       tags: ["", "", "", "", "", ""],
@@ -2890,9 +2836,9 @@ Meteor.methods({
   },
 
   eliminaJogo: function eliminaJogo(jogo) {
-    let id = jogo.Jogo;
+    let id = jogo.numerojogo;
 
-    jogos.remove({ id: parseInt(id) });
+      jogos.remove({ numerojogo: parseInt(id) });
 
     let ca1;
 
@@ -2907,8 +2853,8 @@ Meteor.methods({
     }).preNomeacoesRegionais;
 
     let newGames = [];
-    for (let index = 0; index < games_ca.length; index++) {
-      if (games_ca[index].id != parseInt(id)) {
+      for (let index = 0; index < games_ca.length; index++) {
+          if (parseInt(games_ca[index].numerojogo) != parseInt(id)) {
         newGames.push(games_ca[index]);
       }
     }
@@ -2940,13 +2886,13 @@ Meteor.methods({
         for (let index = 0; index < nAntigas.length; index++) {
           // console.log("nAntigas[index].jogo", nAntigas[index].jogo);
           // console.log("jogo", jogo);
-          // console.log("nAntigas[index].jogo.id", nAntigas[index].jogo.id);
-          // console.log("jogo.Jogo", jogo.Jogo);
+          // console.log("nAntigas[index].jogo.numerojogo", nAntigas[index].jogo.numerojogo);
+          // console.log("jogo.numerojogo", jogo.numerojogo);
           // console.log(
-          //   "nAntigas[index].jogo.id != jogo.Jogo",
-          //   parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)
+          //   "nAntigas[index].jogo.numerojogo != jogo.numerojogo",
+          //   parseInt(nAntigas[index].jogo.numerojogo) != parseInt(jogo.numerojogo)
           // );
-          if (parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)) {
+          if (parseInt(nAntigas[index].jogo.numerojogo) != parseInt(jogo.numerojogo)) {
             nNovas.push(nAntigas[index]);
           }
         }
@@ -2961,9 +2907,9 @@ Meteor.methods({
   },
 
   eliminaJogoUniversitario: function eliminaJogoUniversitario(jogo) {
-    let id = jogo.Jogo;
+    let id = jogo.numerojogo;
 
-    jogos.remove({ id: parseInt(id) });
+      jogos.remove({ numerojogo: parseInt(id) });
 
     let ca1;
 
@@ -2979,7 +2925,7 @@ Meteor.methods({
 
     let newGames = [];
     for (let index = 0; index < games_ca.length; index++) {
-      if (games_ca[index].id != parseInt(id)) {
+      if (parseInt(games_ca[index].numerojogo) != parseInt(id)) {
         newGames.push(games_ca[index]);
       }
     }
@@ -3011,13 +2957,13 @@ Meteor.methods({
         for (let index = 0; index < nAntigas.length; index++) {
           // console.log("nAntigas[index].jogo", nAntigas[index].jogo);
           // console.log("jogo", jogo);
-          // console.log("nAntigas[index].jogo.id", nAntigas[index].jogo.id);
-          // console.log("jogo.Jogo", jogo.Jogo);
+          // console.log("nAntigas[index].jogo.numerojogo", nAntigas[index].jogo.numerojogo);
+          // console.log("jogo.numerojogo", jogo.numerojogo);
           // console.log(
-          //   "nAntigas[index].jogo.id != jogo.Jogo",
-          //   parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)
+          //   "nAntigas[index].jogo.numerojogo != jogo.numerojogo",
+          //   parseInt(nAntigas[index].jogo.numerojogo) != parseInt(jogo.numerojogo)
           // );
-          if (parseInt(nAntigas[index].jogo.id) != parseInt(jogo.Jogo)) {
+          if (parseInt(nAntigas[index].jogo.numerojogo) != parseInt(jogo.numerojogo)) {
             nNovas.push(nAntigas[index]);
           }
         }
@@ -3674,9 +3620,9 @@ function getPremio(jogo, username) {
     const prova = ((jogo.prova)+"").toUpperCase();
     let funcao = 'JL';
 
-    if (jogo.arbitro_1 === username)
+    if (jogo.arbitro1 === username)
         funcao = '1';
-    if (jogo.arbitro_2 === username)
+    if (jogo.arbitro2 === username)
         funcao = '2';
 
     const csvFile = Assets.getText("ValorPremioAlimentacao.csv");

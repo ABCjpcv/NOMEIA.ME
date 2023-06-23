@@ -176,16 +176,16 @@ export function ConsultaTotal() {
         let pesquisa = removeAcentos(searchVal);
         ds = ds.filter(
           (item) =>
-            removeAcentos(item.Arbitro1).includes(pesquisa) ||
-            removeAcentos(item.Arbitro2).includes(pesquisa) ||
-            removeAcentos(item.Dia).includes(pesquisa) ||
-            removeAcentos(item.Equipas).includes(pesquisa) ||
-            item.Hora.includes(pesquisa) ||
+            removeAcentos(item.arbitro1).includes(pesquisa) ||
+            removeAcentos(item.arbitro2).includes(pesquisa) ||
+            removeAcentos(item.dia).includes(pesquisa) ||
+            removeAcentos(item.equipas).includes(pesquisa) ||
+            item.hora.includes(pesquisa) ||
             removeAcentos(item.JL).includes(pesquisa) ||
-            item.Jogo.toString().includes(pesquisa) ||
-            removeAcentos(item.Pavilhao).includes(pesquisa) ||
-            removeAcentos(item.Prova).includes(pesquisa) ||
-            removeAcentos(item.Serie).includes(pesquisa)
+            item.numerojogo.toString().includes(pesquisa) ||
+            removeAcentos(item.pavilhao).includes(pesquisa) ||
+            removeAcentos(item.prova).includes(pesquisa) ||
+            removeAcentos(item.serie).includes(pesquisa)
         );
         setFilteredData(ds);
       }
@@ -216,16 +216,16 @@ export function ConsultaTotal() {
 
             let k = _.uniqueId();
 
-            let obj = {
-              Jogo: jogoLido.id,
-              Dia: jogoLido.dia,
-              Hora: jogoLido.hora,
-              Prova: jogoLido.prova,
-              Serie: jogoLido.serie,
-              Equipas: jogoLido.equipas,
-              Pavilhao: jogoLido.pavilhao,
-              Arbitro1: jogoLido.arbitro_1,
-              Arbitro2: jogoLido.arbitro_2,
+              let obj = {
+                  numerojogo: jogoLido.numerojogo,
+              dia: jogoLido.dia,
+              hora: jogoLido.hora,
+              prova: jogoLido.prova,
+              serie: jogoLido.serie,
+              equipas: jogoLido.equipas,
+              pavilhao: jogoLido.pavilhao,
+              arbitro1: jogoLido.arbitro1,
+              arbitro2: jogoLido.arbitro2,
               JL: jl,
               key: "ct_" + k,
             };
@@ -246,108 +246,108 @@ export function ConsultaTotal() {
   const colunasNomeacoes = [
     {
       title: "Jogo",
-      dataIndex: "Jogo",
-      key: "Jogo",
+      dataIndex: "numerojogo",
+      key:"numerojogo",
       sorter: {
-        compare: (a, b) => a.Jogo - b.Jogo,
+        compare: (a, b) => a.numerojogo - b.numerojogo,
       },
       sortDirections: ["descend", "ascend"],
       width: "6%",
-      ...getColumnSearchProps("Jogo"),
+      ...getColumnSearchProps("numerojogo"),
     },
     {
       title: "Dia",
-      dataIndex: "Dia",
-      key: "Dia",
+      dataIndex: "dia",
+      key: "dia",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+        compare: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
       },
       sortDirections: ["descend", "ascend"],
       width: "8%",
-      ...getColumnSearchProps("Dia"),
+      ...getColumnSearchProps("dia"),
     },
     {
       title: "Hora",
-      dataIndex: "Hora",
-      key: "Hora",
+      dataIndex: "hora",
+      key: "hora",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+        compare: (a, b) => comparaAminhaLindaString(a.hora, b.hora),
       },
       sortDirections: ["descend", "ascend"],
       width: "6%",
 
-      ...getColumnSearchProps("Hora"),
+      ...getColumnSearchProps("hora"),
     },
     {
       title: "Prova",
-      dataIndex: "Prova",
-      key: "Prova",
+      dataIndex: "prova",
+      key: "prova",
       width: "7%",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+        compare: (a, b) => comparaAminhaLindaString(a.prova, b.prova),
       },
       sortDirections: ["descend", "ascend"],
 
-      ...getColumnSearchProps("Prova"),
+      ...getColumnSearchProps("prova"),
     },
     {
       title: "Série",
-      dataIndex: "Serie",
+      dataIndex: "serie",
       key: "Serie",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+        compare: (a, b) => comparaAminhaLindaString(a.serie, b.serie),
       },
       sortDirections: ["descend", "ascend"],
       width: "7%",
 
-      ...getColumnSearchProps("Serie"),
+      ...getColumnSearchProps("serie"),
     },
     {
       title: "Equipas",
-      dataIndex: "Equipas",
+      dataIndex: "equipas",
       key: "Equipas",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+        compare: (a, b) => comparaAminhaLindaString(a.equipas, b.equipas),
         multiple: 6,
       },
       sortDirections: ["descend", "ascend"],
 
-      ...getColumnSearchProps("Equipas"),
+      ...getColumnSearchProps("equipas"),
     },
     {
       title: "Pavilhão",
-      dataIndex: "Pavilhao",
-      key: "Pavilhao",
+      dataIndex: "pavilhao",
+      key: "pravilhao",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+        compare: (a, b) => comparaAminhaLindaString(a.pavilhao, b.pavilhao),
       },
       sortDirections: ["descend", "ascend"],
 
-      ...getColumnSearchProps("Pavilhao"),
+      ...getColumnSearchProps("pavilhao"),
     },
     {
       title: "1º Árbitro",
-      dataIndex: "Arbitro1",
-      key: "Arbitro1",
+      dataIndex: "arbitro1",
+      key: "arbitro1",
       width: "11%",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+        compare: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
       },
       sortDirections: ["descend", "ascend"],
 
-      ...getColumnSearchProps("Arbitro1"),
+      ...getColumnSearchProps("arbitro1"),
     },
     {
       title: "2º Árbitro",
-      dataIndex: "Arbitro2",
-      key: "Arbitro2",
+      dataIndex: "arbitro2",
+      key: "arbitro2",
       width: "11%",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+        compare: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
       },
       sortDirections: ["descend", "ascend"],
 
-      ...getColumnSearchProps("Arbitro2"),
+      ...getColumnSearchProps("arbitro2"),
     },
     {
       title: "Juízes de linha",

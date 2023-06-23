@@ -83,47 +83,47 @@ export function GestaoPagamentos({ user }) {
     const colunasGestaoPagamentos = [
         {
             title: "Jogo",
-            dataIndex: "Jogo",
-            key: "Jogo",
-            sorter: (a, b) => a.Jogo - b.Jogo,
+            dataIndex: "numerojogo",
+            key:"numerojogo",
+            sorter: (a, b) => a.numerojogo - b.numerojogo,
             sortDirections: ["descend", "ascend"],
             width: "5%",
         },
         {
             title: "Dia",
-            dataIndex: "Dia",
-            key: "Dia",
-            sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+            dataIndex: "dia",
+            key: "dia",
+            sorter: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
             sortDirections: ["descend", "ascend"],
             width: "8%",
         },
         {
             title: "Hora",
-            dataIndex: "Hora",
-            key: "Hora",
-            sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+            dataIndex: "hora",
+            key: "hora",
+            sorter: (a, b) => comparaAminhaLindaString(a.hora, b.hora),
             sortDirections: ["descend", "ascend"],
             width: "5%",
         },
         {
             title: "Prova",
-            dataIndex: "Prova",
-            key: "Prova",
-            sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+            dataIndex: "prova",
+            key: "prova",
+            sorter: (a, b) => comparaAminhaLindaString(a.prova, b.prova),
             sortDirections: ["descend", "ascend"],
         },
         {
             title: "Pavilhão",
-            dataIndex: "Pavilhao",
-            key: "Pavilhao",
-            sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+            dataIndex: "pavilhao",
+            key: "pravilhao",
+            sorter: (a, b) => comparaAminhaLindaString(a.pavilhao, b.pavilhao),
             sortDirections: ["descend", "ascend"],
         },
         {
             title: "Prémio",
-            dataIndex: "Premio",
-            key: "Premio",
-            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Premio, b.Premio),
+            dataIndex: "premio",
+            key: "premio",
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.premio, b.premio),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -133,9 +133,9 @@ export function GestaoPagamentos({ user }) {
         },
         {
             title: "Deslocação",
-            dataIndex: "Deslocacao",
-            key: "Deslocacao",
-            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Deslocacao, b.Deslocacao),
+            dataIndex: "deslocacao",
+            key: "deslocacao",
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.deslocacao, b.deslocacao),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -145,9 +145,9 @@ export function GestaoPagamentos({ user }) {
         },
         {
             title: "Alimentação",
-            dataIndex: "Alimentacao",
-            key: "Alimentacao",
-            sorter: (a, b) => comparaAminhaLindaDinheiro(a.Alimentacao, b.Alimentacao),
+            dataIndex: "alimentacao",
+            key: "alimentacao",
+            sorter: (a, b) => comparaAminhaLindaDinheiro(a.alimentacao, b.alimentacao),
             sortDirections: ["descend", "ascend"],
             render: (value) => {
                 const formattedValue = value.toFixed(2);
@@ -193,14 +193,14 @@ export function GestaoPagamentos({ user }) {
                         let alimentacao = parseFloat(result[index].prizeMeal);
 
                         let obj = {
-                            Jogo: jogoLido.id,
-                            Dia: jogoLido.dia,
-                            Hora: jogoLido.hora,
-                            Prova: jogoLido.prova + " " + jogoLido.serie,
-                            Pavilhao: jogoLido.pavilhao,
-                            Premio: premio,
-                            Deslocacao: deslocacao,
-                            Alimentacao: alimentacao,
+                            numerojogo: jogoLido.numerojogo,
+                            dia: jogoLido.dia,
+                            hora: jogoLido.hora,
+                            prova: jogoLido.prova + " " + jogoLido.serie,
+                            pavilhao: jogoLido.pavilhao,
+                            premio: premio,
+                            deslocacao: deslocacao,
+                            alimentacao: alimentacao,
                         };
 
                         dataFromDB.push(obj);
@@ -212,14 +212,14 @@ export function GestaoPagamentos({ user }) {
 
                     setDataSource(dataFromDB);
                     setSummaryRow({
-                        Jogo: 'TOTAL:',
-                        Dia: '',
-                        Hora: '',
-                        Prova: '',
-                        Pavilhao: '',
-                        Premio: premioTotal.toFixed(2) + " €",
-                        Deslocacao: deslocacaoTotal.toFixed(2) + " €",
-                        Alimentacao: alimentacaoTotal.toFixed(2) + " €",
+                        numerojogo: 'TOTAL:',
+                        dia: '',
+                        hora: '',
+                        prova: '',
+                        pavilhao: '',
+                        premio: premioTotal.toFixed(2) + " €",
+                        deslocacao: deslocacaoTotal.toFixed(2) + " €",
+                        alimentacao: alimentacaoTotal.toFixed(2) + " €",
                     });
                 } else {
                     setDataSource([]);
@@ -273,12 +273,12 @@ export function GestaoPagamentos({ user }) {
 
     function filtraDados(dados, mes, ano) {
         const filteredData = dados.filter((item) => {
-            const dataSplitada = item.Dia.split("/");
+            const dataSplitada = item.dia.split("/");
             const mesItem = parseInt(dataSplitada[1], 10).toString(); // Converter para string
             const anoItem = parseInt(dataSplitada[2], 10).toString(); // Converter para string
             return mesItem === mes.toString() && anoItem === ano.toString();
         });
-        return filteredData.length > 0 ? filteredData : [{ Premio: 0, Deslocacao: 0, Alimentacao: 0 }];
+        return filteredData.length > 0 ? filteredData : [{ premio: 0, deslocacao: 0, alimentacao: 0 }];
     }
 
 
@@ -301,21 +301,21 @@ export function GestaoPagamentos({ user }) {
 
         for (let index = 0; index < filteredData.length; index++) {
             const item = filteredData[index];
-            premioTotal += parseFloat(item.Premio);
-            deslocacaoTotal += parseFloat(item.Deslocacao);
-            alimentacaoTotal += parseFloat(item.Alimentacao);
+            premioTotal += parseFloat(item.premio);
+            deslocacaoTotal += parseFloat(item.deslocacao);
+            alimentacaoTotal += parseFloat(item.alimentacao);
         }
 
         // Atualize o estado summaryRow com os novos valores
         setSummaryRow({
-            Jogo: 'TOTAL:',
-            Dia: '',
-            Hora: '',
-            Prova: '',
-            Pavilhao: '',
-            Premio: premioTotal.toFixed(2) + " €",
-            Deslocacao: deslocacaoTotal.toFixed(2) + " €",
-            Alimentacao: alimentacaoTotal.toFixed(2) + " €",
+            numerojogo: 'TOTAL:',
+            dia: '',
+            hora: '',
+            prova: '',
+            pavilhao: '',
+            premio: premioTotal.toFixed(2) + " €",
+            deslocacao: deslocacaoTotal.toFixed(2) + " €",
+            alimentacao: alimentacaoTotal.toFixed(2) + " €",
         });
     }
 
@@ -398,10 +398,10 @@ export function GestaoPagamentos({ user }) {
                                         summary={() => (
                                             <tr>
                                                 <th colSpan={4}>TOTAL:</th>
-                                                <th>{summaryRow && summaryRow.Pavilhao}</th>
-                                                <th>{summaryRow && summaryRow.Premio}</th>
-                                                <th>{summaryRow && summaryRow.Deslocacao}</th>
-                                                <th>{summaryRow && summaryRow.Alimentacao}</th>
+                                                <th>{summaryRow && summaryRow.pavilhao}</th>
+                                                <th>{summaryRow && summaryRow.premio}</th>
+                                                <th>{summaryRow && summaryRow.deslocacao}</th>
+                                                <th>{summaryRow && summaryRow.alimentacao}</th>
                                             </tr>
                                         )}
                                     />

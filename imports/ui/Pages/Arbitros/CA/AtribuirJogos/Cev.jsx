@@ -226,83 +226,83 @@ export function Cev({ user }) {
   const colunasNomeacoesPrivadas = [
     {
       title: "Jogo",
-      dataIndex: "Jogo",
-      key: "Jogo",
-      sorter: (a, b) => parseInt(a.Jogo) - parseInt(b.Jogo),
+      dataIndex: "numerojogo",
+          key: "numerojogo",
+      sorter: (a, b) => parseInt(a.numerojogo) - parseInt(b.numerojogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.8%",
-      ...getColumnSearchProps("Jogo"),
+      ...getColumnSearchProps("numerojogo"),
     },
     {
       title: "Dia",
-      dataIndex: "Dia",
-      key: "Dia",
-      sorter: (a, b) => comparaAminhaLindaData(a.Dia, b.Dia),
+      dataIndex: "dia",
+      key: "dia",
+      sorter: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "6.3%",
-      ...getColumnSearchProps("Dia"),
+      ...getColumnSearchProps("dia"),
     },
     {
       title: "Hora",
-      dataIndex: "Hora",
-      key: "Hora",
-      sorter: (a, b) => comparaAminhaLindaString(a.Hora, b.Hora),
+      dataIndex: "hora",
+      key: "hora",
+      sorter: (a, b) => comparaAminhaLindaString(a.hora, b.hora),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.8%",
-      ...getColumnSearchProps("Hora"),
+      ...getColumnSearchProps("hora"),
     },
     {
       title: "Prova",
-      dataIndex: "Prova",
-      key: "Prova",
-      sorter: (a, b) => comparaAminhaLindaString(a.Prova, b.Prova),
+      dataIndex: "prova",
+      key: "prova",
+      sorter: (a, b) => comparaAminhaLindaString(a.prova, b.prova),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "6%",
 
-      ...getColumnSearchProps("Prova"),
+      ...getColumnSearchProps("prova"),
     },
     {
       title: "Série",
-      dataIndex: "Serie",
-      key: "Serie",
-      sorter: (a, b) => comparaAminhaLindaString(a.Serie, b.Serie),
+      dataIndex: "serie",
+      key: "serie",
+      sorter: (a, b) => comparaAminhaLindaString(a.serie, b.serie),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
       width: "5.5%",
 
-      ...getColumnSearchProps("Serie"),
+      ...getColumnSearchProps("serie"),
     },
     {
       title: "Equipas",
-      dataIndex: "Equipas",
-      key: "Equipas",
-      sorter: (a, b) => comparaAminhaLindaString(a.Equipas, b.Equipas),
+      dataIndex: "equipas",
+      key: "equipas",
+      sorter: (a, b) => comparaAminhaLindaString(a.equipas, b.equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
 
-      ...getColumnSearchProps("Equipas"),
+      ...getColumnSearchProps("equipas"),
     },
     {
       title: "Pavilhão",
-      dataIndex: "Pavilhao",
-      key: "Pavilhao",
-      sorter: (a, b) => comparaAminhaLindaString(a.Pavilhao, b.Pavilhao),
+      dataIndex: "pavilhao",
+      key: "pavilhao",
+      sorter: (a, b) => comparaAminhaLindaString(a.pavilhao, b.pavilhao),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
 
-      ...getColumnSearchProps("Pavilhao"),
+      ...getColumnSearchProps("pavilhao"),
     },
     {
       title: "1º Árbitro",
-      dataIndex: "Arbitro1",
-      key: "Arbitro1",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro1, b.Arbitro1),
+      dataIndex: "arbitro1",
+      key: "arbitro1",
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("Arbitro1"),
+      ...getColumnSearchProps("arbitro1"),
       render: (text, record, index) => (
         <>
           <Select
@@ -326,7 +326,7 @@ export function Cev({ user }) {
             key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Arbitro1 != "" ? record.Arbitro1 : null}
+            value={record.arbitro1 != "" ? record.arbitro1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -348,11 +348,11 @@ export function Cev({ user }) {
     },
     {
       title: "2º Árbitro",
-      dataIndex: "Arbitro2",
-      key: "Arbitro2",
-      sorter: (a, b) => comparaAminhaLindaString(a.Arbitro2, b.Arbitro2),
+      dataIndex: "arbitro2",
+      key: "arbitro2",
+      sorter: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("Arbitro2"),
+      ...getColumnSearchProps("arbitro2"),
       render: (text, record, index) => (
         <>
           <Select
@@ -375,7 +375,7 @@ export function Cev({ user }) {
             key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Arbitro2 != "" ? record.Arbitro2 : null}
+            value={record.arbitro2 != "" ? record.arbitro2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -771,15 +771,15 @@ export function Cev({ user }) {
 
     let titulo =
       "Jogo nº " +
-      currJogo.Jogo +
+      currJogo.numerojogo +
       " " +
-      currJogo.Prova +
+      currJogo.prova +
       " Serie " +
-      currJogo.Serie +
+      currJogo.serie +
       " " +
-      currJogo.Equipas +
+      currJogo.equipas +
       " " +
-      currJogo.Pavilhao;
+      currJogo.pavilhao;
 
     // console.log("prevNomeArbitro", prevNomeArbitro);
 
@@ -954,15 +954,15 @@ export function Cev({ user }) {
         for (let index = 0; index < preNomeacoes.length; index++) {
           let jogoLido = preNomeacoes[index];
           let obj = {
-            Jogo: jogoLido.id,
-            Dia: jogoLido.dia,
-            Hora: jogoLido.hora,
-            Prova: jogoLido.prova,
-            Serie: jogoLido.serie,
-            Equipas: jogoLido.equipas,
-            Pavilhao: jogoLido.pavilhao,
-            Arbitro1: jogoLido.arbitro_1,
-            Arbitro2: jogoLido.arbitro_2,
+            numerojogo: jogoLido.id,
+            dia: jogoLido.dia,
+            hora: jogoLido.hora,
+            prova: jogoLido.prova,
+            serie: jogoLido.serie,
+            equipas: jogoLido.equipas,
+            pavilhao: jogoLido.pavilhao,
+            arbitro1: jogoLido.arbitro1,
+            arbitro2: jogoLido.arbitro2,
             JL1: jogoLido.juiz_linha[0],
             JL2: jogoLido.juiz_linha[1],
             // JL3: jogoLido.juiz_linha[2],
@@ -1474,8 +1474,8 @@ export function Cev({ user }) {
             }}
           >
             {/* <h2 className="blue">
-                {currJogo.Jogo != undefined
-                  ? "Jogo nº: " + currJogo.Jogo
+                {currJogo.numerojogo != undefined
+                  ? "Jogo nº: " + currJogo.numerojogo
                   : "Clique num jogo para o selecionar."}
               </h2> */}
             <div
