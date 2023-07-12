@@ -741,232 +741,208 @@ const MenuPrivadoCA = () => {
           ☰ Menu
         </Button>
       </Space>
-      <Drawer
-        title="Menu"
-        placement={"left"}
-        closable={false}
-        onClose={onClose}
-        visible={visible}
-        key={"left"}
-      >
-        <p>
-          {" "}
-          <b> Árbitro: </b>
-        </p>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA") {
-                (location.pathname = "/Conta/ProfileCA"),
-                  navigate("/Conta/ProfileCA");
-              }
-            }}
+          <Drawer
+              title="Menu"
+              placement={"left"}
+              closable={false}
+              onClose={onClose}
+              visible={visible}
+              key={"left"}
           >
-            <ScheduleOutlined /> Consultar nomeações
-          </p>
-        </a>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Calendario") {
-                (location.pathname = "/Conta/ProfileCA/Calendario"),
-                  navigate("/Conta/ProfileCA/Calendario");
-              }
-            }}
-          >
-            <CalendarOutlined /> Calendário
-          </p>
-        </a>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Relacoes") {
-                (location.pathname = "/Conta/ProfileCA/Relacoes"),
-                  navigate("/Conta/ProfileCA/Relacoes");
-              }
-            }}
-          >
-            <TagsOutlined /> Indicar incompatibilidades
-          </p>
-        </a>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Jogos_Passados") {
-                (location.pathname = "/Conta/ProfileCA/Jogos_Passados"),
-                  navigate("/Conta/ProfileCA/Jogos_Passados");
-              }
-            }}
-          >
-            <SolutionOutlined /> Histórico de jogos
-          </p>
-        </a>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Definicoes") {
-                (location.pathname = "/Conta/ProfileCA/Definicoes"),
-                  navigate("/Conta/ProfileCA/Definicoes");
-              }
-            }}
-          >
-            <UserOutlined /> Perfil
-          </p>
-              </a>
-
-              <a className="menu-item">
-                  <p
-                      style={{ fontSize: "15px", marginLeft: "5%" }}
-                      onClick={() => {
-                          if (location.pathname != "Conta/ProfileCA/Gestao_Pagamentos") {
-                              (location.pathname = "/Conta/ProfileCA/Gestao_Pagamentos"),
-                                  navigate("/Conta/ProfileCA/Gestao_Pagamentos");
-                          }
-                      }}
-                  >
-                      <EuroOutlined /> Gestão de Pagamentos
+              <div>
+                  <p>
+                      <b> Árbitro: </b>
                   </p>
-              </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (location.pathname !== "/Conta/ProfileCA") {
+                                  location.pathname = "/Conta/ProfileCA";
+                                  navigate("/Conta/ProfileCA");
+                              }
+                          }}
+                      >
+                          <ScheduleOutlined /> Consultar nomeações
+                      </p>
+                  </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (location.pathname !== "/Conta/ProfileCA/Calendario") {
+                                  location.pathname = "/Conta/ProfileCA/Calendario";
+                                  navigate("/Conta/ProfileCA/Calendario");
+                              }
+                          }}
+                      >
+                          <CalendarOutlined /> Calendário
+                      </p>
+                  </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (location.pathname !== "/Conta/ProfileCA/Relacoes") {
+                                  location.pathname = "/Conta/ProfileCA/Relacoes";
+                                  navigate("/Conta/ProfileCA/Relacoes");
+                              }
+                          }}
+                      >
+                          <TagsOutlined /> Indicar incompatibilidades
+                      </p>
+                  </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (location.pathname !== "/Conta/ProfileCA/Jogos_Passados") {
+                                  location.pathname = "/Conta/ProfileCA/Jogos_Passados";
+                                  navigate("/Conta/ProfileCA/Jogos_Passados");
+                              }
+                          }}
+                      >
+                          <SolutionOutlined /> Histórico de jogos
+                      </p>
+                  </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (location.pathname !== "/Conta/ProfileCA/Definicoes") {
+                                  location.pathname = "/Conta/ProfileCA/Definicoes";
+                                  navigate("/Conta/ProfileCA/Definicoes");
+                              }
+                          }}
+                      >
+                          <UserOutlined /> Perfil
+                      </p>
+                  </a>
 
-        <p>
-          {" "}
-          <b> Conselho de Arbitragem: </b>{" "}
-        </p>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (
+                                  location.pathname !== "/Conta/ProfileCA/Gestao_Pagamentos"
+                              ) {
+                                  location.pathname = "/Conta/ProfileCA/Gestao_Pagamentos";
+                                  navigate("/Conta/ProfileCA/Gestao_Pagamentos");
+                              }
+                          }}
+                      >
+                          <EuroOutlined /> Gestão de Pagamentos
+                      </p>
+                  </a>
 
-        <p
-          style={{ fontSize: "15px", marginLeft: "5%", marginBottom: "-0.5em" }}
-          id="clickOptionMenuAtribuirArbitros"
-        >
-          <SelectOutlined /> Nomear árbitros
-          <span>
-            <ul>
-              <li>
-                <a
-                  className="menu-item"
-                  onClick={() => {
-                    if (
-                      location.pathname !=
-                      "Conta/ProfileCA/Atribuir_Arbitros/ADESL"
-                    ) {
-                      (location.pathname =
-                        "/Conta/ProfileCA/Atribuir_Arbitros/ADESL"),
-                        navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
-                    }
-                  }}
-                >
-                  ADESL - CUL
-                </a>
-              </li>
-              {/* <li>
-              {" "}
-              <a
-                className="menu-item"
-                onClick={() => {
-                  if (
-                    location.pathname != "Conta/ProfileCA/Atribuir_Arbitros/CEV"
-                  ) {
-                    (location.pathname =
-                      "/Conta/ProfileCA/Atribuir_Arbitros/CEV"),
-                      navigate("/Conta/ProfileCA/Atribuir_Arbitros/CEV");
-                  }
-                }}
-              >
-                CEV{" "}
-              </a>
-            </li> */}
-              <li>
-                {" "}
-                <a
-                  className="menu-item"
-                  onClick={() => {
-                    if (
-                      location.pathname !=
-                      "Conta/ProfileCA/Atribuir_Arbitros/CR_CN"
-                    ) {
-                      (location.pathname =
-                        "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN"),
-                        navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
-                    }
-                  }}
-                >
-                  CR / CN
-                </a>
-              </li>
-            </ul>
-          </span>
-        </p>
+                  <p>
+                      <b> Conselho de Arbitragem: </b>{" "}
+                  </p>
 
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
+                  <div style={{ fontSize: "15px", marginLeft: "5%", marginBottom: "-0.5em" }}>
+                      <p id="clickOptionMenuAtribuirArbitros">
+                          <SelectOutlined /> Nomear árbitros
+                      </p>
+                      <ul>
+                          <li>
+                              <a
+                                  className="menu-item"
+                                  onClick={() => {
+                                      if (
+                                          location.pathname !== "/Conta/ProfileCA/Atribuir_Arbitros/ADESL"
+                                      ) {
+                                          location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros/ADESL";
+                                          navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
+                                      }
+                                  }}
+                              >
+                                  ADESL - CUL
+                              </a>
+                          </li>
+                          {/* <li>
+          <a
+            className="menu-item"
             onClick={() => {
-              if (location.pathname != "Conta/ProfileCA/Carregar_Novos_Jogos") {
-                (location.pathname = "/Conta/ProfileCA/Carregar_Novos_Jogos"),
-                  navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
+              if (
+                location.pathname !== "/Conta/ProfileCA/Atribuir_Arbitros/CEV"
+              ) {
+                location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros/CEV";
+                navigate("/Conta/ProfileCA/Atribuir_Arbitros/CEV");
               }
             }}
           >
-            <UploadOutlined /> Carregar jogos novos
-          </p>
-        </a>
-        <p>
-          {" "}
-          <b> Gerir Árbitros: </b>{" "}
-        </p>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if ((location.pathname = "/Conta/ProfileCA/Criar_Arbitro")) {
-                (location.pathname = "/Conta/ProfileCA/Criar_Arbitro"),
-                  navigate("/Conta/ProfileCA/Criar_Arbitro");
-              }
-            }}
-          >
-            <UserAddOutlined /> Criar conta árbitro
-          </p>
-        </a>
-        <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => {
-              if ((location.pathname = "/Conta/ProfileCA/Criar_Arbitro")) {
-                (location.pathname = "/Conta/ProfileCA/Remover_Arbitro"),
-                  navigate("/Conta/ProfileCA/Remover_Arbitro");
-              }
-            }}
-          >
-            <UserDeleteOutlined /> Editar conta árbitro
-          </p>
-        </a>
+            CEV
+          </a>
+        </li> */}
+                          <li>
+                              <a
+                                  className="menu-item"
+                                  onClick={() => {
+                                      if (
+                                          location.pathname !== "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN"
+                                      ) {
+                                          location.pathname = "/Conta/ProfileCA/Atribuir_Arbitros/CR_CN";
+                                          navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
+                                      }
+                                  }}
+                              >
+                                  CR / CN
+                              </a>
+                          </li>
+                      </ul>
+                  </div>
 
-        {/* <a className="menu-item">
-          <p
-            style={{ fontSize: "15px", marginLeft: "5%" }}
-            onClick={() => (
-              (location.pathname = "/Conta/ProfileCA/Definicoes"),
-              navigate("/Conta/ProfileCA/Definicoes")
-            )}
-          >
-            Definições
-          </p>
-        </a> */}
-        {/* <a className="menu-item">
-          <p
-            style={{ fontSize: "15px" }}
-            onClick={() => (
-              (location.pathname = "/"), navigate("/"), Meteor.logout()
-            )}
-          >
-            Terminar Sessão
-          </p>
-        </a> */}
-      </Drawer>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (
+                                  location.pathname !== "/Conta/ProfileCA/Carregar_Novos_Jogos"
+                              ) {
+                                  location.pathname = "/Conta/ProfileCA/Carregar_Novos_Jogos";
+                                  navigate("/Conta/ProfileCA/Carregar_Novos_Jogos");
+                              }
+                          }}
+                      >
+                          <UploadOutlined /> Carregar jogos novos
+                      </p>
+                  </a>
+                  <p>
+                      <b> Gerir Árbitros: </b>{" "}
+                  </p>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (
+                                  location.pathname !== "/Conta/ProfileCA/Criar_Arbitro"
+                              ) {
+                                  location.pathname = "/Conta/ProfileCA/Criar_Arbitro";
+                                  navigate("/Conta/ProfileCA/Criar_Arbitro");
+                              }
+                          }}
+                      >
+                          <UserAddOutlined /> Criar conta árbitro
+                      </p>
+                  </a>
+                  <a className="menu-item">
+                      <p
+                          style={{ fontSize: "15px", marginLeft: "5%" }}
+                          onClick={() => {
+                              if (
+                                  location.pathname !== "/Conta/ProfileCA/Remover_Arbitro"
+                              ) {
+                                  location.pathname = "/Conta/ProfileCA/Remover_Arbitro";
+                                  navigate("/Conta/ProfileCA/Remover_Arbitro");
+                              }
+                          }}
+                      >
+                          <UserDeleteOutlined /> Editar conta árbitro
+                      </p>
+                  </a>
+              </div>
+          </Drawer>
+
     </>
   );
 };

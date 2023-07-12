@@ -119,9 +119,9 @@ export function JogosPassadosCA({ user }) {
     },
     {
       title: "Juízes de linha",
-      dataIndex: "JL",
-      key: "JL",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
+      dataIndex: "juiz_linha",
+      key: "juiz_linha",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
       sortDirections: ["descend", "ascend"],
     },
 
@@ -296,10 +296,10 @@ export function JogosPassadosCA({ user }) {
               Pavilhao: jogoLido.pavilhao,
               arbitro1: jogoLido.arbitro1,
               arbitro2: jogoLido.arbitro2,
-              JL1: jogoLido.juiz_linha[0],
-              JL2: jogoLido.juiz_linha[1],
-              // JL3: jogoLido.juiz_linha[2],
-              // JL4: jogoLido.juiz_linha[3],
+              juiz_linha1: jogoLido.juiz_linha1,
+              juiz_linha2: jogoLido.juiz_linha2,
+              // juiz_linha3: jogoLido.juiz_linha3,
+              // juiz_linha4: jogoLido.juiz_linha4,
               key: jogoLido.key,
               tags: [tags],
             };

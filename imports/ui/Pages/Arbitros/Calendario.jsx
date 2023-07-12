@@ -318,27 +318,6 @@ export class Calendario extends React.Component {
             }
           }
           );
-
-
-        // Meteor.call(
-        //   "carregaHorario",
-        //   Meteor.user?.()?.username,
-        //   (err, result) => {
-        //     if (err) {
-        //       console.log("ERRRRROOOOO", { err });
-        //     } else if (result) {
-        //       let r = result.disponibilidades;
-        //       console.log("r", r);
-        //       const { state: currentState } = this;
-        //       const newState = {
-        //         ...currentState,
-        //         resultado: r,
-        //         loaded: true,
-        //       };
-        //       this.setState(newState);
-        //     }
-        //   }
-        // );
       }
 
       return (
@@ -509,7 +488,7 @@ export class Calendario extends React.Component {
         console.log("ERRRRROOOOO", { err });
       } else if (result) {
         let r = result.disponibilidades;
-        console.log("r", r);
+        //console.log("r", r);
         const { state: currentState } = this;
         const newState = { ...currentState, resultado: r, loaded: true };
         this.setState(newState);
@@ -525,8 +504,8 @@ export class Calendario extends React.Component {
 
     let hoje = new Date();
 
-    console.log("selectInfo.start", selectInfo.startStr);
-    console.log("selectInfo.end", selectInfo.endStr);
+    //console.log("selectInfo.start", selectInfo.startStr);
+    //console.log("selectInfo.end", selectInfo.endStr);
     let newStart = new Date(selectInfo.start);
 
     let newEnd = new Date(selectInfo.end);
@@ -579,7 +558,7 @@ export class Calendario extends React.Component {
   }
 
   handleEventClick = (clickInfo) => {
-    console.log("click event", clickInfo.event._def);
+    //console.log("click event", clickInfo.event._def);
     if (clickInfo.event._def.publicId.includes("feriado")) {
       message.warn("Impossível remover feriado!");
     } else if (clickInfo.event._def.title === " Indisponível ") {

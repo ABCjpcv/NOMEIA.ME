@@ -397,17 +397,17 @@ export function Cev({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL1",
-      key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
+      dataIndex: "juiz_linha1",
+      key: "juiz_linha1",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL1"),
+      ...getColumnSearchProps("juiz_linha1"),
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
-            name="select_jl1"
+            name="select_juiz_linha1"
             style={{
               width: "120px",
               backgroundColor:
@@ -421,10 +421,10 @@ export function Cev({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl1_" + index}
+            key={"select_juiz_linha1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl1 != "" ? record.JL1 : null}
+            value={record.juiz_linha1 != "" ? record.juiz_linha1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -434,7 +434,7 @@ export function Cev({ user }) {
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_1_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_1_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -446,17 +446,17 @@ export function Cev({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL2",
-      key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
+      dataIndex: "juiz_linha2",
+      key: "juiz_linha2",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha2, b.juiz_linha2),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL2"),
+      ...getColumnSearchProps("juiz_linha2"),
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
-            name="select_jl2"
+            name="select_juiz_linha2"
             style={{
               width: "120px",
               backgroundColor:
@@ -470,10 +470,10 @@ export function Cev({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl2_" + index}
+            key={"select_juiz_linha2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl2 != "" ? record.JL2 : null}
+            value={record.juiz_linha2 != "" ? record.juiz_linha2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -483,7 +483,7 @@ export function Cev({ user }) {
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_2_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_2_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -494,9 +494,9 @@ export function Cev({ user }) {
       ),
     },
     // {
-    //   title: "JL3",
-    //   dataIndex: "JL3",
-    //   key: "JL3",
+    //   title: "juiz_linha3",
+    //   dataIndex: "juiz_linha3",
+    //   key: "juiz_linha3",
     //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
     //   sortDirections: ["descend", "ascend"],
     //   render: (text, record, index) => (
@@ -504,7 +504,7 @@ export function Cev({ user }) {
     //       <Select
     //         showSearch
     //         mode="single"
-    //         name="select_jl3"
+    //         name="select_juiz_linha3"
     //         style={{
     //           width: "120px",
     //           backgroundColor:
@@ -518,11 +518,11 @@ export function Cev({ user }) {
     //               ? "#ef5350"
     //               : "white",
     //         }}
-    //         key={"select_jl3_" + index}
+    //         key={"select_juiz_linha3_" + index}
     //         type="select"
     //         // onChange={handleChangeSelecaoArbitro}
     //         onSelect={handleChangeSelecaoArbitro}
-    //         value={record.Jl3 != "" ? record.JL3 : null}
+    //         value={record.juiz_linha3 != "" ? record.juiz_linha3 : null}
     //         disabled={disabledDataSource.includes(record)}
     //         size="small"
     //         showArrow={false}
@@ -532,7 +532,7 @@ export function Cev({ user }) {
     //             <Select.Option
     //               className="select-ref-choice"
     //               value={arb + ""}
-    //               key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
+    //               key={"option_3_juiz_linha_index_" + index + "_" + _.uniqueId()}
     //             >
     //               {arb + ""}
     //             </Select.Option>
@@ -543,9 +543,9 @@ export function Cev({ user }) {
     //   ),
     // },
     // {
-    //   title: "JL4",
-    //   dataIndex: "JL4",
-    //   key: "JL4",
+    //   title: "juiz_linha4",
+    //   dataIndex: "juiz_linha4",
+    //   key: "juiz_linha4",
     //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
     //   sortDirections: ["descend", "ascend"],
     //   render: (text, record, index) => (
@@ -553,7 +553,7 @@ export function Cev({ user }) {
     //       <Select
     //         showSearch
     //         mode="single"
-    //         name="select_jl4"
+    //         name="select_juiz_linha4"
     //         style={{
     //           width: "120px",
     //           backgroundColor:
@@ -565,10 +565,10 @@ export function Cev({ user }) {
     //               ? "#6FD25A"
     //               : "#ef5350",
     //         }}
-    //         key={"select_jl4_" + index}
+    //         key={"select_juiz_linha4_" + index}
     //         type="select"
     //         onChange={handleChangeSelecaoArbitro}
-    //         value={record.Jl4 != "" ? record.JL4 : null}
+    //         value={record.juiz_linha4 != "" ? record.juiz_linha4 : null}
     //         disabled={disabledDataSource.includes(record)}
     //         size="small"
     //         showArrow={false}
@@ -578,7 +578,7 @@ export function Cev({ user }) {
     //             <Select.Option
     //               className="select-ref-choice"
     //               value={arb + ""}
-    //               key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
+    //               key={"option_4_juiz_linha_index_" + index + "_" + _.uniqueId()}
     //             >
     //               {arb + ""}
     //             </Select.Option>
@@ -962,11 +962,11 @@ export function Cev({ user }) {
             equipas: jogoLido.equipas,
             pavilhao: jogoLido.pavilhao,
             arbitro1: jogoLido.arbitro1,
-            arbitro2: jogoLido.arbitro2,
-            JL1: jogoLido.juiz_linha[0],
-            JL2: jogoLido.juiz_linha[1],
-            // JL3: jogoLido.juiz_linha[2],
-            // JL4: jogoLido.juiz_linha[3],
+              arbitro2: jogoLido.arbitro2,
+              juiz_linha1: jogoLido.juiz_linha1,
+            juiz_linha2: jogoLido.juiz_linha2,
+            // juiz_linha3: jogoLido.juiz_linha3,
+            // juiz_linha4: jogoLido.juiz_linha4,
             key: jogoLido.key,
             tags: jogoLido.tags,
           };

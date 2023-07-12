@@ -318,7 +318,7 @@ export function CampeonatoRegionalNacional({ user }) {
       sorter: (a, b) => parseInt(a.numerojogo) - parseInt(b.numerojogo),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
-      width: "5.8%",
+      width: "5%",
       ...getColumnSearchProps("numerojogo"),
     },
     {
@@ -413,10 +413,17 @@ export function CampeonatoRegionalNacional({ user }) {
             key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.arbitro1 != "" ? record.arbitro1 : null}
+                  value={record.arbitro1 != "" && record.arbitro1 != " " ? record.arbitro1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
-            showArrow={false}
+                  showArrow={false}
+                  filterOption={(input, option) => {
+                      // Converte o input e o valor da opção para letras minúsculas sem acentos
+                      const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      // Verifica se o valor da opção inclui o input fornecido sem acentos
+                      return optionWithoutAccent.includes(inputWithoutAccent);
+                  }}
           >
             {["", ...arbitrosDisponiveis].map((arb) => {
               //console.log(arbitrosDisponiveis);
@@ -463,10 +470,17 @@ export function CampeonatoRegionalNacional({ user }) {
             key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.arbitro2 != "" ? record.arbitro2 : null}
+                  value={record.arbitro2 != "" && record.arbitro2 != " " ? record.arbitro2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
-            showArrow={false}
+                  showArrow={false}
+                  filterOption={(input, option) => {
+                      // Converte o input e o valor da opção para letras minúsculas sem acentos
+                      const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      // Verifica se o valor da opção inclui o input fornecido sem acentos
+                      return optionWithoutAccent.includes(inputWithoutAccent);
+                  }}
           >
             {["", ...arbitrosDisponiveis].map((arb) => {
               return (
@@ -485,17 +499,17 @@ export function CampeonatoRegionalNacional({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL1",
-      key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
+      dataIndex: "juiz_linha1",
+      key: "juiz_linha1",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL1"),
+      ...getColumnSearchProps("juiz_linha1"),
       render: (text, record, index) => (
-        <>
+          <>
           <Select
             showSearch
             mode="single"
-            name="select_jl1"
+            name="select_juiz_linha1"
             style={{
               width: "120px",
               backgroundColor:
@@ -509,20 +523,27 @@ export function CampeonatoRegionalNacional({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl1_" + index}
+            key={"select_juiz_linha1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl1 != "" ? record.JL1 : null}
+                  value={record.juiz_linha1 != "" && record.juiz_linha1 != " " ? record.juiz_linha1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
-            showArrow={false}
+                  showArrow={false}
+                  filterOption={(input, option) => {
+                      // Converte o input e o valor da opção para letras minúsculas sem acentos
+                      const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      // Verifica se o valor da opção inclui o input fornecido sem acentos
+                      return optionWithoutAccent.includes(inputWithoutAccent);
+                  }}
           >
             {["", ...arbitrosDisponiveis].map((arb) => {
               return (
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_1_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_1_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -534,17 +555,17 @@ export function CampeonatoRegionalNacional({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL2",
-      key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
+      dataIndex: "juiz_linha2",
+      key: "juiz_linha2",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha2, b.juiz_linha2),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL2"),
+      ...getColumnSearchProps("juiz_linha2"),
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
-            name="select_jl2"
+            name="select_juiz_linha2"
             style={{
               width: "120px",
               backgroundColor:
@@ -558,20 +579,27 @@ export function CampeonatoRegionalNacional({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl2_" + index}
+            key={"select_juiz_linha2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl2 != "" ? record.JL2 : null}
+                  value={record.juiz_linha2 != "" && record.juiz_linha2 != " " ? record.juiz_linha2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
-            showArrow={false}
+                  showArrow={false}
+                  filterOption={(input, option) => {
+                      // Converte o input e o valor da opção para letras minúsculas sem acentos
+                      const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                      // Verifica se o valor da opção inclui o input fornecido sem acentos
+                      return optionWithoutAccent.includes(inputWithoutAccent);
+                  }}
           >
             {["", ...arbitrosDisponiveis].map((arb) => {
               return (
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_2_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_2_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -582,9 +610,9 @@ export function CampeonatoRegionalNacional({ user }) {
       ),
     },
     // {
-    //   title: "JL3",
-    //   dataIndex: "JL3",
-    //   key: "JL3",
+    //   title: "juiz_linha3",
+    //   dataIndex: "juiz_linha3",
+    //   key: "juiz_linha3",
     //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
     //   sortDirections: ["descend", "ascend"],
     //   render: (text, record, index) => (
@@ -592,7 +620,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //       <Select
     //         showSearch
     //         mode="single"
-    //         name="select_jl3"
+    //         name="select_juiz_linha3"
     //         style={{
     //           width: "120px",
     //           backgroundColor:
@@ -606,11 +634,11 @@ export function CampeonatoRegionalNacional({ user }) {
     //               ? "#ef5350"
     //               : "white",
     //         }}
-    //         key={"select_jl3_" + index}
+    //         key={"select_juiz_linha3_" + index}
     //         type="select"
     //         // onChange={handleChangeSelecaoArbitro}
     //         onSelect={handleChangeSelecaoArbitro}
-    //         value={record.Jl3 != "" ? record.JL3 : null}
+    //         value={record.juiz_linha3 != "" ? record.juiz_linha3 : null}
     //         disabled={disabledDataSource.includes(record)}
     //         size="small"
     //         showArrow={false}
@@ -620,7 +648,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //             <Select.Option
     //               className="select-ref-choice"
     //               value={arb + ""}
-    //               key={"option_3_jl_index_" + index + "_" + _.uniqueId()}
+    //               key={"option_3_juiz_linha_index_" + index + "_" + _.uniqueId()}
     //             >
     //               {arb + ""}
     //             </Select.Option>
@@ -631,9 +659,9 @@ export function CampeonatoRegionalNacional({ user }) {
     //   ),
     // },
     // {
-    //   title: "JL4",
-    //   dataIndex: "JL4",
-    //   key: "JL4",
+    //   title: "juiz_linha4",
+    //   dataIndex: "juiz_linha4",
+    //   key: "juiz_linha4",
     //   sorter: (a, b) => comparaAminhaLindaString(a.key, b.key),
     //   sortDirections: ["descend", "ascend"],
     //   render: (text, record, index) => (
@@ -641,7 +669,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //       <Select
     //         showSearch
     //         mode="single"
-    //         name="select_jl4"
+    //         name="select_juiz_linha4"
     //         style={{
     //           width: "120px",
     //           backgroundColor:
@@ -653,10 +681,10 @@ export function CampeonatoRegionalNacional({ user }) {
     //               ? "#6FD25A"
     //               : "#ef5350",
     //         }}
-    //         key={"select_jl4_" + index}
+    //         key={"select_juiz_linha4_" + index}
     //         type="select"
     //         onChange={handleChangeSelecaoArbitro}
-    //         value={record.Jl4 != "" ? record.JL4 : null}
+    //         value={record.juiz_linha4 != "" ? record.juiz_linha4 : null}
     //         disabled={disabledDataSource.includes(record)}
     //         size="small"
     //         showArrow={false}
@@ -666,7 +694,7 @@ export function CampeonatoRegionalNacional({ user }) {
     //             <Select.Option
     //               className="select-ref-choice"
     //               value={arb + ""}
-    //               key={"option_4_jl_index_" + index + "_" + _.uniqueId()}
+    //               key={"option_4_juiz_linha_index_" + index + "_" + _.uniqueId()}
     //             >
     //               {arb + ""}
     //             </Select.Option>
@@ -815,20 +843,20 @@ export function CampeonatoRegionalNacional({ user }) {
     let [enviaDisabled, setEnviaDisabled] = useState(false);
 
     useEffect(() => {
-         console.log("dataSource", dataSource);
+         //console.log("dataSource", dataSource);
     }, [disabledDataSource])
 
 
     useEffect(() => {
-        console.log("dataSource", dataSource); }
-        , [dataSource]);
+        //console.log("dataSource", dataSource); 
+    }, [dataSource]);
 
     useEffect(() => {
-        console.log("editing??", edit)
+        //console.log("editing??", edit)
     }, [edit]);
 
     useEffect(() => {
-        console.log("loaded??", enviaDisabled)
+        //console.log("loaded??", enviaDisabled)
     }, [enviaDisabled]);
 
   function handleSubmissionConfirmation() {
@@ -865,8 +893,8 @@ export function CampeonatoRegionalNacional({ user }) {
   }
 
   function handleChangeSelecaoArbitro(value, key) {
-    console.log("value", value);
-    console.log("key", key);
+    //console.log("value", value);
+    //console.log("key", key);
 
     let indexAux = key.key.split("_");
 
@@ -877,7 +905,7 @@ export function CampeonatoRegionalNacional({ user }) {
       }
     }
 
-    console.log("currJogo", currJogo);
+    //console.log("currJogo", currJogo);
 
     let titulo =
       "Jogo nº " +
@@ -891,17 +919,17 @@ export function CampeonatoRegionalNacional({ user }) {
       " " +
       currJogo.pavilhao;
 
-    console.log("titulo", titulo);
+    //console.log("titulo", titulo);
 
     // console.log("prevNomeArbitro", prevNomeArbitro);
 
-    console.log("value.length", value.length);
+    //console.log("value.length", value.length);
 
     if (prevNomeArbitro === "" && value === " ") {
       return;
     } else {
       if (value.length === 1) {
-        console.log("ENTRAS AQUI????");
+        //console.log("ENTRAS AQUI????");
 
         // remover a nomeacao anterior
         Meteor.call(
@@ -921,7 +949,7 @@ export function CampeonatoRegionalNacional({ user }) {
           }
         );
       } else if (prevNomeArbitro.length > 0) {
-        console.log("ENTRAS AFINAL AQUI????");
+        //console.log("ENTRAS AFINAL AQUI????");
 
         Meteor.call(
           "removeNomeacaoCalendarioArbitro",
@@ -1071,7 +1099,7 @@ export function CampeonatoRegionalNacional({ user }) {
         for (let index = 0; index < preNomeacoes.length; index++) {
             let jogoLido = preNomeacoes[index];
 
-            console.log("jogoLido", jogoLido)
+            //console.log("jogoLido", jogoLido)
             let obj = {
                 numerojogo: jogoLido.numerojogo,
             dia: jogoLido.dia,
@@ -1082,10 +1110,8 @@ export function CampeonatoRegionalNacional({ user }) {
             pavilhao: jogoLido.pavilhao,
             arbitro1: jogoLido.arbitro1,
             arbitro2: jogoLido.arbitro2,
-            JL1: jogoLido.juiz_linha[0],
-            JL2: jogoLido.juiz_linha[1],
-            // JL3: jogoLido.juiz_linha[2],
-            // JL4: jogoLido.juiz_linha[3],
+                juiz_linha1: jogoLido.juiz_linha1,
+                juiz_linha2: jogoLido.juiz_linha2,
             key: jogoLido.key,
             tags: jogoLido.tags,
           };
@@ -1121,7 +1147,7 @@ export function CampeonatoRegionalNacional({ user }) {
             if (err) {
                 console.log(err);
             } else if (result) {
-                console.log("MIAU", result);
+                //console.log("MIAU", result);
 
                 let preNomeacoesRegionais = result.preNomeacoesRegionais;
 
@@ -1212,17 +1238,86 @@ export function CampeonatoRegionalNacional({ user }) {
     // Can not select days before today
 
     return !moment().isSameOrBefore(current);
-  };
+    };
+
+    const CustomTimePicker = ({ onChange }) => {
+        const handleHourChange = (hour) => {
+            setIdHoras(hour);
+        };
+
+        const handleMinuteChange = (minute) => {
+            setIdMinutos(minute);
+        };
+        return (
+            <div>
+                <Select
+                    placeholder={idhoras}
+                    style={{ width: '50%' }}
+                    value={idhoras}
+                    onChange={handleHourChange}
+                >
+                    {renderHourOptions()}
+                </Select>
+
+                <Select
+                    placeholder={idMinutos}
+                    style={{ width: '50%' }}
+                    value={idMinutos}
+                    onChange={handleMinuteChange}
+                >
+                    {renderMinuteOptions()}
+                </Select>
+            </div>
+        );
+    };
 
   let [idJogo, setIdJogo] = useState("");
   let [idia, setIddia] = useState("");
-  let [idhora, setIdHora] = useState("");
+    let [idhoras, setIdHoras] = useState("");
+    let [idMinutos, setIdMinutos] = useState("");
   let [idSerie, setIdSerie] = useState("");
   let [idEquipaA, setIdEquipaA] = useState("");
   let [idEquipaB, setIdEquipaB] = useState("");
   let [idPavilhao, setIdPavilhao] = useState("");
 
-  let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
+    let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
+
+    const [selectedHour, setSelectedHour] = useState(null);
+    const [selectedMinute, setSelectedMinute] = useState(null);
+
+    const handleHourChange = (hour) => {
+        setSelectedHour(hour);
+        onChange(hour, selectedMinute);
+    };
+
+    const handleMinuteChange = (minute) => {
+        setSelectedMinute(minute);
+        onChange(selectedHour, minute);
+    };
+
+    const renderHourOptions = () => {
+        const hours = [];
+
+        for (let i = 8; i <= 23; i++) {
+            hours.push(i);
+        }
+
+        return hours.map((hour) => (
+            <Option key={hour} value={hour}>
+                {`${hour}:`}
+            </Option>
+        ));
+    };
+
+    const renderMinuteOptions = () => {
+        const minutes = [...Array(60).keys()];
+
+        return minutes.map((minute) => (
+            <Option key={minute} value={minute}>
+                {minute < 10 ? `0${minute}` : minute}
+            </Option>
+        ));
+    };
 
   function handleAddJogoNovo() {
     Modal.confirm({
@@ -1265,16 +1360,8 @@ export function CampeonatoRegionalNacional({ user }) {
                   />
                 </ConfigProvider>
               </Form.Item>
-              <Form.Item label="Hora">
-                <TimePicker
-                  locale={locale}
-                  placeholder="Selecione a hora..."
-                  style={{ width: "100%" }}
-                  id="newGameHour"
-                  format={"HH:mm"}
-                  secondStep={1}
-                  onChange={(e) => setIdHora(e.target.value)}
-                />
+                      <Form.Item label="Hora">
+                          <CustomTimePicker></CustomTimePicker>
               </Form.Item>
               <Form.Item label="Prova">
                 <Cascader
@@ -1536,7 +1623,8 @@ export function CampeonatoRegionalNacional({ user }) {
             serie,
             equipaA,
             equipaB,
-            pavilhao,
+              pavilhao,
+            "r",
             (err, result) => {
               if (err) {
                 console.log(err);
@@ -2107,8 +2195,8 @@ export function CampeonatoRegionalNacional({ user }) {
                     onRow={(record) => {
                       return {
                         onClick: (event) => {
-                          console.log("event", event);
-                          console.log("event.target.value", event.target.value);
+                          //console.log("event", event);
+                          //console.log("event.target.value", event.target.value);
 
                           if (event.target != "div.ant-select-selector") {
                             Meteor.call(
@@ -2121,10 +2209,7 @@ export function CampeonatoRegionalNacional({ user }) {
                               clubesRelacionados,
                               nivelDeArbitro,
                               (err, result) => {
-                                console.log(
-                                  "result arbitros disponiveis: ",
-                                  result
-                                );
+                                //console.log("result arbitros disponiveis: ",result);
                                 if (err) {
                                   console.log("ERRRRROOOOO", { err });
                                 } else if (result.length != 0) {

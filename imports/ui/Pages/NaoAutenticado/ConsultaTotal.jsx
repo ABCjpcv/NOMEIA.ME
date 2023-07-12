@@ -181,7 +181,7 @@ export function ConsultaTotal() {
             removeAcentos(item.dia).includes(pesquisa) ||
             removeAcentos(item.equipas).includes(pesquisa) ||
             item.hora.includes(pesquisa) ||
-            removeAcentos(item.JL).includes(pesquisa) ||
+            removeAcentos(item.juiz_linha).includes(pesquisa) ||
             item.numerojogo.toString().includes(pesquisa) ||
             removeAcentos(item.pavilhao).includes(pesquisa) ||
             removeAcentos(item.prova).includes(pesquisa) ||
@@ -207,12 +207,15 @@ export function ConsultaTotal() {
           let initial = result;
 
           for (let index = 0; index < initial.length; index++) {
-            let jogoLido = initial[index];
+              let jogoLido = initial[index];
 
-            let jl =
-              jogoLido.juiz_linha[0].length == 0
-                ? ""
-                : jogoLido.juiz_linha.toString().replaceAll(",", "\n");
+              console.log("jogolido", jogoLido)
+
+
+              let juiz_linhas = jogoLido.juiz_linha1 === "" ? "" : (jogoLido.juiz_linha1 + " " + jogoLido.juiz_linha2 + " " + jogoLido.juiz_linha3 + " " + jogoLido.juiz_linha4);
+
+              juiz_linhas = juiz_linhas.replace(/null/gi, "");
+              juiz_linhas = juiz_linhas.replace(/undefined/gi, "");
 
             let k = _.uniqueId();
 
@@ -226,7 +229,7 @@ export function ConsultaTotal() {
               pavilhao: jogoLido.pavilhao,
               arbitro1: jogoLido.arbitro1,
               arbitro2: jogoLido.arbitro2,
-              JL: jl,
+              juiz_linha: juiz_linhas,
               key: "ct_" + k,
             };
 
@@ -351,15 +354,15 @@ export function ConsultaTotal() {
     },
     {
       title: "Juízes de linha",
-      dataIndex: "JL",
-      key: "JL",
+      dataIndex: "juiz_linha",
+      key: "juiz_linha",
       width: "9%",
       sorter: {
-        compare: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
+        compare: (a, b) => comparaAminhaLindaString(a.juiz_linha, b.juiz_linha),
       },
       sortDirections: ["ascend", "descend"],
 
-      ...getColumnSearchProps("JL"),
+      ...getColumnSearchProps("juiz_linha"),
       // render: (record) => (
       //   <>
       //     <div>{console.log(record.juiz_linha)}</div>

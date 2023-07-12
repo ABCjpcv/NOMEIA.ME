@@ -397,7 +397,7 @@ export function Adesl({ user }) {
             key={"select_arbitro1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.arbitro1 != "" ? record.arbitro1 : null}
+                  value={record.arbitro1 != "" && record.arbitro1 != " " ? record.arbitro1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -446,7 +446,7 @@ export function Adesl({ user }) {
             key={"select_arbitro2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.arbitro2 != "" ? record.arbitro2 : null}
+                  value={record.arbitro2 != "" && record.arbitro2 != " " ? record.arbitro2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -468,17 +468,17 @@ export function Adesl({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL1",
-      key: "JL1",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL1, b.JL1),
+      dataIndex: "juiz_linha1",
+      key: "juiz_linha1",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL1"),
+      ...getColumnSearchProps("juiz_linha1"),
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
-            name="select_jl1"
+            name="select_juiz_linha1"
             style={{
               width: "120px",
               backgroundColor:
@@ -492,10 +492,10 @@ export function Adesl({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl1_" + index}
+            key={"select_juiz_linha1_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl1 != "" ? record.JL1 : null}
+                  value={record.juiz_linha1 != "" && record.juiz_linha1 != " " ? record.juiz_linha1 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -505,7 +505,7 @@ export function Adesl({ user }) {
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_1_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_1_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -517,17 +517,17 @@ export function Adesl({ user }) {
     },
     {
       title: "Juiz de linha",
-      dataIndex: "JL2",
-      key: "JL2",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL2, b.JL2),
+      dataIndex: "juiz_linha2",
+      key: "juiz_linha2",
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha2, b.juiz_linha2),
       sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("JL2"),
+      ...getColumnSearchProps("juiz_linha2"),
       render: (text, record, index) => (
         <>
           <Select
             showSearch
             mode="single"
-            name="select_jl2"
+            name="select_juiz_linha2"
             style={{
               width: "120px",
               backgroundColor:
@@ -541,10 +541,10 @@ export function Adesl({ user }) {
                   ? "#ef5350"
                   : "white",
             }}
-            key={"select_jl2_" + index}
+            key={"select_juiz_linha2_" + index}
             type="select"
             onChange={handleChangeSelecaoArbitro}
-            value={record.Jl2 != "" ? record.JL2 : null}
+                  value={record.juiz_linha2 != "" && record.juiz_linha2 != " "  ? record.juiz_linha2 : null}
             disabled={disabledDataSource.includes(record)}
             size="small"
             showArrow={false}
@@ -554,7 +554,7 @@ export function Adesl({ user }) {
                 <Select.Option
                   className="select-ref-choice"
                   value={arb + ""}
-                  key={"option_2_jl_index_" + index + "_" + _.uniqueId()}
+                  key={"option_2_juiz_linha_index_" + index + "_" + _.uniqueId()}
                 >
                   {arb + ""}
                 </Select.Option>
@@ -952,10 +952,10 @@ export function Adesl({ user }) {
             Pavilhao: jogoLido.pavilhao,
             arbitro1: jogoLido.arbitro1,
             arbitro2: jogoLido.arbitro2,
-            JL1: jogoLido.juiz_linha[0],
-            JL2: jogoLido.juiz_linha[1],
-            // JL3: jogoLido.juiz_linha[2],
-            // JL4: jogoLido.juiz_linha[3],
+            juiz_linha1: jogoLido.juiz_linha1,
+            juiz_linha2: jogoLido.juiz_linha2,
+            // juiz_linha3: jogoLido.juiz_linha3,
+            // juiz_linha4: jogoLido.juiz_linha4,
             key: jogoLido.key,
             tags: jogoLido.tags,
           };
@@ -1253,24 +1253,25 @@ export function Adesl({ user }) {
         //   pavilhao
         // );
         if (valido && !dataSource.includes(id)) {
-          Meteor.call(
-            " ",
-            id,
-            dia,
-            hora,
-            prova,
-
-            equipaA,
-            equipaB,
-            pavilhao,
-            (err, result) => {
-              if (err) {
-                console.log(err);
-              } else {
-                message.success("Adicionado o jogo " + id + ".");
-              }
-            }
-          );
+            Meteor.call(
+                "adicionaJogoNovo",
+                id,
+                dia,
+                hora,
+                prova,
+                serie,
+                equipaA,
+                equipaB,
+                pavilhao,
+                "u",
+                (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        message.success("Adicionado o jogo " + id + ".");
+                    }
+                }
+            );
           setModalVisible(false);
         } else if (valido && dataSource.includes(id)) {
           message.warn("Esse jogo já existe...");

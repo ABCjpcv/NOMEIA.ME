@@ -249,9 +249,9 @@ function handleConfirmationResultado(record, index) {
 
   let inputs = document.querySelectorAll("input");
 
-  console.log(inputs);
-  console.log("index", index);
-  console.log("inputs[index]", inputs[index]);
+  //console.log(inputs);
+  //console.log("index", index);
+  //console.log("inputs[index]", inputs[index]);
 
   let inputsLength = inputs.length;
 
@@ -368,7 +368,7 @@ function handleConfirmationResultado(record, index) {
 }
 
 function handleAddResultadoNovo(record, index) {
-  console.log("ertyuiolk,mnbg", record);
+  //console.log("ertyuiolk,mnbg", record);
   Modal.confirm({
     title: "Resultado do jogo:\r\n" + record.equipas,
     content: (
@@ -555,7 +555,8 @@ export function ConsultaPrivada({ user }) {
       width: "7%",
       sorter: (a, b) => comparaAminhaLindaData(a.dia, b.dia),
       sortDirections: ["descend", "ascend"],
-      fixed: "left",
+        fixed: "left",
+        defaultSortOrder: "ascend"
     },
     {
       title: "Hora",
@@ -620,10 +621,10 @@ export function ConsultaPrivada({ user }) {
     },
     {
       title: "Juízes de linha",
-      dataIndex: "JL",
-      key: "JL",
+      dataIndex: "juiz_linha",
+      key: "juiz_linha",
       width: "9%",
-      sorter: (a, b) => comparaAminhaLindaString(a.JL, b.JL),
+      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha, b.juiz_linha),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -761,7 +762,8 @@ export function ConsultaPrivada({ user }) {
    *
    */
 
-  const [dataSource, setDataSource] = useState([]);
+    const [dataSource, setDataSource] = useState([]);
+    const [jogosConfirmados, setJogosConfirmados] = useState(false);
 
   useEffect(() => {}, [dataSource]);
 
@@ -782,11 +784,11 @@ export function ConsultaPrivada({ user }) {
         const horario = new Date(dataHoraString);
         horario.setHours(horario.getHours() + 1); // Adicionar uma hora
 
-        console.log("RECORD:", record);
-        console.log(dataHoraString);
-        console.log("horario", horario);
-        console.log("today", today);
-        console.log(horario > today);
+        //console.log("RECORD:", record);
+        //console.log(dataHoraString);
+        //console.log("horario", horario);
+        //console.log("today", today);
+        //console.log(horario > today);
 
         return horario < today;
     }
@@ -803,26 +805,19 @@ export function ConsultaPrivada({ user }) {
     handleSubmissionConfirmation(dataSource, true);
   };
 
-  const handleAllConfirmation = () => {
-    try {
-      if (document.getElementById("submissionConfirmationButton").disabled) {
-        message.warn(
-          "Já confirmou as suas nomeações " + Meteor.user().username + "!"
-        );
-        document.getElementById("confirmAllNominations").disabled = true;
-      }
-    } catch (error) {}
-
-    const newData = dataSource.filter((item) => {
-      return (item.tags[0] = ["confirmado"]);
-    });
-    setDataSource(newData);
-  };
-
-  function handleSubmissionConfirmation(data, confirma) {
+  function handleSubmissionConfirmation(data, confirma, all) {
     let jogos = [];
     let confirmacoes = [];
-    let sendMessage = false;
+      let sendMessage = false;
+
+      if (all) {
+          let newData = dataSource.filter((item) => {
+              return (item.tags[0] = ["confirmado"]);
+          });
+          //console.log("AAAAAAAAAAAAAAA", newData)
+          setDataSource(newData);
+          setJogosConfirmados(true);
+      }
 
     for (let index = 0; index < data.length; index++) {
       if (data[index].tags[0].includes("pendente")) {
@@ -835,6 +830,8 @@ export function ConsultaPrivada({ user }) {
     let email = user.emails[0].address;
 
     //console.log("confirmacoes", confirmacoes);
+
+     
 
     Meteor.call(
       "adicionaConfirmacaoNomeacao",
@@ -867,7 +864,7 @@ export function ConsultaPrivada({ user }) {
         console.log("ERRRRROOOOO", err);
       } else if (result)
         if (result.nomeacoesPrivadas.length > 0) {
-          // console.log("RESULTADO AQUI", result);
+          //console.log("RESULTADO AQUI", result);
 
           let dataFromDB = [];
 
@@ -881,30 +878,36 @@ export function ConsultaPrivada({ user }) {
 
             let tags = result.nomeacoesPrivadas[index].confirmacaoAtual;
 
-            tags != "Confirmado" ? (confirmado = false) : (confirmado = true);
+            tags != "confirmado" ? (confirmado = false) : (confirmado = true);
 
-             console.log("jogoLido", jogoLido);
+              //console.log("jogoLido", jogoLido);
+
+              let juiz_linhas = (jogoLido.juiz_linha1.length != 0 ? jogoLido.juiz_linha1 + " " + jogoLido.juiz_linha2 + " " + jogoLido.juiz_linha3 + " " + jogoLido.juiz_linha4 : "");
+
+              juiz_linhas = juiz_linhas.replace(/null/gi, "");
+              juiz_linhas = juiz_linhas.replace(/undefined/gi, "");
 
            
 
               let obj = {
                   numerojogo: jogoLido.numerojogo,
-              dia: jogoLido.dia,
-              hora: jogoLido.hora,
-              prova: jogoLido.prova,
-              serie: jogoLido.serie,
-              equipas: jogoLido.equipas,
-              pavilhao: jogoLido.pavilhao,
-              arbitro1: jogoLido.arbitro1,
-                arbitro2: jogoLido.arbitro2,
-                JL: jogoLido.JL1 === undefined ? "" : jogoLido.JL1 + " " + jogoLido.JL2 === undefined ? "" : jogoLido.JL2,
-              key: jogoLido.key,
-              tags: [tags],
+                  dia: jogoLido.dia,
+                  hora: jogoLido.hora,
+                  prova: jogoLido.prova,
+                  serie: jogoLido.serie,
+                  equipas: jogoLido.equipas,
+                  pavilhao: jogoLido.pavilhao,
+                  arbitro1: jogoLido.arbitro1,
+                  arbitro2: jogoLido.arbitro2,
+                  juiz_linha: juiz_linhas,
+                  key: jogoLido.key,
+                  tags: [tags],
             };
 
             dataFromDB.push(obj);
           }
-          setDataSource(dataFromDB);
+            setDataSource(dataFromDB);
+            setJogosConfirmados(confirmado)
         } else {
           setDataSource([]);
         }
@@ -936,7 +939,7 @@ export function ConsultaPrivada({ user }) {
   };
 
   function handleOkRecusa(record) {
-    console.log("Change is:", recusaInput);
+    //console.log("Change is:", recusaInput);
     const newData = dataSource.filter((item) => {
       if (item.key == record.key) {
         return (item.tags[0] = ["recusado"]);
@@ -945,7 +948,7 @@ export function ConsultaPrivada({ user }) {
       }
     });
     setDataSource(newData);
-    handleSubmissionConfirmation(dataSource, false);
+    handleSubmissionConfirmation(dataSource, false, false);
   }
 
   function recusa(record) {
@@ -1051,16 +1054,15 @@ export function ConsultaPrivada({ user }) {
                   />
                   <Button
                     onClick={() => {
-                      handleAllConfirmation,
-                        handleSubmissionConfirmation(dataSource);
+                        handleSubmissionConfirmation(dataSource, true, true);
                     }}
                     style={{
                       marginTop: "0.5%",
                     }}
                     type="primary"
                     size="small"
-                    id="confirmAllNominations"
-                    disabled={passaramTodos}
+                                    id="confirmAllNominations"
+                                    disabled={passaramTodos || jogosConfirmados}
                   >
                     Confirmar todos
                   </Button>

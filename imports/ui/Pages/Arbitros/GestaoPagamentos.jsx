@@ -56,7 +56,7 @@ export function GestaoPagamentos({ user }) {
     user === null ? (user = Meteor.user()) : (user = user);
     let [isCA, setIsCA] = useState(null);
     const [mesDisplay, setMesDisplay] = useState(
-        `${numeroMesNome(new Date().getMonth())}`+ "," + `${(new Date().getFullYear())}`
+        `${numeroMesNome(new Date().getMonth())}`+ ", " + `${(new Date().getFullYear())}`
     );
 
     let myPromise = new Promise((resolve, reject) => {
@@ -169,68 +169,76 @@ export function GestaoPagamentos({ user }) {
     const [dataSource, setDataSource] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [summaryRow, setSummaryRow] = useState(null);
+    let [loaded, setLoaded] = useState(false);
+
 
     function loadData() {
-        user = Meteor.user();
-
-        //console.log("email", email);
         Meteor.call("carregaDadosGestaoPagamentos", user, (err, result) => {
+
+
             //console.log("resultado de carregaNomeacoes da BD:", result);
             if (err) {
                 console.log("ERRRRROOOOO", err);
             } else if (result) {
-                console.log("resultado de carrega", result);
-                if (result.length > 0) {
-                    let dataFromDB = [];
-                    let premioTotal = 0;
-                    let deslocacaoTotal = 0;
-                    let alimentacaoTotal = 0;
 
-                    for (let index = 0; index < result.length; index++) {
-                        let jogoLido = result[index].element;
-                        let premio = parseFloat(result[index].prizeGame);
-                        let deslocacao = parseFloat(result[index].prizeDeslocacao);
-                        let alimentacao = parseFloat(result[index].prizeMeal);
+                if (result.length === 0) {
+                    setLoaded(true);
+                }
 
-                        let obj = {
-                            numerojogo: jogoLido.numerojogo,
-                            dia: jogoLido.dia,
-                            hora: jogoLido.hora,
-                            prova: jogoLido.prova + " " + jogoLido.serie,
-                            pavilhao: jogoLido.pavilhao,
-                            premio: premio,
-                            deslocacao: deslocacao,
-                            alimentacao: alimentacao,
-                        };
+                else {
 
-                        dataFromDB.push(obj);
+                    console.log("resultado de carrega", result);
+                    if (result.length > 0) {
+                        let dataFromDB = [];
+                        let premioTotal = 0;
+                        let deslocacaoTotal = 0;
+                        let alimentacaoTotal = 0;
 
-                        premioTotal += premio;
-                        deslocacaoTotal += deslocacao;
-                        alimentacaoTotal += alimentacao;
+                        for (let index = 0; index < result.length; index++) {
+                            let jogoLido = result[index].element;
+                            let premio = parseFloat(result[index].prizeGame);
+                            let deslocacao = parseFloat(result[index].prizeDeslocacao);
+                            let alimentacao = parseFloat(result[index].prizeMeal);
+
+                            let obj = {
+                                numerojogo: jogoLido.numerojogo,
+                                dia: jogoLido.dia,
+                                hora: jogoLido.hora,
+                                prova: jogoLido.prova + " " + jogoLido.serie,
+                                pavilhao: jogoLido.pavilhao,
+                                premio: premio,
+                                deslocacao: deslocacao,
+                                alimentacao: alimentacao,
+                            };
+
+                            dataFromDB.push(obj);
+
+                            premioTotal += premio;
+                            deslocacaoTotal += deslocacao;
+                            alimentacaoTotal += alimentacao;
+                        }
+
+                        setDataSource(dataFromDB);
+                        setSummaryRow({
+                            numerojogo: 'TOTAL:',
+                            dia: '',
+                            hora: '',
+                            prova: '',
+                            pavilhao: '',
+                            premio: premioTotal.toFixed(2) + " €",
+                            deslocacao: deslocacaoTotal.toFixed(2) + " €",
+                            alimentacao: alimentacaoTotal.toFixed(2) + " €",
+                        });
+                        setLoaded(true);
+                    } else {
+                        setDataSource([]);
+                        setLoaded(true);
                     }
-
-                    setDataSource(dataFromDB);
-                    setSummaryRow({
-                        numerojogo: 'TOTAL:',
-                        dia: '',
-                        hora: '',
-                        prova: '',
-                        pavilhao: '',
-                        premio: premioTotal.toFixed(2) + " €",
-                        deslocacao: deslocacaoTotal.toFixed(2) + " €",
-                        alimentacao: alimentacaoTotal.toFixed(2) + " €",
-                    });
-                } else {
-                    setDataSource([]);
                 }
             }
         });
     }
 
-    if (dataSource.length === 0) {
-        loadData();
-    }
 
     function changeMes(numero) {
         const [mes, ano] = mesDisplay.split(", ");
@@ -326,7 +334,6 @@ export function GestaoPagamentos({ user }) {
                 <div style={{ width: "100%", height: "100%" }}>
                     <div className="demo-app-main" style={{ width: "100%" }}>
                         <div className="container" style={{ width: "100%" }}>
-                            <meta charset="UTF-8" />
                             <Header
                                 user={user}
                                 titulo={true}
@@ -347,28 +354,32 @@ export function GestaoPagamentos({ user }) {
                                 gestaoPagamentos={false}
                             />
 
-                            {dataSource.length != 0 ? (
+                            {!loaded ? loadData() : 
+
+                            dataSource.length != 0 ? (
                                 <>
                                     <div style={{display:"flex",justifyContent: "space-between",    alignItems: "center",    borderTopLeftRadius: "2px",    borderTopRightRadius: "2px",    marginTop: "1%",    marginLeft: "1%",   marginRight: "1%"}}>
                                         <div style={{display: "flex", justifyContent: "space-between",     alignItems: "center"} }>
                                             <div style={{ position: "relative", display: "inline-flex", verticalAlign: "middle" }}>
                                                 <button type="button" title="Mês Anterior" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px", borderTopRightRadius: "0", borderBottomRightRadius: "0" }}>
-                                                    <span class="fc-icon fc-icon-chevron-left" style={{ fontSize: "1.5em" }} onClick={() => changeMes(-1) 
+                                                    <span className="fc-icon fc-icon-chevron-left" style={{ fontSize: "1.5em" }} onClick={() => changeMes(-1) 
 
                                                     }></span>
                                                 </button>
                                                 <button type="button" title="Mês Seguinte" style={{ borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "43px",  borderBottomLeftRadius: "0", borderTopLeftRadius: "0" }}>
-                                                    <span class="fc-icon fc-icon-chevron-right" style={{ fontSize: "1.5em" }} onClick={() => changeMes(+1)
+                                                    <span className="fc-icon fc-icon-chevron-right" style={{ fontSize: "1.5em" }} onClick={() => changeMes(+1)
 
                                                     }></span> 
                                                 </button>
                                             </div>
                                             <button type="button" title="Mês Atual" onClick={() => resetMes()}  style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Mês Atual </button>
-                                            <button type="button" title="Época Inteira" onClick={() => mostraTudo()} style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px", width: "90px" }}> Época Inteira </button>
-                                        </div>
-                                        <div class="fc-toolbar-chunk">
-                                            <h2 class="fc-toolbar-title" id="fc-dom-1">{mesDisplay}</h2>
-                                        </div>
+                                            </div>
+                                            <div className="fc-toolbar-chunk" style={{ marginRight: "8%" } }>
+                                                <h2 className="fc-toolbar-title" id="fc-dom-1" style={{ fontSize: "1.7em" }}> {mesDisplay} </h2>
+                                            </div>
+                                            <div>
+                                                <button type="button" title="Época Inteira" onClick={() => mostraTudo()} style={{ marginLeft: "0.75em", borderRadius: "0.25em", color: "var(--fc-button-text-color, #fff)", backgroundColor: "var(--fc-button-bg-color, #2C3E50)", borderColor: "var(--fc-button-border-color, #2C3E50)", cursor: "pointer", height: "43px" }}> Época Inteira </button>
+                                            </div>
                                     </div>
 
                                 <div
@@ -407,7 +418,7 @@ export function GestaoPagamentos({ user }) {
                                     />
                                 </div>
                             </>) : (
-                                <h2 className="blue">Não tem pagamentos.</h2>
+                                <h2 className="blue"> Não tem pagamentos. </h2>
                             )}
                         </div>
                     </div>
