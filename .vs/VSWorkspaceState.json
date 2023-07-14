@@ -8,9 +8,10 @@
     "\\imports\\ui\\Pages\\Arbitros\\CA",
     "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos",
     "\\imports\\ui\\Pages\\Geral",
+    "\\imports\\ui\\Pages\\NaoAutenticado",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\private\\teste2.csv",
+  "SelectedNode": "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos\\CampeonatoRegionalNacional.jsx",
   "PreviewInSolutionExplorer": false
 }

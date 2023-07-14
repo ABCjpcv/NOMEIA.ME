@@ -2782,6 +2782,47 @@ Meteor.methods({
     return 0;
     },
 
+    verifyIdJogo: function verifyIdJogo(numero, nome) {
+        console.log("numero", numero);
+
+        let numeroJogo = parseInt(numero);
+
+        let allGames = jogos.find();
+
+        for (let i = 0; i < allGames.length; i++) {
+            if (parseInt(allGames[i].numerojogo) === numeroJogo) {
+                return -1;
+            }
+        }
+
+        let arb = arbitros.findOne({ nome: nome });
+        let ca = conselhoDeArbitragem.findOne({ arbitrosCA: arb });
+        let nomeacoesRegionais = ca.preNomeacoesRegionais;
+        let nomeacoesUniversitarias = ca.preNomeacoesUniversitarias;
+
+        for (let i = 0; i < nomeacoesRegionais.length; i++) {
+            console.log(
+                "numero a comparar: ",
+                nomeacoesRegionais[i].numerojogo
+            );
+            console.log(
+                "parseInt(nomeacoesRegionais[i].numerojogo) === numeroJogo",
+                parseInt(nomeacoesRegionais[i].numerojogo) === numeroJogo
+            );
+            if (parseInt(nomeacoesRegionais[i].numerojogo) === numeroJogo) {
+                return -1;
+            }
+        }
+
+        for (let i = 0; i < nomeacoesUniversitarias.length; i++) {
+            if (parseInt(nomeacoesUniversitarias[i].numerojogo) === numeroJogo) {
+                return -1;
+            }
+        }
+
+        return 0;
+    },
+
   adicionaJogoNovo: function adicionaJogoNovo(
     id,
     dia,

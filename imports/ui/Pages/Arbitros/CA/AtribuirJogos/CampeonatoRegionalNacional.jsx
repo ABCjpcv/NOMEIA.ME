@@ -1253,7 +1253,7 @@ export function CampeonatoRegionalNacional({ user }) {
                 <Select
                     placeholder={idhoras}
                     style={{ width: '50%' }}
-                    value={idhoras}
+                    //value={idhoras}
                     onChange={handleHourChange}
                 >
                     {renderHourOptions()}
@@ -1262,7 +1262,7 @@ export function CampeonatoRegionalNacional({ user }) {
                 <Select
                     placeholder={idMinutos}
                     style={{ width: '50%' }}
-                    value={idMinutos}
+                    //value={idMinutos}
                     onChange={handleMinuteChange}
                 >
                     {renderMinuteOptions()}
@@ -1271,7 +1271,8 @@ export function CampeonatoRegionalNacional({ user }) {
         );
     };
 
-  let [idJogo, setIdJogo] = useState("");
+    let [idJogo, setIdJogo] = useState("");
+  let[statusIdJogo, setStatusIdJogo] = useState("")
   let [idia, setIddia] = useState("");
     let [idhoras, setIdHoras] = useState("");
     let [idMinutos, setIdMinutos] = useState("");
@@ -1280,20 +1281,17 @@ export function CampeonatoRegionalNacional({ user }) {
   let [idEquipaB, setIdEquipaB] = useState("");
   let [idPavilhao, setIdPavilhao] = useState("");
 
+
+    useEffect(() => {
+        //console.log("loaded??", enviaDisabled)
+    }, [idJogo]);
+
+    useEffect(() => {
+        //console.log("loaded??", enviaDisabled)
+    }, [statusIdJogo]);
+
     let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
 
-    const [selectedHour, setSelectedHour] = useState(null);
-    const [selectedMinute, setSelectedMinute] = useState(null);
-
-    const handleHourChange = (hour) => {
-        setSelectedHour(hour);
-        onChange(hour, selectedMinute);
-    };
-
-    const handleMinuteChange = (minute) => {
-        setSelectedMinute(minute);
-        onChange(selectedHour, minute);
-    };
 
     const renderHourOptions = () => {
         const hours = [];
@@ -1319,6 +1317,22 @@ export function CampeonatoRegionalNacional({ user }) {
         ));
     };
 
+
+    const handleInputChangeIdJogo = (value) => { 
+        Meteor.call("verifyIdJogo", value, Meteor.user().username, (err, result) => {
+            console.log(result);
+            if (err) {
+                console.log(err);
+            } else if (result !== -1) {
+                setIdJogo(value);
+                setStatusIdJogo(""); // Limpar o status em caso de sucesso
+            } else {
+                setIdJogo(""); // Limpar o valor em caso de número existente
+                document.getElementById("newGameId").setAttribute("status", "warning");
+            }
+        });
+    };
+
   function handleAddJogoNovo() {
     Modal.confirm({
       title: "Adicionar novo jogo:",
@@ -1339,10 +1353,12 @@ export function CampeonatoRegionalNacional({ user }) {
             >
               <Form.Item label="Jogo">
                 <InputNumber
-                  id="newGameId"
-                  placeholder="****"
-                  min={0}
-                  onChange={(e) => setIdJogo(e.target.value)}
+                              id="newGameId"
+                              placeholder="****"
+                              min={0}
+                              onChange={handleInputChangeIdJogo}
+                              value={idJogo}
+                              status={statusIdJogo}
                 />
               </Form.Item>
               <Form.Item label="Dia">
