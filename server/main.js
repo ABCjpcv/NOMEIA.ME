@@ -4,6 +4,7 @@ import { Papa } from "meteor/harrison:papa-parse";
 import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
 import _ from "lodash.uniqueid";
+import fs from 'fs';
 
 let jogos = new Mongo.Collection("jogos");
 let clubes = new Mongo.Collection("clubes");
@@ -2782,6 +2783,22 @@ Meteor.methods({
     return 0;
     },
 
+    getPavilhoes: function getPavilhoes() {
+
+        const pavilhoesCSV = Assets.getText("PavilhoesConcelhos.csv");
+        const parsedData = Papa.parse(pavilhoesCSV).data;
+
+        // Remove o cabeçalho (primeira linha)
+        parsedData.shift();
+
+        const pavilhoes = parsedData.map((row) => {
+            const [pavilhao] = row;
+            return { value: pavilhao, label: pavilhao };
+        });
+
+        return pavilhoes;
+    },
+
     verifyIdJogo: function verifyIdJogo(numero, nome) {
         console.log("numero", numero);
 
@@ -2826,7 +2843,8 @@ Meteor.methods({
   adicionaJogoNovo: function adicionaJogoNovo(
     id,
     dia,
-    hora,
+      hora,
+    minutos,
     prova,
     serie,
     equipaA,
@@ -2834,15 +2852,22 @@ Meteor.methods({
     pavilhao,
     competicao
   ) {
-    //console.log("dia", dia);
+      console.log("diaaaa", dia);
 
-    let d = dia.split("-");
+      let d = new Date(dia);
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = String(d.getMonth() + 1).padStart(2, "0"); // Month is 0-indexed
+      const year = String(d.getFullYear()).slice(-2);
+
+      hora = hora.length == 1 ? "0" + hora : hora;
+      minutos = minutos.length == 1 ? "0" + minutos : minutos;
+
 
     let newGame = {
       numerojogo: id,
-      dia: d[2] + "/" + d[1] + "/" + d[0],
-      hora: hora,
-
+        dia: day + "/" + month + "/" + year,
+        hora: hora + ":" + minutos,
+      
       prova: prova,
       serie: serie,
       equipas: equipaA + " - " + equipaB,
@@ -2878,7 +2903,7 @@ Meteor.methods({
           games_ca.push({
               numerojogo: id,
               dia: newGame.dia,
-              hora: hora,
+              hora: hora + ":" + minutos,
 
               prova: prova,
               serie: serie,
@@ -2913,7 +2938,7 @@ Meteor.methods({
           games_ca.push({
               numerojogo: id,
               dia: newGame.dia,
-              hora: hora,
+              hora: hora + ":" + minutos,
 
               prova: prova,
               equipas: equipaA + " - " + equipaB,

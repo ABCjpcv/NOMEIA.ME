@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback} from "react";
 import Papa from "papaparse";
 import {
   Button,
@@ -843,12 +843,12 @@ export function CampeonatoRegionalNacional({ user }) {
     let [enviaDisabled, setEnviaDisabled] = useState(false);
 
     useEffect(() => {
-         //console.log("dataSource", dataSource);
+                console.log("dataSource", dataSource);
     }, [disabledDataSource])
 
 
     useEffect(() => {
-        //console.log("dataSource", dataSource); 
+        console.log("dataSource", dataSource); 
     }, [dataSource]);
 
     useEffect(() => {
@@ -1223,16 +1223,31 @@ export function CampeonatoRegionalNacional({ user }) {
       }
     });
   }
-  let [isModalVisible, setModalVisible] = useState();
 
-  // let [novoJogoID, setNovoJogoID] = useState();
-  // let [novoJogodia, setNovoJogodia] = useState();
-  // let [novoJogoHora, setNovoJogoHora] = useState();
-  let novoJogoProva = "";
-  // let [novoJogoSerie, setNovoJogoSerie] = useState();
-  // let [novoJogoD, setNovoJogoID] = useState();
+    let [isModalVisible, setModalVisible] = useState(false);
 
-  // {jogo: 0, dia: "", hora: "", prova: "", serie: "", equipas: "", pavilhao: ""});
+
+
+    let [idJogo, setIdJogo] = useState("");
+    let [idDia, setIdDia] = useState("");
+    let [idHoras, setIdHoras] = useState("");
+    let [idMinutos, setIdMinutos] = useState("");
+    let [idProva, setIdProva] = useState("");
+    let [idSerie, setIdSerie] = useState("");
+    let [idEquipaA, setIdEquipaA] = useState("");
+    let [idEquipaB, setIdEquipaB] = useState("");
+    let [idPavilhao, setIdPavilhao] = useState("");
+
+    const idJogoRef = useRef(idJogo);
+    const idDiaRef = useRef(idDia);
+    const idHorasRef = useRef(idHoras);
+    const idMinutosRef = useRef(idMinutos);
+    const idProvaRef = useRef(idProva);
+    const idSerieRef = useRef(idSerie);
+    const idEquipaARef = useRef(idEquipaA);
+    const idEquipaBRef = useRef(idEquipaB);
+    const idPavilhaoRef = useRef(idPavilhao);
+
 
   const disabledDate = (current) => {
     // Can not select days before today
@@ -1251,7 +1266,7 @@ export function CampeonatoRegionalNacional({ user }) {
         return (
             <div>
                 <Select
-                    placeholder={idhoras}
+                    placeholder={idHoras}
                     style={{ width: '50%' }}
                     //value={idhoras}
                     onChange={handleHourChange}
@@ -1270,29 +1285,7 @@ export function CampeonatoRegionalNacional({ user }) {
             </div>
         );
     };
-
-    let [idJogo, setIdJogo] = useState("");
-  let[statusIdJogo, setStatusIdJogo] = useState("")
-  let [idia, setIddia] = useState("");
-    let [idhoras, setIdHoras] = useState("");
-    let [idMinutos, setIdMinutos] = useState("");
-  let [idSerie, setIdSerie] = useState("");
-  let [idEquipaA, setIdEquipaA] = useState("");
-  let [idEquipaB, setIdEquipaB] = useState("");
-  let [idPavilhao, setIdPavilhao] = useState("");
-
-
-    useEffect(() => {
-        //console.log("loaded??", enviaDisabled)
-    }, [idJogo]);
-
-    useEffect(() => {
-        //console.log("loaded??", enviaDisabled)
-    }, [statusIdJogo]);
-
-    let [isAcceptFormDisabled, setIsAcceptFormDisabled] = useState(Boolean);
-
-
+     
     const renderHourOptions = () => {
         const hours = [];
 
@@ -1318,20 +1311,257 @@ export function CampeonatoRegionalNacional({ user }) {
     };
 
 
-    const handleInputChangeIdJogo = (value) => { 
-        Meteor.call("verifyIdJogo", value, Meteor.user().username, (err, result) => {
+    useEffect(() => {
+        idJogoRef.current = idJogo;
+    }, [idJogo]);
+
+    useEffect(() => {
+        idDiaRef.current = idDia;
+    }, [idDia]);
+
+    useEffect(() => {
+        idHorasRef.current = idHoras;
+    }, [idHoras]);
+
+    useEffect(() => {
+        idMinutosRef.current = idMinutos;
+    }, [idMinutos]);
+
+    useEffect(() => {
+        idProvaRef.current = idProva;
+    }, [idProva]);
+
+    useEffect(() => {
+        idSerieRef.current = idSerie;
+    }, [idSerie]);
+
+    useEffect(() => {
+        idEquipaARef.current = idEquipaA;
+    }, [idEquipaA]);
+
+    useEffect(() => {
+        idEquipaBRef.current = idEquipaB;
+    }, [idEquipaB]);
+
+    useEffect(() => {
+        idPavilhaoRef.current = idPavilhao;
+    }, [idPavilhao]);
+
+
+
+    const handleInputChangeIdJogo = (value) => {
+
+        const stringValue = value == null ? "" : value.toString(); // Convert the value to a string
+        Meteor.call("verifyIdJogo", stringValue, Meteor.user().username, (err, result) => {
             console.log(result);
             if (err) {
                 console.log(err);
             } else if (result !== -1) {
-                setIdJogo(value);
-                setStatusIdJogo(""); // Limpar o status em caso de sucesso
+                setIdJogo(stringValue); // Update the state with the string value
             } else {
-                setIdJogo(""); // Limpar o valor em caso de número existente
-                document.getElementById("newGameId").setAttribute("status", "warning");
+                setIdJogo("-1"); // If result is -1, set an empty string to indicate an invalid value
             }
         });
     };
+
+
+    const handleOk = () => {
+        
+
+
+            return new Promise((resolve, reject) => {
+                // Your form validation logic here
+
+                let valido = true;
+
+                console.log("idJogo!!", idJogoRef.current)
+
+                if (idJogoRef.current.length === 0) { // Check if idJogo is an empty string
+                    message.warn("Não colocou número de jogo!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                if (parseInt(idJogoRef.current) == -1) {
+                    message.warn("Esse número de jogo já existe!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+
+                console.log("dia", idDiaRef.current);
+
+                if (idDiaRef.current.length <= 0) {
+                    message.warn("Não colocou dia!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("hora", idHorasRef.current)
+
+                if (idHorasRef.current.length <= 0) {
+                    message.warn("Não colocou a hora!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("minutos", idMinutosRef.current);
+
+                if (idMinutosRef.current.length <= 0) {
+                    message.warn("Não colocou os minutos!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("prova", idProvaRef.current)
+
+                if (idProvaRef.current.length <= 0) {
+                    message.warn("Não colocou prova!");
+                    valido = false;
+                }
+                              
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("serie", idSerieRef.current)
+
+                if (idSerieRef.current.length <= 0) {
+                    message.warn("Não colocou série!");
+                    valido = false;
+                }
+                
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("equipaA", idEquipaARef.current)
+
+                if (idEquipaARef.current.length <= 0) {
+                    message.warn("Não colocou equipa visitada!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("equipaB", idEquipaBRef.current)
+                if (idEquipaBRef.current.length <= 0) {
+                    message.warn("Não colocou equipa visitante!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+                console.log("pavilhao", idPavilhaoRef.current)
+                if (idPavilhaoRef.current.length <= 0) {
+                    message.warn("Não colocou pavilhão!");
+                    valido = false;
+                }
+
+                if (!valido) {
+                    reject();
+                    return;
+                }
+
+
+                if (valido) {
+                    // Submit form logic
+                    //message.success('Form submitted successfully!');
+
+                    Meteor.call(
+                        "adicionaJogoNovo",
+                        idJogoRef.current,
+                        idDiaRef.current,
+                        idHorasRef.current,
+                        idMinutosRef.current,
+                        idProvaRef.current,
+                        idSerieRef.current,
+                        idEquipaARef.current,
+                        idEquipaBRef.current,
+                        idPavilhaoRef.current,
+                        "r",
+                        (err, result) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                //message.success("Adicionado o jogo " + idJogoRef.current + ".");
+                            }
+                        }
+                    );
+
+                    resolve(); // Resolve the promise to close the modal
+                    message.success("Adicionado o jogo " + idJogoRef.current + ".");
+                    setSelectedValuePavilhao(undefined);
+                    window.location.reload();
+                } else {
+                    // Show error message and reject the promise to keep the modal open
+                    //message.error('Please fill out all the required fields.');
+                    reject();
+                }
+            });
+
+    }
+
+    const [pavilhoes, setPavilhoes] = useState([]);
+    const [selectedValuePavilhao, setSelectedValuePavilhao] = useState(undefined);
+
+    const fetchPavilhoes = useCallback(() => {
+        Meteor.call('getPavilhoes', (error, result) => {
+            if (!error) {
+                setPavilhoes(result);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        fetchPavilhoes();
+    }, [fetchPavilhoes]);
+
+    const handleSearchPavilhao = (value) => {
+        // No need to set searchValuePavilhao here
+    };
+
+    const handleSelectPavilhao = (value) => {
+        setSelectedValuePavilhao(value); // Set the selected value here
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            setSelectedValuePavilhao(selectedValuePavilhao); // Set the selected value when Enter is pressed
+        }
+    };
+
+
 
   function handleAddJogoNovo() {
     Modal.confirm({
@@ -1357,8 +1587,7 @@ export function CampeonatoRegionalNacional({ user }) {
                               placeholder="****"
                               min={0}
                               onChange={handleInputChangeIdJogo}
-                              value={idJogo}
-                              status={statusIdJogo}
+                              //value={idJogo}
                 />
               </Form.Item>
               <Form.Item label="Dia">
@@ -1367,17 +1596,16 @@ export function CampeonatoRegionalNacional({ user }) {
                     locale={locale}
                     placeholder="Selecione o dia..."
                     style={{ width: "100%" }}
-                    id="newGameDate"
                     disabledDate={disabledDate}
-                    onChange={(e) => setIddia(e.target.value)}
+                    onChange={(e) => setIdDia(e.toLocaleString())}
                     // showTime={{
                     //   defaultValue: moment("00:00:00"),
                     // }}
                   />
                 </ConfigProvider>
-              </Form.Item>
-                      <Form.Item label="Hora">
-                          <CustomTimePicker></CustomTimePicker>
+                      </Form.Item>
+              <Form.Item label="Hora" >
+                          <CustomTimePicker onChange={(e) => { setIdHoras(e) }}></CustomTimePicker>
               </Form.Item>
               <Form.Item label="Prova">
                 <Cascader
@@ -1388,7 +1616,7 @@ export function CampeonatoRegionalNacional({ user }) {
                     for (let index = 0; index < e.length; index++) {
                       p = p + e[index];
                     }
-                    novoJogoProva = p;
+                      setIdProva(p);
                   }}
                   options={[
                     {
@@ -1512,7 +1740,6 @@ export function CampeonatoRegionalNacional({ user }) {
                   ]}
                 />
               </Form.Item>
-
               <Form.Item label="Série">
                 <Input
                   id="newGameSerie"
@@ -1523,7 +1750,6 @@ export function CampeonatoRegionalNacional({ user }) {
               </Form.Item>
               <Form.Item label="Equipas">
                 <Input
-                  id="newGameEquipaA"
                   style={{ width: "46%", textTransform: "uppercase" }}
                   onChange={(e) => setIdEquipaA(e.target.value)}
                   placeholder="Visitada"
@@ -1536,15 +1762,31 @@ export function CampeonatoRegionalNacional({ user }) {
                   placeholder="Visitante"
                 />
               </Form.Item>
-              <Form.Item label="Pavilhão">
-                <Input
-                  id="newGamePavilhao"
-                  type="text"
-                  style={{ textTransform: "uppercase" }}
-                  onChange={(e) => setIdPavilhao(e.target.value)}
-                  placeholder="Selecione o pavilhão..."
-                />
-              </Form.Item>
+              
+                      <Form.Item label="Pavilhão">
+                          <Select
+                              id="newGamePavilhao"
+                              style={{ textTransform: 'uppercase' }}
+                              onChange={(value) => setIdPavilhao(value)}
+                              placeholder="Selecione o pavilhão..."
+                              showSearch // Habilita a funcionalidade de busca
+                              optionFilterProp="children" // Faz com que a busca filtre pelo conteúdo dos filhos das opções
+                              filterOption={(input, option) =>
+                                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                              } // Implementa o filtro personalizado
+                              onSearch={handleSearchPavilhao} // Chamado quando o usuário digita algo no Select
+                              onSelect={handleSelectPavilhao} // Chamado quando o usuário seleciona uma opção
+                              onKeyPress={handleKeyPress} // Captura a tecla Enter pressionada no campo de busca
+                              value={selectedValuePavilhao} // Define o valor selecionado no campo
+                          >
+                              {pavilhoes.map((pavilhao) => (
+                                  <Option key={pavilhao.value} value={pavilhao.value}>
+                                      {pavilhao.label}
+                                  </Option>
+                              ))}
+                          </Select>
+                      </Form.Item>
+
             </Form>
           </>
         </div>
@@ -1554,112 +1796,9 @@ export function CampeonatoRegionalNacional({ user }) {
       okText: "Adicionar jogo",
       closable: true,
 
-      onOk() {
-        let id = document.getElementById("newGameId").value;
-        let dia = document.getElementById("newGameDate").value;
-        let hora = document.getElementById("newGameHour").value;
-        let serie = document
-          .getElementById("newGameSerie")
-          .value.toString()
-          .toUpperCase();
-        let prova = novoJogoProva;
-        let equipaA = document
-          .getElementById("newGameEquipaA")
-          .value.toString()
-          .toUpperCase();
-        let equipaB = document
-          .getElementById("newGameEquipaB")
-          .value.toString()
-          .toUpperCase();
-        let pavilhao = document
-          .getElementById("newGamePavilhao")
-          .value.toString()
-          .toUpperCase();
-        let valido = true;
-        if (id.length <= 0) {
-          message.warn("Não colocou número de jogo!");
-          valido = false;
-        }
-        if (valido && dia.length <= 0) {
-          message.warn("Não colocou dia!");
-          valido = false;
-        }
-        if (valido && hora.length <= 0) {
-          message.warn("Não colocou hora!");
-          valido = false;
-        }
-        if (valido && prova.length <= 0) {
-          message.warn("Não colocou prova!");
-          valido = false;
-        }
-        if (valido && serie.length <= 0) {
-          message.warn("Não colocou série!");
-          valido = false;
-        }
-        if (valido && equipaA.length <= 0) {
-          message.warn("Não colocou equipa visitada!");
-          valido = false;
-        }
-        if (valido && equipaB.length <= 0) {
-          message.warn("Não colocou equipa visitante!");
-          valido = false;
-        }
-        if (valido && pavilhao.length <= 0) {
-          message.warn("Não colocou pavilhão!");
-          valido = false;
-        }
-
-        //setFormValido(valido);
-
-        // console.log(
-        //   "id",
-        //   id,
-        //   "dia",
-        //   dia,
-        //   "hora",
-        //   hora,
-        //   "prova",
-        //   prova,
-        //   "serie",
-        //   serie,
-        //   "equipaA",
-        //   equipaA,
-        //   "equipaB",
-        //   equipaB,
-        //   "pavilhao",
-        //   pavilhao
-        // );
-        if (valido && !dataSource.includes(id)) {
-          Meteor.call(
-            "adicionaJogoNovo",
-            id,
-            dia,
-            hora,
-            prova,
-            serie,
-            equipaA,
-            equipaB,
-              pavilhao,
-            "r",
-            (err, result) => {
-              if (err) {
-                console.log(err);
-              } else {
-                message.success("Adicionado o jogo " + id + ".");
-              }
-            }
-          );
-          setModalVisible(false);
-        } else if (valido && dataSource.includes(id)) {
-          message.warn("Esse jogo já existe...");
-        } else {
-          setModalVisible(true);
-        }
-
-        // }
-      },
+        onOk: handleOk,
       cancelText: "Cancelar",
-      visible: isModalVisible == undefined ? true : isModalVisible,
+      visible: isModalVisible,
       className: "modalRecusa",
     });
   }
