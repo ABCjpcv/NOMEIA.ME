@@ -281,7 +281,7 @@ export function ConsultaClubes() {
             loading={loading}
             pagination={false}
             scroll={{
-              y: (6.5 * window.screen.height) / 10,
+              y: (6 * window.screen.height) / 10,
             }}
           />
         </div>

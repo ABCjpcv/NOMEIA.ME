@@ -154,7 +154,7 @@ export const Header = ({
                   width: "100%",
                   fontWeight: "100",
                   marginTop: "1%",
-                  fontSize: "22px",
+                  fontSize: "65%",
                 }}
                 hidden={titulo}
               >
@@ -477,7 +477,7 @@ export const Header = ({
                   width: "100%",
                   fontWeight: "100",
                   marginTop: "1%",
-                  fontSize: "22px",
+                  fontSize: "65%",
                 }}
                 hidden={titulo}
               >

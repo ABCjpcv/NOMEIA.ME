@@ -1352,23 +1352,14 @@ export function CampeonatoRegionalNacional({ user }) {
     const handleInputChangeIdJogo = (value) => {
 
         const stringValue = value == null ? "" : value.toString(); // Convert the value to a string
-        Meteor.call("verifyIdJogo", stringValue, Meteor.user().username, (err, result) => {
-            console.log(result);
-            if (err) {
-                console.log(err);
-            } else if (result !== -1) {
+        
                 setIdJogo(stringValue); // Update the state with the string value
-            } else {
-                setIdJogo("-1"); // If result is -1, set an empty string to indicate an invalid value
-            }
-        });
+            
     };
 
 
     const handleOk = () => {
         
-
-
             return new Promise((resolve, reject) => {
                 // Your form validation logic here
 
@@ -1808,7 +1799,8 @@ export function CampeonatoRegionalNacional({ user }) {
       if (err) {
         console.log(err);
       } else {
-        message.success("Jogo eliminado!");
+          message.success("Jogo eliminado!");
+          window.location.reload();
       }
     });
   }

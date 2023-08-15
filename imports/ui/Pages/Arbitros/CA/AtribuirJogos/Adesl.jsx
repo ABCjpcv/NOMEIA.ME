@@ -1,33 +1,33 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import Papa from "papaparse";
 import {
-  Button,
-  Input,
-  message,
-  Space,
-  Select,
-  Upload,
-  Table,
-  Form,
-  Modal,
-  Cascader,
-  DatePicker,
-  TimePicker,
-  InputNumber,
-  Popconfirm,
+    Button,
+    Input,
+    message,
+    Space,
+    Select,
+    Upload,
+    Table,
+    Form,
+    Modal,
+    Cascader,
+    DatePicker,
+    TimePicker,
+    InputNumber,
+    Popconfirm,
 } from "antd";
 import "antd/dist/antd.css";
 import { Meteor } from "meteor/meteor";
 import styled from "styled-components";
 import { Header } from "../../../Geral/Header";
 import {
-  SearchOutlined,
-  AlertOutlined,
-  PlusCircleOutlined,
-  DeleteOutlined,
-  SaveOutlined,
-  EditOutlined,
-  InboxOutlined,
+    SearchOutlined,
+    AlertOutlined,
+    PlusCircleOutlined,
+    DeleteOutlined,
+    SaveOutlined,
+    EditOutlined,
+    InboxOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -138,48 +138,28 @@ export function Adesl({ user }) {
             complete: function (results) {
               let newGames = results.data;
               // console.log("NEW GAMES", newGames);
-              if (selectVal === "Campeonato Universitário") {
-                // console.log(
-                //   "ENTRAS???????????????????????????????????????????"
-                // );
-                Meteor.call(
-                  "adicionaJogosUniversitarios",
-                  newGames,
-                  (err, result) => {
-                    if (err) {
-                      //console.log("Error: " + err);
-                      return;
-                    }
-                    if (result) {
-                      message.success(
-                        "Novos jogos do Campeonato Universitário carregados!"
+                  if (selectVal === "Campeonato Universitário") {
+                      // console.log(
+                      //   "ENTRAS???????????????????????????????????????????"
+                      // );
+                      Meteor.call(
+                          "adicionaJogosUniversitarios",
+                          newGames,
+                          (err, result) => {
+                              if (err) {
+                                  //console.log("Error: " + err);
+                                  return;
+                              }
+                              if (result) {
+                                  message.success(
+                                      "Novos jogos do Campeonato Universitário carregados!"
+                                  );
+                              }
+                          }
                       );
-                    }
                   }
-                );
-                navigate("/Conta/ProfileCA/Atribuir_Arbitros/ADESL");
-              } else if (selectVal === "Campeonato Regional / Nacional") {
-                Meteor.call(
-                  "adicionaJogosSemanais",
-                  newGames,
-                  (err, result) => {
-                    // console.log(
-                    //   "ENTRAS REGIONAL???????????????????????????????????????????"
-                    // );
-                    if (err) {
-                      //console.log("Error: " + err);
-                      return;
-                    }
-                    if (result) {
-                      message.success(
-                        "Novos jogos do Campeonato Regional / Nacional carregados!"
-                      );
-                    }
-                  }
-                );
-                navigate("/Conta/ProfileCA/Atribuir_Arbitros/CR_CN");
-              }
-            },
+                      loadData();
+                  },
           });
         } else {
           message.error("Não indicou o campeonato!");
@@ -350,7 +330,7 @@ export function Adesl({ user }) {
     {
       title: "Equipas",
       dataIndex: "equipas",
-      key: "Equipas",
+      key: "equipas",
       sorter: (a, b) => comparaAminhaLindaString(a.equipas, b.equipas),
       sortDirections: ["descend", "ascend"],
       fixed: "left",
@@ -367,341 +347,386 @@ export function Adesl({ user }) {
 
       ...getColumnSearchProps("pavilhao"),
     },
-    {
-      title: "1º Árbitro",
-      dataIndex: "arbitro1",
-      key: "arbitro1",
-      sorter: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
-      sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("arbitro1"),
-      render: (text, record, index) => (
-        <>
-          <Select
-            bordered
-            showSearch
-            mode="single"
-            name="select_arbitro1"
-            style={{
-              width: "120px",
-              backgroundColor:
-                record.tags[0] === ""
-                  ? "white"
-                  : record.tags[0] === "pendente"
-                  ? "#FFB963"
-                  : record.tags[0] === "confirmado"
-                  ? "#6FD25A"
-                  : record.tags[0] === "recusado"
-                  ? "#ef5350"
-                  : "white",
-            }}
-            key={"select_arbitro1_" + index}
-            type="select"
-            onChange={handleChangeSelecaoArbitro}
-                  value={record.arbitro1 != "" && record.arbitro1 != " " ? record.arbitro1 : null}
-            disabled={disabledDataSource.includes(record)}
-            size="small"
-            showArrow={false}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_1_arbitro_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
-    {
-      title: "2º Árbitro",
-      dataIndex: "arbitro2",
-      key: "arbitro2",
-      sorter: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
-      sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("arbitro2"),
-      render: (text, record, index) => (
-        <>
-          <Select
-            showSearch
-            mode="single"
-            name="select_arbitro2"
-            style={{
-              width: "120px",
-              backgroundColor:
-                record.tags[1] === ""
-                  ? "white"
-                  : record.tags[1] === "pendente"
-                  ? "#FFB963"
-                  : record.tags[1] === "confirmado"
-                  ? "#6FD25A"
-                  : record.tags[1] === "recusado"
-                  ? "#ef5350"
-                  : "white",
-            }}
-            key={"select_arbitro2_" + index}
-            type="select"
-            onChange={handleChangeSelecaoArbitro}
-                  value={record.arbitro2 != "" && record.arbitro2 != " " ? record.arbitro2 : null}
-            disabled={disabledDataSource.includes(record)}
-            size="small"
-            showArrow={false}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_2_arbitro_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
-    {
-      title: "Juiz de linha",
-      dataIndex: "juiz_linha1",
-      key: "juiz_linha1",
-      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
-      sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("juiz_linha1"),
-      render: (text, record, index) => (
-        <>
-          <Select
-            showSearch
-            mode="single"
-            name="select_juiz_linha1"
-            style={{
-              width: "120px",
-              backgroundColor:
-                record.tags[2] === ""
-                  ? "white"
-                  : record.tags[2] === "pendente"
-                  ? "#FFB963"
-                  : record.tags[2] === "confirmado"
-                  ? "#6FD25A"
-                  : record.tags[2] === "recusado"
-                  ? "#ef5350"
-                  : "white",
-            }}
-            key={"select_juiz_linha1_" + index}
-            type="select"
-            onChange={handleChangeSelecaoArbitro}
-                  value={record.juiz_linha1 != "" && record.juiz_linha1 != " " ? record.juiz_linha1 : null}
-            disabled={disabledDataSource.includes(record)}
-            size="small"
-            showArrow={false}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_1_juiz_linha_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
-    {
-      title: "Juiz de linha",
-      dataIndex: "juiz_linha2",
-      key: "juiz_linha2",
-      sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha2, b.juiz_linha2),
-      sortDirections: ["descend", "ascend"],
-      ...getColumnSearchProps("juiz_linha2"),
-      render: (text, record, index) => (
-        <>
-          <Select
-            showSearch
-            mode="single"
-            name="select_juiz_linha2"
-            style={{
-              width: "120px",
-              backgroundColor:
-                record.tags[3] === ""
-                  ? "white"
-                  : record.tags[3] === "pendente"
-                  ? "#FFB963"
-                  : record.tags[3] === "confirmado"
-                  ? "#6FD25A"
-                  : record.tags[3] === "recusado"
-                  ? "#ef5350"
-                  : "white",
-            }}
-            key={"select_juiz_linha2_" + index}
-            type="select"
-            onChange={handleChangeSelecaoArbitro}
-                  value={record.juiz_linha2 != "" && record.juiz_linha2 != " "  ? record.juiz_linha2 : null}
-            disabled={disabledDataSource.includes(record)}
-            size="small"
-            showArrow={false}
-          >
-            {arbitrosDisponiveis.map((arb) => {
-              return (
-                <Select.Option
-                  className="select-ref-choice"
-                  value={arb + ""}
-                  key={"option_2_juiz_linha_index_" + index + "_" + _.uniqueId()}
-                >
-                  {arb + ""}
-                </Select.Option>
-              );
-            })}
-          </Select>
-        </>
-      ),
-    },
-    {
-      title: "Ação",
-      dataIndex: "acao",
-      key: "acao",
-      fixed: "right",
-      width: "8%",
-      render: (_, record, key) => (
-        <div style={{ display: "flex" }}>
-          <div>
-            <Button
-              shape="round"
-              className="edit-button"
-              size="small"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                fontSize: "12px",
-              }}
-              onClick={() => {
-                $(".save-button")[key].toggleAttribute("hidden");
-                $(".edit-button")[key].toggleAttribute("hidden");
+      {
+          title: "1º Árbitro",
+          dataIndex: "arbitro1",
+          key: "arbitro1",
+          sorter: (a, b) => comparaAminhaLindaString(a.arbitro1, b.arbitro1),
+          sortDirections: ["descend", "ascend"],
+          ...getColumnSearchProps("arbitro1"),
+          render: (text, record, index) => (
+              <>
+                  <Select
+                      bordered
+                      showSearch
+                      mode="single"
+                      name="select_arbitro1"
+                      style={{
+                          width: "120px",
+                          backgroundColor:
+                              record.tags[0] === ""
+                                  ? "white"
+                                  : record.tags[0] === "pendente"
+                                      ? "#FFB963"
+                                      : record.tags[0] === "confirmado"
+                                          ? "#6FD25A"
+                                          : record.tags[0] === "recusado"
+                                              ? "#ef5350"
+                                              : "white",
+                      }}
+                      key={"select_arbitro1_" + index}
+                      type="select"
+                      onChange={handleChangeSelecaoArbitro}
+                      value={record.arbitro1 != "" && record.arbitro1 != " " ? record.arbitro1 : null}
+                      disabled={disabledDataSource.includes(record)}
+                      size="small"
+                      showArrow={false}
+                      filterOption={(input, option) => {
+                          // Converte o input e o valor da opção para letras minúsculas sem acentos
+                          const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          // Verifica se o valor da opção inclui o input fornecido sem acentos
+                          return optionWithoutAccent.includes(inputWithoutAccent);
+                      }}
+                  >
+                      {["", ...arbitrosDisponiveis].map((arb) => {
+                          //console.log(arbitrosDisponiveis);
+                          return (
+                              <Select.Option
+                                  className="select-ref-choice"
+                                  value={arb + ""}
+                                  key={"option_1_arbitro_index_" + index + "_" + _.uniqueId()}
+                              >
+                                  {arb + ""}
+                              </Select.Option>
+                          );
+                      })}
+                  </Select>
+              </>
+          ),
+      },
+      {
+          title: "2º Árbitro",
+          dataIndex: "arbitro2",
+          key: "arbitro2",
+          sorter: (a, b) => comparaAminhaLindaString(a.arbitro2, b.arbitro2),
+          sortDirections: ["descend", "ascend"],
+          ...getColumnSearchProps("arbitro2"),
+          render: (text, record, index) => (
+              <>
+                  <Select
+                      showSearch
+                      mode="single"
+                      name="select_arbitro2"
+                      style={{
+                          width: "120px",
+                          backgroundColor:
+                              record.tags[1] === ""
+                                  ? "white"
+                                  : record.tags[1] === "pendente"
+                                      ? "#FFB963"
+                                      : record.tags[1] === "confirmado"
+                                          ? "#6FD25A"
+                                          : record.tags[1] === "recusado"
+                                              ? "#ef5350"
+                                              : "white",
+                      }}
+                      key={"select_arbitro2_" + index}
+                      type="select"
+                      onChange={handleChangeSelecaoArbitro}
+                      value={record.arbitro2 != "" && record.arbitro2 != " " ? record.arbitro2 : null}
+                      disabled={disabledDataSource.includes(record)}
+                      size="small"
+                      showArrow={false}
+                      filterOption={(input, option) => {
+                          // Converte o input e o valor da opção para letras minúsculas sem acentos
+                          const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          // Verifica se o valor da opção inclui o input fornecido sem acentos
+                          return optionWithoutAccent.includes(inputWithoutAccent);
+                      }}
+                  >
+                      {["", ...arbitrosDisponiveis].map((arb) => {
+                          return (
+                              <Select.Option
+                                  className="select-ref-choice"
+                                  value={arb + ""}
+                                  key={"option_2_arbitro_index_" + index + "_" + _.uniqueId()}
+                              >
+                                  {arb + ""}
+                              </Select.Option>
+                          );
+                      })}
+                  </Select>
+              </>
+          ),
+      },
+      {
+          title: "Juiz de linha",
+          dataIndex: "juiz_linha1",
+          key: "juiz_linha1",
+          sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha1, b.juiz_linha1),
+          sortDirections: ["descend", "ascend"],
+          ...getColumnSearchProps("juiz_linha1"),
+          render: (text, record, index) => (
+              <>
+                  <Select
+                      showSearch
+                      mode="single"
+                      name="select_juiz_linha1"
+                      style={{
+                          width: "120px",
+                          backgroundColor:
+                              record.tags[2] === ""
+                                  ? "white"
+                                  : record.tags[2] === "pendente"
+                                      ? "#FFB963"
+                                      : record.tags[2] === "confirmado"
+                                          ? "#6FD25A"
+                                          : record.tags[2] === "recusado"
+                                              ? "#ef5350"
+                                              : "white",
+                      }}
+                      key={"select_juiz_linha1_" + index}
+                      type="select"
+                      onChange={handleChangeSelecaoArbitro}
+                      value={record.juiz_linha1 != "" && record.juiz_linha1 != " " ? record.juiz_linha1 : null}
+                      disabled={disabledDataSource.includes(record)}
+                      size="small"
+                      showArrow={false}
+                      filterOption={(input, option) => {
+                          // Converte o input e o valor da opção para letras minúsculas sem acentos
+                          const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          // Verifica se o valor da opção inclui o input fornecido sem acentos
+                          return optionWithoutAccent.includes(inputWithoutAccent);
+                      }}
+                  >
+                      {["", ...arbitrosDisponiveis].map((arb) => {
+                          return (
+                              <Select.Option
+                                  className="select-ref-choice"
+                                  value={arb + ""}
+                                  key={"option_1_juiz_linha_index_" + index + "_" + _.uniqueId()}
+                              >
+                                  {arb + ""}
+                              </Select.Option>
+                          );
+                      })}
+                  </Select>
+              </>
+          ),
+      },
+      {
+          title: "Juiz de linha",
+          dataIndex: "juiz_linha2",
+          key: "juiz_linha2",
+          sorter: (a, b) => comparaAminhaLindaString(a.juiz_linha2, b.juiz_linha2),
+          sortDirections: ["descend", "ascend"],
+          ...getColumnSearchProps("juiz_linha2"),
+          render: (text, record, index) => (
+              <>
+                  <Select
+                      showSearch
+                      mode="single"
+                      name="select_juiz_linha2"
+                      style={{
+                          width: "120px",
+                          backgroundColor:
+                              record.tags[3] === ""
+                                  ? "white"
+                                  : record.tags[3] === "pendente"
+                                      ? "#FFB963"
+                                      : record.tags[3] === "confirmado"
+                                          ? "#6FD25A"
+                                          : record.tags[3] === "recusado"
+                                              ? "#ef5350"
+                                              : "white",
+                      }}
+                      key={"select_juiz_linha2_" + index}
+                      type="select"
+                      onChange={handleChangeSelecaoArbitro}
+                      value={record.juiz_linha2 != "" && record.juiz_linha2 != " " ? record.juiz_linha2 : null}
+                      disabled={disabledDataSource.includes(record)}
+                      size="small"
+                      showArrow={false}
+                      filterOption={(input, option) => {
+                          // Converte o input e o valor da opção para letras minúsculas sem acentos
+                          const inputWithoutAccent = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          const optionWithoutAccent = option.children.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                          // Verifica se o valor da opção inclui o input fornecido sem acentos
+                          return optionWithoutAccent.includes(inputWithoutAccent);
+                      }}
+                  >
+                      {["", ...arbitrosDisponiveis].map((arb) => {
+                          return (
+                              <Select.Option
+                                  className="select-ref-choice"
+                                  value={arb + ""}
+                                  key={"option_2_juiz_linha_index_" + index + "_" + _.uniqueId()}
+                              >
+                                  {arb + ""}
+                              </Select.Option>
+                          );
+                      })}
+                  </Select>
+              </>
+          ),
+      },
+      {
+          title: "Ação",
+          dataIndex: "acao",
+          key: "acao",
+          fixed: "right",
+          width: "8%",
+          render: (_, record, key) => (
+              <div style={{ display: "flex" }}>
+                  <div>
+                      <Button
+                          shape="round"
+                          className="edit-button"
+                          size="small"
+                          style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              fontSize: "12px",
+                          }}
+                          onClick={() => {
+                              $(".save-button")[key].toggleAttribute("hidden");
+                              $(".edit-button")[key].toggleAttribute("hidden");
 
-                let newDisabledDataSource = [];
-                for (
-                  let index = 0;
-                  index < disabledDataSource.length;
-                  index++
-                ) {
-                  if (disabledDataSource[index] !== record) {
-                    newDisabledDataSource.push(disabledDataSource[index]);
-                  }
-                }
+                              let newDisabledDataSource = [];
+                              for (
+                                  let index = 0;
+                                  index < disabledDataSource.length;
+                                  index++
+                              ) {
+                                  if (disabledDataSource[index] !== record) {
+                                      newDisabledDataSource.push(disabledDataSource[index]);
+                                  }
+                              }
 
-                setDisabledDataSource(newDisabledDataSource);
-                setEditableRow(record);
-                setEdit(true);
-              }}
-              disabled={!disabledDataSource.includes(record)}
-            >
-              <EditOutlined
-                width={"1.5em"}
-                height={"1.5em"}
-                style={{ marginTop: "8%" }}
-              />
-              Alterar
-            </Button>
-            <Popconfirm
-              className="popconfirm_deleteGame"
-              title="Tem a certeza que quer apagar?"
-              onConfirm={() => handleDeleteGame(record)}
-              cancelText="Cancelar"
-            >
-              <Button
-                shape="round"
-                className="delete-button"
-                size="small"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  fontSize: "12px",
-                }}
-              >
-                <DeleteOutlined
-                  width={"1.5em"}
-                  height={"1.5em"}
-                  style={{ marginTop: "8%" }}
-                />
-                Apagar
-              </Button>
-            </Popconfirm>
+                              setDisabledDataSource(newDisabledDataSource);
+                              setEditableRow(record);
+                              setEdit(true);
+                          }}
+                          disabled={!disabledDataSource.includes(record)}
+                      >
+                          <EditOutlined
+                              width={"1.5em"}
+                              height={"1.5em"}
+                              style={{ marginTop: "8%" }}
+                          />
+                          Alterar
+                      </Button>
+                      <Popconfirm
+                          className="popconfirm_deleteGame"
+                          title="Tem a certeza que quer apagar?"
+                          onConfirm={() => handleDeleteGame(record)}
+                          cancelText="Cancelar"
+                      >
+                          <Button
+                              shape="round"
+                              className="delete-button"
+                              size="small"
+                              style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  fontSize: "12px",
+                              }}
+                          >
+                              <DeleteOutlined
+                                  width={"1.5em"}
+                                  height={"1.5em"}
+                                  style={{ marginTop: "8%" }}
+                              />
+                              Apagar
+                          </Button>
+                      </Popconfirm>
 
-            <Button
-              shape="round"
-              type="primary"
-              size="small"
-              className="save-button"
-              style={{ display: "flex", flexDirection: "row" }}
-              hidden
-              onClick={() => {
-                $(".save-button")[key].toggleAttribute("hidden");
-                $(".edit-button")[key].toggleAttribute("hidden");
+                      <Button
+                          shape="round"
+                          type="primary"
+                          size="small"
+                          className="save-button"
+                          style={{ display: "flex", flexDirection: "row" }}
+                          hidden
+                          onClick={() => {
+                              $(".save-button")[key].toggleAttribute("hidden");
+                              $(".edit-button")[key].toggleAttribute("hidden");
 
-                if (editableRow === record) {
-                  message.warn("Não foi detetada alteração!");
-                  setDisabledDataSource(dataSource);
-                } else {
-                    Meteor.call("alteraNomeacao", record, user, true, false, (err, result) => {
-                    if (err) console.log("Error", err);
-                    if (result == 1)
-                      message.success("Alteração registada com sucesso!");
-                  });
+                              if (editableRow === record) {
+                                  message.warn("Não foi detetada alteração!");
+                                  setDisabledDataSource(dataSource);
+                              } else {
+                                  Meteor.call("alteraNomeacao", record, user, false, true, (err, result) => {
+                                      if (err) console.log("Error", err);
+                                      if (result == 1)
+                                          message.success("Alteração registada com sucesso!");
+                                  });
 
-                  console.log("Guardado");
+                                  // console.log("Guardado");
 
-                  loadData(false);
-                  setDisabledDataSource(dataSource);
-                }
-              }}
-            >
-              <SaveOutlined
-                width={"1.5em"}
-                height={"1.5em"}
-                style={{ marginTop: "8%" }}
-              />
-              Guardar
-            </Button>
-          </div>
-        </div>
-      ),
-    },
+                                  loadData(false);
+                                  setDisabledDataSource(dataSource);
+                              }
+                          }}
+                      >
+                          <SaveOutlined
+                              width={"1.5em"}
+                              height={"1.5em"}
+                              style={{ marginTop: "8%" }}
+                          />
+                          Guardar
+                      </Button>
+                  </div>
+              </div>
+          ),
+      },
   ];
 
   /**
    * ATRIBUICAO DOS ESTADOS (STATES)
    */
 
-  let [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
+    let [arbitrosDisponiveis, setArbitrosDisponiveis] = useState([]);
 
-  let [clubesDisponiveis, setClubesDisponiveis] = useState([]);
+    let [clubesDisponiveis, setClubesDisponiveis] = useState([]);
 
-  let [dataSource, setDataSource] = useState([]);
+    let [loaded, setLoaded] = useState(false);
 
-  let [disabledDataSource, setDisabledDataSource] = useState([]);
+    let [dataSource, setDataSource] = useState([]);
 
-  let [temRecibo, setTemRecibo] = useState(false);
-  let [naoTemRecibo, setNaoTemRecibo] = useState(false);
-  let [temTransporte, setTemTransporte] = useState(false);
-  let [naoTemTransporte, setNaoTemTransporte] = useState(false);
-  let [clubesRelacionados, setClubesRelacionados] = useState([]);
-  let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
+    let [disabledDataSource, setDisabledDataSource] = useState([]);
 
-  let [editableRow, setEditableRow] = useState("");
-  let [edit, setEdit] = useState(Boolean);
+    let [temRecibo, setTemRecibo] = useState(false);
+    let [naoTemRecibo, setNaoTemRecibo] = useState(false);
+    let [temTransporte, setTemTransporte] = useState(false);
+    let [naoTemTransporte, setNaoTemTransporte] = useState(false);
+    let [clubesRelacionados, setClubesRelacionados] = useState([]);
+    let [nivelDeArbitro, setNivelDeArbitro] = useState(0);
 
-  useEffect(() => {
-    // console.log("disabledDataSource, BANANANANANAN", disabledDataSource);
-    // console.log("dataSource", dataSource);
-  }, [disabledDataSource, dataSource]);
+    let [editableRow, setEditableRow] = useState("");
+    let [edit, setEdit] = useState(Boolean);
+
+    let [enviaDisabled, setEnviaDisabled] = useState(false);
+
+    useEffect(() => {
+        console.log("dataSource", dataSource);
+    }, [disabledDataSource])
+
+
+    useEffect(() => {
+        console.log("dataSource", dataSource);
+    }, [dataSource]);
+
+    useEffect(() => {
+        //console.log("editing??", edit)
+    }, [edit]);
+
+    useEffect(() => {
+        //console.log("loaded??", enviaDisabled)
+    }, [enviaDisabled]);
 
   function handleSubmissionConfirmation() {
     Meteor.call(
@@ -942,24 +967,21 @@ export function Adesl({ user }) {
         let preNomeacoes = result[0];
 
         for (let index = 0; index < preNomeacoes.length; index++) {
-          let jogoLido = preNomeacoes[index];
-          let obj = {
-            Jogo: jogoLido.id,
-            Dia: jogoLido.dia,
-            Hora: jogoLido.hora,
-            Prova: jogoLido.prova,
-            Equipas: jogoLido.equipas,
-            Pavilhao: jogoLido.pavilhao,
-            arbitro1: jogoLido.arbitro1,
-            arbitro2: jogoLido.arbitro2,
-            juiz_linha1: jogoLido.juiz_linha1,
-            juiz_linha2: jogoLido.juiz_linha2,
-            // juiz_linha3: jogoLido.juiz_linha3,
-            // juiz_linha4: jogoLido.juiz_linha4,
-            key: jogoLido.key,
-            tags: jogoLido.tags,
-          };
-
+            let jogoLido = preNomeacoes[index];
+            let obj = {
+                numerojogo: jogoLido.numerojogo,
+                dia: jogoLido.dia,
+                hora: jogoLido.hora,
+                prova: jogoLido.prova,
+                equipas: jogoLido.equipas,
+                pavilhao: jogoLido.pavilhao,
+                arbitro1: jogoLido.arbitro1,
+                arbitro2: jogoLido.arbitro2,
+                juiz_linha1: jogoLido.juiz_linha1,
+                juiz_linha2: jogoLido.juiz_linha2,
+                key: jogoLido.key,
+                tags: jogoLido.tags,
+            };
           dataFromDB.push(obj);
         }
         // console.log("dataFromDB: ", dataFromDB);
@@ -984,345 +1006,552 @@ export function Adesl({ user }) {
         setDataSource([]);
       }
     });
-  }
-
-  function reloadData() {
-    //console.log("Entrei no metodo!! ");
-
-    // Carrega pela primeira vez
-    if (dataSource.length === 0) {
-      loadData();
     }
-    // Caso o CA carregue jogos novos: DataSource != 0 mas tem de ser carregado novamente
-    else {
-      Meteor.call(
-        "getJogosAtualizados",
-        Meteor.user(),
-        dataSource,
-        true,
-        false,
-        false,
-        (err, result) => {
-          //console.log("jogos atualizados???", result);
-          if (result === true) {
-            loadData();
-          }
-        }
-      );
-    }
-  }
 
-  function handleChangeClubes(value) {
-    setClubesRelacionados(value);
-  }
+    function checkBD(dataSource) {
+        Meteor.call("getPreNomeacoesRealizadasUniversitarias", Meteor.user(), (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if (result) {
+                console.log("MIAU", result);
 
-  function handleChangeNivel(value) {
-    // console.log("value nivel", value);
-    if (value === "Todos") {
-      setNivelDeArbitro(0);
-    } else {
-      setNivelDeArbitro(value);
-    }
-  }
+                let preNomeacoesUniversitarias = result.preNomeacoesUniversitarias;
 
-  function handleAlert() {
-    Meteor.call("enviaMailAlerta", dataSource, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else if (result > 0) {
-        message.success("Alertas enviados para " + result + " árbitros");
-      } else if (result === 0) {
-        message.warn("Não existem jogos pendentes de confirmação");
-      } else {
-        message.error("Não foi possível enviar os emails.");
-      }
-    });
-  }
-  let [isModalVisible, setModalVisible] = useState();
+                if (preNomeacoesUniversitarias.length === 0) {
+                    setLoaded(true);
+                } else {
+                    if (dataSource.length !== preNomeacoesUniversitarias.length) {
+                        setLoaded(true);
+                        setEnviaDisabled(result.enviado);
+                        if (result.enviado) {
+                            setDisabledDataSource(preNomeacoesUniversitarias);
+                            setDataSource(preNomeacoesUniversitarias);
+                        } else {
+                            setDataSource(preNomeacoesUniversitarias);
+                        }
 
-  // let [novoJogoID, setNovoJogoID] = useState();
-  // let [novoJogoDia, setNovoJogoDia] = useState();
-  // let [novoJogoHora, setNovoJogoHora] = useState();
-  let novoJogoProva = "";
-  // let [novoJogoSerie, setNovoJogoSerie] = useState();
-  // let [novoJogoD, setNovoJogoID] = useState();
-
-  // {jogo: 0, dia: "", hora: "", prova: "", serie: "", equipas: "", pavilhao: ""});
-
-  const disabledDate = (current) => {
-    // Can not select days before today
-
-    return !moment().isSameOrBefore(current);
-  };
-
-  function handleAddJogoNovo() {
-    Modal.confirm({
-      title: "Adicionar novo jogo:",
-      content: (
-        <div>
-          <>
-            <br></br>
-            <Form
-              labelCol={{
-                span: 3,
-                offset: 0,
-              }}
-              wrapperCol={{
-                span: 21,
-              }}
-              layout="horizontal"
-              size="small"
-            >
-              <Form.Item label="Jogo">
-                <InputNumber
-                  id="newGameId"
-                  placeholder="****"
-                  min={0}
-                  onChange={(e) => setIdJogo(e.target.value)}
-                />
-              </Form.Item>
-              <Form.Item label="Dia">
-                <ConfigProvider locale={locale}>
-                  <DatePicker
-                    locale={locale}
-                    placeholder="Selecione o dia..."
-                    style={{ width: "100%" }}
-                    id="newGameDate"
-                    disabledDate={disabledDate}
-                    onChange={(e) => setIdDia(e.target.value)}
-                    // showTime={{
-                    //   defaultValue: moment("00:00:00"),
-                    // }}
-                  />
-                </ConfigProvider>
-              </Form.Item>
-              <Form.Item label="Hora">
-                <TimePicker
-                  locale={locale}
-                  placeholder="Selecione a hora..."
-                  style={{ width: "100%" }}
-                  id="newGameHour"
-                  format={"HH:mm"}
-                  secondStep={1}
-                  onChange={(e) => setIdHora(e.target.value)}
-                />
-              </Form.Item>
-              <Form.Item label="Prova">
-                <Cascader
-                  id="newGameProva"
-                  placeholder="Selecione a prova..."
-                  onChange={(e) => {
-                    let p = "";
-                    for (let index = 0; index < e.length; index++) {
-                      p = p + e[index];
-                    }
-                    novoJogoProva = p;
-                  }}
-                  options={[
-                    {
-                      value: "I",
-                      label: "I",
-                      children: [
-                        {
-                          value: "F",
-                          label: "F",
-                        },
-                        {
-                          value: "M",
-                          label: "M",
-                        },
-                      ],
-                    },
-                    {
-                      value: "II",
-                      label: "II",
-                      children: [
-                        {
-                          value: "F",
-                          label: "F",
-                        },
-                        {
-                          value: "M",
-                          label: "M",
-                        },
-                      ],
-                    },
-                  ]}
-                />
-              </Form.Item>
-
-              <Form.Item label="Equipas">
-                <Input
-                  id="newGameEquipaA"
-                  style={{ width: "46%", textTransform: "uppercase" }}
-                  onChange={(e) => setIdEquipaA(e.target.value)}
-                  placeholder="Visitada"
-                />{" "}
-                —{" "}
-                <Input
-                  id="newGameEquipaB"
-                  style={{ width: "47%", textTransform: "uppercase" }}
-                  onChange={(e) => setIdEquipaB(e.target.value)}
-                  placeholder="Visitante"
-                />
-              </Form.Item>
-              <Form.Item label="Pavilhão">
-                <Input
-                  id="newGamePavilhao"
-                  type="text"
-                  style={{ textTransform: "uppercase" }}
-                  onChange={(e) => setIdPavilhao(e.target.value)}
-                  placeholder="Selecione o pavilhão..."
-                />
-              </Form.Item>
-            </Form>
-          </>
-        </div>
-      ),
-      width: "42%",
-      keyboard: false,
-      okText: "Adicionar jogo",
-      closable: true,
-
-      onOk() {
-        let id = document.getElementById("newGameId").value;
-        let dia = document.getElementById("newGameDate").value;
-        let hora = document.getElementById("newGameHour").value;
-
-        let prova = novoJogoProva;
-        let equipaA = document
-          .getElementById("newGameEquipaA")
-          .value.toString()
-          .toUpperCase();
-        let equipaB = document
-          .getElementById("newGameEquipaB")
-          .value.toString()
-          .toUpperCase();
-        let pavilhao = document
-          .getElementById("newGamePavilhao")
-          .value.toString()
-          .toUpperCase();
-        let valido = true;
-        if (id.length <= 0) {
-          message.warn("Não colocou número de jogo!");
-          valido = false;
-        }
-        if (valido && dia.length <= 0) {
-          message.warn("Não colocou dia!");
-          valido = false;
-        }
-        if (valido && hora.length <= 0) {
-          message.warn("Não colocou hora!");
-          valido = false;
-        }
-        if (valido && prova.length <= 0) {
-          message.warn("Não colocou prova!");
-          valido = false;
-        }
-
-        if (valido && equipaA.length <= 0) {
-          message.warn("Não colocou equipa visitada!");
-          valido = false;
-        }
-        if (valido && equipaB.length <= 0) {
-          message.warn("Não colocou equipa visitante!");
-          valido = false;
-        }
-        if (valido && pavilhao.length <= 0) {
-          message.warn("Não colocou pavilhão!");
-          valido = false;
-        }
-
-        setFormValido(valido);
-
-        // console.log(
-        //   "id",
-        //   id,
-        //   "dia",
-        //   dia,
-        //   "hora",
-        //   hora,
-        //   "prova",
-        //   prova,
-
-        //   "equipaA",
-        //   equipaA,
-        //   "equipaB",
-        //   equipaB,
-        //   "pavilhao",
-        //   pavilhao
-        // );
-        if (valido && !dataSource.includes(id)) {
-            Meteor.call(
-                "adicionaJogoNovo",
-                id,
-                dia,
-                hora,
-                prova,
-                serie,
-                equipaA,
-                equipaB,
-                pavilhao,
-                "u",
-                (err, result) => {
-                    if (err) {
-                        console.log(err);
                     } else {
-                        message.success("Adicionado o jogo " + id + ".");
+                        const array1Ids = Array.isArray(dataSource) ? dataSource.map(obj => obj.numerojogo) : [];
+                        const array2Ids = Array.isArray(preNomeacoesUniversitarias) ? preNomeacoesUniversitarias.map(obj => obj.numerojogo) : [];
+
+                        for (let i = 0; i < array1Ids.length; i++) {
+                            const currentId = array1Ids[i].numerojogo;
+                            const indexInArray2 = array2Ids.indexOf(currentId);
+
+                            if (indexInArray2 === -1) {
+                                setLoaded(true);
+                            }
+
+                            array2Ids.splice(indexInArray2, 1);
+                        }
+
+                        if (array2Ids.length === 0) {
+                            setLoaded(true);
+                            setEnviaDisabled(result.enviado);
+                            if (result.enviado) {
+                                setDisabledDataSource(preNomeacoesUniversitarias);
+                                setDataSource(preNomeacoesUniversitarias);
+                            }
+
+                        }
                     }
                 }
-            );
-          setModalVisible(false);
-        } else if (valido && dataSource.includes(id)) {
-          message.warn("Esse jogo já existe...");
-        } else {
-          setModalVisible(true);
-        }
-
-        // }
-      },
-      cancelText: "Cancelar",
-      visible: isModalVisible == undefined ? true : isModalVisible,
-      className: "modalRecusa",
-    });
-  }
-
-  function handleDeleteGame(record) {
-    Meteor.call("eliminaJogoUniversitario", record, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        message.success("Jogo eliminado!");
-      }
-    });
-    let titulo =
-      "Jogo nº " +
-      record.id +
-      " " +
-      record.prova +
-      " " +
-      record.equipas +
-      " " +
-      record.pavilhao;
-    if (record.arbitro1 != undefined) {
-      Meteor.call(
-        "removeNomeacaoCalendarioArbitro",
-        record.arbitro1,
-        titulo,
-        record,
-        key.key,
-        true,
-        false,
-        (err, result) => {
-          if (err) {
-            console.error(err);
-          } else if (result) {
-            setDataSource(result);
-          }
-        }
-      );
+            }
+        });
     }
-  }
+
+
+    function handleChangeClubes(value) {
+        setClubesRelacionados(value);
+    }
+
+    function handleChangeNivel(value) {
+        // console.log("value nivel", value);
+        if (value === "Todos") {
+            setNivelDeArbitro(0);
+        } else {
+            setNivelDeArbitro(value);
+        }
+    }
+
+    function handleAlert() {
+        Meteor.call("enviaMailAlerta", dataSource, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if (result > 0) {
+                message.success("Alertas enviados para " + result + " árbitros");
+            } else if (result === 0) {
+                message.warn("Não existem jogos pendentes de confirmação");
+            } else {
+                // console.log("result: ", result);
+                message.error("Não foi possível enviar os emails.");
+            }
+        });
+    }
+
+    let [isModalVisible, setModalVisible] = useState(false);
+
+
+
+    let [idJogo, setIdJogo] = useState("");
+    let [idDia, setIdDia] = useState("");
+    let [idHoras, setIdHoras] = useState("");
+    let [idMinutos, setIdMinutos] = useState("");
+    let [idProva, setIdProva] = useState("");
+    let [idEquipaA, setIdEquipaA] = useState("");
+    let [idEquipaB, setIdEquipaB] = useState("");
+    let [idPavilhao, setIdPavilhao] = useState("");
+
+    const idJogoRef = useRef(idJogo);
+    const idDiaRef = useRef(idDia);
+    const idHorasRef = useRef(idHoras);
+    const idMinutosRef = useRef(idMinutos);
+    const idProvaRef = useRef(idProva);
+    const idEquipaARef = useRef(idEquipaA);
+    const idEquipaBRef = useRef(idEquipaB);
+    const idPavilhaoRef = useRef(idPavilhao);
+
+
+    const disabledDate = (current) => {
+        // Can not select days before today
+
+        return !moment().isSameOrBefore(current);
+    };
+
+    const CustomTimePicker = ({ onChange }) => {
+        const handleHourChange = (hour) => {
+            setIdHoras(hour);
+        };
+
+        const handleMinuteChange = (minute) => {
+            setIdMinutos(minute);
+        };
+        return (
+            <div>
+                <Select
+                    placeholder={idHoras}
+                    style={{ width: '50%' }}
+                    //value={idhoras}
+                    onChange={handleHourChange}
+                >
+                    {renderHourOptions()}
+                </Select>
+
+                <Select
+                    placeholder={idMinutos}
+                    style={{ width: '50%' }}
+                    //value={idMinutos}
+                    onChange={handleMinuteChange}
+                >
+                    {renderMinuteOptions()}
+                </Select>
+            </div>
+        );
+    };
+
+    const renderHourOptions = () => {
+        const hours = [];
+
+        for (let i = 8; i <= 23; i++) {
+            hours.push(i);
+        }
+
+        return hours.map((hour) => (
+            <Option key={hour} value={hour}>
+                {`${hour}:`}
+            </Option>
+        ));
+    };
+
+    const renderMinuteOptions = () => {
+        const minutes = [...Array(60).keys()];
+
+        return minutes.map((minute) => (
+            <Option key={minute} value={minute}>
+                {minute < 10 ? `0${minute}` : minute}
+            </Option>
+        ));
+    };
+
+
+    useEffect(() => {
+        idJogoRef.current = idJogo;
+    }, [idJogo]);
+
+    useEffect(() => {
+        idDiaRef.current = idDia;
+    }, [idDia]);
+
+    useEffect(() => {
+        idHorasRef.current = idHoras;
+    }, [idHoras]);
+
+    useEffect(() => {
+        idMinutosRef.current = idMinutos;
+    }, [idMinutos]);
+
+    useEffect(() => {
+        idProvaRef.current = idProva;
+    }, [idProva]);
+
+    useEffect(() => {
+        idEquipaARef.current = idEquipaA;
+    }, [idEquipaA]);
+
+    useEffect(() => {
+        idEquipaBRef.current = idEquipaB;
+    }, [idEquipaB]);
+
+    useEffect(() => {
+        idPavilhaoRef.current = idPavilhao;
+    }, [idPavilhao]);
+
+
+
+    const handleInputChangeIdJogo = (value) => {
+
+        const stringValue = value == null ? "" : value.toString(); // Convert the value to a string
+        
+                setIdJogo(stringValue); // Update the state with the string value
+            
+    };
+
+
+    const handleOk = () => {
+
+        return new Promise((resolve, reject) => {
+            // Your form validation logic here
+
+            let valido = true;
+
+            console.log("idJogo!!", idJogoRef.current)
+
+            if (idJogoRef.current.length === 0) { // Check if idJogo is an empty string
+                message.warn("Não colocou número de jogo!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            if (parseInt(idJogoRef.current) == -1) {
+                message.warn("Esse número de jogo já existe!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+
+            console.log("dia", idDiaRef.current);
+
+            if (idDiaRef.current.length <= 0) {
+                message.warn("Não colocou dia!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("hora", idHorasRef.current)
+
+            if (idHorasRef.current.length <= 0) {
+                message.warn("Não colocou a hora!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("minutos", idMinutosRef.current);
+
+            if (idMinutosRef.current.length <= 0) {
+                message.warn("Não colocou os minutos!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("prova", idProvaRef.current)
+
+            if (idProvaRef.current.length <= 0) {
+                message.warn("Não colocou prova!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("equipaA", idEquipaARef.current)
+
+            if (idEquipaARef.current.length <= 0) {
+                message.warn("Não colocou equipa visitada!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("equipaB", idEquipaBRef.current)
+            if (idEquipaBRef.current.length <= 0) {
+                message.warn("Não colocou equipa visitante!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+            console.log("pavilhao", idPavilhaoRef.current)
+            if (idPavilhaoRef.current.length <= 0) {
+                message.warn("Não colocou pavilhão!");
+                valido = false;
+            }
+
+            if (!valido) {
+                reject();
+                return;
+            }
+
+
+            if (valido) {
+                // Submit form logic
+                //message.success('Form submitted successfully!');
+
+                Meteor.call(
+                    "adicionaJogoNovo",
+                    idJogoRef.current,
+                    idDiaRef.current,
+                    idHorasRef.current,
+                    idMinutosRef.current,
+                    idProvaRef.current,
+                    "",
+                    idEquipaARef.current,
+                    idEquipaBRef.current,
+                    idPavilhaoRef.current,
+                    "u",
+                    (err, result) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            //message.success("Adicionado o jogo " + idJogoRef.current + ".");
+                        }
+                    }
+                );
+
+                resolve(); // Resolve the promise to close the modal
+                message.success("Adicionado o jogo " + idJogoRef.current + ".");
+                setSelectedValuePavilhao(undefined);
+                window.location.reload();
+            } else {
+                // Show error message and reject the promise to keep the modal open
+                //message.error('Please fill out all the required fields.');
+                reject();
+            }
+        });
+
+    }
+
+    const [pavilhoes, setPavilhoes] = useState([]);
+    const [selectedValuePavilhao, setSelectedValuePavilhao] = useState(undefined);
+
+    const fetchPavilhoes = useCallback(() => {
+        Meteor.call('getPavilhoes', (error, result) => {
+            if (!error) {
+                setPavilhoes(result);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        fetchPavilhoes();
+    }, [fetchPavilhoes]);
+
+    const handleSearchPavilhao = (value) => {
+        // No need to set searchValuePavilhao here
+    };
+
+    const handleSelectPavilhao = (value) => {
+        setSelectedValuePavilhao(value); // Set the selected value here
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            setSelectedValuePavilhao(selectedValuePavilhao); // Set the selected value when Enter is pressed
+        }
+    };
+
+
+
+    function handleAddJogoNovo() {
+        Modal.confirm({
+            title: "Adicionar novo jogo:",
+            content: (
+                <div>
+                    <>
+                        <br></br>
+                        <Form
+                            labelCol={{
+                                span: 3,
+                                offset: 0,
+                            }}
+                            wrapperCol={{
+                                span: 21,
+                            }}
+                            layout="horizontal"
+                            size="small"
+                        >
+                            <Form.Item label="Jogo">
+                                <InputNumber
+                                    id="newGameId"
+                                    placeholder="****"
+                                    min={0}
+                                    onChange={handleInputChangeIdJogo}
+                                //value={idJogo}
+                                />
+                            </Form.Item>
+                            <Form.Item label="Dia">
+                                <ConfigProvider locale={locale}>
+                                    <DatePicker
+                                        locale={locale}
+                                        placeholder="Selecione o dia..."
+                                        style={{ width: "100%" }}
+                                        disabledDate={disabledDate}
+                                        onChange={(e) => setIdDia(e.toLocaleString())}
+                                    // showTime={{
+                                    //   defaultValue: moment("00:00:00"),
+                                    // }}
+                                    />
+                                </ConfigProvider>
+                            </Form.Item>
+                            <Form.Item label="Hora" >
+                                <CustomTimePicker onChange={(e) => { setIdHoras(e) }}></CustomTimePicker>
+                            </Form.Item>
+                            <Form.Item label="Prova">
+                                <Cascader
+                                    id="newGameProva"
+                                    placeholder="Selecione a prova..."
+                                    onChange={(e) => {
+                                        let p = "";
+                                        for (let index = 0; index < e.length; index++) {
+                                            p = p + e[index];
+                                        }
+                                        setIdProva(p);
+                                    }}
+                                    options={[
+                                        {
+                                            value: "I",
+                                            label: "I",
+                                            children: [
+                                                {
+                                                    value: "F",
+                                                    label: "F"
+                                                },
+                                                {
+                                                    value: "M",
+                                                    label: "M"
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            value: "II",
+                                            label: "II",
+                                            children: [
+                                                {
+                                                    value: "F",
+                                                    label: "F"
+                                                },
+                                                {
+                                                    value: "M",
+                                                    label: "M"
+                                                },
+                                            ],
+                                        }
+                                    ]}
+                                />
+                            </Form.Item>
+                            <Form.Item label="Equipas">
+                                <Input
+                                    style={{ width: "46%", textTransform: "uppercase" }}
+                                    onChange={(e) => setIdEquipaA(e.target.value)}
+                                    placeholder="Visitada"
+                                />{" "}
+                                —{" "}
+                                <Input
+                                    id="newGameEquipaB"
+                                    style={{ width: "47%", textTransform: "uppercase" }}
+                                    onChange={(e) => setIdEquipaB(e.target.value)}
+                                    placeholder="Visitante"
+                                />
+                            </Form.Item>
+
+                            <Form.Item label="Pavilhão">
+                                <Select
+                                    id="newGamePavilhao"
+                                    style={{ textTransform: 'uppercase' }}
+                                    onChange={(value) => setIdPavilhao(value)}
+                                    placeholder="Selecione o pavilhão..."
+                                    showSearch // Habilita a funcionalidade de busca
+                                    optionFilterProp="children" // Faz com que a busca filtre pelo conteúdo dos filhos das opções
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    } // Implementa o filtro personalizado
+                                    onSearch={handleSearchPavilhao} // Chamado quando o usuário digita algo no Select
+                                    onSelect={handleSelectPavilhao} // Chamado quando o usuário seleciona uma opção
+                                    onKeyPress={handleKeyPress} // Captura a tecla Enter pressionada no campo de busca
+                                    value={selectedValuePavilhao} // Define o valor selecionado no campo
+                                >
+                                    {pavilhoes.map((pavilhao) => (
+                                        <Option key={pavilhao.value} value={pavilhao.value}>
+                                            {pavilhao.label}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                        </Form>
+                    </>
+                </div>
+            ),
+            width: "42%",
+            keyboard: false,
+            okText: "Adicionar jogo",
+            closable: true,
+
+            onOk: handleOk,
+            cancelText: "Cancelar",
+            visible: isModalVisible,
+            className: "modalRecusa",
+        });
+    }
+
+    function handleDeleteGame(record) {
+        Meteor.call("eliminaJogoUniversitario", record, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                message.success("Jogo eliminado!");
+
+                window.location.reload();
+            }
+        });
+    }
 
   return (
     <>
@@ -1345,9 +1574,9 @@ export function Adesl({ user }) {
               forgotPasswordHeader={true}
               gestaoPagamentos={true}
       />
-      {reloadData()}
+          {!loaded ? checkBD(dataSource) : 
 
-      {dataSource.length === 0 ? (
+      dataSource.length === 0 ? (
         <>
           <div
             style={{
@@ -1809,7 +2038,7 @@ export function Adesl({ user }) {
 
                           if (event.target != "div.ant-select-selector") {
                             Meteor.call(
-                              "arbitrosDisponiveis",
+                              "getArbitrosDisponiveis",
                               record,
                               temRecibo,
                               naoTemRecibo,

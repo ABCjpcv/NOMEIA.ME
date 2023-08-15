@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\.meteor",
     "\\imports",
     "\\imports\\ui",
     "\\imports\\ui\\Pages",
     "\\imports\\ui\\Pages\\Arbitros",
     "\\imports\\ui\\Pages\\Arbitros\\CA",
     "\\imports\\ui\\Pages\\Arbitros\\CA\\AtribuirJogos",
-    "\\imports\\ui\\Pages\\Geral",
-    "\\imports\\ui\\Pages\\NaoAutenticado",
     "\\private",
     "\\server"
   ],
-  "SelectedNode": "\\imports\\ui\\Pages\\NaoAutenticado\\Autenticar.jsx",
+  "SelectedNode": "\\private\\Clubes.csv",
   "PreviewInSolutionExplorer": false
 }
