@@ -3,9 +3,11 @@ import { Accounts } from "meteor/accounts-base";
 import { Papa } from "meteor/harrison:papa-parse";
 import nodemailer from "nodemailer";
 import SimpleSchema from "simpl-schema";
-import _ from "lodash.uniqueid";
-import fs from 'fs';
-import { start } from "repl";
+import uniqueId from "lodash.uniqueid";
+
+const fs = require('fs');
+const path = require('path');
+const basePrivate = '/home/abc/projects/NOMEIA.ME/private';
 
 let jogos = new Mongo.Collection("jogos");
 let clubes = new Mongo.Collection("clubes");
@@ -22,7 +24,7 @@ let pagamentosCRCN = new Mongo.Collection("pagamentosCRCN");
 
 let CURRENT_YEAR = new Date().getFullYear();
 
-let DROP_ALL_TABLES = ~false;
+let DROP_ALL_TABLES = true;
 let DROP_JOGOS = false;
 let DROP_CLUBES = false;
 let DROP_ARBITROS = false;
@@ -221,101 +223,85 @@ pagamentosCRCN.schema = new SimpleSchema({
 
 //#endregion 
 
-Meteor.startup(() => {
+Meteor.startup(async () => { 
+
     process.env.MAIL_URL =
         "smtp://nomeia_me_ponav@hotmail.com:2*qzEB)eKR*KZ6gn@smtp.live.com:587/";
 
     //#region DROP TABLES
 
     if (DROP_ALL_TABLES) {
-        clubes.rawCollection().drop();
+        await clubes.rawCollection().drop();
 
-        //Read the clubs:
-        var clubsCsv = Assets.getText("ClubesAVL.csv");
+        var clubsCsv = fs.readFileSync(path.join(basePrivate,"ClubesAVL.csv"), 'utf8');
         var rows = Papa.parse(clubsCsv).data;
 
         console.log("*****************************************************");
         console.log("************   DATABASE FOR CLUBES AVL       ********");
         console.log("*****************************************************");
 
-        let i = 0;
-        for (i in rows) {
-            clubes.insert(rows[i]);
-            i = i + 1;
+        for (let i = 0; i < rows.length; i++)  {
+            await clubes.insertAsync(rows[i]);
         }
 
-        console.log("INSERT INTO CLUBES: " + clubes.find().count());
+        console.log("INSERT INTO CLUBES: " + clubes.find().fetch().length);
 
         console.log("*****************************************************");
         console.log("***********   DATABASE FOR ARBITROS   **************");
         console.log("*****************************************************");
 
-        arbitros.rawCollection().drop();
-        definicoesPessoais.rawCollection().drop();
+        await arbitros.rawCollection().drop();
+        await definicoesPessoais.rawCollection().drop();
 
-        //Get the csv Text:
-        var arbitrosCSV = Assets.getText("arbitrosInscritos.csv");
-        var rows = Papa.parse(arbitrosCSV).data;
+        var arbitrosCSV = fs.readFileSync(path.join(basePrivate,"arbitrosInscritos.csv"), 'utf8');
+        var rowsArbitros = Papa.parse(arbitrosCSV).data;
 
-        let x = 0;
-        //Setup the database, by adding games...
-        for (let index = 1; index < rows.length - 1; index++) {
-            // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
-            arbitros.insert({
-                nome: rows[index][0],
-                email: rows[index][1],
-                licenca: rows[index][2],
+        for (let index = 1; index < rowsArbitros.length - 1; index++) {
+            await arbitros.insertAsync({
+                nome: rowsArbitros[index][0],
+                email: rowsArbitros[index][1],
+                licenca: rowsArbitros[index][2],
                 nivel:
-                    rows[index][3] === "I"
+                    rowsArbitros[index][3] === "I"
                         ? 1
-                        : rows[index][3] === "II"
+                        : rowsArbitros[index][3] === "II"
                             ? 2
-                            : rows[index][3] === "III"
+                            : rowsArbitros[index][3] === "III"
                                 ? 3
                                 : 4,
-                isAdmin: rows[index][4] === "SIM" ? true : false,
+                isAdmin: rowsArbitros[index][4] === "SIM" ? true : false,
             });
-            //console.log("inserted ARBITRO " + rows[index][0]); 
-            x = index;
         }
 
-        for (let index = 1; index < rows.length - 1; index++) {
-            let a = arbitros.findOne({ nome: rows[index][0] });
-            // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
-            definicoesPessoais.insert({
+        for (let index = 1; index < rowsArbitros.length - 1; index++) {
+            let a = await arbitros.findOneAsync({ nome: rowsArbitros[index][0] });
+            await definicoesPessoais.insertAsync({
                 arbitro: a,
-                temCarro: rows[index][5] === "SIM" ? true : false,
-                emiteRecibo: rows[index][6] === "SIM" ? true : false,
-                concelho: rows[index][7],
+                temCarro: rowsArbitros[index][5] === "SIM" ? true : false,
+                emiteRecibo: rowsArbitros[index][6] === "SIM" ? true : false,
+                concelho: rowsArbitros[index][7],
             });
-            console.log("inserted ARBITRO " + rows[index][0]);
-            x = index;
+            console.log("inserted ARBITRO " + rowsArbitros[index][0]);
         }
 
-        console.log("***************************************************");
-        console.log("******   DATABASE CONSELHO DE ARBITRAGEM   *********");
-        console.log("*****************************************************");
-
-        conselhoDeArbitragem.rawCollection().drop();
+        await conselhoDeArbitragem.rawCollection().drop();
 
         let ca = "";
 
-        var arbs = arbitros.find({ isAdmin: true });
+let arbsCursor = await arbitros.find({ isAdmin: true }).fetch();
 
-        arbs.forEach((element) => {
-            if (element.isAdmin) {
-                conselhoDeArbitragem.insert({
-                    arbitrosCA: element,
-                    preNomeacoesRegionais: [],
-                    enviadoRegionais: false,
-                    // preNomeacoesEuropeias: [],
-                    // enviadoEuropeias: false,
-                    preNomeacoesUniversitarias: [],
-                    enviadoUniversitarias: false,
-                });
-                ca = ca + " " + element.nome;
-            }
+for (const element of arbsCursor) {
+    if (element.isAdmin) {
+        await conselhoDeArbitragem.insertAsync({
+            arbitrosCA: element,
+            preNomeacoesRegionais: [],
+            enviadoRegionais: false,
+            preNomeacoesUniversitarias: [],
+            enviadoUniversitarias: false,
         });
+        ca = ca + " " + element.nome;
+    }
+}
 
         console.log("INSERT INTO CONSELHO DE ARBITRAGEM: ");
         console.log(ca);
@@ -324,38 +310,26 @@ Meteor.startup(() => {
         console.log("*****   DATABASE FOR INDISPONIBILIDADES   ***********");
         console.log("****************************************************");
 
-        var arb = arbitros.find();
+        var arb = await arbitros.find().fetch();
 
-        indisponibilidades.rawCollection().drop();
+        await indisponibilidades.rawCollection().drop();
 
         let feriados = adicionaFeriados([]);
 
-        // Função para gerar uma hora aleatória após as 8h
-        function gerarHoraAleatoria() {
-            const hora = Math.floor(Math.random() * (24 - 8)) + 8; // Gera um número entre 8 e 23
-            return hora;
-        }
+        for (const arbitro of arb) {
+            let arbitroIndisponibilidades = [...feriados];
 
-        // Função para gerar uma duração aleatória de horas
-        function gerarDuracaoAleatoria() {
-            const duracao = Math.floor(Math.random() * 6) + 1; // Gera um número entre 1 e 6
-            return duracao;
-        }
-
-        arb.forEach((arbitro) => {
-            let arbitroIndisponibilidades = [...feriados]; // Cria um novo array para cada árbitro, incluindo os feriados
-
-            const numIndisponibilidades = Math.floor(Math.random() * 3) + 1; // Gera um número entre 1 e 3
+            const numIndisponibilidades = Math.floor(Math.random() * 3) + 1;
 
             for (let i = 0; i < numIndisponibilidades; i++) {
-                const diaAleatorio = Math.floor(Math.random() * 4); // Gera um número entre 0 e 3
-                const dataAleatoria = `2023-07-${diaAleatorio + 6}`; // Adiciona o número aleatório aos dias 6, 7, 8 ou 9
+                const diaAleatorio = Math.floor(Math.random() * 4);
+                const dataAleatoria = `2023-07-${diaAleatorio + 6}`;
                 const start = new Date(dataAleatoria);
                 const horaAleatoria = gerarHoraAleatoria();
-                start.setHours(horaAleatoria, 0, 0, 0); // Define a hora aleatória após as 8h no objeto Date
+                start.setHours(horaAleatoria, 0, 0, 0);
 
                 const duracao = gerarDuracaoAleatoria();
-                const end = new Date(start.getTime() + duracao * 60 * 60 * 1000); // Calcula a data final adicionando a duração em milissegundos (multiplicando por 60 * 60 * 1000 para converter de horas para milissegundos)
+                const end = new Date(start.getTime() + duracao * 60 * 60 * 1000);
 
                 const indisponibilidade = {
                     id: i + 1,
@@ -369,126 +343,95 @@ Meteor.startup(() => {
 
             console.log("ADICIONADO " + numIndisponibilidades + " ao " + arbitro.nome);
 
-            indisponibilidades.insert({
+            await indisponibilidades.insertAsync({
                 arbitro: arbitro,
                 disponibilidades: arbitroIndisponibilidades,
             });
-        });
-
-
-
+        };
 
         console.log("*****************************************************");
         console.log("**********   DATABASE FOR RESTRICOES    *************");
         console.log("*****************************************************");
 
-        restricoes.rawCollection().drop();
+        await restricoes.rawCollection().drop();
 
         let res = 0;
 
-        arb.forEach((arbitro) => {
-            restricoes.insert({
+        for (const arbitro of arb) {
+            await restricoes.insertAsync({
                 arbitro: arbitro,
                 relacoes: [],
             });
             res = res + 1;
-        });
+        };
 
         console.log("INSERT INTO RESTRICOES : " + res);
-
-        // console.log("****************************************************");
-        // console.log("*******   DATABASE FOR DEFINICOES PESSOAIS   ********");
-        // console.log("*****************************************************");
-
-        // definicoesPessoais.rawCollection().drop();
-
-        // let def = 0;
-        // arb.forEach((arbitro) => {
-        //   definicoesPessoais.insert({
-        //     arbitro: arbitro,
-        //     temCarro: false,
-        //     emiteRecibo: false,
-        //   });
-        //   def = def + 1;
-        // });
-
-        // console.log("INSERT INTO DEFINICOES PESSOAIS: " + def);
 
         console.log("****************************************************");
         console.log("************   DATABASE FOR JOGOS   *****************");
         console.log("*****************************************************");
 
-        //Get the c sv Text:
-        var csvFile = Assets.getText("teste2.csv");
-        var rows = Papa.parse(csvFile).data;
+        var csvFile = fs.readFileSync(path.join(basePrivate,"teste2.csv"), 'utf8');
+        var rowsJogos = Papa.parse(csvFile).data;
 
-        jogos.rawCollection().drop();
+        await jogos.rawCollection().drop();
 
-
-
-        //Setup the database, by adding games...
-        for (let index = 1; index < rows.length - 1; index++) {
-            // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
-
-            jogos.insert({
-                numerojogo: rows[index][0],
-                dia: rows[index][1],
-                hora: rows[index][2],
-                prova: rows[index][3],
-                serie: rows[index][4],
-                equipas: rows[index][5],
-                pavilhao: rows[index][6],
-                arbitro1: titleCase(rows[index][7]),
-                arbitro2: titleCase(rows[index][8]),
-                juiz_linha1: titleCase(rows[index][9]),
-                juiz_linha2: titleCase(rows[index][10]),
-                juiz_linha3: titleCase(rows[index][11]),
-                juiz_linha4: titleCase(rows[index][12]),
+        for (let index = 1; index < rowsJogos.length - 1; index++) {
+            await jogos.insertAsync({
+                numerojogo: rowsJogos[index][0],
+                dia: rowsJogos[index][1],
+                hora: rowsJogos[index][2],
+                prova: rowsJogos[index][3],
+                serie: rowsJogos[index][4],
+                equipas: rowsJogos[index][5],
+                pavilhao: rowsJogos[index][6],
+                arbitro1: titleCase(rowsJogos[index][7]),
+                arbitro2: titleCase(rowsJogos[index][8]),
+                juiz_linha1: titleCase(rowsJogos[index][9]),
+                juiz_linha2: titleCase(rowsJogos[index][10]),
+                juiz_linha3: titleCase(rowsJogos[index][11]),
+                juiz_linha4: titleCase(rowsJogos[index][12]),
                 key: index,
             });
         }
 
         console.log("INSERT INTO JOGOS: " + rows.length);
 
-        console.log("*****************************************************");
-        console.log("***********   DATABASE FOR NOMEACOES   **************");
-        console.log("*****************************************************");
+console.log("*****************************************************");
+console.log("***********   DATABASE FOR NOMEACOES   **************");
+console.log("*****************************************************");
 
-        var arb = arbitros.find();
-        var jog = jogos.find();
+ arb = await arbitros.find().fetch();
+let jog = await jogos.find().fetch();
 
-        nomeacoes.rawCollection().drop();
+await nomeacoes.rawCollection().drop();
 
-        arb.forEach(arbitro => {
-            let nomeacoesAuxiliares = [];
+for (const arbitro of arb) {
+    let nomeacoesAuxiliares = [];
 
-            //console.log("ARBITRO EH: ", arbitro.nome)
-
-            jog.forEach(jogo => {
-                //console.log("JOGO EH:", jogo)
-
-                if (
-                    jogo.arbitro1 == arbitro.nome ||
-                    jogo.arbitro2 == arbitro.nome ||
-                    jogo.juiz_linha1 == arbitro.nome ||
-                    jogo.juiz_linha2 == arbitro.nome ||
-                    jogo.juiz_linha3 == arbitro.nome ||
-                    jogo.juiz_linha4 == arbitro.nome
-                ) {
-                    nomeacoesAuxiliares.push({
-                        jogo: jogo,
-                        confirmacaoAtual: ["pendente"],
-                    });
-                }
+    for (const jogo of jog) {
+        if (
+            jogo.arbitro1 == arbitro.nome ||
+            jogo.arbitro2 == arbitro.nome ||
+            jogo.juiz_linha1 == arbitro.nome ||
+            jogo.juiz_linha2 == arbitro.nome ||
+            jogo.juiz_linha3 == arbitro.nome ||
+            jogo.juiz_linha4 == arbitro.nome
+        ) {
+            nomeacoesAuxiliares.push({
+                jogo: jogo,
+                confirmacaoAtual: ["pendente"],
             });
+        }
+    }
 
-            nomeacoes.insert({
-                arbitro: arbitro,
-                nomeacoesPrivadas: nomeacoesAuxiliares,
-            });
+    await nomeacoes.insertAsync({
+        arbitro: arbitro,
+        nomeacoesPrivadas: nomeacoesAuxiliares,
+    });
 
-            console.log("inserted nomeacoes a: " + arbitro.nome);
-        });
+    console.log("inserted nomeacoes a: " + arbitro.nome);
+}
 
 
 
@@ -499,14 +442,14 @@ Meteor.startup(() => {
         jogosPassados.rawCollection().drop();
 
         let j = 0;
-        arb.forEach((arbitro) => {
-            jogosPassados.insert({
+        for (const arbitro of arb) {
+            await jogosPassados.insertAsync({
                 arbitro: arbitro,
                 nomeacoesPrivadas: [],
             });
             j = j + 1;
             //console.log("inserted jogosPassados a: " + arbitro.nome);
-        });
+        };
 
         console.log("INSERT INTO JOGOS PASSADOS: " + j);
 
@@ -517,14 +460,14 @@ Meteor.startup(() => {
         pagamentosUniversitario.rawCollection().drop();
 
         j = 0;
-        arb.forEach((arbitro) => {
-            pagamentosUniversitario.insert({
+        for (const arbitro of arb) {
+            await pagamentosUniversitario.insertAsync({
                 arbitro: arbitro,
                 pagamentos: [],
             });
             j = j + 1;
             //console.log("inserted jogosPassados a: " + arbitro.nome);
-        });
+        };
 
         console.log("INSERT INTO PAGAMENTOS UNIVERSITARIOS: " + j);
 
@@ -536,15 +479,14 @@ Meteor.startup(() => {
         pagamentosCRCN.rawCollection().drop();
 
         j = 0;
-
-        arb.forEach((arbitro) => {
-            pagamentosCRCN.insert({
+        for (const arbitro of arb) {
+            await pagamentosCRCN.insertAsync({
                 arbitro: arbitro,
                 pagamentos: [],
             });
             j = j + 1;
             //console.log("inserted jogosPassados a: " + arbitro.nome);
-        });
+        };
 
 
         console.log("INSERT INTO PAGAMENTOS CR CN: " + j);
@@ -558,19 +500,16 @@ Meteor.startup(() => {
     }
 
     if (DROP_CLUBES) {
-        clubes.rawCollection().drop();
-
-        //Read the clubs:
-        var clubsCsv = Assets.getText("ClubesAVL.csv");
+        await clubes.rawCollection().drop();
+        var clubsCsv = fs.readFileSync(path.join(basePrivate,"ClubesAVL.csv"), 'utf8');
         var rows = Papa.parse(clubsCsv).data;
 
         console.log("*****************************************************");
         console.log("************   DATABASE FOR CLUBES AVL       ********");
         console.log("*****************************************************");
 
-        for (i in rows) {
-            clubes.insert(rows[i]);
-            //console.log("inserted: " + rows[i]);
+        for (let i = 0; i < rows.length; i++)  {
+            await clubes.insertAsync(rows[i]);
         }
     }
 
@@ -579,21 +518,19 @@ Meteor.startup(() => {
         console.log("***********   DATABASE FOR ARBITROS   ***************");
         console.log("*****************************************************");
 
-        arbitros.rawCollection().drop();
+        await arbitros.rawCollection().drop();
 
         //Get the c sv Text:
-        var csvFile = Assets.getText("arbitrosInscritos.csv");
+        var csvFile = fs.readFileSync(path.join(basePrivate,"arbitrosInscritos.csv"), 'utf8');
         var rows = Papa.parse(csvFile).data;
 
         //Setup the database, by adding games...
         for (let index = 1; index < rows.length - 1; index++) {
-            // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
-
-            arbitros.insert({
+            await arbitros.insertAsync({
                 nome: rows[index][0],
                 email: rows[index][1],
                 licenca: rows[index][2],
-                nivel: rows[index][3],
+                nivel: parseInt(rows[index][3]),
                 isAdmin: rows[index][4],
             });
             console.log("inserted ARBITRO " + rows[index][0]);
@@ -605,15 +542,15 @@ Meteor.startup(() => {
         console.log("******   DATABASE CONSELHO DE ARBITRAGEM   *********");
         console.log("*****************************************************");
 
-        conselhoDeArbitragem.rawCollection().drop();
+        await conselhoDeArbitragem.rawCollection().drop();
 
         let ca = "";
 
         var arbs = arbitros.find({ isAdmin: true });
 
-        arbs.forEach((element) => {
+        for await (const element of arbs) {
             if (element.isAdmin) {
-                conselhoDeArbitragem.insert({
+                await conselhoDeArbitragem.insertAsync({
                     arbitrosCA: element,
                     preNomeacoesRegionais: [],
                     enviadoRegionais: false,
@@ -624,7 +561,7 @@ Meteor.startup(() => {
                 });
                 ca = ca + " " + element.nome;
             }
-        });
+        }
 
         console.log("inserted: " + ca);
     }
@@ -636,7 +573,7 @@ Meteor.startup(() => {
 
         var arb = arbitros.find();
 
-        indisponibilidades.rawCollection().drop();
+        await indisponibilidades.rawCollection().drop();
 
         let r = [];
         r = adicionaFeriados(r);
@@ -658,7 +595,7 @@ Meteor.startup(() => {
 
         var arb = arbitros.find();
 
-        restricoes.rawCollection().drop();
+        await restricoes.rawCollection().drop();
 
         arb.forEach((arbitro) => {
             restricoes.insert({
@@ -677,7 +614,7 @@ Meteor.startup(() => {
 
         var arb = arbitros.find();
 
-        definicoesPessoais.rawCollection().drop();
+        await definicoesPessoais.rawCollection().drop();
 
         let concelhos = [
             'ALCOCHETE', 'ALMADA', 'AMADORA', 'BARREIRO', 'CASCAIS', 'LISBOA', 'LOURES', 'MAFRA',
@@ -702,16 +639,14 @@ Meteor.startup(() => {
         console.log("*****************************************************");
 
         //Get the c sv Text:
-        var csvFile = Assets.getText("Livro1.csv");
+        var csvFile = fs.readFileSync(path.join(basePrivate,"Livro1.csv"), 'utf8');
         var rows = Papa.parse(csvFile).data;
 
-        jogos.rawCollection().drop();
+        await jogos.rawCollection().drop();
 
         //Setup the database, by adding games...
         for (let index = 1; index < rows.length - 1; index++) {
-            // row[i] = [ '1695', '01/05/2022',   '11:00',   'CNFINIC', 'C',   'LUSOFVC- SPORTCP',   'PAV. PROF.TEOTONIO LIMA', 'Andr� Carvalho',  '',   '',   '',   '',   '']
-
-            jogos.insert({
+            await jogos.insertAsync({
                 numerojogo: rows[index][0],
                 dia: rows[index][1],
                 hora: rows[index][2],
@@ -736,8 +671,8 @@ Meteor.startup(() => {
         console.log("***********   DATABASE FOR NOMEACOES   *************");
         console.log("*****************************************************");
 
-        var arb = arbitros.find({}).toArray();
-        var jog = jogos.find({}).toArray();
+        var arb = arbitros.find({}).fetch();
+        var jog = jogos.find({}).fetch();
 
         nomeacoes.rawCollection().drop();
 
@@ -2135,10 +2070,9 @@ Meteor.methods({
             // currJogo.serie +
             // " " +
             // currJogo.equipas
-            // +
+                       // +
             // " " +
-            currJogo.pavilhao;
-        // console.log("titulo: ", titulo);
+                     currJogo.equipas;
 
         // FORMAT  -> 2022-07-17T11:00:00+01:00
 
@@ -2181,7 +2115,7 @@ Meteor.methods({
 
         console.log("startStr", startStr)
 
-        let newId = _("jogo");
+        let newId = uniqueId("jogo");
 
         let novoEvento = {
             title: titulo,
@@ -2244,7 +2178,7 @@ Meteor.methods({
         //console.log("ATUAIS, PRE NOMEACOES", atuaisPreNomeacoes);
 
         for (let index = 0; index < atuaisPreNomeacoes.length; index++) {
-            if (atuaisPreNomeacoes[index].numerojogo === currJogo.numerojogo && nomeArbitro.length > 1) {
+            if (atuaisPreNomeacoes[index].numerojogo === currJogo.numerojogo && nomeArbitro.length >  1) {
 
                 //console.log("funcao", funcao)
                 //console.log("atuaisPreNomeacoes[index]", atuaisPreNomeacoes[index])
@@ -2439,17 +2373,19 @@ Meteor.methods({
                     dia: jogos[index][1],
                     hora: jogos[index][2],
                     prova: jogos[index][3],
-                    equipas: jogos[index][4],
-                    pavilhao: jogos[index][5] + " Campo: " + jogos[index][6],
-                    arbitro1: jogos[index][7],
-                    arbitro2: jogos[index][8],
-                    juiz_linha1: jogos[index][9],
+                    serie: jogos[index][4],
+                    equipaA: jogos[index][5],
+                    equipaB: jogos[index][6],
+                    pavilhao: jogos[index][7] + " Campo: " + jogos[index][8],
+                    arbitro1: jogos[index][9],
+                    arbitro2: jogos[index][10],
+                    juiz_linha1: jogos[index][11],
                     juiz_linha2:
-                        jogos[index][10],
-                    juiz_linha3:
-                        jogos[index][11],
-                    juiz_linha4:
                         jogos[index][12],
+                    juiz_linha3:
+                        jogos[index][13],
+                    juiz_linha4:
+                        jogos[index][14],
 
                     key: index,
                     tags: ["", "", "", "", "", ""],
@@ -2605,10 +2541,10 @@ Meteor.methods({
             }
 
             function isArbiterAvailableForIndisponibility(gameStart, gameEnd, startTime, endTime) {
-                const indisponibilityStart = new Date(startTime);
-                const indisponibilityEnd = new Date(endTime);
+                const indisponibilidadeStart = new Date(startTime);
+                const indisponibilidadeEnd = new Date(endTime);
 
-                if (gameEnd > indisponibilityStart && gameStart < indisponibilityEnd) {
+                if (gameEnd > indisponibilidadeStart && gameStart < indisponibilidadeEnd) {
                     return false;
                 }
                 return true;
@@ -2718,7 +2654,7 @@ Meteor.methods({
 
     getPavilhoes: function getPavilhoes() {
 
-        const pavilhoesCSV = Assets.getText("PavilhoesConcelhos.csv");
+        const pavilhoesCSV = fs.readFileSync(path.join(basePrivate,"PavilhoesConcelhos.csv"), 'utf8');
         const parsedData = Papa.parse(pavilhoesCSV).data;
 
         // Remove o cabeçalho (primeira linha)
@@ -2771,7 +2707,7 @@ Meteor.methods({
             juiz_linha2: "",
             juiz_linha3: "",
             juiz_linha4: "",
-            key: competicao + _("novo"),
+            key: competicao + uniqueId("novo"),
         };
 
         jogos.insert(newGame);
@@ -3067,8 +3003,7 @@ function enviaMailAlteracaoNomeacao(antigo, novo, jogo) {
 }
 
 function hasDST(str) {
-    // O atual regime de mudança da hora é regulado por uma diretiva (lei comunitária) de 2000, que prevê que todos os anos os relógios sejam, respetivamente, adiantados e atrasados uma hora no último domingo de março e no último domingo de outubro, marcando o início e o fim da hora de verão.
-
+    // CORREÇÃO: Função deve retornar booleano
     Date.prototype.stdTimezoneOffset = function () {
         var fy = this.getFullYear();
         //console.log("fy", fy);
@@ -3079,26 +3014,21 @@ function hasDST(str) {
 
             for (var mi = 0; mi < 12; mi++) {
                 var offset = new Date(fy, monthsTestOrder[mi], 1).getTimezoneOffset();
-                console.log("offset: ", offset);
                 if (offset != maxOffset) {
                     maxOffset = Math.max(maxOffset, offset);
                     break;
                 }
             }
             Date.prototype.stdTimezoneOffset.cache[fy] = maxOffset;
-            //console.log("  Date.prototype.stdTimezoneOffset.cache[fy]",Date.prototype.stdTimezoneOffset.cache[fy]);
         }
         return Date.prototype.stdTimezoneOffset.cache[fy];
     };
-
     Date.prototype.stdTimezoneOffset.cache = {};
-
     let d = new Date(str);
-
     Date.prototype.isDST = function () {
-        //console.log("this.getTimezoneOffset()", this.getTimezoneOffset());
         return this.getTimezoneOffset() < this.stdTimezoneOffset();
     };
+    return d.isDST(); // CORREÇÃO: Retornar valor booleano
 }
 
 function adicionaFeriados(r) {
@@ -3116,7 +3046,7 @@ function adicionaFeriados(r) {
         { nome: "Natal", data: "25/12" },
     ];
     for (let index = 0; index < feriadosNacionais.length; index++) {
-        let newId = _("feriado");
+        let newId = uniqueId("feriado");
         let titulo = feriadosNacionais[index].nome;
         let startStr =
             CURRENT_YEAR +
@@ -3188,7 +3118,7 @@ function adicionarIndisponibilidadesIndividuais(arbitro, indisponibilidadeRecorr
     diasIndisponiveis.forEach((dia) => {
         const indisponibilidadeIndividual = {
             title: ' Indisponível ',
-            id: _('recorrente'),
+            id: uniqueId('recorrente'),
             start: `${dia}T${inicio}:00Z`,
             end: `${dia}T${fim}:00Z`,
             color: '#eb3434',
@@ -3251,6 +3181,15 @@ function calcularDiasIndisponiveis(frequencia, diaInicio, inicio, fim) {
     return diasIndisponiveis;
 }
 
+function gerarHoraAleatoria() {
+    // Gera uma hora entre 8 e 22
+    return Math.floor(Math.random() * (22 - 8 + 1)) + 8;
+}
+
+function gerarDuracaoAleatoria() {
+    // Gera uma duração entre 1 e 4 horas
+    return Math.floor(Math.random() * 4) + 1;
+}
 
 // Função para adicionar um dia à data
 function adicionarDia(data) {
@@ -3444,7 +3383,7 @@ function getConcelhoFromPavilhao(pavilhao) {
     let concelhoDoPavilhao = "NOT_FOUND";
 
     // Get the CSV Text:
-    var csvFile = Assets.getText("PavilhoesConcelhos.csv");
+    var csvFile = fs.readFileSync(path.join(basePrivate,"PavilhoesConcelhos.csv"), 'utf8');
     var rows = Papa.parse(csvFile).data;
 
     pavilhao = removerAcentos(pavilhao);
@@ -3487,7 +3426,7 @@ function getConcelhoFromPavilhao(pavilhao) {
 
 function getValorDeslocacao(origem, destino) {
     let valor = 0;
-    var csvFile = Assets.getText("ValorDeslocacoesRegionaisAVL.csv");
+    var csvFile = fs.readFileSync(path.join(basePrivate,"ValorDeslocacoesRegionaisAVL.csv"), 'utf8');
     var rows = Papa.parse(csvFile).data;
 
     for (var i = 1; i < rows.length; i++) {
@@ -3521,7 +3460,7 @@ function getPremio(jogo, username) {
     if (jogo.arbitro2 === username)
         funcao = '2';
 
-    const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+    const csvFile = fs.readFileSync(path.join(basePrivate,"ValorPremioAlimentacao.csv"), 'utf8');
     const rows = Papa.parse(csvFile).data;
 
     for (var i = 1; i < rows.length; i++) {
@@ -3548,7 +3487,7 @@ function getPremio(jogo, username) {
 
 function getValorAlimentacao(prova) {
     let valorPremio = 0;
-    const csvFile = Assets.getText("ValorPremioAlimentacao.csv");
+    const csvFile = fs.readFileSync(path.join(basePrivate,"ValorPremioAlimentacao.csv"), 'utf8');
     const rows = Papa.parse(csvFile).data;
 
     //prova = (prova+"").toUpperCase();
@@ -3568,14 +3507,12 @@ function getValorAlimentacao(prova) {
 }
 
 function titleCase(str) {
+    if (!str) return ""; // CORREÇÃO: Evitar erro se str for undefined
     var splitStr = (str + "").toLowerCase().split(" ");
     for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
         splitStr[i] =
             splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
-    // Directly return the joined string
     return splitStr.join(" ");
 }
 
